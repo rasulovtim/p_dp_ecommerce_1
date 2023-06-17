@@ -1,0 +1,6 @@
+FROM adoptopenjdk:11-jre-hotspot
+ENV JAVA_TOOL_OPTIONS -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+COPY ./gazon-service/target/gazon-service.jar gazon-service.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "gazon-service.jar"]
+ENTRYPOINT ["java", "-Xmx512m", "-Xms256m", "-jar", "gazon-service.jar"]

@@ -1,0 +1,7 @@
+.idea/
+logs/
+guides/
+deployments/
+*.md
+*.pdf
+.git

@@ -1,0 +1,23 @@
+version: '2'
+
+services:
+  app:
+    image: 'denispronin/gazon-service:1.0.0'
+    build:
+      context: .
+      dockerfile: Dockerfile_Project
+    container_name: app
+    ports:
+      - "8080:8080"
+      - "5005:5005"
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/gazon_db
+  db:
+    image: 'postgres:12.12'
+    container_name: db
+    environment:
+      - POSTGRES_DB=gazon_db
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
