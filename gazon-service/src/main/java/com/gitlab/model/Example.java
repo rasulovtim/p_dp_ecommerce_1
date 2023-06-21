@@ -1,6 +1,8 @@
 package com.gitlab.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
@@ -8,6 +10,8 @@ import javax.persistence.*;
  * Сущность - пример
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "example")
 public class Example {
@@ -17,7 +21,5 @@ public class Example {
     private Long id;
 
     @Column(name = "example_text")
-    // добавить unique constraint
-    // добавить валидацию длины в дто
     private String exampleText;
 }
