@@ -1,8 +1,9 @@
 # Changelog
 
 ## [Unreleased]
-- #номер_задачи - краткая суть задачи
+- #task_number - short task description
 
 ## [1.0.0]
 
-- TO BE RELEASED
+- #no_task example API
+- #no_task project documentation
