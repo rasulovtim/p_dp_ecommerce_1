@@ -14,9 +14,4 @@
         <tagDatabase tag="v-1.0"/>
     </changeSet>
 
-    <include file="v-image/db.changelog-image.xml" relativeToChangelogFile="true"/>
-    <changeSet id="productImage" author="denis_pronin">
-        <tagDatabase tag="productImage"/>
-    </changeSet>
-
 </databaseChangeLog>
