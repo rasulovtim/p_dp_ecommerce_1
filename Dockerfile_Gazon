@@ -1,4 +1,4 @@
-FROM adoptopenjdk:11-jre-hotspot
+FROM openjdk:17-jdk-slim
 ENV JAVA_TOOL_OPTIONS -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
 COPY ./gazon-service/target/gazon-service.jar gazon-service.jar
 EXPOSE 8080

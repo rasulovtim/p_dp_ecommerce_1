@@ -5,7 +5,7 @@ services:
     image: 'denispronin/gazon-service:1.0.0'
     build:
       context: .
-      dockerfile: Dockerfile_Project
+      dockerfile: Dockerfile_Gazon
     container_name: app
     ports:
       - "8080:8080"
