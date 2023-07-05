@@ -9,4 +9,8 @@
 
     <include file="02-fill-example-table.sql" relativeToChangelogFile="true"/>
 
+    <include file="03-create-personal-address-table.sql" relativeToChangelogFile="true"/>
+
+    <include file="04-fill-personal-address-table.sql" relativeToChangelogFile="true"/>
+
 </databaseChangeLog>
