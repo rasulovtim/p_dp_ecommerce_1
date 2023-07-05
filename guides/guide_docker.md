@@ -28,7 +28,7 @@ DockerFile - это файл, в котором описаны шаги для �
 1. Выполните следующую команду, чтобы запустить контейнер postgres. Образ скачается из [Docker Hub](https://hub.docker.com/search?q=).
 <code>docker run --name postgreGazon -e POSTGRES_DB=gazon_db -e POSTGRES_USER=root -e POSTGRES_PASSWORD=root -p 5432:5432 -d postgres:12.12</code>
 2. Выполните следующую команду, чтобы запустиь контейнер нашего приложения, образ которого мы создали на предыдущем шаге.
-<code>docker run --link postgreGazon --name gazon-service -e SPRING_DATASOURCE_URL=jdbc:postgresql://postgreS7:5432/gazon_db -p 8080:8080 -p 5005:5005 -d gazon-service:latest</code>
+<code>docker run --link postgreGazon --name gazon-service -e SPRING_DATASOURCE_URL=jdbc:postgresql://postgreGazon:5432/gazon_db -p 8080:8080 -p 5005:5005 -d gazon-service:latest</code>
 3. Попробуйте перейти на http://localhost:8080/swagger-ui/
 
 Обратите внимание на то, что на втором шаге нам пришлось добавить <code>--link postgreGazon</code> и переопределить <code>SPRING_DATASOURCE_URL</code> для того, чтобы контейнеры БД и нашего приложения могли общаться друг с другом.
