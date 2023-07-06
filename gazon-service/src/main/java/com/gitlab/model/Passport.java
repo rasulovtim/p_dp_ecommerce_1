@@ -1,8 +1,6 @@
 package com.gitlab.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -19,50 +17,57 @@ public class Passport {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @NotEmpty
     @Size(min = 2, max = 12)
     @Enumerated(EnumType.STRING)
     @Column(name = "citizenship")
-    Citizenship citizenship;
+    private Citizenship citizenship;
 
     @NotEmpty
     @Size(min = 2, max = 15)
     @Column(name = "first_name")
-    String firstName;
+    private String firstName;
 
     @NotEmpty
     @Size(min = 2, max = 25)
     @Column(name = "last_name")
-    String lastName;
+    private String lastName;
 
     @NotEmpty
     @Column(name = "patronym")
-    String patronym;
+    private String patronym;
 
     @NotNull
     @Column(name = "birth_date")
-    LocalDate birthDate;
+    private LocalDate birthDate;
 
     @NotNull
     @Column(name = "issue_date")
-    LocalDate issueDate;
+    private LocalDate issueDate;
 
     @NotEmpty
     @Column(name = "passport_number")
-    String passportNumber;
+    private String passportNumber;
 
     @NotEmpty
     @Column(name = "issuer")
-    String issuer;
+    private String issuer;
 
     @NotEmpty
     @Column(name = "issuer_number")
-    String issuerNumber;
+    private String issuerNumber;
 
+    @AllArgsConstructor
+    @Getter
+    @ToString
     enum Citizenship {
-        УКРАИНА, БЕЛАРУСЬ, РОССИЯ, КАЗАХСТАН, АЗЕРБАЙДЖАН, АРМЕНИЯ, ГРУЗИЯ, МОЛДОВА, ТАДЖИКИСТАН, ТУРКМЕНИСТАН, УЗБЕКИСТАН, КЫРГЫЗСТАН
+        UKRAINE("Украина"), BELARUS("Беларусь"), RUSSIA("Россия"), KAZAKHSTAN("Казахстан"), AZERBAIJAN("Азербайджан"),
+        ARMENIA("Армения"), GEORGIA("Грузия"), MOLDOVA("Молдова"), TAJIKISTAN("Таджикистан"),
+        TURKMENISTAN("Туркменистан"), UZBEKISTAN("Узбекистан"), KYRGYZSTAN("Кыргызстан");
+
+        private final String citizenshipInRussia;
 
     }
 
