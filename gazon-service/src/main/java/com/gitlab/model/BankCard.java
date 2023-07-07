@@ -21,8 +21,8 @@ public class BankCard {
     private String cardNumber;
 
     @Column(name = "due_date")
-    LocalDate dueDate;
+    private LocalDate dueDate;
 
     @Column(name = "security_code")
-    Byte securityCode;
+    private Integer securityCode;
 }

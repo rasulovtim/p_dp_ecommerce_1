@@ -19,7 +19,7 @@ import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.never;
 
 @ExtendWith(MockitoExtension.class)
-public class BankCardServiceTest {
+class BankCardServiceTest {
 
     @Mock
     private BankCardRepository bankCardRepository;
@@ -61,12 +61,12 @@ public class BankCardServiceTest {
     void should_update_bankCard() {
         long id = 1L;
         BankCard bankCardToUpdate = new BankCard();
-        bankCardToUpdate.setCardNumber("modifiedCardNumber");
+        bankCardToUpdate.setCardNumber(/*modified*/"12345678"/*modified*/);
         bankCardToUpdate.setDueDate(LocalDate.MIN);
-        bankCardToUpdate.setSecurityCode((byte) 12);
+        bankCardToUpdate.setSecurityCode(123);
 
-        BankCard bankCardBeforeUpdate = new BankCard(id, "unmodifiedCardNumber", LocalDate.MIN, (byte) 12);
-        BankCard updatedBankCard = new BankCard(id, "modifiedCardNumber", LocalDate.MIN, (byte) 12);
+        BankCard bankCardBeforeUpdate = new BankCard(id, /*unmodified*/"23456789"/*unmodified*/, LocalDate.MIN, 123);
+        BankCard updatedBankCard = new BankCard(id, /*modified*/"12345678"/*modified*/, LocalDate.MIN, 123);
 
         when(bankCardRepository.findById(id)).thenReturn(Optional.of(bankCardBeforeUpdate));
         when(bankCardRepository.save(updatedBankCard)).thenReturn(updatedBankCard);
@@ -80,7 +80,7 @@ public class BankCardServiceTest {
     void should_not_update_bankCard_when_entity_not_found() {
         long id = 1L;
         BankCard bankCardToUpdate = new BankCard();
-        bankCardToUpdate.setCardNumber("modifiedCardNumber");
+        bankCardToUpdate.setCardNumber(/*modified*/"12345678"/*modified*/);
 
         when(bankCardRepository.findById(id)).thenReturn(Optional.empty());
 
@@ -112,15 +112,15 @@ public class BankCardServiceTest {
 
     private List<BankCard> generateBankCards() {
         return List.of(
-                new BankCard(1L, "cardNumber1", LocalDate.MIN, (byte) 12),
-                new BankCard(2L, "cardNumber2", LocalDate.MIN, (byte) 12),
-                new BankCard(3L, "cardNumber3", LocalDate.MIN, (byte) 12),
-                new BankCard(4L, "cardNumber4", LocalDate.MIN, (byte) 12),
-                new BankCard(5L, "cardNumber5", LocalDate.MIN, (byte) 12));
+                new BankCard(1L, "cardNumber1", LocalDate.MIN, 123),
+                new BankCard(2L, "cardNumber2", LocalDate.MIN, 123),
+                new BankCard(3L, "cardNumber3", LocalDate.MIN, 123),
+                new BankCard(4L, "cardNumber4", LocalDate.MIN, 123),
+                new BankCard(5L, "cardNumber5", LocalDate.MIN, 123));
     }
 
     private BankCard generateBankCard() {
-        return new BankCard(1L, "cardNumber1", LocalDate.MIN, (byte) 12);
+        return new BankCard(1L, "cardNumber1", LocalDate.MIN, 123);
     }
 
     @Test
@@ -129,7 +129,7 @@ public class BankCardServiceTest {
         BankCard bankCardToUpdate = new BankCard();
         bankCardToUpdate.setCardNumber(null);
 
-        BankCard bankCardBeforeUpdate = new BankCard(id, "unmodifiedCardNumber", LocalDate.MIN, (byte) 12);
+        BankCard bankCardBeforeUpdate = new BankCard(id, /*unmodified*/"12345678"/*unmodified*/, LocalDate.MIN, 123);
 
         when(bankCardRepository.findById(id)).thenReturn(Optional.of(bankCardBeforeUpdate));
         when(bankCardRepository.save(bankCardBeforeUpdate)).thenReturn(bankCardBeforeUpdate);
@@ -146,7 +146,7 @@ public class BankCardServiceTest {
         BankCard bankCardToUpdate = new BankCard();
         bankCardToUpdate.setDueDate(null);
 
-        BankCard bankCardBeforeUpdate = new BankCard(id, "cardNumber", /*Unmodified*/ LocalDate.MIN /*Unmodified*/, (byte) 12);
+        BankCard bankCardBeforeUpdate = new BankCard(id, "cardNumber", /*Unmodified*/ LocalDate.MIN /*Unmodified*/, 123);
 
         when(bankCardRepository.findById(id)).thenReturn(Optional.of(bankCardBeforeUpdate));
         when(bankCardRepository.save(bankCardBeforeUpdate)).thenReturn(bankCardBeforeUpdate);
@@ -163,7 +163,7 @@ public class BankCardServiceTest {
         BankCard bankCardToUpdate = new BankCard();
         bankCardToUpdate.setSecurityCode(null);
 
-        BankCard bankCardBeforeUpdate = new BankCard(id, "cardNumber", LocalDate.MIN, /*Unmodified*/ (byte) 12 /*Unmodified*/);
+        BankCard bankCardBeforeUpdate = new BankCard(id, "cardNumber", LocalDate.MIN, /*Unmodified*/123/*Unmodified*/);
 
         when(bankCardRepository.findById(id)).thenReturn(Optional.of(bankCardBeforeUpdate));
         when(bankCardRepository.save(bankCardBeforeUpdate)).thenReturn(bankCardBeforeUpdate);

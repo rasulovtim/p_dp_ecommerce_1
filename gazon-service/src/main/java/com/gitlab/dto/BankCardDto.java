@@ -3,10 +3,9 @@ package com.gitlab.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Range;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 
 @Data
@@ -16,14 +15,16 @@ public class BankCardDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
-    @Size(min = 8, max = 19, message = "Length of BankCard's cardNumber should be between 8 and 19 characters")
+    @Pattern(regexp="^[1-9][0-9]*$", message = "cardNumber must contain only positive digits")
+    @Size(min = 8, max = 19, message = "Length of BankCard's cardNumber should be between 8 and 19 positive digits")
     @NotEmpty(message = "BankCard's cardNumber should have at least eight characters")
     private String cardNumber;
 
     @NotNull(message = "BankCard's dueDate should not be empty")
-    LocalDate dueDate;
+    private LocalDate dueDate;
 
+    @Range(min = 100, max = 9999, message = "Length of BankCard's securityCode should be between 3 and 4 positive digits")
     @NotNull(message = "BankCard's securityCode should not be empty")
-    Byte securityCode;
+    private Integer securityCode;
 
 }

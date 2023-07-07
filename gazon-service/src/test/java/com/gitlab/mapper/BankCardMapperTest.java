@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class BankCardMapperTest {
+class BankCardMapperTest {
 
     private final BankCardMapper mapper = Mappers.getMapper(BankCardMapper.class);
 
@@ -21,7 +21,7 @@ public class BankCardMapperTest {
         bankCard.setId(1L);
         bankCard.setCardNumber("123456789");
         bankCard.setDueDate(LocalDate.parse("2222-12-22"));
-        bankCard.setSecurityCode((byte) 222);
+        bankCard.setSecurityCode(222);
 
         BankCardDto actualResult = mapper.toDto(bankCard);
 
@@ -38,7 +38,7 @@ public class BankCardMapperTest {
         bankCardDto.setId(1L);
         bankCardDto.setCardNumber("123456789");
         bankCardDto.setDueDate(LocalDate.parse("2024-12-24"));
-        bankCardDto.setSecurityCode((byte) 222);
+        bankCardDto.setSecurityCode(2222);
 
         BankCard actualResult = mapper.toEntity(bankCardDto);
 

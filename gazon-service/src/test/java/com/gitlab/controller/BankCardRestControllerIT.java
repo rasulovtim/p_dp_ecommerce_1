@@ -16,7 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class BankCardRestControllerIT extends AbstractIntegrationTest {
+class BankCardRestControllerIT extends AbstractIntegrationTest {
 
     private static final String BANK_CARD_URN = "/api/bank-card";
     private static final String BANK_CARD_URI = URL + BANK_CARD_URN;
@@ -68,9 +68,9 @@ public class BankCardRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_create_bankCard() throws Exception {
         BankCardDto bankCardDto = new BankCardDto();
-        bankCardDto.setCardNumber("123456789test");
+        bankCardDto.setCardNumber("123456789");
         bankCardDto.setDueDate(LocalDate.parse("2024-12-12"));
-        bankCardDto.setSecurityCode((byte) 12);
+        bankCardDto.setSecurityCode( 123);
         String jsonBankCardDto = objectMapper.writeValueAsString(bankCardDto);
 
         mockMvc.perform(post(BANK_CARD_URI)
@@ -85,9 +85,9 @@ public class BankCardRestControllerIT extends AbstractIntegrationTest {
     void should_update_bankCard_by_id() throws Exception {
         long id = 1L;
         BankCardDto bankCardDto = new BankCardDto();
-        bankCardDto.setCardNumber("updatedCardNumber");
+        bankCardDto.setCardNumber(/*updatedCardNumber*/"123456789"/*updatedCardNumber*/);
         bankCardDto.setDueDate(LocalDate.parse("2024-12-12"));
-        bankCardDto.setSecurityCode((byte) 12);
+        bankCardDto.setSecurityCode(123);
         String jsonBankCardDto = objectMapper.writeValueAsString(bankCardDto);
 
         bankCardDto.setId(id);
@@ -106,9 +106,9 @@ public class BankCardRestControllerIT extends AbstractIntegrationTest {
     void should_return_not_found_when_update_bankCard_by_non_existent_id() throws Exception {
         long id = 10L;
         BankCardDto bankCardDto = new BankCardDto();
-        bankCardDto.setCardNumber("updatedCardNumber");
+        bankCardDto.setCardNumber(/*updatedCardNumber*/"123456789"/*updatedCardNumber*/);
         bankCardDto.setDueDate(LocalDate.MIN);
-        bankCardDto.setSecurityCode((byte) 12);
+        bankCardDto.setSecurityCode(123);
         String jsonBankCardDto = objectMapper.writeValueAsString(bankCardDto);
 
         mockMvc.perform(patch(BANK_CARD_URI + "/{id}", id)
