@@ -13,4 +13,8 @@
 
     <include file="04-fill-personal-address-table.sql" relativeToChangelogFile="true"/>
 
+    <include file="05-create-postomat-table.sql" relativeToChangelogFile="true"/>
+
+    <include file="06-fill-postomat-table.sql" relativeToChangelogFile="true"/>
+
 </databaseChangeLog>

@@ -45,7 +45,8 @@ public interface PersonalAddressRestApi {
             @ApiResponse(code = 200, message = "Personal Address updated"),
             @ApiResponse(code = 400, message = "Personal Address not updated")}
     )
-    ResponseEntity<PersonalAddressDto> update(@ApiParam(name = "id", value = "PersonalAddress.id") @PathVariable Long id,
+    ResponseEntity<PersonalAddressDto> update(@ApiParam(name = "id", value = "PersonalAddress.id")
+                                              @PathVariable Long id,
                                               @ApiParam(name = "personalAddress", value = "PersonalAddressDto")
                                               @Valid @RequestBody PersonalAddressDto personalAddressDto);
 
@@ -55,5 +56,6 @@ public interface PersonalAddressRestApi {
             @ApiResponse(code = 200, message = "Personal Address deleted"),
             @ApiResponse(code = 404, message = "Personal Address not found")}
     )
-    ResponseEntity<Void> delete(@ApiParam(name = "id", value = "PersonalAddress.id") @PathVariable Long id);
+    ResponseEntity<Void> delete(@ApiParam(name = "id", value = "PersonalAddress.id")
+                                @PathVariable Long id);
 }
