@@ -7,6 +7,7 @@ import java.util.Set;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -16,27 +17,26 @@ public class PickupPoint extends ShippingAddress {
     @Column(name = "shelf_life_days")
     private Byte shelfLifeDays;
 
-    @ManyToMany
-    @JoinTable(
-            name = "pickup_points-pickup_points_features",
-            joinColumns = @JoinColumn(name = "pickup_point_id"),
-            inverseJoinColumns = @JoinColumn(name = "feature_id")
+    @ElementCollection(targetClass = PickupPointFeatures.class)
+    @CollectionTable(
+            name = "pickup_point_features_to_pickup_point",
+            joinColumns = @JoinColumn(name = "pickup_point_id")
     )
-    private Set<PickupPointFeature> pickupPointFeatures;
+    @Column(name = "pickup_point_feature")
+    @Enumerated(EnumType.STRING)
+    private Set<PickupPointFeatures> pickupPointFeatures;
 
 
-    @Entity
-    @Data
-    @NoArgsConstructor
     @AllArgsConstructor
-    @Table(name = "pickup_point_feature")
-    public static class PickupPointFeature {
+    @Getter
+    @ToString
+    public enum PickupPointFeatures {
+        TRY_ON_CLOTHES("Примерка одежды"),
+        TRY_ON_SHOES("Примерка обуви"),
+        DELIVERY_FOR_BUSINESSES("Доставка для юридических лиц"),
+        PARTIAL_ORDER_REDEMPTION("Частичный выкуп заказа"),
+        PRODUCT_RETURNS("Возврат товаров");
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long id;
-
-        @Column(name = "name")
-        private String name;
+        private final String pickupPointFeatureInRussian;
     }
 }

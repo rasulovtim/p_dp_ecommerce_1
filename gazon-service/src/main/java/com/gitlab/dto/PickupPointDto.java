@@ -1,19 +1,20 @@
 package com.gitlab.dto;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gitlab.model.PickupPoint;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.*;
+import java.util.Set;
 
 @Data
 @Setter
-public class PostomatDto {
+public class PickupPointDto {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    @Schema(name = "id", example = "1", required = true)
     private Long id;
 
     @Size(min = 1, max = 255, message = "Length of address should be between 1 and 255 characters")
@@ -29,4 +30,6 @@ public class PostomatDto {
     @Range(min = 1, max = 30, message = "Shelf life should be between 1 and 30 days")
     @Schema(name = "shelf_life_days", example = "7", required = true)
     private Byte shelfLifeDays;
+
+    private Set<PickupPoint.PickupPointFeatures> pickupPointFeatures;
 }
