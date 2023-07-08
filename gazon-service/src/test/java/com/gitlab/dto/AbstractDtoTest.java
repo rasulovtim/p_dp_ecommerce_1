@@ -1,7 +1,6 @@
 package com.gitlab.dto;
 
 import org.junit.jupiter.api.BeforeEach;
-
 import javax.validation.Validation;
 import javax.validation.Validator;
 
