@@ -75,8 +75,8 @@ class PassportRestControllerTest extends AbstractIntegrationTest {
         passportDto.setFirstName("testFirstName");
         passportDto.setLastName("testLastName");
         passportDto.setPatronym("testPatronym");
-        passportDto.setBirthDate(LocalDate.of(2000, 01, 01));
-        passportDto.setIssueDate(LocalDate.of(2014, 01, 01));
+        passportDto.setBirthDate(LocalDate.of(2000, 1, 1));
+        passportDto.setIssueDate(LocalDate.of(2014, 1, 1));
         passportDto.setPassportNumber("1111 111111");
         passportDto.setIssuer("Test Otdel Police #1");
         passportDto.setIssuerNumber("111-111");
@@ -101,8 +101,8 @@ class PassportRestControllerTest extends AbstractIntegrationTest {
         passportDto.setCitizenship(Passport.Citizenship.RUSSIA);
         passportDto.setLastName("testLastName");
         passportDto.setPatronym("testPatronym");
-        passportDto.setBirthDate(LocalDate.of(1990, 01, 01));
-        passportDto.setIssueDate(LocalDate.of(2020, 01, 01));
+        passportDto.setBirthDate(LocalDate.of(1990, 1, 1));
+        passportDto.setIssueDate(LocalDate.of(2020, 1, 1));
         passportDto.setPassportNumber("1234 567890");
         passportDto.setIssuer("Test Otedel police №1");
         passportDto.setIssuerNumber("111-111");
@@ -131,8 +131,8 @@ class PassportRestControllerTest extends AbstractIntegrationTest {
         passportDto.setCitizenship(Passport.Citizenship.RUSSIA);
         passportDto.setLastName("testLastName");
         passportDto.setPatronym("updatedPatronym");
-        passportDto.setBirthDate(LocalDate.of(2000, 01, 01));
-        passportDto.setIssueDate(LocalDate.of(2014, 01, 01));
+        passportDto.setBirthDate(LocalDate.of(2000, 1, 1));
+        passportDto.setIssueDate(LocalDate.of(2014, 1, 1));
         passportDto.setPassportNumber("1111 111111");
         passportDto.setIssuer("Test Otdel Police #1");
         passportDto.setIssuerNumber("111-111");

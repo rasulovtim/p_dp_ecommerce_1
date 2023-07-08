@@ -21,8 +21,8 @@ class PassportMapperTest {
         passport.setFirstName("testFirstName");
         passport.setLastName("testLastName");
         passport.setPatronym("testPatronym");
-        passport.setBirthDate(LocalDate.of(2000, 01, 01));
-        passport.setIssueDate(LocalDate.of(2014, 01, 01));
+        passport.setBirthDate(LocalDate.of(2000, 1, 1));
+        passport.setIssueDate(LocalDate.of(2014, 1, 1));
         passport.setPassportNumber("1111 111111");
         passport.setIssuer("Test Otdel Police #1");
         passport.setIssuerNumber("111-111");
@@ -52,8 +52,8 @@ class PassportMapperTest {
         passportDto.setFirstName("testFirstName");
         passportDto.setLastName("testLastName");
         passportDto.setPatronym("testPatronym");
-        passportDto.setBirthDate(LocalDate.of(2000, 01, 01));
-        passportDto.setIssueDate(LocalDate.of(2014, 01, 01));
+        passportDto.setBirthDate(LocalDate.of(2000, 1, 1));
+        passportDto.setIssueDate(LocalDate.of(2014, 1, 1));
         passportDto.setPassportNumber("1111 111111");
         passportDto.setIssuer("Test Otdel Police #1");
         passportDto.setIssuerNumber("111-111");
