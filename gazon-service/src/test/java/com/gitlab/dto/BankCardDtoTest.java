@@ -41,7 +41,7 @@ class BankCardDtoTest extends AbstractDtoTest{
     void test_default_cardNumber_invalid_length() {
         BankCardDto bankCardDto = new BankCardDto();
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < 256; i++) sb.append(i);
+        for (int i = 1; i < 128; i++) sb.append(i);
         bankCardDto.setCardNumber(sb.toString());
         bankCardDto.setDueDate(LocalDate.MIN);
         bankCardDto.setSecurityCode(123);
