@@ -29,7 +29,7 @@ public interface PickupPointRestApi {
             @ApiResponse(code = 404, message = "Pickup Point not found")}
     )
     ResponseEntity<PickupPointDto> get(@ApiParam(name = "id", value = "PickupPoint.id")
-                                    @PathVariable Long id);
+                                       @PathVariable Long id);
 
     @PostMapping
     @ApiOperation(value = "Create Pickup Point")
@@ -38,7 +38,7 @@ public interface PickupPointRestApi {
             @ApiResponse(code = 400, message = "Pickup Point not created")}
     )
     ResponseEntity<PickupPointDto> create(@ApiParam(name = "pickupPoint", value = "PickupPointDto")
-                                       @Valid @RequestBody PickupPointDto pickupPointDto);
+                                          @Valid @RequestBody PickupPointDto pickupPointDto);
 
     @PatchMapping("/{id}")
     @ApiOperation(value = "Update Pickup Point")
@@ -47,9 +47,9 @@ public interface PickupPointRestApi {
             @ApiResponse(code = 400, message = "Pickup Point not updated")}
     )
     ResponseEntity<PickupPointDto> update(@ApiParam(name = "id", value = "PickupPoint.id")
-                                       @PathVariable Long id,
-                                       @ApiParam(name = "pickupPoint", value = "PickupPointDto")
-                                       @Valid @RequestBody PickupPointDto pickupPointDto);
+                                          @PathVariable Long id,
+                                          @ApiParam(name = "pickupPoint", value = "PickupPointDto")
+                                          @Valid @RequestBody PickupPointDto pickupPointDto);
 
     @DeleteMapping("/{id}")
     @ApiOperation(value = "Delete Pickup Point by id")

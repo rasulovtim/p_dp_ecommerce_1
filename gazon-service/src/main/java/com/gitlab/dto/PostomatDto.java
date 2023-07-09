@@ -1,12 +1,13 @@
 package com.gitlab.dto;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Data
 @Setter
@@ -17,7 +18,7 @@ public class PostomatDto {
     private Long id;
 
     @Size(min = 1, max = 255, message = "Length of address should be between 1 and 255 characters")
-    @NotEmpty(message = "Address can not be empty")
+    @NotNull(message = "Address can not be empty")
     @Schema(name = "address", example = "Ligovsky Ave, 76, St Petersburg, Russia", required = true)
     private String address;
 

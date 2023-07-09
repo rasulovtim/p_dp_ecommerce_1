@@ -12,6 +12,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "pickup_point")
+@NamedEntityGraph(name = "PickupPoint.pickupPointFeatures", attributeNodes = @NamedAttributeNode("pickupPointFeatures"))
 public class PickupPoint extends ShippingAddress {
 
     @Column(name = "shelf_life_days")
@@ -29,7 +30,6 @@ public class PickupPoint extends ShippingAddress {
 
     @AllArgsConstructor
     @Getter
-    @ToString
     public enum PickupPointFeatures {
         TRY_ON_CLOTHES("Примерка одежды"),
         TRY_ON_SHOES("Примерка обуви"),
