@@ -138,6 +138,7 @@ class BankCardServiceTest {
 
         verify(bankCardRepository).save(bankCardBeforeUpdate);
         assertEquals(bankCardBeforeUpdate, actualResult.orElse(null));
+        assertEquals("12345678", bankCardBeforeUpdate.getCardNumber());
     }
 
     @Test
