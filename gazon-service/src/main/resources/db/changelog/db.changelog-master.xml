@@ -14,6 +14,11 @@
         <tagDatabase tag="v-1.0"/>
     </changeSet>
 
+    <include file="v-1.1/db.changelog-v-1.1.xml" relativeToChangelogFile="true"/>
+    <changeSet id="1.1" author="atsamaz_gudiev">
+        <tagDatabase tag="v-1.1"/>
+    </changeSet>
+
     <include file="v-1.2/db.changelog-v-1.2.xml" relativeToChangelogFile="true"/>
     <changeSet id="1.0" author="ruslan_kapnin">
         <tagDatabase tag="v-1.2"/>
