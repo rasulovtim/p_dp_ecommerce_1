@@ -25,9 +25,7 @@ class ExampleDtoTest extends AbstractDtoTest {
     @Test
     void test_invalid_max_text_length() {
         ExampleDto exampleDto = new ExampleDto();
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < 256; i++) sb.append(i);
-        exampleDto.setExampleText(sb.toString());
+        exampleDto.setExampleText("a".repeat(256));
 
         assertFalse(validator.validate(exampleDto).isEmpty());
     }
@@ -43,9 +41,7 @@ class ExampleDtoTest extends AbstractDtoTest {
     @Test
     void test_default_message_invalid_length() {
         ExampleDto exampleDto = new ExampleDto();
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < 256; i++) sb.append(i);
-        exampleDto.setExampleText(sb.toString());
+        exampleDto.setExampleText("a".repeat(256));
         String expectedMessage = "Length of Example's exampleText should be between 1 and 255 characters";
         String actualMessage = validator.validate(exampleDto).iterator().next().getMessage();
 
