@@ -159,8 +159,8 @@ class PassportDtoTest extends AbstractDtoTest {
         assertFalse(validator.validate(passportDto).isEmpty());
 
         String sizeMessage = "Passport number must consist of 11 characters";
-        String actualMessages = validator.validate(passportDto).iterator().next().getMessage();
-        assertEquals(actualMessages, sizeMessage);
+        String actualMessages = validator.validate(passportDto).toString();
+        assertTrue(actualMessages.contains(sizeMessage));
     }
 
     @Test
@@ -183,8 +183,8 @@ class PassportDtoTest extends AbstractDtoTest {
         assertFalse(validator.validate(passportDto).isEmpty());
 
         String sizeMessage = "Passport number must consist of 7 characters";
-        String actualMessages = validator.validate(passportDto).iterator().next().getMessage();
-        assertEquals(actualMessages, sizeMessage);
+        String actualMessages = validator.validate(passportDto).toString();
+        assertTrue(actualMessages.contains(sizeMessage));
     }
     /**
      Testing null and default empty message
