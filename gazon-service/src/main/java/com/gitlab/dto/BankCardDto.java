@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Setter
 public class BankCardDto {
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonProperty(access = JsonProperty.Access.READ_WRITE)
     private Long id;
 
     @Pattern(regexp="^[1-9][0-9]*$", message = "cardNumber must contain only positive digits")

@@ -23,6 +23,7 @@ import java.util.Optional;
 public class ExampleRestController implements ExampleRestApi {
 
     private final ExampleService exampleService;
+
     private final ExampleMapper exampleMapper;
 
     @Override

@@ -9,14 +9,15 @@
          <dbms type="postgresql"/>
      </preConditions>
 
+    <include file="v-1.1/db.changelog-v-1.1.xml" relativeToChangelogFile="true"/>
+    <changeSet id="1.1" author="mark_morev">
+        <tagDatabase tag="v-1.1"/>
+    </changeSet>
+
     <include file="v-1.0/db.changelog-v-1.0.xml" relativeToChangelogFile="true"/>
     <changeSet id="1.0" author="denis_pronin">
         <tagDatabase tag="v-1.0"/>
     </changeSet>
 
-    <include file="v-1.1/db.changelog-v-1.1.xml" relativeToChangelogFile="true"/>
-    <changeSet id="1.1" author="atsamaz_gudiev">
-        <tagDatabase tag="v-1.1"/>
-    </changeSet>
 
 </databaseChangeLog>

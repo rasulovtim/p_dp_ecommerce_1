@@ -1,18 +1,18 @@
 package com.gitlab.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import javax.persistence.*;
+import lombok.*;
+
 import java.time.LocalDate;
+import javax.persistence.*;
 
-@Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name = "bank_card")
+@Data
+@Getter
+@Setter
+@Table(name = "bank_card",schema = "public", catalog = "postgres")
 public class BankCard {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,4 +25,5 @@ public class BankCard {
 
     @Column(name = "security_code")
     private Integer securityCode;
+
 }
