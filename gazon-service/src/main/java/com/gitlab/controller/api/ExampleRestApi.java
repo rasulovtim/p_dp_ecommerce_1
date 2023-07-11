@@ -3,11 +3,11 @@ package com.gitlab.controller.api;
 import com.gitlab.dto.ExampleDto;
 import io.swagger.annotations.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @Api(tags = "Example REST")
 @Tag(name = "Example REST", description = "API example description")
@@ -15,12 +15,12 @@ import java.util.List;
 public interface ExampleRestApi {
 
     @GetMapping
-    @ApiOperation(value = "Get all Examples")
+    @ApiOperation(value = "Get Page of Examples")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Examples found"),
-            @ApiResponse(code = 204, message = "Examples not present")}
+            @ApiResponse(code = 200, message = "Page found"),
+            @ApiResponse(code = 204, message = "Page not present")}
     )
-    ResponseEntity<List<ExampleDto>> getAll();
+    ResponseEntity<Page<ExampleDto>> getPage(@ApiParam(name = "page") @RequestParam int page, @ApiParam(name = "size") @RequestParam int size);
 
     @GetMapping("/{id}")
     @ApiOperation(value = "Get Example by id")

@@ -5,8 +5,10 @@ import com.gitlab.mapper.ExampleMapper;
 import com.gitlab.service.ExampleService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
-import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -23,16 +25,21 @@ class ExampleRestControllerIT extends AbstractIntegrationTest {
     private ExampleMapper exampleMapper;
 
     @Test
-    void should_get_all_examples() throws Exception {
-        String expected = objectMapper.writeValueAsString(
-                exampleService
-                        .findAll()
-                        .stream()
-                        .map(exampleMapper::toDto)
-                        .collect(Collectors.toList())
-        );
+    void should_get_page() throws Exception {
+        int page = 0;
+        int size = 2;
+        String parameters = "?page=" + page + "&size=" + size;
 
-        mockMvc.perform(get(EXAMPLE_URI))
+        var response = exampleService.getPage(page, size);
+        assertFalse(response.getContent().isEmpty());
+
+        var expected = objectMapper.writeValueAsString(new PageImpl<>(
+                response.getContent().stream().map(exampleMapper::toDto).toList(),
+                response.getPageable(),
+                response.getTotalElements()
+        ));
+
+        mockMvc.perform(get(EXAMPLE_URI + parameters))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));

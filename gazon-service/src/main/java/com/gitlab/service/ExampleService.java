@@ -3,6 +3,8 @@ package com.gitlab.service;
 import com.gitlab.model.Example;
 import com.gitlab.repository.ExampleRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +18,11 @@ public class ExampleService {
 
     public List<Example> findAll() {
         return exampleRepository.findAll();
+    }
+
+    public Page<Example> getPage(int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return exampleRepository.findAll(pageRequest);
     }
 
     public Optional<Example> findById(Long id) {
