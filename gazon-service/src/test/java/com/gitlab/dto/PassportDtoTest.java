@@ -92,7 +92,7 @@ class PassportDtoTest extends AbstractDtoTest {
         passportDto.setIssuer(" ");
         assertFalse(validator.validate(passportDto).isEmpty());
 
-        String sizeMessage = "Passport's issuer cannot less than ten characters and not exceed 255";
+        String sizeMessage = "Passport's issuer cannot contain less than ten characters and should not exceed 255";
         String actualMessages = validator.validate(passportDto).iterator().next().getMessage();
 
         assertEquals(actualMessages, sizeMessage);
@@ -170,7 +170,7 @@ class PassportDtoTest extends AbstractDtoTest {
         passportDto.setIssuer("ы".repeat(256));
         assertFalse(validator.validate(passportDto).isEmpty());
 
-        String sizeMessage = "Passport's issuer cannot less than ten characters and not exceed 255";
+        String sizeMessage = "Passport's issuer cannot contain less than ten characters and should not exceed 255";
         String actualMessages = validator.validate(passportDto).iterator().next().getMessage();
         assertEquals(actualMessages, sizeMessage);
     }

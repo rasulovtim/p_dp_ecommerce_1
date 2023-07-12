@@ -36,6 +36,8 @@ public class PassportService {
             savedPassport = optionalSavedPassport.get();
         }
 
+        savedPassport.setPatronym(passport.getPatronym());
+
         if (passport.getCitizenship() != null) {
             savedPassport.setCitizenship(passport.getCitizenship());
         }
@@ -46,10 +48,6 @@ public class PassportService {
 
         if (passport.getLastName() != null) {
             savedPassport.setLastName(passport.getLastName());
-        }
-
-        if (passport.getPatronym() != null) {
-            savedPassport.setPatronym(passport.getPatronym());
         }
 
         if (passport.getBirthDate() != null) {

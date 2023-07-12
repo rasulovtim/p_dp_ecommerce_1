@@ -176,25 +176,6 @@ class PassportServiceTest {
     }
 
     @Test
-    void should_not_updated_patronym_field_if_null() {
-        long id = 1L;
-        Passport passportToUpdate = generatePassport();
-        passportToUpdate.setPatronym(null);
-
-        Passport passportBeforeUpdate = generatePassport();
-
-        when(passportRepository.findById(id)).thenReturn(Optional.of(passportBeforeUpdate));
-        when(passportRepository.save(passportBeforeUpdate)).thenReturn(passportBeforeUpdate);
-
-        Optional<Passport> actualResult = passportService.update(id, passportToUpdate);
-
-        verify(passportRepository).save(passportBeforeUpdate);
-
-        assertEquals(passportBeforeUpdate, actualResult.orElse(null));
-        assertEquals("patronym", passportBeforeUpdate.getPatronym());
-    }
-
-    @Test
     void should_not_updated_birthDate_field_if_null() {
         long id = 1L;
         Passport passportToUpdate = generatePassport();
@@ -287,6 +268,25 @@ class PassportServiceTest {
 
         assertEquals(passportBeforeUpdate, actualResult.orElse(null));
         assertEquals("111-111", passportBeforeUpdate.getIssuerNumber());
+    }
+
+    @Test
+    void should_updated_patronym_field_if_null() {
+        long id = 1L;
+        Passport passportToUpdate = generatePassport();
+        passportToUpdate.setPatronym(null);
+
+        Passport passportBeforeUpdate = generatePassport();
+
+        when(passportRepository.findById(id)).thenReturn(Optional.of(passportBeforeUpdate));
+        when(passportRepository.save(passportBeforeUpdate)).thenReturn(passportBeforeUpdate);
+
+        Optional<Passport> actualResult = passportService.update(id, passportToUpdate);
+
+        verify(passportRepository).save(passportBeforeUpdate);
+
+        assertEquals(passportBeforeUpdate, actualResult.orElse(null));
+        assertNull(passportBeforeUpdate.getPatronym());
     }
 
     @Test

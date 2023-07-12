@@ -51,7 +51,7 @@ public class PassportDto {
     private String passportNumber;
 
     @NotEmpty(message = "Passport's issuer shouldn't be empty")
-    @Size(min = 10, max = 255, message = "Passport's issuer cannot less than ten characters and not exceed 255")
+    @Size(min = 10, max = 255, message = "Passport's issuer cannot contain less than ten characters and should not exceed 255")
     private String issuer;
 
     @Pattern(regexp = "^\\d{3}-\\d{3}$", message = "Passport's issuer number must be in \"***-***\" format")
