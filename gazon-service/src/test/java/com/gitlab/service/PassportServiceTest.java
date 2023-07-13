@@ -271,7 +271,7 @@ class PassportServiceTest {
     }
 
     @Test
-    void should_updated_patronym_field_if_null() {
+    void should_not_updated_patronym_field_if_null() {
         long id = 1L;
         Passport passportToUpdate = generatePassport();
         passportToUpdate.setPatronym(null);
@@ -286,7 +286,7 @@ class PassportServiceTest {
         verify(passportRepository).save(passportBeforeUpdate);
 
         assertEquals(passportBeforeUpdate, actualResult.orElse(null));
-        assertNull(passportBeforeUpdate.getPatronym());
+        assertEquals("patronym", passportBeforeUpdate.getPatronym());
     }
 
     @Test
