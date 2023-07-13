@@ -3,7 +3,7 @@
 ## [Unreleased]
 - #task_number - short task description
 - #4 - entity BankCard was created, integrated into gazon-service and tested
-- #4 - entities Product and ProductImage were created and integrated into gazon-service
+- #7 - entities Product and ProductImage were created and integrated into gazon-service
 
 ## [1.0.0]
 
