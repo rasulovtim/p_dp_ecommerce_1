@@ -5,6 +5,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Data
 public class ProductImageDto {
@@ -16,6 +17,7 @@ public class ProductImageDto {
     private Long productId;
 
     @NotEmpty(message = "ProductImage's name should not be empty")
+    @Size(max = 60, message = "Length of ProductImage's name should be between 1 and 60 characters")
     private String name;
 
     @NotNull(message = "ProductImage's data should not be empty")
