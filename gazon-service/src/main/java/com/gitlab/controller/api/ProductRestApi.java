@@ -1,7 +1,6 @@
 package com.gitlab.controller.api;
 
 import com.gitlab.dto.ProductDto;
-import com.gitlab.dto.ProductImageDto;
 import io.swagger.annotations.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
@@ -63,13 +62,13 @@ public interface ProductRestApi {
 
 
     @GetMapping("/{id}/images")
-    @ApiOperation(value = "Get all ProductImages")
+    @ApiOperation(value = "Get all ProductImages IDs")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "productImages found"),
             @ApiResponse(code = 204, message = "productImages not present"),
             @ApiResponse(code = 404, message = "Product's productImages not found")}
     )
-    ResponseEntity<List<ProductImageDto>> getAllImages(@ApiParam(name = "id", value = "Product.id")
+    ResponseEntity<long[]> getImagesIDsByProductId(@ApiParam(name = "id", value = "Product.id")
                                                        @PathVariable Long id);
 
 
@@ -80,8 +79,8 @@ public interface ProductRestApi {
             @ApiResponse(code = 400, message = "ProductImages not uploaded"),
             @ApiResponse(code = 404, message = "Product not found, unable to upload images without product")}
     )
-    ResponseEntity<String> uploadAllImages(@RequestParam("files") MultipartFile[] files,
-                                           @PathVariable Long id) throws IOException;
+    ResponseEntity<String> uploadImagesByProductId(@RequestParam("files") MultipartFile[] files,
+                                                   @PathVariable Long id) throws IOException;
 
 
     @DeleteMapping("/{id}/images")
@@ -91,6 +90,6 @@ public interface ProductRestApi {
             @ApiResponse(code = 204, message = "Product with such id has no images"),
             @ApiResponse(code = 404, message = "Product not found")}
     )
-    ResponseEntity<String> deleteAllImages(@PathVariable Long id);
+    ResponseEntity<String> deleteAllImagesByProductId(@PathVariable Long id);
 }
 

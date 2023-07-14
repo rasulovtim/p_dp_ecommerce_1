@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -27,12 +26,13 @@ public class ProductImageController implements ProductImageRestApi {
 
 
     @Override
-    public ResponseEntity<List<ProductImageDto>> getAll() {
+    public ResponseEntity<long[]> getAll() {
         var productImages = productImageService.findAll();
         if (productImages.isEmpty()) {
             return ResponseEntity.noContent().build();
         } else {
-            return ResponseEntity.ok(productImages.stream().map(productImageMapper::toDto).toList());
+            return ResponseEntity.ok(productImages.stream()
+                    .map(ProductImage::getId).mapToLong(Long::valueOf).toArray());
         }
     }
 

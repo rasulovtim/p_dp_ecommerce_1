@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 
 @Api(tags = "ProductImage REST")
 @Tag(name = "ProductImage REST", description = "ProductImage API description")
@@ -21,12 +20,12 @@ public interface ProductImageRestApi {
 
 
     @GetMapping
-    @ApiOperation(value = "Get all ProductImages")
+    @ApiOperation(value = "Get all ProductImages IDs")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "ProductImages found"),
             @ApiResponse(code = 204, message = "ProductImages not present")}
     )
-    ResponseEntity<List<ProductImageDto>> getAll();
+    ResponseEntity<long[]> getAll();
 
 
     @GetMapping("/{id}")
@@ -46,7 +45,7 @@ public interface ProductImageRestApi {
             @ApiResponse(code = 404, message = "ProductImage not found")}
     )
     ResponseEntity<ProductImageDto> update(@RequestParam("file") MultipartFile files,
-                                                  @PathVariable Long id) throws IOException;
+                                           @PathVariable Long id) throws IOException;
 
 
     @DeleteMapping("/{id}")

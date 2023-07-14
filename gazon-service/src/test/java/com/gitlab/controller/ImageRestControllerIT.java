@@ -2,17 +2,15 @@ package com.gitlab.controller;
 
 import com.gitlab.dto.ProductImageDto;
 import com.gitlab.mapper.ProductImageMapper;
+import com.gitlab.model.ProductImage;
 import com.gitlab.service.ProductImageService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
-import java.util.stream.Collectors;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -30,13 +28,12 @@ class ImageRestControllerIT extends AbstractIntegrationTest {
     private ProductImageMapper productImageMapper;
 
     @Test
-    void should_get_all_productImages() throws Exception {
+    void should_get_all_productImages_ids() throws Exception {
         String expected = objectMapper.writeValueAsString(
                 productImageService
-                        .findAll()
-                        .stream()
-                        .map(productImageMapper::toDto)
-                        .collect(Collectors.toList())
+                        .findAll().stream()
+                        .map(ProductImage::getId)
+                        .mapToLong(Long::valueOf).toArray()
         );
 
         mockMvc.perform(get(PRODUCT_IMAGE_URI))
@@ -84,12 +81,9 @@ class ImageRestControllerIT extends AbstractIntegrationTest {
 
         MockMultipartHttpServletRequestBuilder builder =
                 MockMvcRequestBuilders.multipart(PRODUCT_IMAGE_URI + "/{id}", id);
-        builder.with(new RequestPostProcessor() {
-            @Override
-            public MockHttpServletRequest postProcessRequest(MockHttpServletRequest request) {
-                request.setMethod("PATCH");
-                return request;
-            }
+        builder.with(request -> {
+            request.setMethod("PATCH");
+            return request;
         });
 
         mockMvc.perform(builder
@@ -113,12 +107,9 @@ class ImageRestControllerIT extends AbstractIntegrationTest {
 
         MockMultipartHttpServletRequestBuilder builder =
                 MockMvcRequestBuilders.multipart(PRODUCT_IMAGE_URI + "/{id}", id);
-        builder.with(new RequestPostProcessor() {
-            @Override
-            public MockHttpServletRequest postProcessRequest(MockHttpServletRequest request) {
-                request.setMethod("PATCH");
-                return request;
-            }
+        builder.with(request -> {
+            request.setMethod("PATCH");
+            return request;
         });
 
         mockMvc.perform(builder

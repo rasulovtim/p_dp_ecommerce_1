@@ -1,11 +1,13 @@
 package com.gitlab.util;
 
 import com.gitlab.dto.ProductImageDto;
+import lombok.experimental.UtilityClass;
 
 import java.io.ByteArrayOutputStream;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
+@UtilityClass
 public class ImageUtils {
 
 

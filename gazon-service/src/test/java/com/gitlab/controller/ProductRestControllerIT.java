@@ -1,8 +1,9 @@
 package com.gitlab.controller;
 
 import com.gitlab.dto.ProductDto;
-import com.gitlab.mapper.ProductImageMapper;
 import com.gitlab.mapper.ProductMapper;
+import com.gitlab.model.Product;
+import com.gitlab.model.ProductImage;
 import com.gitlab.service.ProductService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -25,8 +27,6 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
     private ProductService productService;
     @Autowired
     private ProductMapper productMapper;
-    @Autowired
-    private ProductImageMapper productImageMapper;
 
     @Test
     void should_get_all_products() throws Exception {
@@ -150,14 +150,14 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
 
 
     @Test
-    void should_get_all_productImages_by_product_id() throws Exception {
-        long id = 1L;
+    void should_get_images_ids_by_product_id() throws Exception {
+        long id = 3L;
+        Optional<Product> product = productService.findById(id);
+        assert product.orElse(null) != null;
+
         String expected = objectMapper.writeValueAsString(
-                productService
-                        .findById(id).get()
-                        .getProductImages().stream()
-                        .map(productImageMapper::toDto)
-                        .collect(Collectors.toList())
+                product.orElse(null).getProductImages().stream()
+                        .map(ProductImage::getId).mapToLong(Long::valueOf).toArray()
         );
 
         mockMvc.perform(get(PRODUCT_URI + "/{id}" + "/images", id))

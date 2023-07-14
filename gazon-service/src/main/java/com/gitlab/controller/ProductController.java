@@ -2,8 +2,6 @@ package com.gitlab.controller;
 
 import com.gitlab.controller.api.ProductRestApi;
 import com.gitlab.dto.ProductDto;
-import com.gitlab.dto.ProductImageDto;
-import com.gitlab.mapper.ProductImageMapper;
 import com.gitlab.mapper.ProductMapper;
 import com.gitlab.model.Product;
 import com.gitlab.model.ProductImage;
@@ -33,7 +31,6 @@ public class ProductController implements ProductRestApi {
     private final ProductService productService;
     private final ProductMapper productMapper;
     private final ProductImageService productImageService;
-    private final ProductImageMapper productImageMapper;
 
 
     @Override
@@ -83,19 +80,21 @@ public class ProductController implements ProductRestApi {
     }
 
     @Override
-    public ResponseEntity<List<ProductImageDto>> getAllImages(Long id) {
+    public ResponseEntity<long[]> getImagesIDsByProductId(Long id) {
         Optional<Product> product = productService.findById(id);
 
         if (product.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        if (product.get().getProductImages().isEmpty()) return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        if (product.get().getProductImages().isEmpty()) return ResponseEntity
+                .status(HttpStatus.NO_CONTENT).build();
 
-        List<ProductImageDto> images = product.get().getProductImages().stream().map(productImageMapper::toDto).toList();
+        long[] images = product.orElse(null).getProductImages().stream()
+                .map(ProductImage::getId).mapToLong(Long::valueOf).toArray();
         return ResponseEntity.status(HttpStatus.OK)
                 .body(images);
     }
 
     @Override
-    public ResponseEntity<String> uploadAllImages(MultipartFile[] files, Long id) throws IOException {
+    public ResponseEntity<String> uploadImagesByProductId(MultipartFile[] files, Long id) throws IOException {
         Optional<Product> product = productService.findById(id);
 
         if (product.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -116,7 +115,7 @@ public class ProductController implements ProductRestApi {
     }
 
     @Override
-    public ResponseEntity<String> deleteAllImages(Long id) {
+    public ResponseEntity<String> deleteAllImagesByProductId(Long id) {
         Optional<Product> product = productService.findById(id);
 
         if (product.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND)
