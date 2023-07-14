@@ -17,7 +17,7 @@ public class ProductImageDto {
     private Long productId;
 
     @NotEmpty(message = "ProductImage's name should not be empty")
-    @Size(max = 60, message = "Length of ProductImage's name should be between 1 and 60 characters")
+    @Size(max = 256, message = "Length of ProductImage's name should be between 1 and 256 characters")
     private String name;
 
     @NotNull(message = "ProductImage's data should not be empty")

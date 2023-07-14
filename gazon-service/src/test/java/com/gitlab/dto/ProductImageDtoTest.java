@@ -25,10 +25,10 @@ class ProductImageDtoTest extends AbstractDtoTest {
     @Test
     void test_invalid_max_name_length() {
         ProductImageDto imageDto = getValidImageDto();
-        imageDto.setName("a".repeat(64));
+        imageDto.setName("a".repeat(257));
 
         assertFalse(validator.validate(imageDto).isEmpty());
-        String expectedMessage = "Length of ProductImage's name should be between 1 and 60 characters";
+        String expectedMessage = "Length of ProductImage's name should be between 1 and 256 characters";
         assertEquals(expectedMessage, validator.validate(imageDto).iterator().next().getMessage());
     }
 

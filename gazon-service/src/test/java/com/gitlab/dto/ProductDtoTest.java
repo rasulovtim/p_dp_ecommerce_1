@@ -32,7 +32,7 @@ class ProductDtoTest extends AbstractDtoTest {
         productDto.setName("a");
 
         assertFalse(validator.validate(productDto).isEmpty());
-        String expectedMessage = "Length of Product's name should be between 3 and 60 characters";
+        String expectedMessage = "Length of Product's name should be between 3 and 256 characters";
         assertEquals(expectedMessage, validator.validate(productDto).iterator().next().getMessage());
     }
 
@@ -40,10 +40,10 @@ class ProductDtoTest extends AbstractDtoTest {
     @Test
     void test_invalid_max_name_length() {
         ProductDto productDto = getValidProductDto();
-        productDto.setName("a".repeat(64));
+        productDto.setName("a".repeat(257));
 
         assertFalse(validator.validate(productDto).isEmpty());
-        String expectedMessage = "Length of Product's name should be between 3 and 60 characters";
+        String expectedMessage = "Length of Product's name should be between 3 and 256 characters";
         assertEquals(expectedMessage, validator.validate(productDto).iterator().next().getMessage());
     }
 
@@ -100,7 +100,7 @@ class ProductDtoTest extends AbstractDtoTest {
         productDto.setDescription("a");
 
         assertFalse(validator.validate(productDto).isEmpty());
-        String expectedMessage = "Length of Product's description should be between 3 and 600 characters";
+        String expectedMessage = "Length of Product's description should be between 3 and 1000 characters";
         assertEquals(expectedMessage, validator.validate(productDto).iterator().next().getMessage());
     }
 
@@ -111,7 +111,7 @@ class ProductDtoTest extends AbstractDtoTest {
         productDto.setDescription("a".repeat(1001));
 
         assertFalse(validator.validate(productDto).isEmpty());
-        String expectedMessage = "Length of Product's description should be between 3 and 600 characters";
+        String expectedMessage = "Length of Product's description should be between 3 and 1000 characters";
         assertEquals(expectedMessage, validator.validate(productDto).iterator().next().getMessage());
     }
 
@@ -145,7 +145,7 @@ class ProductDtoTest extends AbstractDtoTest {
         productDto.setCode("a");
 
         assertFalse(validator.validate(productDto).isEmpty());
-        String expectedMessage = "Length of Product's code should be between 2 and 30 characters";
+        String expectedMessage = "Length of Product's code should be between 2 and 256 characters";
         assertEquals(expectedMessage, validator.validate(productDto).iterator().next().getMessage());
     }
 
@@ -153,10 +153,10 @@ class ProductDtoTest extends AbstractDtoTest {
     @Test
     void test_invalid_max_code_length() {
         ProductDto productDto = getValidProductDto();
-        productDto.setCode("a".repeat(31));
+        productDto.setCode("a".repeat(257));
 
         assertFalse(validator.validate(productDto).isEmpty());
-        String expectedMessage = "Length of Product's code should be between 2 and 30 characters";
+        String expectedMessage = "Length of Product's code should be between 2 and 256 characters";
         assertEquals(expectedMessage, validator.validate(productDto).iterator().next().getMessage());
     }
 

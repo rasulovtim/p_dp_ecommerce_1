@@ -14,7 +14,7 @@ public class ProductDto {
     private Long id;
 
     @NotEmpty(message = "Product's name should not be empty")
-    @Size(min = 3, max = 60, message = "Length of Product's name should be between 3 and 60 characters")
+    @Size(min = 3, max = 256, message = "Length of Product's name should be between 3 and 256 characters")
     private String name;
 
     @Range(min = 1, max = 2147483333, message = "Product's stockCount should be between 1 and 2147483333")
@@ -25,14 +25,14 @@ public class ProductDto {
     private Long[] imagesId;
 
     @NotEmpty(message = "Product's description should not be empty")
-    @Size(min = 3, max = 1000, message = "Length of Product's description should be between 3 and 600 characters")
+    @Size(min = 3, max = 1000, message = "Length of Product's description should be between 3 and 1000 characters")
     private String description;
 
     @NotNull(message = "Product's isAdult field should not be empty")
     private Boolean isAdult;
 
     @NotEmpty(message = "Product's code should not be empty")
-    @Size(min = 2, max = 30, message = "Length of Product's code should be between 2 and 30 characters")
+    @Size(min = 2, max = 256, message = "Length of Product's code should be between 2 and 256 characters")
     private String code;
 
     @Range(min = 1, max = 2147483333, message = "Product's weight should be between 1 and 2147483333")
