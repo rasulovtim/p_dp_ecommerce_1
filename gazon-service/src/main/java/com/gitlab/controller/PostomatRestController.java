@@ -20,7 +20,6 @@ import java.util.List;
 public class PostomatRestController implements PostomatRestApi {
 
     private final PostomatService postomatService;
-
     private final PostomatMapper postomatMapper;
 
     @Override

@@ -7,7 +7,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class PickupPointDtoTest extends AbstractDtoTest {
+class PickupPointDtoTest extends AbstractDtoTest {
 
     private PickupPointDto getValidPickupPointDto() {
         PickupPointDto pickupPointDto = new PickupPointDto();

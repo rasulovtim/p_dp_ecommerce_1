@@ -20,7 +20,6 @@ import java.util.List;
 public class PersonalAddressRestController implements PersonalAddressRestApi {
 
     private final PersonalAddressService personalAddressService;
-
     private final PersonalAddressMapper personalAddressMapper;
 
     @Override

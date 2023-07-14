@@ -14,7 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class PersonalAddressRestControllerIT extends AbstractIntegrationTest {
+class PersonalAddressRestControllerIT extends AbstractIntegrationTest {
 
     private static final String URN = "/api/personal_address";
     private static final String URI = URL + URN;

@@ -17,11 +17,10 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class PersonalAddressServiceTest {
+class PersonalAddressServiceTest {
 
     @Mock
     private PersonalAddressRepository personalAddressRepository;
-
     @InjectMocks
     private PersonalAddressService personalAddressService;
 
@@ -167,7 +166,7 @@ public class PersonalAddressServiceTest {
     }
 
     @Test
-    void should_update_directions_field_if_null() {
+    void should_not_update_directions_field_if_null() {
         long id = 1L;
         PersonalAddress personalAddressToUpdate = generatePersonalAddress();
         personalAddressToUpdate.setDirections(null);
@@ -180,11 +179,11 @@ public class PersonalAddressServiceTest {
         Optional<PersonalAddress> actualResult = personalAddressService.update(id, personalAddressToUpdate);
 
         verify(personalAddressRepository).save(personalAddressBeforeUpdate);
-        assertNull(actualResult.orElse(personalAddressBeforeUpdate).getDirections());
+        assertNotNull(actualResult.orElse(personalAddressBeforeUpdate).getDirections());
     }
 
     @Test
-    void should_update_doorCode_field_if_null() {
+    void should_not_update_doorCode_field_if_null() {
         long id = 1L;
         PersonalAddress personalAddressToUpdate = generatePersonalAddress();
         personalAddressToUpdate.setDoorCode(null);
@@ -197,11 +196,11 @@ public class PersonalAddressServiceTest {
         Optional<PersonalAddress> actualResult = personalAddressService.update(id, personalAddressToUpdate);
 
         verify(personalAddressRepository).save(personalAddressBeforeUpdate);
-        assertNull(actualResult.orElse(personalAddressBeforeUpdate).getDoorCode());
+        assertNotNull(actualResult.orElse(personalAddressBeforeUpdate).getDoorCode());
     }
 
     @Test
-    void should_update_postCode_field_if_null() {
+    void should_not_update_postCode_field_if_null() {
         long id = 1L;
         PersonalAddress personalAddressToUpdate = generatePersonalAddress();
         personalAddressToUpdate.setPostCode(null);
@@ -214,7 +213,7 @@ public class PersonalAddressServiceTest {
         Optional<PersonalAddress> actualResult = personalAddressService.update(id, personalAddressToUpdate);
 
         verify(personalAddressRepository).save(personalAddressBeforeUpdate);
-        assertNull(actualResult.orElse(personalAddressBeforeUpdate).getPostCode());
+        assertNotNull(actualResult.orElse(personalAddressBeforeUpdate).getPostCode());
     }
 
     @Test

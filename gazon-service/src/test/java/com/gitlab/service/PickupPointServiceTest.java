@@ -18,11 +18,10 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class PickupPointServiceTest {
+class PickupPointServiceTest {
 
     @Mock
     private PickupPointRepository pickupPointRepository;
-
     @InjectMocks
     private PickupPointService pickupPointService;
 
@@ -134,7 +133,7 @@ public class PickupPointServiceTest {
     }
 
     @Test
-    void should_update_directions_field_if_null() {
+    void should_not_update_directions_field_if_null() {
         long id = 1L;
         PickupPoint pickupPointToUpdate = generatePickupPoint();
         pickupPointToUpdate.setDirections(null);
@@ -147,11 +146,11 @@ public class PickupPointServiceTest {
         Optional<PickupPoint> actualResult = pickupPointService.update(id, pickupPointToUpdate);
 
         verify(pickupPointRepository).save(pickupPointBeforeUpdate);
-        assertNull(actualResult.orElse(pickupPointBeforeUpdate).getDirections());
+        assertNotNull(actualResult.orElse(pickupPointBeforeUpdate).getDirections());
     }
 
     @Test
-    void should_update_pickupPointFeatures_field_if_null() {
+    void should_not_update_pickupPointFeatures_field_if_null() {
         long id = 1L;
         PickupPoint pickupPointToUpdate = generatePickupPoint();
         pickupPointToUpdate.setPickupPointFeatures(null);
@@ -164,7 +163,7 @@ public class PickupPointServiceTest {
         Optional<PickupPoint> actualResult = pickupPointService.update(id, pickupPointToUpdate);
 
         verify(pickupPointRepository).save(pickupPointBeforeUpdate);
-        assertNull(actualResult.orElse(pickupPointBeforeUpdate).getPickupPointFeatures());
+        assertNotNull(actualResult.orElse(pickupPointBeforeUpdate).getPickupPointFeatures());
     }
 
     @Test

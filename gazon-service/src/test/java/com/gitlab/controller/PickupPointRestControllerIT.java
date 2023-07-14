@@ -16,7 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class PickupPointRestControllerIT extends AbstractIntegrationTest {
+class PickupPointRestControllerIT extends AbstractIntegrationTest {
 
     private static final String URN = "/api/pickup_point";
     private static final String URI = URL + URN;

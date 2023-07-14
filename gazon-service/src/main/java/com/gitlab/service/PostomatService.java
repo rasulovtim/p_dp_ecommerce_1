@@ -35,7 +35,9 @@ public class PostomatService {
             savedPostomat = optionalSavedPostomat.get();
         }
 
-        savedPostomat.setDirections(postomat.getDirections());
+        if (postomat.getDirections() != null) {
+            savedPostomat.setDirections(postomat.getDirections());
+        }
         if (postomat.getAddress() != null) {
             savedPostomat.setAddress(postomat.getAddress());
         }
@@ -53,5 +55,4 @@ public class PostomatService {
         }
         return optionalSavedPostomat;
     }
-
 }

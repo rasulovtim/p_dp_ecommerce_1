@@ -17,11 +17,10 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class PostomatServiceTest {
+class PostomatServiceTest {
 
     @Mock
     private PostomatRepository postomatRepository;
-
     @InjectMocks
     private PostomatService postomatService;
 
@@ -133,7 +132,7 @@ public class PostomatServiceTest {
     }
 
     @Test
-    void should_update_directions_field_if_null() {
+    void should_not_update_directions_field_if_null() {
         long id = 1L;
         Postomat postomatToUpdate = generatePostomat();
         postomatToUpdate.setDirections(null);
@@ -146,7 +145,7 @@ public class PostomatServiceTest {
         Optional<Postomat> actualResult = postomatService.update(id, postomatToUpdate);
 
         verify(postomatRepository).save(postomatBeforeUpdate);
-        assertNull(actualResult.orElse(postomatBeforeUpdate).getDirections());
+        assertNotNull(actualResult.orElse(postomatBeforeUpdate).getDirections());
     }
 
     @Test

@@ -21,7 +21,6 @@ class PassportServiceTest {
 
     @Mock
     private PassportRepository passportRepository;
-
     @InjectMocks
     private PassportService passportService;
 

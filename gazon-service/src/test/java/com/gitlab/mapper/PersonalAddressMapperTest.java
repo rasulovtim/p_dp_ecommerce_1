@@ -8,7 +8,7 @@ import org.mapstruct.factory.Mappers;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class PersonalAddressMapperTest {
+class PersonalAddressMapperTest {
 
     private final PersonalAddressMapper mapper = Mappers.getMapper(PersonalAddressMapper.class);
 

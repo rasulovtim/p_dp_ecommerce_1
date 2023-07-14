@@ -49,7 +49,7 @@ public class PassportService {
         }
 
         if (passport.getPatronym() != null) {
-        savedPassport.setPatronym(passport.getPatronym());
+            savedPassport.setPatronym(passport.getPatronym());
         }
 
         if (passport.getBirthDate() != null) {

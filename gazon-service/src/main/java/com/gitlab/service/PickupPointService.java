@@ -36,10 +36,12 @@ public class PickupPointService {
             savedPickupPoint = optionalSavedPickupPoint.get();
         }
 
-        savedPickupPoint.setDirections(pickupPoint.getDirections());
-
-        savedPickupPoint.setPickupPointFeatures(pickupPoint.getPickupPointFeatures());
-
+        if (pickupPoint.getDirections() != null) {
+            savedPickupPoint.setDirections(pickupPoint.getDirections());
+        }
+        if (pickupPoint.getPickupPointFeatures() != null) {
+            savedPickupPoint.setPickupPointFeatures(pickupPoint.getPickupPointFeatures());
+        }
         if (pickupPoint.getAddress() != null) {
             savedPickupPoint.setAddress(pickupPoint.getAddress());
         }

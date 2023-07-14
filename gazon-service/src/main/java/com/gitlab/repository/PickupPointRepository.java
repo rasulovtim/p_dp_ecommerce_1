@@ -11,6 +11,7 @@ import java.util.Optional;
 
 @Repository
 public interface PickupPointRepository extends JpaRepository<PickupPoint, Long> {
+
     @Override
     @NonNull
     @EntityGraph(value = "PickupPoint.pickupPointFeatures")

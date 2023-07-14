@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class PostomatDtoTest extends AbstractDtoTest {
+class PostomatDtoTest extends AbstractDtoTest {
 
     private PostomatDto getValidPostomatDto() {
         PostomatDto postomatDto = new PostomatDto();

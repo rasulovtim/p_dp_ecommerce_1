@@ -35,10 +35,15 @@ public class PersonalAddressService {
             savedPersonalAddress = optionalSavedAddress.get();
         }
 
-        savedPersonalAddress.setDirections(personalAddress.getDirections());
-        savedPersonalAddress.setDoorCode(personalAddress.getDoorCode());
-        savedPersonalAddress.setPostCode(personalAddress.getPostCode());
-
+        if (personalAddress.getDirections() != null) {
+            savedPersonalAddress.setDirections(personalAddress.getDirections());
+        }
+        if (personalAddress.getDoorCode() != null) {
+            savedPersonalAddress.setDoorCode(personalAddress.getDoorCode());
+        }
+        if (personalAddress.getPostCode() != null) {
+            savedPersonalAddress.setPostCode(personalAddress.getPostCode());
+        }
         if (personalAddress.getAddress() != null) {
             savedPersonalAddress.setAddress(personalAddress.getAddress());
         }

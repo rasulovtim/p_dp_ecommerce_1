@@ -20,7 +20,6 @@ import java.util.List;
 public class PickupPointRestController implements PickupPointRestApi {
 
     private final PickupPointService pickupPointService;
-
     private final PickupPointMapper pickupPointMapper;
 
     @Override

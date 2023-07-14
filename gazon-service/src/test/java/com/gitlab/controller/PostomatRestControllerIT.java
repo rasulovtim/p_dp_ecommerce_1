@@ -14,7 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class PostomatRestControllerIT extends AbstractIntegrationTest {
+class PostomatRestControllerIT extends AbstractIntegrationTest {
 
     private static final String URN = "/api/postomat";
     private static final String URI = URL + URN;
