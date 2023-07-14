@@ -24,7 +24,6 @@ public class ProductImage {
     @Column(name = "name")
     private String name;
 
-    @Type(type = "org.hibernate.type.BinaryType")
-    @Column(name = "data", columnDefinition = "bytea")
+    @Column(name = "data")
     private byte[] data;
 }
