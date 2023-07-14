@@ -100,6 +100,7 @@ class ExampleServiceTest {
 
         verify(exampleRepository).save(exampleBeforeUpdate);
         assertEquals(exampleBeforeUpdate, actualResult.orElse(null));
+        assertEquals("unmodifiedText", exampleBeforeUpdate.getExampleText());
     }
 
     @Test
