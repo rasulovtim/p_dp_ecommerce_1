@@ -14,7 +14,6 @@ class BankCardMapperTest {
 
     private final BankCardMapper mapper = Mappers.getMapper(BankCardMapper.class);
 
-
     @Test
     void should_map_bankCard_to_Dto() {
         BankCard bankCard = new BankCard();

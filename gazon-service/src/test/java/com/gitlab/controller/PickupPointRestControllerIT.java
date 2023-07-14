@@ -1,0 +1,138 @@
+package com.gitlab.controller;
+
+import com.gitlab.dto.PickupPointDto;
+import com.gitlab.mapper.PickupPointMapper;
+import com.gitlab.model.PickupPoint;
+import com.gitlab.service.PickupPointService;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+class PickupPointRestControllerIT extends AbstractIntegrationTest {
+
+    private static final String URN = "/api/pickup_point";
+    private static final String URI = URL + URN;
+    @Autowired
+    private PickupPointService pickupPointService;
+    @Autowired
+    private PickupPointMapper pickupPointMapper;
+
+    @Test
+    void should_get_all_pickupPoints() throws Exception {
+        String expected = objectMapper.writeValueAsString(
+                pickupPointService
+                        .findAll()
+                        .stream()
+                        .map(pickupPointMapper::toDto)
+                        .collect(Collectors.toList())
+        );
+
+        mockMvc.perform(get(URI))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(expected));
+    }
+
+    @Test
+    void should_get_pickupPoint_by_id() throws Exception {
+        long id = 1L;
+        String expected = objectMapper.writeValueAsString(
+                pickupPointMapper.toDto(
+                        pickupPointService
+                                .findById(id)
+                                .orElse(null))
+        );
+
+        mockMvc.perform(get(URI + "/{id}", id))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(expected));
+    }
+
+    @Test
+    void should_return_not_found_when_get_pickupPoint_by_non_existent_id() throws Exception {
+        long id = 10L;
+        mockMvc.perform(get(URI + "/{id}", id))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void should_create_pickupPoint() throws Exception {
+        PickupPointDto pickupPointDto = new PickupPointDto();
+        pickupPointDto.setAddress("TestAddress");
+        pickupPointDto.setDirections("TestDirections");
+        pickupPointDto.setShelfLifeDays((byte) 10);
+        pickupPointDto.setPickupPointFeatures(Set.of(PickupPoint.PickupPointFeatures.values()));
+
+        String jsonPickupPointDto = objectMapper.writeValueAsString(pickupPointDto);
+
+        mockMvc.perform(post(URI)
+                        .content(jsonPickupPointDto)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    void should_update_pickupPoint_by_id() throws Exception {
+        long id = 1L;
+        PickupPointDto pickupPointDto = new PickupPointDto();
+        pickupPointDto.setAddress("New Address");
+        pickupPointDto.setDirections("New Directions");
+        pickupPointDto.setShelfLifeDays((byte) 16);
+        pickupPointDto.setPickupPointFeatures(Set.of(PickupPoint.PickupPointFeatures.DELIVERY_FOR_BUSINESSES));
+
+        String jsonPickupPointDto = objectMapper.writeValueAsString(pickupPointDto);
+
+        pickupPointDto.setId(id);
+        String expected = objectMapper.writeValueAsString(pickupPointDto);
+
+        mockMvc.perform(patch(URI + "/{id}", id)
+                        .content(jsonPickupPointDto)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(expected));
+    }
+
+    @Test
+    void should_return_not_found_when_update_pickupPoint_by_non_existent_id() throws Exception {
+        long id = 10L;
+        PickupPointDto pickupPointDto = new PickupPointDto();
+        pickupPointDto.setAddress("New Address");
+        pickupPointDto.setDirections("New Directions");
+        pickupPointDto.setShelfLifeDays((byte) 16);
+        pickupPointDto.setPickupPointFeatures(Set.of(PickupPoint.PickupPointFeatures.DELIVERY_FOR_BUSINESSES));
+
+        String jsonPickupPointDto = objectMapper.writeValueAsString(pickupPointDto);
+
+        mockMvc.perform(patch(URI + "/{id}", id)
+                        .content(jsonPickupPointDto)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void should_delete_pickupPoint_by_id() throws Exception {
+        long id = 2L;
+        mockMvc.perform(delete(URI + "/{id}", id))
+                .andDo(print())
+                .andExpect(status().isOk());
+        mockMvc.perform(get(URI + "/{id}", id))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+}

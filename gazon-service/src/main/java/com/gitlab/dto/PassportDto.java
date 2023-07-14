@@ -24,7 +24,6 @@ public class PassportDto {
     @NotNull(message = "Passport's citizenship shouldn't be empty")
     private Passport.Citizenship citizenship;
 
-
     @NotEmpty(message = "Passport's first name shouldn't be empty")
     @Size(min = 2, max = 15, message = "Passport's first name should have at least two characters and not exceed 15")
     @Pattern(regexp = "[а-яёa-zА-ЯЁA-Z-]+", message = "first name can contain only letters")
