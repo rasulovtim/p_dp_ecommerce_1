@@ -2,8 +2,9 @@
 
 ## [Unreleased]
 - #task_number - short task description
+- #2 - entities personal_address, pickup_point, postomat where created, integrated into gazon-service and tested
 - #4 - entity BankCard was created, integrated into gazon-service and tested
-- #7 - entities Product and ProductImage were created and integrated into gazon-service
+- #3 - created passport entity
 
 ## [1.0.0]
 
