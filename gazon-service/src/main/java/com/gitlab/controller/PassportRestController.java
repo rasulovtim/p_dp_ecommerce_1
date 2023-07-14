@@ -66,5 +66,4 @@ public class PassportRestController implements PassportRestApi {
             return ResponseEntity.ok().build();
         }
     }
-
 }

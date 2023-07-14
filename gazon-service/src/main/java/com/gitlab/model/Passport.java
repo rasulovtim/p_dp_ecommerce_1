@@ -54,5 +54,4 @@ public class Passport {
         private final String citizenshipInRussia;
 
     }
-
 }

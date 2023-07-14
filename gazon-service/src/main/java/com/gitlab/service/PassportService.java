@@ -75,7 +75,6 @@ public class PassportService {
         return Optional.of(passportRepository.save(savedPassport));
     }
 
-
     public Optional<Passport> delete(Long id) {
         Optional<Passport> optionalSavedPassport = findById(id);
         if (optionalSavedPassport.isEmpty()) {
@@ -85,5 +84,4 @@ public class PassportService {
             return optionalSavedPassport;
         }
     }
-
 }

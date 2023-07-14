@@ -54,6 +54,4 @@ public interface PassportRestApi {
             @ApiResponse(code = 404, message = "Passport not found")}
     )
     ResponseEntity<Void> delete(@ApiParam(name = "id", value = "Passport.id") @PathVariable Long id);
-
-
 }
