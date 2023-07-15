@@ -14,7 +14,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 class ExampleRestControllerIT extends AbstractIntegrationTest {
 
     private static final String EXAMPLE_URN = "/api/example";
