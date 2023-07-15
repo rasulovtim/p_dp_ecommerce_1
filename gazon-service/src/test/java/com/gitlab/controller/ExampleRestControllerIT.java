@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 
+import java.util.stream.Collectors;
+
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -22,6 +24,22 @@ class ExampleRestControllerIT extends AbstractIntegrationTest {
     private ExampleService exampleService;
     @Autowired
     private ExampleMapper exampleMapper;
+
+    @Test
+    void should_get_all_examples() throws Exception {
+        String expected = objectMapper.writeValueAsString(
+                new PageImpl<>(exampleService
+                        .findAll()
+                        .stream()
+                        .map(exampleMapper::toDto)
+                        .collect(Collectors.toList()))
+        );
+
+        mockMvc.perform(get(EXAMPLE_URI))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(expected));
+    }
 
     @Test
     void should_get_page() throws Exception {

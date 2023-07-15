@@ -20,7 +20,8 @@ public interface ExampleRestApi {
             @ApiResponse(code = 200, message = "Page found"),
             @ApiResponse(code = 204, message = "Page not present")}
     )
-    ResponseEntity<Page<ExampleDto>> getPage(@ApiParam(name = "page") @RequestParam int page, @ApiParam(name = "size") @RequestParam int size);
+    ResponseEntity<Page<ExampleDto>> getPage(@ApiParam(name = "page") @RequestParam(required = false) Integer page,
+                                             @ApiParam(name = "size") @RequestParam(required = false) Integer size);
 
     @GetMapping("/{id}")
     @ApiOperation(value = "Get Example by id")

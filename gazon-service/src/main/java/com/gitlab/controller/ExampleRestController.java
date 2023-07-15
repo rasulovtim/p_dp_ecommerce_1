@@ -12,7 +12,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
@@ -27,10 +26,19 @@ public class ExampleRestController implements ExampleRestApi {
     private final ExampleMapper exampleMapper;
 
     @Override
-    public ResponseEntity<Page<ExampleDto>> getPage(int page, int size) {
+    public ResponseEntity<Page<ExampleDto>> getPage(Integer page, Integer size) {
+        if (page == null || size == null) {
+            var examples = exampleService.findAll();
+            if (examples.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            }
+            return ResponseEntity.ok(new PageImpl<>(examples.stream().map(exampleMapper::toDto).toList()));
+        }
+
         if (page < 0 || size < 1) {
             return ResponseEntity.noContent().build();
         }
+
         var examplePage = exampleService.getPage(page, size);
         if (examplePage.getContent().isEmpty()) {
             return ResponseEntity.noContent().build();
