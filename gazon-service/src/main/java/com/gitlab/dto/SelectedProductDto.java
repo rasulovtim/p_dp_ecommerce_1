@@ -5,6 +5,7 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 @Data
 public class SelectedProductDto {
@@ -19,5 +20,9 @@ public class SelectedProductDto {
     @NotNull(message = "SelectedProduct's count should not be empty")
     @Range(min = 1, max = 2147483333, message = "SelectedProduct's count should be between 1 and 2147483333")
     private Integer count;
+
+    private BigDecimal sum;
+
+    private Long totalWeight;
 
 }

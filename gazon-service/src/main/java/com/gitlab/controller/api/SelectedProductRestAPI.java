@@ -29,7 +29,9 @@ public interface SelectedProductRestAPI {
             @ApiResponse(code = 200, message = "SelectedProduct found"),
             @ApiResponse(code = 404, message = "SelectedProduct not found")}
     )
-    ResponseEntity<SelectedProductDto> get(@ApiParam(name = "id", value = "SelectedProduct.id") @PathVariable Long id);
+    ResponseEntity<SelectedProductDto> get(@ApiParam(name = "id", value = "SelectedProduct.id") @PathVariable Long id,
+                                           @ApiParam(name = "no_sum_no_weight")
+                                           @RequestParam(required = false) boolean no_sum_no_weight);
 
     @PostMapping
     @ApiOperation(value = "Create SelectedProduct")

@@ -8,10 +8,9 @@ import com.gitlab.service.SelectedProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,20 +26,30 @@ public class SelectedProductRestController implements SelectedProductRestAPI {
     @Override
     public ResponseEntity<List<SelectedProductDto>> getAll() {
         var selectedProducts = selectedProductService.findAll();
-        if (selectedProducts.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok(selectedProducts.stream().map(selectedProductMapper::toDto).toList());
-        }
+
+        return selectedProducts.isEmpty() ?
+                ResponseEntity.noContent().build() :
+                ResponseEntity.ok(selectedProducts.stream().map(selectedProductMapper::toDto).toList());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<SelectedProductDto> get(@PathVariable Long id) {
+    @Override
+    public ResponseEntity<SelectedProductDto> get(Long id, boolean no_sum_no_weight) {
         Optional<SelectedProduct> productOptional = selectedProductService.findById(id);
 
-        return productOptional.map(selectedProductMapper::toDto).map(productDto -> ResponseEntity.status(HttpStatus.OK)
-                .body(productDto)).orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+        if (productOptional.isEmpty()) return ResponseEntity.notFound().build();
 
+        SelectedProduct selectedProduct = productOptional.orElse(null);
+        SelectedProductDto selectedProductDto = selectedProductMapper.toDto(selectedProduct);
+
+        if (no_sum_no_weight) return ResponseEntity.status(HttpStatus.OK).body(selectedProductDto);
+
+        selectedProductDto
+                .setSum(selectedProduct.getProduct().getPrice()
+                        .multiply(BigDecimal.valueOf(selectedProduct.getCount())));
+        selectedProductDto
+                .setTotalWeight(selectedProduct.getProduct().getWeight() * selectedProduct.getCount());
+
+        return ResponseEntity.status(HttpStatus.OK).body(selectedProductDto);
     }
 
 
@@ -63,10 +72,9 @@ public class SelectedProductRestController implements SelectedProductRestAPI {
     @Override
     public ResponseEntity<Void> delete(Long id) {
         Optional<SelectedProduct> selectedProduct = selectedProductService.delete(id);
-        if (selectedProduct.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        } else {
-            return ResponseEntity.ok().build();
-        }
+        return selectedProduct.isEmpty() ?
+                ResponseEntity.notFound().build() :
+                ResponseEntity.ok().build();
+
     }
 }

@@ -49,7 +49,7 @@ class SelectedProductRestControllerIT extends AbstractIntegrationTest {
                                 .orElse(null))
         );
 
-        mockMvc.perform(get(SELECTED_PRODUCT__URI + "/{id}", id))
+        mockMvc.perform(get(SELECTED_PRODUCT__URI + "/{id}" + "?no_sum_no_weight=true", id))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
