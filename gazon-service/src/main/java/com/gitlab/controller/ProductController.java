@@ -11,9 +11,6 @@ import com.gitlab.util.ImageUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Transactional
 @RestController
 @RequiredArgsConstructor
 public class ProductController implements ProductRestApi {
@@ -36,15 +32,14 @@ public class ProductController implements ProductRestApi {
     @Override
     public ResponseEntity<List<ProductDto>> getAll() {
         var products = productService.findAll();
-        if (products.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok(products.stream().map(productMapper::toDto).toList());
-        }
+
+        return products.isEmpty() ?
+                ResponseEntity.noContent().build() :
+                ResponseEntity.ok(products.stream().map(productMapper::toDto).toList());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ProductDto> get(@PathVariable Long id) {
+    @Override
+    public ResponseEntity<ProductDto> get(Long id) {
         Optional<Product> productOptional = productService.findById(id);
 
         return productOptional.map(productMapper::toDto).map(productDto -> ResponseEntity.status(HttpStatus.OK)
@@ -72,11 +67,10 @@ public class ProductController implements ProductRestApi {
     @Override
     public ResponseEntity<Void> delete(Long id) {
         Optional<Product> product = productService.delete(id);
-        if (product.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        } else {
-            return ResponseEntity.ok().build();
-        }
+        return product.isEmpty() ?
+                ResponseEntity.notFound().build() :
+                ResponseEntity.ok().build();
+
     }
 
     @Override

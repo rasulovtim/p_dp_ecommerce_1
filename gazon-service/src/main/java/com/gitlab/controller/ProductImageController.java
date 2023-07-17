@@ -28,16 +28,15 @@ public class ProductImageController implements ProductImageRestApi {
     @Override
     public ResponseEntity<long[]> getAll() {
         var productImages = productImageService.findAll();
-        if (productImages.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok(productImages.stream()
-                    .map(ProductImage::getId).mapToLong(Long::valueOf).toArray());
-        }
+        return productImages.isEmpty() ?
+                ResponseEntity.noContent().build() :
+                ResponseEntity.ok(productImages.stream()
+                        .map(ProductImage::getId).mapToLong(Long::valueOf).toArray());
+
     }
 
     @Override
-    public ResponseEntity<?> get(@PathVariable("id") Long id) {
+    public ResponseEntity<?> get(Long id) {
         Optional<ProductImage> productImage = productImageService.findById(id);
 
         if (productImage.isEmpty()) return ResponseEntity.notFound().build();
@@ -73,11 +72,8 @@ public class ProductImageController implements ProductImageRestApi {
     public ResponseEntity<Void> delete(Long id) {
         Optional<ProductImage> productImage = productImageService.delete(id);
 
-        if (productImage.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        } else {
-            return ResponseEntity.ok().build();
-        }
+        return productImage.isEmpty() ?
+                ResponseEntity.notFound().build() :
+                ResponseEntity.ok().build();
     }
-
 }
