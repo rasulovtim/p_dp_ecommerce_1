@@ -18,7 +18,7 @@ import java.util.List;
 public interface RoleRestApi {
 
     @GetMapping
-    @ApiOperation(value = "Get all Examples")
+    @ApiOperation(value = "Get all Role")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Examples found"),
             @ApiResponse(code = 204, message = "Examples not present")}

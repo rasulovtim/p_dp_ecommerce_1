@@ -26,5 +26,4 @@ public class BankCardDto {
     @Range(min = 100, max = 9999, message = "Length of BankCard's securityCode should be between 3 and 4 positive digits")
     @NotNull(message = "BankCard's securityCode should not be empty")
     private Integer securityCode;
-
 }

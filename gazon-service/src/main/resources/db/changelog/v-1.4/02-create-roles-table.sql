@@ -1,6 +1,6 @@
-CREATE TABLE roles
+create table roles
 (
-    id               BIGSERIAL PRIMARY KEY NOT NULL,
-    name         VARCHAR(255)          NOT NULL
+    id  BIGSERIAL PRIMARY KEY,
+    name varchar(50) not null
 
 );

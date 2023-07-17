@@ -1,8 +1,9 @@
 package com.gitlab.mapper;
 
+import com.gitlab.dto.BankCardDto;
+import com.gitlab.dto.PersonalAddressDto;
 import com.gitlab.dto.UserDto;
 import com.gitlab.model.*;
-import com.gitlab.model.enums.Gender;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
@@ -27,9 +28,25 @@ class UserMapperTest {
         bankCardSet.add(new BankCard(1L, "0000000000000000", LocalDate.of(1900, 1, 1), 777));
 
         Set<ShippingAddress> shippingAddressesSet = new HashSet<>();
-        shippingAddressesSet.add(new ShippingAddress(1L, "address","directions"));
+        shippingAddressesSet.add(new PersonalAddress());
 
-        User user = new User(1L, "user", "user", "answer", "question", "user", "user", LocalDate.of(1900, 1, 1), Gender.MALE, "89007777777", new Passport(1L, "7777777777"), LocalDate.of(1900, 1, 1), bankCardSet, shippingAddressesSet, roleSet);
+        Passport passport = new Passport();
+
+        User user = new User(1L,
+                "user",
+                "user",
+                "answer",
+                "question",
+                "user",
+                "user",
+                LocalDate.of(1900, 1, 1),
+                User.Gender.MALE,
+                "89007777777",
+                passport, LocalDate.of(1900,
+                1, 1),
+                bankCardSet,
+                shippingAddressesSet,
+                roleSet);
 
         UserDto actualResult = mapper.toDto(user);
 
@@ -56,14 +73,16 @@ class UserMapperTest {
 
     @Test
     void should_map_userDto_to_Entity() {
-        Set roleSet = new HashSet<>();
-        roleSet.add(new Role(1L, "ROLE_ADMIN"));
+        Set<Role> roleSet = new HashSet<>();
+        roleSet.add(new Role(1L,"ROLE_ADMIN"));
 
-        Set bankCardSet = new HashSet<>();
-        bankCardSet.add(new BankCard(1L, "0000000000000000", LocalDate.of(1900, 1, 1), 777));
+        Set<BankCardDto> bankCardSet = new HashSet<>();
+        bankCardSet.add(new BankCardDto());
 
-        Set shippingAddressesSet = new HashSet<>();
-        shippingAddressesSet.add(new ShippingAddress(1L, "address","directions"));
+        Set<PersonalAddressDto> personalAddress = new HashSet<>();
+        personalAddress.add(new PersonalAddressDto());
+
+        Passport passport = new Passport();
 
         UserDto userDto = new UserDto();
         userDto.setId(1L);
@@ -74,13 +93,13 @@ class UserMapperTest {
         userDto.setFirstName("user");
         userDto.setLastName("user");
         userDto.setBirthDate(LocalDate.of(1900, 1, 1));
-        userDto.setGender(Gender.MALE);
+        userDto.setGender(User.Gender.MALE);
         userDto.setPhoneNumber("89007777777");
-        userDto.setPassport(new Passport(1L, "7777777777"));
-        userDto.setShippingAddress(shippingAddressesSet);
+        userDto.setPassport(passport);
+
+        userDto.setPersonalAddress(personalAddress);
         userDto.setBankCards(bankCardSet);
         userDto.setRoles(roleSet);
-
 
         User actualResult = mapper.toEntity(userDto);
 
@@ -98,7 +117,7 @@ class UserMapperTest {
         assertEquals(userDto.getPhoneNumber(), actualResult.getPhoneNumber());
         assertEquals(userDto.getPassport(), actualResult.getPassport());
 
-        containsInAnyOrder(userDto.getShippingAddress(), actualResult.getShippingAddress());
+        containsInAnyOrder(userDto.getPersonalAddress(), actualResult.getShippingAddress());
         containsInAnyOrder(userDto.getBankCards(), actualResult.getBankCards());
         containsInAnyOrder(userDto.getRoles(), actualResult.getRoles());
 

@@ -1,7 +1,6 @@
 package com.gitlab.service;
 
 import com.gitlab.model.*;
-import com.gitlab.model.enums.Gender;
 import com.gitlab.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -62,16 +61,9 @@ class UserServiceTest {
     void should_update_user() {
         long id = 1L;
 
-        Set<Role> roleSet = new HashSet<>();
-        roleSet.add(new Role(1L, "ROLE_ADMIN"));
-        Set<BankCard> bankCardSet = new HashSet<>();
-        bankCardSet.add(new BankCard(1L, "0000000000000000", LocalDate.of(1900, 1, 1), 777));
-        Set<ShippingAddress> shippingAddressesSet = new HashSet<>();
-        shippingAddressesSet.add(new ShippingAddress(1L, "address","directions"));
-
 
         User userToUpdate = generateUser();
-        User userBeforeUpdate = new User(id, "mail1@mail.ru", "user1", "answer1", "question1", "user1", "user1", LocalDate.of(1900, 1, 1), Gender.MALE, "89007777778", new Passport(1L, "7777777778"), LocalDate.of(1900, 2, 2), bankCardSet, shippingAddressesSet, roleSet);
+        User userBeforeUpdate = generateUserBefore();
         User updatedUser = generateUser();
 
         when(userRepository.findById(id)).thenReturn(Optional.of(userBeforeUpdate));
@@ -85,14 +77,8 @@ class UserServiceTest {
     @Test
     void should_not_update_user_when_entity_not_found() {
         long id = 1L;
-        Set<Role> roleSet = new HashSet<>();
-        roleSet.add(new Role(1L, "ROLE_ADMIN"));
-        Set<BankCard> bankCardSet = new HashSet<>();
-        bankCardSet.add(new BankCard(1L, "0000000000000000", LocalDate.of(1900, 1, 1), 777));
-        Set<ShippingAddress> shippingAddressesSet = new HashSet<>();
-        shippingAddressesSet.add(new ShippingAddress(1L, "address","directions"));
 
-        User userToUpdate = new User(id, "mail@mail.ru", "user", "answer", "question", "user", "user", LocalDate.of(1900, 1, 1), Gender.MALE, "89007777777", new Passport(1L, "7777777777"), LocalDate.of(1900, 1, 1), bankCardSet, shippingAddressesSet, roleSet);
+        User userToUpdate = generateUser(id);
 
         when(userRepository.findById(id)).thenReturn(Optional.empty());
 
@@ -105,16 +91,10 @@ class UserServiceTest {
     @Test
     void should_not_updated_user_field_if_null() {
         long id = 1L;
-        Set<Role> roleSet = new HashSet<>();
-        roleSet.add(new Role(1L, "ROLE_ADMIN"));
-        Set<BankCard> bankCardSet = new HashSet<>();
-        bankCardSet.add(new BankCard(1L, "0000000000000000", LocalDate.of(1900, 1, 1), 777));
-        Set<ShippingAddress> shippingAddressesSet = new HashSet<>();
-        shippingAddressesSet.add(new ShippingAddress(1L, "address","directions"));
 
-        User userToUpdate = new User(id, null, "user", "answer", "question", "user", "user", LocalDate.of(1900, 1, 1), Gender.MALE, "89007777777", new Passport(1L, "7777777777"), LocalDate.of(1900, 1, 1), bankCardSet, shippingAddressesSet, roleSet);
-
-        User userBeforeUpdate = new User(id, "user1", "user1", "answer1", "question1", "user1", "user1", LocalDate.of(1900, 1, 1), Gender.MALE, "89007777777", new Passport(1L, "7777777777"), LocalDate.of(1900, 1, 1), bankCardSet, shippingAddressesSet, roleSet);
+        User userToUpdate = generateUser(id);
+        userToUpdate.setEmail(null);
+        User userBeforeUpdate = generateUserBefore();
 
         when(userRepository.findById(id)).thenReturn(Optional.of(userBeforeUpdate));
         when(userRepository.save(userBeforeUpdate)).thenReturn(userBeforeUpdate);
@@ -146,29 +126,77 @@ class UserServiceTest {
     }
 
     private List<User> generateUsers() {
-        Set<Role> roleSet = new HashSet<>();
-        roleSet.add(new Role(1L, "ROLE_ADMIN"));
-        Set<BankCard> bankCardSet = new HashSet<>();
-        bankCardSet.add(new BankCard(1L, "0000000000000000", LocalDate.of(1900, 1, 1), 777));
-        Set<ShippingAddress> shippingAddressesSet = new HashSet<>();
-        shippingAddressesSet.add(new ShippingAddress(1L, "address","directions"));
 
         return List.of(
-                new User(1L, "mail@mail.ru", "user", "answer", "question", "user", "user", LocalDate.of(1900, 1, 1), Gender.MALE, "89007777777", new Passport(1L, "7777777777"), LocalDate.of(1900, 1, 1), bankCardSet, shippingAddressesSet, roleSet),
-                new User(2L, "mail@mail.ru", "user", "answer", "question", "user", "user", LocalDate.of(1900, 1, 1), Gender.MALE, "89007777777", new Passport(2L, "7777777777"), LocalDate.of(1900, 1, 1), bankCardSet, shippingAddressesSet, roleSet),
-                new User(3L, "mail@mail.ru", "user", "answer", "question", "user", "user", LocalDate.of(1900, 1, 1), Gender.MALE, "89007777777", new Passport(3L, "7777777777"), LocalDate.of(1900, 1, 1), bankCardSet, shippingAddressesSet, roleSet),
-                new User(4L, "mail@mail.ru", "user", "answer", "question", "user", "user", LocalDate.of(1900, 1, 1), Gender.MALE, "89007777777", new Passport(4L, "7777777777"), LocalDate.of(1900, 1, 1), bankCardSet, shippingAddressesSet, roleSet)
+                generateUser(1L),
+                generateUser(2L),
+                generateUser(3L),
+                generateUser(4L)
         );
+    }
+
+    private User generateUser(Long id) {
+       User user = generateUser();
+       user.setId(id);
+       return user;
     }
 
     private User generateUser() {
         Set<Role> roleSet = new HashSet<>();
-            roleSet.add(new Role(1L, "ROLE_ADMIN"));
-            Set<BankCard> bankCardSet = new HashSet<>();
-            bankCardSet.add(new BankCard(1L, "0000000000000000", LocalDate.of(1900, 1, 1), 777));
-            Set<ShippingAddress> shippingAddressesSet = new HashSet<>();
-            shippingAddressesSet.add(new ShippingAddress(1L, "address","directions"));
-        return new User(1L, "mail@mail.ru", "user", "answer", "question", "user", "user", LocalDate.of(1900, 1, 1), Gender.MALE, "89007777777", new Passport(4L, "7777777777"), LocalDate.of(1900, 1, 1), bankCardSet, shippingAddressesSet, roleSet);
+        roleSet.add(new Role(1L, "ROLE_ADMIN"));
+
+        Set<BankCard> bankCardSet = new HashSet<>();
+        bankCardSet.add(new BankCard(1L, "0000000000000000", LocalDate.of(1900, 1, 1), 777));
+
+        Set<ShippingAddress> shippingAddressesSet = new HashSet<>();
+        shippingAddressesSet.add(new PersonalAddress());
+
+        Passport passport = new Passport();
+
+        return new User(1L,
+                "user",
+                "user",
+                "answer",
+                "question",
+                "user",
+                "user",
+                LocalDate.of(1900, 1, 1),
+                User.Gender.MALE,
+                "89007777777",
+                passport, LocalDate.of(1900,
+                1, 1),
+                bankCardSet,
+                shippingAddressesSet,
+                roleSet);
         }
+
+    private User generateUserBefore() {
+        Set<Role> roleSet = new HashSet<>();
+        roleSet.add(new Role(1L, "ROLE_USER"));
+
+        Set<BankCard> bankCardSet = new HashSet<>();
+        bankCardSet.add(new BankCard(1L, "1111111111111111", LocalDate.of(2000, 5, 15), 888));
+
+        Set<ShippingAddress> shippingAddressesSet = new HashSet<>();
+        shippingAddressesSet.add(new PersonalAddress());
+
+        Passport passport = new Passport();
+
+        return new User(1L,
+                "userBefore",
+                "userBefore",
+                "answerBefore",
+                "questionBefore",
+                "userBefore",
+                "userBefore",
+                LocalDate.of(2000, 5, 15),
+                User.Gender.FEMALE,
+                "89007777777",
+                passport, LocalDate.of(2000,
+                5, 15),
+                bankCardSet,
+                shippingAddressesSet,
+                roleSet);
+    }
     }
 

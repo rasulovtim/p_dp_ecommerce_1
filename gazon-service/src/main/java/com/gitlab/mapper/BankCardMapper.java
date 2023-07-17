@@ -1,6 +1,7 @@
 package com.gitlab.mapper;
 
 import com.gitlab.dto.BankCardDto;
+import com.gitlab.model.BankCard;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 

@@ -1,6 +1,7 @@
 package com.gitlab.mapper;
 
 import com.gitlab.dto.BankCardDto;
+import com.gitlab.model.BankCard;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
@@ -12,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class BankCardMapperTest {
 
     private final BankCardMapper mapper = Mappers.getMapper(BankCardMapper.class);
-
 
     @Test
     void should_map_bankCard_to_Dto() {

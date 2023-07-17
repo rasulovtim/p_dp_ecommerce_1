@@ -1,7 +1,6 @@
 package com.gitlab.dto;
 
-import com.gitlab.model.Role;
-import com.gitlab.model.enums.Gender;
+import com.gitlab.model.*;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -252,13 +251,18 @@ class UserDtoTest extends AbstractDtoTest {
 
     private UserDto generateUser() {
         Set<Role> roleSet = new HashSet<>();
-        roleSet.add(new Role(1L, "ROLE_ADMIN"));
-        Set<BankCard> bankCardSet = new HashSet<>();
-        bankCardSet.add(new BankCard(1L, "0000000000000000", LocalDate.of(1900, 1, 1), 777));
-        Set<ShippingAddress> shippingAddressesSet = new HashSet<>();
-        shippingAddressesSet.add(new ShippingAddress(1L, "address", "directions"));
-        UserDto userDto = new UserDto();
+        roleSet.add(new Role(1L,"ROLE_ADMIN"));
 
+        Set<BankCardDto> bankCardSet = new HashSet<>();
+        bankCardSet.add(new BankCardDto());
+
+        Set<PersonalAddressDto> personalAddress = new HashSet<>();
+        personalAddress.add(new PersonalAddressDto());
+
+        Passport passport = new Passport();
+
+        UserDto userDto = new UserDto();
+        userDto.setId(1L);
         userDto.setEmail("mail@mail.ru");
         userDto.setPassword("user");
         userDto.setSecurityQuestion("answer");
@@ -266,12 +270,14 @@ class UserDtoTest extends AbstractDtoTest {
         userDto.setFirstName("user");
         userDto.setLastName("user");
         userDto.setBirthDate(LocalDate.of(1900, 1, 1));
-        userDto.setGender(Gender.MALE);
+        userDto.setGender(User.Gender.MALE);
         userDto.setPhoneNumber("89007777777");
-        userDto.setPassport(new Passport(1L, "7777777777"));
-        userDto.setShippingAddress(shippingAddressesSet);
+        userDto.setPassport(passport);
+
+        userDto.setPersonalAddress(personalAddress);
         userDto.setBankCards(bankCardSet);
         userDto.setRoles(roleSet);
-             return userDto;
+
+        return userDto;
     }
 }

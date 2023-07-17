@@ -75,9 +75,8 @@ public class UserService {
             savedUser.setShippingAddress(user.getShippingAddress());
         }
         if (user.getCreateDate() == null) {
-            savedUser.setCreateDate(LocalDate.from(LocalDateTime.now()));
+            savedUser.setCreateDate(LocalDate.now());
         }
-
         if (user.getBankCards() != null) {
             savedUser.setBankCards(user.getBankCards());
         }

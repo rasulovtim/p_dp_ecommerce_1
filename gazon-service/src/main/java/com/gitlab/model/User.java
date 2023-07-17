@@ -1,11 +1,10 @@
 package com.gitlab.model;
 
-import com.gitlab.model.enums.Gender;
+
 import lombok.*;
 
 import java.time.LocalDate;
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -56,18 +55,25 @@ public class User {
     @Column(name = "create_date")
     private LocalDate createDate;
 
-    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "id")
     private Set<BankCard> bankCards;
 
-
-    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY, orphanRemoval = true, targetEntity = PersonalAddress.class)
     @JoinColumn(name = "id")
     private Set<ShippingAddress> shippingAddress;
 
-    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "id")
     private Set<Role> roles;
+
+    public enum Gender {
+
+        MALE,FEMALE,NOT_SPECIFIED;
+
+        Gender() {
+        }
+    }
 
 //    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 //    @JoinTable(name = "users_bank_cards",

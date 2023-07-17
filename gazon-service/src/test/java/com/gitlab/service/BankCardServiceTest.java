@@ -1,5 +1,6 @@
 package com.gitlab.service;
 
+import com.gitlab.model.BankCard;
 import com.gitlab.repository.BankCardRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -137,6 +138,7 @@ class BankCardServiceTest {
 
         verify(bankCardRepository).save(bankCardBeforeUpdate);
         assertEquals(bankCardBeforeUpdate, actualResult.orElse(null));
+        assertEquals("12345678", bankCardBeforeUpdate.getCardNumber());
     }
 
     @Test

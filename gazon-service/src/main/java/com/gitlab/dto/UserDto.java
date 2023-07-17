@@ -2,7 +2,10 @@ package com.gitlab.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import com.gitlab.model.enums.Gender;
+import com.gitlab.model.Passport;
+import com.gitlab.model.Role;
+import com.gitlab.model.ShippingAddress;
+import com.gitlab.model.User;
 import lombok.Data;
 import lombok.Setter;
 
@@ -47,7 +50,7 @@ public class UserDto {
     private LocalDate birthDate;
 
     @NotNull(message = "User gender cannot be null")
-    private Gender gender;
+    private User.Gender gender;
 
     @Size(min = 1, max = 255, message = "Length of User's phoneNumber should be between 1 and 255 characters")
     @NotEmpty(message = "User's phoneNumber should have at least one character")
@@ -56,15 +59,21 @@ public class UserDto {
     @NotNull(message = "User passport cannot be null")
     private Passport passport;
 
-    @NotNull(message = "User createDate cannot be null")
-    private LocalDate createDate;
-
     @NotNull(message = "User shippingAddress cannot be null")
-    private Set shippingAddress;
+    private Set<ShippingAddress> shippingAddress;
+
+    @NotNull(message = "User personalAddress cannot be null")
+    private Set<PersonalAddressDto> personalAddress;
+
+    @NotNull(message = "User pickupPointDto cannot be null")
+    private Set<PickupPointDto> pickupPoint;
+
+    @NotNull(message = "User postomatDto cannot be null")
+    private Set<PostomatDto> postomat;
 
     @NotNull(message = "User bankCards cannot be null")
-    private Set bankCards;
+    private Set<BankCardDto> bankCards;
 
     @NotNull(message = "User roles cannot be null")
-    private Set roles;
+    private Set<Role> roles;
 }

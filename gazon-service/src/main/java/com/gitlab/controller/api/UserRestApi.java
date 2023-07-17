@@ -30,7 +30,7 @@ public interface UserRestApi {
     ResponseEntity<UserDto> get(@ApiParam(name = "id", value = "User.id") @PathVariable Long id);
 
     @PostMapping
-    @ApiOperation(value = "User Example")
+    @ApiOperation(value = "Create User")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "User created"),
             @ApiResponse(code = 400, message = "User not created")}

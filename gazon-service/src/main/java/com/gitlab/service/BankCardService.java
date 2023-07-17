@@ -1,5 +1,6 @@
 package com.gitlab.service;
 
+import com.gitlab.model.BankCard;
 import com.gitlab.repository.BankCardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,6 @@ public class BankCardService {
 
     private final BankCardRepository bankCardRepository;
 
-
     public List<BankCard> findAll () {
         return bankCardRepository.findAll();
     }
@@ -24,7 +24,6 @@ public class BankCardService {
     public BankCard save(BankCard bankCard) {
         return bankCardRepository.save(bankCard);
     }
-
 
     public Optional<BankCard> update(Long id, BankCard bankCard) {
         Optional<BankCard> optionalSavedCard = findById(id);
@@ -55,5 +54,4 @@ public class BankCardService {
             return optionalSavedCard;
         }
     }
-
 }
