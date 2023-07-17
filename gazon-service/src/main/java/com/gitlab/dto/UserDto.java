@@ -2,8 +2,6 @@ package com.gitlab.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import com.gitlab.model.Passport;
-
 import com.gitlab.model.enums.Gender;
 import lombok.Data;
 import lombok.Setter;

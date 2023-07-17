@@ -1,9 +1,6 @@
 package com.gitlab.dto;
 
-import com.gitlab.model.BankCard;
-import com.gitlab.model.Passport;
 import com.gitlab.model.Role;
-import com.gitlab.model.ShippingAddress;
 import com.gitlab.model.enums.Gender;
 import org.junit.jupiter.api.Test;
 

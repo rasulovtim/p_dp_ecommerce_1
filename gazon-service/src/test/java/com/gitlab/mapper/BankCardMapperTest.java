@@ -1,7 +1,6 @@
 package com.gitlab.mapper;
 
 import com.gitlab.dto.BankCardDto;
-import com.gitlab.model.BankCard;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 

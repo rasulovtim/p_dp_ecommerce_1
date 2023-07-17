@@ -1,6 +1,5 @@
 package com.gitlab.service;
 
-import com.gitlab.model.BankCard;
 import com.gitlab.repository.BankCardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

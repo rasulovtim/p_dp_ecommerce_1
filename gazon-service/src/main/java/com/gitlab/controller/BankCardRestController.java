@@ -3,7 +3,6 @@ package com.gitlab.controller;
 import com.gitlab.controller.api.BankCardRestApi;
 import com.gitlab.dto.BankCardDto;
 import com.gitlab.mapper.BankCardMapper;
-import com.gitlab.model.BankCard;
 import com.gitlab.service.BankCardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

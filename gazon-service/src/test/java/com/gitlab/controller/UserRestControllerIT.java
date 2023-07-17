@@ -2,10 +2,7 @@ package com.gitlab.controller;
 
 import com.gitlab.dto.UserDto;
 import com.gitlab.mapper.UserMapper;
-import com.gitlab.model.BankCard;
-import com.gitlab.model.Passport;
 import com.gitlab.model.Role;
-import com.gitlab.model.ShippingAddress;
 import com.gitlab.model.enums.Gender;
 import com.gitlab.service.UserService;
 import org.junit.jupiter.api.Test;
