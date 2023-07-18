@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,7 +23,6 @@ public class ProductImageController implements ProductImageRestApi {
     private final ProductImageService productImageService;
     private final ProductImageMapper productImageMapper;
 
-
     @Override
     public ResponseEntity<long[]> getAll() {
         var productImages = productImageService.findAll();
@@ -32,29 +30,30 @@ public class ProductImageController implements ProductImageRestApi {
                 ResponseEntity.noContent().build() :
                 ResponseEntity.ok(productImages.stream()
                         .map(ProductImage::getId).mapToLong(Long::valueOf).toArray());
-
     }
 
     @Override
     public ResponseEntity<?> get(Long id) {
         Optional<ProductImage> productImage = productImageService.findById(id);
+        if (productImage.isEmpty())
+            return ResponseEntity.notFound().build();
 
-        if (productImage.isEmpty()) return ResponseEntity.notFound().build();
-
-        if (productImage.get().getData().length < 60) return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT)
-                .contentType(MediaType.APPLICATION_JSON).body(productImageMapper.toDto(productImage.get()));
+        if (productImage.get().getData().length < 60)
+            return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(productImageMapper.toDto(productImage.get()));
 
         return productImage.map(image -> ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.parseMediaType(MediaType.IMAGE_JPEG_VALUE))
                 .body(ImageUtils.decompressImage(image.getData()))).orElse(null);
-
     }
 
     @Override
     public ResponseEntity<ProductImageDto> update(MultipartFile file, Long id) throws IOException {
         Optional<ProductImage> productImage = productImageService.findById(id);
 
-        if (productImage.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        if (productImage.isEmpty())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
         ProductImage imageToBeUpdated = new ProductImage();
         imageToBeUpdated.setName(file.getOriginalFilename());
@@ -64,9 +63,7 @@ public class ProductImageController implements ProductImageRestApi {
                 .body(ImageUtils.decompressAndReturnDto(productImageMapper
                         .toDto(productImageService
                                 .update(id, imageToBeUpdated).orElse(null))));
-
     }
-
 
     @Override
     public ResponseEntity<Void> delete(Long id) {
