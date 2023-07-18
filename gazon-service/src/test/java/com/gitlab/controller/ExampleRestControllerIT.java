@@ -5,8 +5,12 @@ import com.gitlab.mapper.ExampleMapper;
 import com.gitlab.service.ExampleService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
+
 import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -24,14 +28,35 @@ class ExampleRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_get_all_examples() throws Exception {
         String expected = objectMapper.writeValueAsString(
-                exampleService
+                new PageImpl<>(exampleService
                         .findAll()
                         .stream()
                         .map(exampleMapper::toDto)
-                        .collect(Collectors.toList())
+                        .collect(Collectors.toList()))
         );
 
         mockMvc.perform(get(EXAMPLE_URI))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(expected));
+    }
+
+    @Test
+    void should_get_page() throws Exception {
+        int page = 0;
+        int size = 2;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        var response = exampleService.getPage(page, size);
+        assertFalse(response.getContent().isEmpty());
+
+        var expected = objectMapper.writeValueAsString(new PageImpl<>(
+                response.getContent().stream().map(exampleMapper::toDto).toList(),
+                response.getPageable(),
+                response.getTotalElements()
+        ));
+
+        mockMvc.perform(get(EXAMPLE_URI + parameters))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));

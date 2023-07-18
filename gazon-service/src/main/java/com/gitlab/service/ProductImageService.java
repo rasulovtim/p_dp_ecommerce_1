@@ -16,7 +16,6 @@ public class ProductImageService {
 
     private final ProductImageRepository productImageRepository;
 
-
     public List<ProductImage> findAll() {
         return productImageRepository.findAll();
     }
@@ -29,7 +28,6 @@ public class ProductImageService {
     public ProductImage save(ProductImage productImage) {
         return productImageRepository.save(productImage);
     }
-
 
     @Transactional
     public Optional<ProductImage> update(Long id, ProductImage productImage) {
@@ -47,7 +45,6 @@ public class ProductImageService {
             currentImage.setData(productImage.getData());
         }
         return Optional.of(productImageRepository.save(currentImage));
-
     }
 
     @Transactional
@@ -63,5 +60,4 @@ public class ProductImageService {
     public List<ProductImage> saveAll(List<ProductImage> imageList) {
         return productImageRepository.saveAll(imageList);
     }
-
 }

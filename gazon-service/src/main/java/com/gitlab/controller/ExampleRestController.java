@@ -7,12 +7,13 @@ import com.gitlab.model.Example;
 import com.gitlab.service.ExampleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -25,13 +26,37 @@ public class ExampleRestController implements ExampleRestApi {
     private final ExampleMapper exampleMapper;
 
     @Override
-    public ResponseEntity<List<ExampleDto>> getAll() {
+    public ResponseEntity<Page<ExampleDto>> getPage(Integer page, Integer size) {
+        if (page == null || size == null) {
+            return createUnPagedResponse();
+        }
+        if (page < 0 || size < 1) {
+            return ResponseEntity.noContent().build();
+        }
+
+        var examplePage = exampleService.getPage(page, size);
+        if (examplePage.getContent().isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return createPagedResponse(examplePage);
+        }
+    }
+
+    private ResponseEntity<Page<ExampleDto>> createUnPagedResponse() {
         var examples = exampleService.findAll();
         if (examples.isEmpty()) {
             return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok(examples.stream().map(exampleMapper::toDto).toList());
         }
+        return ResponseEntity.ok(new PageImpl<>(examples.stream().map(exampleMapper::toDto).toList()));
+    }
+
+    private ResponseEntity<Page<ExampleDto>> createPagedResponse(Page<Example> examplePage) {
+        var exampleDtoPage = new PageImpl<>(
+                examplePage.getContent().stream().map(exampleMapper::toDto).toList(),
+                examplePage.getPageable(),
+                examplePage.getTotalElements()
+        );
+        return ResponseEntity.ok(exampleDtoPage);
     }
 
     @Override
