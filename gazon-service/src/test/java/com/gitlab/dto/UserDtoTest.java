@@ -18,46 +18,166 @@ class UserDtoTest extends AbstractDtoTest {
         assertTrue(validator.validate(userDto).isEmpty());
     }
 
+
     @Test
-    void test_invalid_text_length() {
-        UserDto userDto = new UserDto();
+    void test_invalid_text_length_email() {
+        UserDto userDto = generateUser();
         userDto.setEmail("");
+        assertFalse(validator.validate(userDto).isEmpty());
+    }
+
+    @Test
+    void test_invalid_text_length_password() {
+        UserDto userDto = generateUser();
         userDto.setPassword("");
+        assertFalse(validator.validate(userDto).isEmpty());
+    }
+
+    @Test
+    void test_invalid_text_length_securityQuestion() {
+        UserDto userDto = generateUser();
         userDto.setSecurityQuestion("");
+        assertFalse(validator.validate(userDto).isEmpty());
+    }
+
+    @Test
+    void test_invalid_text_length_answerQuestion() {
+        UserDto userDto = generateUser();
         userDto.setAnswerQuestion("");
+        assertFalse(validator.validate(userDto).isEmpty());
+    }
+
+    @Test
+    void test_invalid_text_length_firstName() {
+        UserDto userDto = generateUser();
         userDto.setFirstName("");
+        assertFalse(validator.validate(userDto).isEmpty());
+    }
+
+    @Test
+    void test_invalid_text_length_lastName() {
+        UserDto userDto = generateUser();
         userDto.setLastName("");
+        assertFalse(validator.validate(userDto).isEmpty());
+    }
+    @Test
+    void test_invalid_text_length_phoneNumber() {
+        UserDto userDto = generateUser();
         userDto.setPhoneNumber("");
         assertFalse(validator.validate(userDto).isEmpty());
     }
 
     @Test
-    void test_invalid_max_text_length() {
-        UserDto userDto = new UserDto();
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < 256; i++) sb.append(i);
-        userDto.setEmail(sb.toString());
-        userDto.setPassword(sb.toString());
-        userDto.setSecurityQuestion(sb.toString());
-        userDto.setAnswerQuestion(sb.toString());
-        userDto.setFirstName(sb.toString());
-        userDto.setLastName(sb.toString());
-        userDto.setPhoneNumber(sb.toString());
+    void test_invalid_text_max_email() {
+        UserDto userDto = generateUser();
+
+        userDto.setEmail("a".repeat(256));
         assertFalse(validator.validate(userDto).isEmpty());
     }
 
     @Test
-    void test_null_text() {
-        UserDto userDto = new UserDto();
+    void test_invalid_text_max_password() {
+        UserDto userDto = generateUser();
+
+        userDto.setPassword("a".repeat(17));
+        assertFalse(validator.validate(userDto).isEmpty());
+    }
+
+    @Test
+    void test_invalid_text_max_securityQuestion() {
+        UserDto userDto = generateUser();
+
+        userDto.setSecurityQuestion("a".repeat(256));
+        assertFalse(validator.validate(userDto).isEmpty());
+    }
+
+    @Test
+    void test_invalid_text_max_answerQuestion() {
+        UserDto userDto = generateUser();
+
+        userDto.setAnswerQuestion("a".repeat(256));
+        assertFalse(validator.validate(userDto).isEmpty());
+    }
+
+    @Test
+    void test_invalid_text_max_firstName() {
+        UserDto userDto = generateUser();
+
+        userDto.setFirstName("a".repeat(256));
+        assertFalse(validator.validate(userDto).isEmpty());
+    }
+
+    @Test
+    void test_invalid_text_max_lastName() {
+        UserDto userDto = generateUser();
+
+        userDto.setLastName("a".repeat(256));
+        assertFalse(validator.validate(userDto).isEmpty());
+    }
+    @Test
+    void test_invalid_text_max_phoneNumber() {
+        UserDto userDto = generateUser();
+
+        userDto.setPhoneNumber("a".repeat(17));
+        assertFalse(validator.validate(userDto).isEmpty());
+    }
+
+
+    @Test
+    void test_invalid_text_null_email() {
+        UserDto userDto = generateUser();
+
         userDto.setEmail(null);
+        assertFalse(validator.validate(userDto).isEmpty());
+    }
+
+    @Test
+    void test_invalid_text_null_password() {
+        UserDto userDto = generateUser();
+
         userDto.setPassword(null);
+        assertFalse(validator.validate(userDto).isEmpty());
+    }
+
+    @Test
+    void test_invalid_text_null_securityQuestion() {
+        UserDto userDto = generateUser();
+
         userDto.setSecurityQuestion(null);
+        assertFalse(validator.validate(userDto).isEmpty());
+    }
+
+    @Test
+    void test_invalid_text_null_answerQuestion() {
+        UserDto userDto = generateUser();
+
         userDto.setAnswerQuestion(null);
+        assertFalse(validator.validate(userDto).isEmpty());
+    }
+
+    @Test
+    void test_invalid_text_null_firstName() {
+        UserDto userDto = generateUser();
+
         userDto.setFirstName(null);
+        assertFalse(validator.validate(userDto).isEmpty());
+    }
+
+    @Test
+    void test_invalid_text_null_lastName() {
+        UserDto userDto = generateUser();
+
         userDto.setLastName(null);
+        assertFalse(validator.validate(userDto).isEmpty());
+    }
+    @Test
+    void test_invalid_text_null_phoneNumber() {
+        UserDto userDto = generateUser();
+
         userDto.setPhoneNumber(null);
         assertFalse(validator.validate(userDto).isEmpty());
     }
+
 
     @Test
     void test_default_message_invalid_length_email() {
@@ -250,34 +370,54 @@ class UserDtoTest extends AbstractDtoTest {
     }
 
     private UserDto generateUser() {
-        Set<Role> roleSet = new HashSet<>();
-        roleSet.add(new Role(1L,"ROLE_ADMIN"));
+        Set<RoleDto> roleSet = new HashSet<>();
+        roleSet.add(new RoleDto(1L, "ROLE_ADMIN"));
 
-        Set<BankCardDto> bankCardSet = new HashSet<>();
-        bankCardSet.add(new BankCardDto());
+        Set<BankCardDto> bankCard = new HashSet<>();
+        bankCard.add(new BankCardDto(
+                1L,
+                "1111222233334444",
+                LocalDate.of(1900, 1, 1),
+                423
+        ));
 
         Set<PersonalAddressDto> personalAddress = new HashSet<>();
-        personalAddress.add(new PersonalAddressDto());
+        personalAddress.add(new PersonalAddressDto(1L,
+                "address",
+                "directions",
+                "apartment",
+                "floor",
+                "entrance",
+                "doorCode",
+                "postCode"));
 
-        Passport passport = new Passport();
+        PassportDto passport = new PassportDto(
+                1L,
+                Passport.Citizenship.RUSSIA,
+                "user",
+                "user",
+                "patronym",
+                LocalDate.of(2000, 5, 15),
+                LocalDate.of(2000, 5, 15),
+                "098765",
+                "issuer",
+                "issuerN");
 
-        UserDto userDto = new UserDto();
-        userDto.setId(1L);
-        userDto.setEmail("mail@mail.ru");
-        userDto.setPassword("user");
-        userDto.setSecurityQuestion("answer");
-        userDto.setAnswerQuestion("question");
-        userDto.setFirstName("user");
-        userDto.setLastName("user");
-        userDto.setBirthDate(LocalDate.of(1900, 1, 1));
-        userDto.setGender(User.Gender.MALE);
-        userDto.setPhoneNumber("89007777777");
-        userDto.setPassport(passport);
 
-        userDto.setPersonalAddress(personalAddress);
-        userDto.setBankCards(bankCardSet);
-        userDto.setRoles(roleSet);
-
-        return userDto;
+        return new UserDto(
+                1L,
+                "mail@mail.ru",
+                "user",
+                "answer",
+                "question",
+                "user",
+                "user",
+                LocalDate.of(1900, 1, 1),
+                User.Gender.MALE,
+                "89007777777",
+                passport,
+                personalAddress,
+                bankCard,
+                roleSet);
     }
 }

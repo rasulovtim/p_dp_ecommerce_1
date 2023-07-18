@@ -1,29 +1,24 @@
 package com.gitlab.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
 
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Entity
 @Data
-@Getter
-@Setter
-@Table(name = "roles", schema = "public", catalog = "postgres")
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "roles")
 public class Role {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
+    @JsonIgnore
     private Long id;
 
     @Column(name="name")
     private String name;
-
-    @Override
-    public String toString() {
-        return  name;
-    }
 
 }

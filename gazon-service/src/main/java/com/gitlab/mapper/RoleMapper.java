@@ -1,17 +1,13 @@
 package com.gitlab.mapper;
 
-import com.gitlab.dto.UserDto;
-import com.gitlab.model.*;
-
+import com.gitlab.dto.RoleDto;
+import com.gitlab.model.Role;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 
-
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
-public interface UserMapper {
-    UserDto toDto(User user);
+public interface RoleMapper {
+    RoleDto toDto(Role role);
 
-    User toEntity(UserDto userDto);
-
+    Role toEntity(RoleDto roleDto);
 }
-

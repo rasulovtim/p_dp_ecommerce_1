@@ -14,8 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -39,7 +38,7 @@ class UserServiceTest {
     @Test
     void should_find_user_by_id() {
         long id = 1L;
-        User expectedResult = generateUser();
+        User expectedResult = generateUser(id);
         when(userRepository.findById(id)).thenReturn(Optional.of(expectedResult));
 
         Optional<User> actualResult = userService.findById(id);
@@ -57,13 +56,14 @@ class UserServiceTest {
         assertEquals(expectedResult, actualResult);
     }
 
+
     @Test
     void should_update_user() {
         long id = 1L;
-
-
         User userToUpdate = generateUser();
+
         User userBeforeUpdate = generateUserBefore();
+
         User updatedUser = generateUser();
 
         when(userRepository.findById(id)).thenReturn(Optional.of(userBeforeUpdate));
@@ -72,7 +72,9 @@ class UserServiceTest {
         Optional<User> actualResult = userService.update(id, userToUpdate);
 
         assertEquals(updatedUser, actualResult.orElse(null));
+
     }
+
 
     @Test
     void should_not_update_user_when_entity_not_found() {
@@ -89,12 +91,12 @@ class UserServiceTest {
     }
 
     @Test
-    void should_not_updated_user_field_if_null() {
+    void should_not_updated_user_field_if_null_email() {
         long id = 1L;
 
         User userToUpdate = generateUser(id);
         userToUpdate.setEmail(null);
-        User userBeforeUpdate = generateUserBefore();
+        User userBeforeUpdate = generateUser(id);
 
         when(userRepository.findById(id)).thenReturn(Optional.of(userBeforeUpdate));
         when(userRepository.save(userBeforeUpdate)).thenReturn(userBeforeUpdate);
@@ -103,6 +105,197 @@ class UserServiceTest {
 
         verify(userRepository).save(userBeforeUpdate);
         assertEquals(userBeforeUpdate, actualResult.orElse(null));
+        assertNotNull(actualResult.orElse(userBeforeUpdate).getEmail());
+    }
+    @Test
+    void should_not_updated_user_field_if_null_password() {
+        long id = 1L;
+
+        User userToUpdate = generateUser(id);
+        userToUpdate.setPassword(null);
+        User userBeforeUpdate = generateUser(id);
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(userBeforeUpdate));
+        when(userRepository.save(userBeforeUpdate)).thenReturn(userBeforeUpdate);
+
+        Optional<User> actualResult = userService.update(id, userToUpdate);
+
+        verify(userRepository).save(userBeforeUpdate);
+        assertEquals(userBeforeUpdate, actualResult.orElse(null));
+        assertNotNull(actualResult.orElse(userBeforeUpdate).getPassword());
+    }
+    @Test
+    void should_not_updated_user_field_if_null_securityQuestion() {
+        long id = 1L;
+
+        User userToUpdate = generateUser(id);
+        userToUpdate.setSecurityQuestion(null);
+        User userBeforeUpdate = generateUser(id);
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(userBeforeUpdate));
+        when(userRepository.save(userBeforeUpdate)).thenReturn(userBeforeUpdate);
+
+        Optional<User> actualResult = userService.update(id, userToUpdate);
+
+        verify(userRepository).save(userBeforeUpdate);
+        assertEquals(userBeforeUpdate, actualResult.orElse(null));
+        assertNotNull(actualResult.orElse(userBeforeUpdate).getSecurityQuestion());
+    }
+    @Test
+    void should_not_updated_user_field_if_null_answerQuestion() {
+        long id = 1L;
+
+        User userToUpdate = generateUser(id);
+        userToUpdate.setAnswerQuestion(null);
+        User userBeforeUpdate = generateUser(id);
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(userBeforeUpdate));
+        when(userRepository.save(userBeforeUpdate)).thenReturn(userBeforeUpdate);
+
+        Optional<User> actualResult = userService.update(id, userToUpdate);
+
+        verify(userRepository).save(userBeforeUpdate);
+        assertEquals(userBeforeUpdate, actualResult.orElse(null));
+        assertNotNull(actualResult.orElse(userBeforeUpdate).getAnswerQuestion());
+    }
+    @Test
+    void should_not_updated_user_field_if_null_lastName() {
+        long id = 1L;
+
+        User userToUpdate = generateUser(id);
+        userToUpdate.setLastName(null);
+        User userBeforeUpdate = generateUser(id);
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(userBeforeUpdate));
+        when(userRepository.save(userBeforeUpdate)).thenReturn(userBeforeUpdate);
+
+        Optional<User> actualResult = userService.update(id, userToUpdate);
+
+        verify(userRepository).save(userBeforeUpdate);
+        assertEquals(userBeforeUpdate, actualResult.orElse(null));
+        assertNotNull(actualResult.orElse(userBeforeUpdate).getLastName());
+    }
+
+    @Test
+    void should_not_updated_user_field_if_null_firstName() {
+        long id = 1L;
+
+        User userToUpdate = generateUser(id);
+        userToUpdate.setFirstName(null);
+        User userBeforeUpdate = generateUser(id);
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(userBeforeUpdate));
+        when(userRepository.save(userBeforeUpdate)).thenReturn(userBeforeUpdate);
+
+        Optional<User> actualResult = userService.update(id, userToUpdate);
+
+        verify(userRepository).save(userBeforeUpdate);
+        assertEquals(userBeforeUpdate, actualResult.orElse(null));
+        assertNotNull(actualResult.orElse(userBeforeUpdate).getFirstName());
+    }
+
+    @Test
+    void should_not_updated_user_field_if_null_phoneNumber() {
+        long id = 1L;
+
+        User userToUpdate = generateUser(id);
+        userToUpdate.setPhoneNumber(null);
+        User userBeforeUpdate = generateUser(id);
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(userBeforeUpdate));
+        when(userRepository.save(userBeforeUpdate)).thenReturn(userBeforeUpdate);
+
+        Optional<User> actualResult = userService.update(id, userToUpdate);
+
+        verify(userRepository).save(userBeforeUpdate);
+        assertEquals(userBeforeUpdate, actualResult.orElse(null));
+        assertNotNull(actualResult.orElse(userBeforeUpdate).getPhoneNumber());
+    }
+
+    @Test
+    void should_not_updated_user_field_if_null_createData() {
+        long id = 1L;
+
+        User userToUpdate = generateUser(id);
+        userToUpdate.setCreateDate(null);
+        User userBeforeUpdate = generateUser(id);
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(userBeforeUpdate));
+        when(userRepository.save(userBeforeUpdate)).thenReturn(userBeforeUpdate);
+
+        Optional<User> actualResult = userService.update(id, userToUpdate);
+
+        verify(userRepository).save(userBeforeUpdate);
+        assertEquals(userBeforeUpdate, actualResult.orElse(null));
+        assertNotNull(actualResult.orElse(userBeforeUpdate).getCreateDate());
+    }
+
+    @Test
+    void should_updated_user_field_if_null_passport() {
+        long id = 1L;
+
+        User userToUpdate = generateUser(id);
+        userToUpdate.setPassport(null);
+        User userBeforeUpdate = generateUser(id);
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(userBeforeUpdate));
+        when(userRepository.save(userBeforeUpdate)).thenReturn(userBeforeUpdate);
+
+        Optional<User> actualResult = userService.update(id, userToUpdate);
+
+        verify(userRepository).save(userBeforeUpdate);
+        assertNotNull(actualResult.orElse(userBeforeUpdate).getPassport());
+    }
+
+    @Test
+    void should_updated_user_field_if_null_personal_address() {
+        long id = 1L;
+
+        User userToUpdate = generateUser(id);
+        userToUpdate.setPassport(null);
+        User userBeforeUpdate = generateUser(id);
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(userBeforeUpdate));
+        when(userRepository.save(userBeforeUpdate)).thenReturn(userBeforeUpdate);
+
+        Optional<User> actualResult = userService.update(id, userToUpdate);
+
+        verify(userRepository).save(userBeforeUpdate);
+        assertNotNull(actualResult.orElse(userBeforeUpdate).getPersonalAddress());
+    }
+
+    @Test
+    void should_updated_user_field_if_null_bank_cards() {
+        long id = 1L;
+
+        User userToUpdate = generateUser(id);
+        userToUpdate.setPassport(null);
+        User userBeforeUpdate = generateUser(id);
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(userBeforeUpdate));
+        when(userRepository.save(userBeforeUpdate)).thenReturn(userBeforeUpdate);
+
+        Optional<User> actualResult = userService.update(id, userToUpdate);
+
+        verify(userRepository).save(userBeforeUpdate);
+        assertNotNull(actualResult.orElse(userBeforeUpdate).getBankCards());
+    }
+
+    @Test
+    void should_updated_user_field_if_null_roles() {
+        long id = 1L;
+
+        User userToUpdate = generateUser(id);
+        userToUpdate.setPassport(null);
+        User userBeforeUpdate = generateUser(id);
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(userBeforeUpdate));
+        when(userRepository.save(userBeforeUpdate)).thenReturn(userBeforeUpdate);
+
+        Optional<User> actualResult = userService.update(id, userToUpdate);
+
+        verify(userRepository).save(userBeforeUpdate);
+        assertNotNull(actualResult.orElse(userBeforeUpdate).getRoles());
     }
 
     @Test
@@ -136,9 +329,9 @@ class UserServiceTest {
     }
 
     private User generateUser(Long id) {
-       User user = generateUser();
-       user.setId(id);
-       return user;
+        User user = generateUser();
+        user.setId(id);
+        return user;
     }
 
     private User generateUser() {
@@ -146,57 +339,89 @@ class UserServiceTest {
         roleSet.add(new Role(1L, "ROLE_ADMIN"));
 
         Set<BankCard> bankCardSet = new HashSet<>();
-        bankCardSet.add(new BankCard(1L, "0000000000000000", LocalDate.of(1900, 1, 1), 777));
+        bankCardSet.add(new BankCard(1L, "0000000000000", LocalDate.of(1900, 1, 1), 777));
 
-        Set<ShippingAddress> shippingAddressesSet = new HashSet<>();
-        shippingAddressesSet.add(new PersonalAddress());
+        Set<PersonalAddress> personalAddresses = new HashSet<>();
+        personalAddresses.add(new PersonalAddress(
+                "apartment",
+                "floor",
+                "entance",
+                "doorode",
+                "postode"));
 
-        Passport passport = new Passport();
+        Passport passport = new Passport(
+                1L,
+                Passport.Citizenship.RUSSIA,
+                "user",
+                "user",
+                "paonym",
+                LocalDate.of(2000, 5, 15),
+                LocalDate.of(2000, 5, 15),
+                "09865",
+                "isuer",
+                "issurN");
 
         return new User(1L,
                 "user",
                 "user",
-                "answer",
-                "question",
+                "anwer",
+                "queion",
                 "user",
                 "user",
                 LocalDate.of(1900, 1, 1),
                 User.Gender.MALE,
-                "89007777777",
-                passport, LocalDate.of(1900,
-                1, 1),
+                "890077777",
+                passport,
+                LocalDate.now(),
                 bankCardSet,
-                shippingAddressesSet,
+                personalAddresses,
                 roleSet);
-        }
+    }
 
     private User generateUserBefore() {
         Set<Role> roleSet = new HashSet<>();
         roleSet.add(new Role(1L, "ROLE_USER"));
 
         Set<BankCard> bankCardSet = new HashSet<>();
-        bankCardSet.add(new BankCard(1L, "1111111111111111", LocalDate.of(2000, 5, 15), 888));
+        bankCardSet.add(new BankCard(1L, "1111222233444", LocalDate.of(1905, 6, 7), 888));
 
-        Set<ShippingAddress> shippingAddressesSet = new HashSet<>();
-        shippingAddressesSet.add(new PersonalAddress());
+        Set<PersonalAddress> personalAddresses = new HashSet<>();
+        personalAddresses.add(new PersonalAddress(
+                "apmentBef",
+                "floBef",
+                "enanceBef",
+                "doooeBef",
+                "posodeBef"));
 
-        Passport passport = new Passport();
+        Passport passport = new Passport(
+                1L,
+                Passport.Citizenship.RUSSIA,
+                "userBef",
+                "userBef",
+                "patroBef",
+                LocalDate.of(2010, 6, 25),
+                LocalDate.of(2015, 8, 25),
+                "09466",
+                "issrS",
+                "issrP");
 
         return new User(1L,
-                "userBefore",
-                "userBefore",
-                "answerBefore",
-                "questionBefore",
-                "userBefore",
-                "userBefore",
-                LocalDate.of(2000, 5, 15),
-                User.Gender.FEMALE,
-                "89007777777",
-                passport, LocalDate.of(2000,
-                5, 15),
+                "userBef",
+                "useBef",
+                "ansrBef",
+                "quesonBef",
+                "userBef",
+                "userBef",
+                LocalDate.of(2010, 4, 4),
+                User.Gender.MALE,
+                "89007777",
+                passport,
+                LocalDate.now(),
                 bankCardSet,
-                shippingAddressesSet,
+                personalAddresses,
                 roleSet);
     }
-    }
+
+
+}
 

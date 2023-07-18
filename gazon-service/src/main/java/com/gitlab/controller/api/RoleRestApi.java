@@ -1,6 +1,6 @@
 package com.gitlab.controller.api;
 
-import com.gitlab.model.Role;
+import com.gitlab.dto.RoleDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -23,7 +23,7 @@ public interface RoleRestApi {
             @ApiResponse(code = 200, message = "Examples found"),
             @ApiResponse(code = 204, message = "Examples not present")}
     )
-    ResponseEntity<List<Role>> getAll();
+    ResponseEntity<List<RoleDto>> getAll();
 
 
 }

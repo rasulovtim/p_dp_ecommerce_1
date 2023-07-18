@@ -5,6 +5,7 @@ import com.gitlab.model.User;
 import com.gitlab.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,7 +17,6 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
-
     public List<User> findAll() {
         return userRepository.findAll();
     }
@@ -37,9 +37,6 @@ public class UserService {
             return optionalSavedUser;
         } else {
             savedUser = optionalSavedUser.get();
-        }
-        if(user.getId() != 0){
-            savedUser.setId(user.getId());
         }
         if (user.getEmail() != null) {
             savedUser.setEmail(user.getEmail());
@@ -71,14 +68,14 @@ public class UserService {
         if (user.getPassport() != null) {
             savedUser.setPassport(user.getPassport());
         }
-        if (user.getShippingAddress() != null) {
-            savedUser.setShippingAddress(user.getShippingAddress());
-        }
         if (user.getCreateDate() == null) {
             savedUser.setCreateDate(LocalDate.now());
         }
         if (user.getBankCards() != null) {
             savedUser.setBankCards(user.getBankCards());
+        }
+        if (user.getPersonalAddress() != null) {
+            savedUser.setPersonalAddress(user.getPersonalAddress());
         }
         if (user.getRoles() != null) {
             savedUser.setRoles(user.getRoles());

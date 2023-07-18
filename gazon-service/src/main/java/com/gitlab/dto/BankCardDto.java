@@ -1,7 +1,9 @@
 package com.gitlab.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
 
@@ -10,6 +12,8 @@ import java.time.LocalDate;
 
 @Data
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class BankCardDto {
 
     @JsonProperty(access = JsonProperty.Access.READ_WRITE)

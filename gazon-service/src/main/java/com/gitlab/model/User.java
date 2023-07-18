@@ -1,24 +1,23 @@
 package com.gitlab.model;
 
-
 import lombok.*;
 
 import java.time.LocalDate;
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Entity
+
 @Data
-@Getter
-@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
 @Table(name = "users", schema = "public", catalog = "postgres")
 public class User {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private long id;
+    private Long id;
 
     @Column(name = "email")
     private String email;
@@ -48,50 +47,34 @@ public class User {
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @OneToOne
-    @JoinColumn(name = "id")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id", referencedColumnName = "id")
     private Passport passport;
 
     @Column(name = "create_date")
     private LocalDate createDate;
 
-    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY, orphanRemoval = true)
-    @JoinColumn(name = "id")
-    private Set<BankCard> bankCards;
+    @OneToMany(mappedBy="id", cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
+    private Set<BankCard> bankCards =  new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY, orphanRemoval = true, targetEntity = PersonalAddress.class)
-    @JoinColumn(name = "id")
-    private Set<ShippingAddress> shippingAddress;
+    @OneToMany(mappedBy="id",cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    private Set<PersonalAddress> personalAddress = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY, orphanRemoval = true)
-    @JoinColumn(name = "id")
-    private Set<Role> roles;
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @JoinTable(name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
+
 
     public enum Gender {
+        MALE("МУЖСКОЙ"),FEMALE("ЖЕНСКИЙ"),NOT_SPECIFIED("НЕ УКАЗАН");
 
-        MALE,FEMALE,NOT_SPECIFIED;
+        private final String sex;
 
-        Gender() {
+        Gender(String sex) {
+            this.sex = sex;
         }
     }
-
-//    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-//    @JoinTable(name = "users_bank_cards",
-//            joinColumns = @JoinColumn(name = "user_id"),
-//            inverseJoinColumns = @JoinColumn(name = "bank_cards_id"))
-//    private Set<BankCard> bankCards;
-//
-//
-//    @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
-//    @JoinTable(name = "users_shipping_address",
-//            joinColumns = @JoinColumn(name = "user_id"),
-//            inverseJoinColumns = @JoinColumn(name = "shipping_address_id"))
-//        private Set<ShippingAddress> shippingAddress;
-//
-//    @OneToMany(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
-//    @JoinTable(name = "users_roles",
-//            joinColumns = @JoinColumn(name = "user_id"),
-//            inverseJoinColumns = @JoinColumn(name = "roles_id"))
-//    private Set<Role> roles;
 
 }

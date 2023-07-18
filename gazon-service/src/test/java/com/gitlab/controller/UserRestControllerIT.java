@@ -1,8 +1,6 @@
 package com.gitlab.controller;
 
-import com.gitlab.dto.BankCardDto;
-import com.gitlab.dto.PersonalAddressDto;
-import com.gitlab.dto.UserDto;
+import com.gitlab.dto.*;
 import com.gitlab.mapper.UserMapper;
 import com.gitlab.model.*;
 import com.gitlab.service.UserService;
@@ -130,34 +128,56 @@ class UserRestControllerIT extends AbstractIntegrationTest{
     }
 
     private UserDto generateUser() {
-        Set<Role> roleSet = new HashSet<>();
-        roleSet.add(new Role(1L,"ROLE_ADMIN"));
+        Set<RoleDto> roleSet = new HashSet<>();
+        roleSet.add(new RoleDto(1L,"ROLE_ADMIN"));
 
         Set<BankCardDto> bankCardSet = new HashSet<>();
-        bankCardSet.add(new BankCardDto());
+        bankCardSet.add(new BankCardDto(
+                1L,
+                "1111222233334444",
+                LocalDate.now(),
+                423
+        ));
 
         Set<PersonalAddressDto> personalAddress = new HashSet<>();
-        personalAddress.add(new PersonalAddressDto());
+        personalAddress.add(new PersonalAddressDto(
+                1L,
+                "address",
+                "directions",
+                "apartment",
+                "floor",
+                "entrance",
+                "doorCode",
+                "postCode"));
 
-        Passport passport = new Passport();
+        PassportDto passportDto = new PassportDto(
+                1L,
+                Passport.Citizenship.RUSSIA,
+                "user",
+                "user",
+                "patronym",
+                LocalDate.now(),
+                LocalDate.now(),
+                "098765",
+                "issuer",
+                "issuerN");
 
-        UserDto userDto = new UserDto();
-        userDto.setId(1L);
-        userDto.setEmail("mail@mail.ru");
-        userDto.setPassword("user");
-        userDto.setSecurityQuestion("answer");
-        userDto.setAnswerQuestion("question");
-        userDto.setFirstName("user");
-        userDto.setLastName("user");
-        userDto.setBirthDate(LocalDate.of(1900, 1, 1));
-        userDto.setGender(User.Gender.MALE);
-        userDto.setPhoneNumber("89007777777");
-        userDto.setPassport(passport);
 
-        userDto.setPersonalAddress(personalAddress);
-        userDto.setBankCards(bankCardSet);
-        userDto.setRoles(roleSet);
-
-        return userDto;
+        return new UserDto(
+                1L,
+                "mail@mail.ru",
+                "user",
+                "answer",
+                "question",
+                "user",
+                "user",
+                LocalDate.now(),
+                User.Gender.MALE,
+                "89007777777",
+                passportDto,
+                personalAddress,
+                bankCardSet,
+                roleSet
+        );
     }
 }

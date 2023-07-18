@@ -20,4 +20,5 @@ public abstract class ShippingAddress {
     private String address;
 
     private String directions;
+
 }

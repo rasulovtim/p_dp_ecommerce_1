@@ -1,7 +1,9 @@
 package com.gitlab.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
@@ -9,6 +11,8 @@ import javax.validation.constraints.Size;
 
 @Data
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class PersonalAddressDto {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)

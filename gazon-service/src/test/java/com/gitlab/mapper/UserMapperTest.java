@@ -1,8 +1,6 @@
 package com.gitlab.mapper;
 
-import com.gitlab.dto.BankCardDto;
-import com.gitlab.dto.PersonalAddressDto;
-import com.gitlab.dto.UserDto;
+import com.gitlab.dto.*;
 import com.gitlab.model.*;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
@@ -25,12 +23,27 @@ class UserMapperTest {
         roleSet.add(new Role(1L, "ROLE_ADMIN"));
 
         Set<BankCard> bankCardSet = new HashSet<>();
-        bankCardSet.add(new BankCard(1L, "0000000000000000", LocalDate.of(1900, 1, 1), 777));
+        bankCardSet.add(new BankCard(1L, "0000000000000000", LocalDate.now(), 777));
 
-        Set<ShippingAddress> shippingAddressesSet = new HashSet<>();
-        shippingAddressesSet.add(new PersonalAddress());
+        Set<PersonalAddress> personalAddresses = new HashSet<>();
+        personalAddresses.add(new PersonalAddress(
+                "apartment",
+                "floor",
+                "entrance",
+                "doorCode",
+                "postCode"));
 
-        Passport passport = new Passport();
+        Passport passport = new Passport(
+                1L,
+                Passport.Citizenship.RUSSIA,
+                "user",
+                "user",
+                "patronym",
+                LocalDate.now(),
+                LocalDate.now(),
+                "098765",
+                "issuer",
+                "issuerN");
 
         User user = new User(1L,
                 "user",
@@ -39,19 +52,18 @@ class UserMapperTest {
                 "question",
                 "user",
                 "user",
-                LocalDate.of(1900, 1, 1),
+                LocalDate.now(),
                 User.Gender.MALE,
                 "89007777777",
-                passport, LocalDate.of(1900,
-                1, 1),
+                passport,
+                LocalDate.now(),
                 bankCardSet,
-                shippingAddressesSet,
+                personalAddresses,
                 roleSet);
 
         UserDto actualResult = mapper.toDto(user);
 
         assertNotNull(actualResult);
-
         assertEquals(user.getId(), actualResult.getId());
         assertEquals(user.getEmail(), actualResult.getEmail());
         assertEquals(user.getPassword(), actualResult.getPassword());
@@ -62,49 +74,72 @@ class UserMapperTest {
         assertEquals(user.getBirthDate(), actualResult.getBirthDate());
         assertEquals(user.getGender(), actualResult.getGender());
         assertEquals(user.getPhoneNumber(), actualResult.getPhoneNumber());
-        assertEquals(user.getPassport(), actualResult.getPassport());
 
-        containsInAnyOrder(user.getShippingAddress(), actualResult.getShippingAddress());
+        assertEquals(user.getCreateDate(), LocalDate.now());
+
+        containsInAnyOrder(user.getPersonalAddress(), actualResult.getPersonalAddress());
         containsInAnyOrder(user.getBankCards(), actualResult.getBankCards());
         containsInAnyOrder(user.getRoles(), actualResult.getRoles());
 
+        assertEquals(user.getPassport(), actualResult.getPassport());
 
     }
 
     @Test
     void should_map_userDto_to_Entity() {
-        Set<Role> roleSet = new HashSet<>();
-        roleSet.add(new Role(1L,"ROLE_ADMIN"));
+        Set<RoleDto> roleSet = new HashSet<>();
+        roleSet.add(new RoleDto(1L, "ROLE_ADMIN"));
 
-        Set<BankCardDto> bankCardSet = new HashSet<>();
-        bankCardSet.add(new BankCardDto());
+        Set<BankCardDto> bankCard = new HashSet<>();
+        bankCard.add(new BankCardDto(
+                1L,
+                "1111222233334444",
+                LocalDate.now(),
+                423
+        ));
 
         Set<PersonalAddressDto> personalAddress = new HashSet<>();
-        personalAddress.add(new PersonalAddressDto());
+        personalAddress.add(new PersonalAddressDto(
+                1L,
+                "address",
+                "directions",
+                "apartment",
+                "floor",
+                "entrance",
+                "doorCode",
+                "postCode"));
 
-        Passport passport = new Passport();
+        PassportDto passport = new PassportDto(
+                1L,
+                Passport.Citizenship.RUSSIA,
+                "user",
+                "user",
+                "patronym",
+                LocalDate.now(),
+                LocalDate.now(),
+                "098765",
+                "issuer",
+                "issuerN");
 
-        UserDto userDto = new UserDto();
-        userDto.setId(1L);
-        userDto.setEmail("mail@mail.ru");
-        userDto.setPassword("user");
-        userDto.setSecurityQuestion("answer");
-        userDto.setAnswerQuestion("question");
-        userDto.setFirstName("user");
-        userDto.setLastName("user");
-        userDto.setBirthDate(LocalDate.of(1900, 1, 1));
-        userDto.setGender(User.Gender.MALE);
-        userDto.setPhoneNumber("89007777777");
-        userDto.setPassport(passport);
-
-        userDto.setPersonalAddress(personalAddress);
-        userDto.setBankCards(bankCardSet);
-        userDto.setRoles(roleSet);
+        UserDto userDto = new UserDto(
+                1L,
+                "mail@mail.ru",
+                "user",
+                "answer",
+                "question",
+                "user",
+                "user",
+                LocalDate.now(),
+                User.Gender.MALE,
+                "89007777777",
+                passport,
+                personalAddress,
+                bankCard,
+                roleSet);
 
         User actualResult = mapper.toEntity(userDto);
 
         assertNotNull(actualResult);
-
         assertEquals(userDto.getId(), actualResult.getId());
         assertEquals(userDto.getEmail(), actualResult.getEmail());
         assertEquals(userDto.getPassword(), actualResult.getPassword());
@@ -115,12 +150,12 @@ class UserMapperTest {
         assertEquals(userDto.getBirthDate(), actualResult.getBirthDate());
         assertEquals(userDto.getGender(), actualResult.getGender());
         assertEquals(userDto.getPhoneNumber(), actualResult.getPhoneNumber());
-        assertEquals(userDto.getPassport(), actualResult.getPassport());
 
-        containsInAnyOrder(userDto.getPersonalAddress(), actualResult.getShippingAddress());
+        containsInAnyOrder(userDto.getPersonalAddress(), actualResult.getPersonalAddress());
         containsInAnyOrder(userDto.getBankCards(), actualResult.getBankCards());
         containsInAnyOrder(userDto.getRoles(), actualResult.getRoles());
 
+        assertEquals(userDto.getPassport(), actualResult.getPassport());
 
     }
 }
