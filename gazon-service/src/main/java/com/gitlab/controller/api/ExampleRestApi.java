@@ -17,8 +17,8 @@ public interface ExampleRestApi {
     @GetMapping
     @ApiOperation(value = "Get Page of Examples")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Page found"),
-            @ApiResponse(code = 204, message = "Page not present")}
+            @ApiResponse(code = 200, message = "Examples Page found"),
+            @ApiResponse(code = 204, message = "Examples Page not present")}
     )
     ResponseEntity<Page<ExampleDto>> getPage(@ApiParam(name = "page") @RequestParam(required = false) Integer page,
                                              @ApiParam(name = "size") @RequestParam(required = false) Integer size);

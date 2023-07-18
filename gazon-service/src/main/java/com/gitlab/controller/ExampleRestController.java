@@ -28,13 +28,8 @@ public class ExampleRestController implements ExampleRestApi {
     @Override
     public ResponseEntity<Page<ExampleDto>> getPage(Integer page, Integer size) {
         if (page == null || size == null) {
-            var examples = exampleService.findAll();
-            if (examples.isEmpty()) {
-                return ResponseEntity.noContent().build();
-            }
-            return ResponseEntity.ok(new PageImpl<>(examples.stream().map(exampleMapper::toDto).toList()));
+            return createUnPagedResponse();
         }
-
         if (page < 0 || size < 1) {
             return ResponseEntity.noContent().build();
         }
@@ -43,13 +38,25 @@ public class ExampleRestController implements ExampleRestApi {
         if (examplePage.getContent().isEmpty()) {
             return ResponseEntity.noContent().build();
         } else {
-            var exampleDtoPage = new PageImpl<>(
-                    examplePage.getContent().stream().map(exampleMapper::toDto).toList(),
-                    examplePage.getPageable(),
-                    examplePage.getTotalElements()
-            );
-            return ResponseEntity.ok(exampleDtoPage);
+            return createPagedResponse(examplePage);
         }
+    }
+
+    private ResponseEntity<Page<ExampleDto>> createUnPagedResponse() {
+        var examples = exampleService.findAll();
+        if (examples.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(new PageImpl<>(examples.stream().map(exampleMapper::toDto).toList()));
+    }
+
+    private ResponseEntity<Page<ExampleDto>> createPagedResponse(Page<Example> examplePage) {
+        var exampleDtoPage = new PageImpl<>(
+                examplePage.getContent().stream().map(exampleMapper::toDto).toList(),
+                examplePage.getPageable(),
+                examplePage.getTotalElements()
+        );
+        return ResponseEntity.ok(exampleDtoPage);
     }
 
     @Override
