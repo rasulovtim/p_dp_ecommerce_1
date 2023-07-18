@@ -16,7 +16,6 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
-
     public List<Product> findAll() {
         return productRepository.findAll();
     }
@@ -29,7 +28,6 @@ public class ProductService {
     public Product save(Product product) {
         return productRepository.save(product);
     }
-
 
     @Transactional
     public Optional<Product> update(Long id, Product product) {

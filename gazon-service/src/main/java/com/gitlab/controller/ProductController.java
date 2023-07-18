@@ -23,11 +23,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ProductController implements ProductRestApi {
 
-
     private final ProductService productService;
     private final ProductMapper productMapper;
     private final ProductImageService productImageService;
-
 
     @Override
     public ResponseEntity<List<ProductDto>> getAll() {
@@ -42,11 +40,10 @@ public class ProductController implements ProductRestApi {
     public ResponseEntity<ProductDto> get(Long id) {
         Optional<Product> productOptional = productService.findById(id);
 
-        return productOptional.map(productMapper::toDto).map(productDto -> ResponseEntity.status(HttpStatus.OK)
-                .body(productDto)).orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
-
+        return productOptional.map(productMapper::toDto)
+                .map(productDto -> ResponseEntity.status(HttpStatus.OK).body(productDto))
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
-
 
     @Override
     public ResponseEntity<ProductDto> create(ProductDto productDto) {
@@ -77,14 +74,14 @@ public class ProductController implements ProductRestApi {
     public ResponseEntity<long[]> getImagesIDsByProductId(Long id) {
         Optional<Product> product = productService.findById(id);
 
-        if (product.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        if (product.get().getProductImages().isEmpty()) return ResponseEntity
-                .status(HttpStatus.NO_CONTENT).build();
+        if (product.isEmpty())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        if (product.get().getProductImages().isEmpty())
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 
         long[] images = product.orElse(null).getProductImages().stream()
                 .map(ProductImage::getId).mapToLong(Long::valueOf).toArray();
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(images);
+        return ResponseEntity.status(HttpStatus.OK).body(images);
     }
 
     @Override
@@ -112,14 +109,12 @@ public class ProductController implements ProductRestApi {
     public ResponseEntity<String> deleteAllImagesByProductId(Long id) {
         Optional<Product> product = productService.findById(id);
 
-        if (product.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("There is no product with such id");
-        if (product.get().getProductImages().isEmpty()) return ResponseEntity.status(HttpStatus.NO_CONTENT)
-                .body("Product with such id has no images");
+        if (product.isEmpty())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("There is no product with such id");
+        if (product.get().getProductImages().isEmpty())
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Product with such id has no images");
 
         product.get().getProductImages().stream().map(ProductImage::getId).forEach(productImageService::delete);
-
         return ResponseEntity.ok().build();
-
     }
 }

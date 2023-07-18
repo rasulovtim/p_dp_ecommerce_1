@@ -18,15 +18,14 @@ import java.util.stream.Collectors;
 public abstract class ProductMapper {
 
     @Autowired
-    protected ProductImageService productImageService;
-
+    private ProductImageService productImageService;
 
     @Mapping(source = "productImages", target = "imagesId")/*product.*/
     public abstract ProductDto toDto(Product product);
 
     public Long[] mapProductImagesToImagesId(Set<ProductImage> productImages) {
         if (productImages == null || productImages.isEmpty()) {
-            return null;
+            return new Long[0];
         }
         return productImages.stream()
                 .map(ProductImage::getId)
