@@ -5,6 +5,8 @@ server:
       timeout: -1
 
 spring:
+  main:
+    web-application-type: reactive
   application:
     name: gazon-service
   profiles:
