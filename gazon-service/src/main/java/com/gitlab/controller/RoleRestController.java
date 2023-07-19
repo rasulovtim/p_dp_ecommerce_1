@@ -1,10 +1,6 @@
 package com.gitlab.controller;
 
 import com.gitlab.controller.api.RoleRestApi;
-import com.gitlab.dto.RoleDto;
-import com.gitlab.dto.UserDto;
-import com.gitlab.mapper.RoleMapper;
-import com.gitlab.mapper.UserMapper;
 import com.gitlab.model.Role;
 import com.gitlab.service.RoleService;
 import lombok.RequiredArgsConstructor;
@@ -21,16 +17,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RoleRestController implements RoleRestApi {
 
-    private final RoleMapper roleMapper;
 
     private final RoleService roleService;
     @Override
-    public ResponseEntity<List<RoleDto>> getAll() {
+    public ResponseEntity<List<Role>> getAll() {
         var users = roleService.findAll();
         if(users.isEmpty()){
             return ResponseEntity.noContent().build();
         }else {
-            return ResponseEntity.ok(users.stream().map(roleMapper::toDto).toList());
+            return ResponseEntity.ok(roleService.findAll().stream().toList());
         }
     }
 }

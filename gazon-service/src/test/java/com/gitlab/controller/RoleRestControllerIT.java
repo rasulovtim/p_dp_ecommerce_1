@@ -1,6 +1,5 @@
 package com.gitlab.controller;
 
-import com.gitlab.mapper.RoleMapper;
 import com.gitlab.service.RoleService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,17 +16,12 @@ class RoleRestControllerIT extends AbstractIntegrationTest{
     private static final String ROLE_URI = URL + ROLE_URN;
     @Autowired
     private RoleService roleService;
-    @Autowired
-    private RoleMapper roleMapper;
 
     @Test
-    void should_get_all_examples() throws Exception {
+    void should_get_all_roles() throws Exception {
         String expected = objectMapper.writeValueAsString(
                 roleService
-                        .findAll()
-                        .stream()
-                        .map(roleMapper::toDto)
-                        .collect(Collectors.toList())
+                        .findAll().stream().toList()
         );
 
         mockMvc.perform(get(ROLE_URI))

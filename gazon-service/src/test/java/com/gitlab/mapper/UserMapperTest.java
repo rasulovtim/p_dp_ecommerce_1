@@ -1,9 +1,11 @@
 package com.gitlab.mapper;
 
+import com.gitlab.controller.AbstractIntegrationTest;
 import com.gitlab.dto.*;
 import com.gitlab.model.*;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -13,9 +15,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.testcontainers.shaded.org.hamcrest.Matchers.containsInAnyOrder;
 
-class UserMapperTest {
+class UserMapperTest extends AbstractIntegrationTest {
 
-    private final UserMapper mapper = Mappers.getMapper(UserMapper.class);
+    @Autowired
+    private UserMapper mapper;
 
     @Test
     void should_map_user_to_Dto() {
@@ -74,7 +77,6 @@ class UserMapperTest {
         assertEquals(user.getBirthDate(), actualResult.getBirthDate());
         assertEquals(user.getGender(), actualResult.getGender());
         assertEquals(user.getPhoneNumber(), actualResult.getPhoneNumber());
-
         assertEquals(user.getCreateDate(), LocalDate.now());
 
         containsInAnyOrder(user.getPersonalAddressSet(), actualResult.getPersonalAddressDtoSet());
@@ -91,7 +93,6 @@ class UserMapperTest {
         assertEquals(user.getPassport().getPassportNumber(), actualResult.getPassportDto().getPassportNumber());
         assertEquals(user.getPassport().getIssuer(), actualResult.getPassportDto().getIssuer());
         assertEquals(user.getPassport().getIssuerNumber(), actualResult.getPassportDto().getIssuerNumber());
-
 
     }
 
@@ -171,8 +172,6 @@ class UserMapperTest {
         assertEquals(userDto.getPassportDto().getPassportNumber(), actualResult.getPassport().getPassportNumber());
         assertEquals(userDto.getPassportDto().getIssuer(), actualResult.getPassport().getIssuer());
         assertEquals(userDto.getPassportDto().getIssuerNumber(), actualResult.getPassport().getIssuerNumber());
-
-
 
         containsInAnyOrder(userDto.getPersonalAddressDtoSet(), actualResult.getPersonalAddressSet());
         containsInAnyOrder(userDto.getBankCardsDtoSet(), actualResult.getBankCardsSet());

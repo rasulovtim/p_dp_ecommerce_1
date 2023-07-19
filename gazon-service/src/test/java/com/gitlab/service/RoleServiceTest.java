@@ -4,6 +4,7 @@ import com.gitlab.model.Role;
 import com.gitlab.model.User;
 import com.gitlab.repository.RoleRepository;
 import com.gitlab.repository.UserRepository;
+import com.sun.xml.bind.v2.TODO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -34,6 +35,17 @@ class RoleServiceTest {
 
         assertEquals(expectedResult, actualResult);
     }
+
+//    @Test
+//    void should_find_all_name() {
+//        String expectedResult = new Role().getName();
+//        when(roleRepository.findByName("ROLE_ADMIN")).thenReturn(generateRoles());
+//
+//        List<Role> actualResult = roleService.findAll();
+//
+//        assertEquals(expectedResult, actualResult);
+//    }
+//
 
     private Role generateRole() {
 

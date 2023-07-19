@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
 @Setter
 public class PostomatDto {
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonProperty(access = JsonProperty.Access.READ_WRITE)
     @Schema(name = "id", example = "1", required = true)
     private Long id;
 

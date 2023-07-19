@@ -5,17 +5,19 @@ import com.gitlab.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class RoleService {
     private final RoleRepository roleRepository;
-    @Transactional
-    public List<Role> findAll() {
 
+    public List<Role> findAll() {
         return roleRepository.findAll();
+    }
+
+    public Role findByName(String name) {
+        return roleRepository.findByName(name);
     }
 
 }
