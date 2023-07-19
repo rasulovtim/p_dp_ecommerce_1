@@ -20,7 +20,7 @@ public class PickupPoint extends ShippingAddress {
     @ElementCollection(targetClass = PickupPointFeatures.class)
     @CollectionTable(
             name = "pickup_point_features_to_pickup_point",
-            joinColumns = @JoinColumn(name = "shipping_address_id")
+            joinColumns = @JoinColumn(name = "pickup_point_id")
     )
     @Column(name = "pickup_point_feature")
     @Enumerated(EnumType.STRING)

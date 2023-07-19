@@ -12,8 +12,8 @@ ALTER TABLE pickup_point
 
 CREATE TABLE pickup_point_features_to_pickup_point
 (
-    shipping_address_id  BIGSERIAL    NOT NULL,
+    pickup_point_id  BIGSERIAL    NOT NULL,
     pickup_point_feature VARCHAR(255) NOT NULL,
-    foreign key (shipping_address_id) references pickup_point (shipping_address_id)
+    foreign key (pickup_point_id) references pickup_point (shipping_address_id)
 
 );
