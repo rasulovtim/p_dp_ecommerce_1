@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 @Data
@@ -11,8 +12,7 @@ import javax.persistence.Table;
 @ToString(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "postomat")
+@Entity(name = "postomat")
 public class Postomat extends ShippingAddress {
 
     @Column(name = "shelf_life_days")

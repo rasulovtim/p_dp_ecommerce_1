@@ -10,8 +10,7 @@ import java.util.Set;
 @ToString(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "pickup_point")
+@Entity(name = "pickup_point")
 @NamedEntityGraph(name = "PickupPoint.pickupPointFeatures", attributeNodes = @NamedAttributeNode("pickupPointFeatures"))
 public class PickupPoint extends ShippingAddress {
 
@@ -21,7 +20,7 @@ public class PickupPoint extends ShippingAddress {
     @ElementCollection(targetClass = PickupPointFeatures.class)
     @CollectionTable(
             name = "pickup_point_features_to_pickup_point",
-            joinColumns = @JoinColumn(name = "pickup_point_id")
+            joinColumns = @JoinColumn(name = "shipping_address_id")
     )
     @Column(name = "pickup_point_feature")
     @Enumerated(EnumType.STRING)

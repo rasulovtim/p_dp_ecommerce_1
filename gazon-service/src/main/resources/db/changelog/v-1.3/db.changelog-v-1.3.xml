@@ -5,12 +5,13 @@
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
 
-    <include file="01-create-personal_address-table.sql" relativeToChangelogFile="true"/>
-    <include file="02-fill-personal_address-table.sql" relativeToChangelogFile="true"/>
-    <include file="03-create-postomat-table.sql" relativeToChangelogFile="true"/>
-    <include file="04-fill-postomat-table.sql" relativeToChangelogFile="true"/>
-    <include file="05-create-pickup_point-tables.sql" relativeToChangelogFile="true"/>
-    <include file="06-fill-pickup_point-table.sql" relativeToChangelogFile="true"/>
-    <include file="07-fill-pickup_point_features-table.sql" relativeToChangelogFile="true"/>
+    <include file="01-create-shipping_address-table.sql" relativeToChangelogFile="true"/>
+    <include file="02-create-personal_address-table.sql" relativeToChangelogFile="true"/>
+    <include file="03-fill-personal_address-table.sql" relativeToChangelogFile="true"/>
+    <include file="04-create-postomat-table.sql" relativeToChangelogFile="true"/>
+    <include file="05-fill-postomat-table.sql" relativeToChangelogFile="true"/>
+    <include file="06-create-pickup_point-tables.sql" relativeToChangelogFile="true"/>
+    <include file="07-fill-pickup_point-table.sql" relativeToChangelogFile="true"/>
+    <include file="08-fill-pickup_point_features-table.sql" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

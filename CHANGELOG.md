@@ -7,6 +7,7 @@
 - #4 - entity BankCard was created, integrated into gazon-service and tested
 - #6 - added pagination for Example
 - #7 - entities Product and ProductImage were created and integrated
+- #44 - entity ShippingAddress was refactored (InheritanceType.JOINED)
 
 ## [1.0.0]
 

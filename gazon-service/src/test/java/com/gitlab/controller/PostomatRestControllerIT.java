@@ -41,7 +41,7 @@ class PostomatRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_get_postomat_by_id() throws Exception {
-        long id = 1L;
+        long id = 4L;
         String expected = objectMapper.writeValueAsString(
                 postomatMapper.toDto(
                         postomatService
@@ -82,7 +82,7 @@ class PostomatRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_update_postomat_by_id() throws Exception {
-        long id = 1L;
+        long id = 4L;
         PostomatDto postomatDto = new PostomatDto();
         postomatDto.setAddress("New Address");
         postomatDto.setDirections("New Directions");
@@ -122,7 +122,7 @@ class PostomatRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_delete_postomat_by_id() throws Exception {
-        long id = 2L;
+        long id = 5L;
         mockMvc.perform(delete(URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk());
