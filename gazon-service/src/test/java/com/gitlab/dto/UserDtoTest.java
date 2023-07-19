@@ -343,7 +343,7 @@ class UserDtoTest extends AbstractDtoTest {
     void test_default_message_null_object_passport() {
         UserDto userDto = generateUser();
 
-        userDto.setPassport(null);
+        userDto.setPassportDto(null);
         String expectedMessage = "User passport cannot be null";
         String actualMessage = validator.validate(userDto).iterator().next().getMessage();
         assertEquals(expectedMessage, actualMessage);
@@ -353,7 +353,7 @@ class UserDtoTest extends AbstractDtoTest {
     void test_default_message_null_object_bankCards() {
         UserDto userDto = generateUser();
 
-        userDto.setBankCards(null);
+        userDto.setBankCardsDtoSet(null);
         String expectedMessage = "User bankCards cannot be null";
         String actualMessage = validator.validate(userDto).iterator().next().getMessage();
         assertEquals(expectedMessage, actualMessage);
@@ -370,8 +370,8 @@ class UserDtoTest extends AbstractDtoTest {
     }
 
     private UserDto generateUser() {
-        Set<RoleDto> roleSet = new HashSet<>();
-        roleSet.add(new RoleDto(1L, "ROLE_ADMIN"));
+        Set<String> roleSet = new HashSet<>();
+        roleSet.add("ROLE_ADMIN");
 
         Set<BankCardDto> bankCard = new HashSet<>();
         bankCard.add(new BankCardDto(

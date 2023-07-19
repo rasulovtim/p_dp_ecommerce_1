@@ -14,7 +14,6 @@ import javax.validation.constraints.Size;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties({"id"})
 public class RoleDto {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)

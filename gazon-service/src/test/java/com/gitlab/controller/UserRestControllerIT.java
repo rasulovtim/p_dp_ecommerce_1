@@ -128,8 +128,8 @@ class UserRestControllerIT extends AbstractIntegrationTest{
     }
 
     private UserDto generateUser() {
-        Set<RoleDto> roleSet = new HashSet<>();
-        roleSet.add(new RoleDto(1L,"ROLE_ADMIN"));
+        Set<String> roleSet = new HashSet<>();
+        roleSet.add("ROLE_ADMIN");
 
         Set<BankCardDto> bankCardSet = new HashSet<>();
         bankCardSet.add(new BankCardDto(

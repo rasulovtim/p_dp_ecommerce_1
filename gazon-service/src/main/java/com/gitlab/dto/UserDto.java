@@ -2,6 +2,7 @@ package com.gitlab.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import com.gitlab.model.Role;
 import com.gitlab.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,6 +21,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDto {
+
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
@@ -58,14 +60,14 @@ public class UserDto {
     private String phoneNumber;
 
     @NotNull(message = "User passport cannot be null")
-    private PassportDto passport;
+    private PassportDto passportDto;
 
     @NotNull(message = "User personalAddress cannot be null")
-    private Set<PersonalAddressDto> personalAddress;
+    private Set<PersonalAddressDto> personalAddressDtoSet;
 
     @NotNull(message = "User bankCards cannot be null")
-    private Set<BankCardDto> bankCards;
+    private Set<BankCardDto> bankCardsDtoSet;
 
     @NotNull(message = "User roles cannot be null")
-    private Set<RoleDto> roles;
+    private Set<String> roles;
 }

@@ -71,14 +71,14 @@ public class UserService {
         if (user.getCreateDate() == null) {
             savedUser.setCreateDate(LocalDate.now());
         }
-        if (user.getBankCards() != null) {
-            savedUser.setBankCards(user.getBankCards());
+        if (user.getBankCardsSet() != null) {
+            savedUser.setBankCardsSet(user.getBankCardsSet());
         }
-        if (user.getPersonalAddress() != null) {
-            savedUser.setPersonalAddress(user.getPersonalAddress());
+        if (user.getPersonalAddressSet() != null) {
+            savedUser.setPersonalAddressSet(user.getPersonalAddressSet());
         }
-        if (user.getRoles() != null) {
-            savedUser.setRoles(user.getRoles());
+        if (user.getRolesSet() != null) {
+            savedUser.setRolesSet(user.getRolesSet());
         }
         return Optional.of(userRepository.save(savedUser));
     }

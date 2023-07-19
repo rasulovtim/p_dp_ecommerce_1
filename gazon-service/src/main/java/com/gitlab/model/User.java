@@ -4,7 +4,6 @@ import lombok.*;
 
 import java.time.LocalDate;
 import javax.persistence.*;
-import java.util.HashSet;
 import java.util.Set;
 
 
@@ -13,6 +12,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "users", schema = "public", catalog = "postgres")
+@NamedEntityGraph(name = "userWithSets", attributeNodes = {@NamedAttributeNode("bankCardsSet"),@NamedAttributeNode("personalAddressSet"),@NamedAttributeNode("rolesSet")})
 public class User {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,17 +54,17 @@ public class User {
     @Column(name = "create_date")
     private LocalDate createDate;
 
-    @OneToMany(mappedBy="id", cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
-    private Set<BankCard> bankCards =  new HashSet<>();
+    @OneToMany(mappedBy="id", cascade = CascadeType.MERGE)
+    private Set<BankCard> bankCardsSet;
 
-    @OneToMany(mappedBy="id",cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
-    private Set<PersonalAddress> personalAddress = new HashSet<>();
+    @OneToMany(mappedBy="id",cascade = CascadeType.ALL)
+    private Set<PersonalAddress> personalAddressSet;
 
-    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
+    private Set<Role> rolesSet;
 
 
     public enum Gender {

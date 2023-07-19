@@ -261,7 +261,7 @@ class UserServiceTest {
         Optional<User> actualResult = userService.update(id, userToUpdate);
 
         verify(userRepository).save(userBeforeUpdate);
-        assertNotNull(actualResult.orElse(userBeforeUpdate).getPersonalAddress());
+        assertNotNull(actualResult.orElse(userBeforeUpdate).getPersonalAddressSet());
     }
 
     @Test
@@ -278,7 +278,7 @@ class UserServiceTest {
         Optional<User> actualResult = userService.update(id, userToUpdate);
 
         verify(userRepository).save(userBeforeUpdate);
-        assertNotNull(actualResult.orElse(userBeforeUpdate).getBankCards());
+        assertNotNull(actualResult.orElse(userBeforeUpdate).getBankCardsSet());
     }
 
     @Test
@@ -295,7 +295,7 @@ class UserServiceTest {
         Optional<User> actualResult = userService.update(id, userToUpdate);
 
         verify(userRepository).save(userBeforeUpdate);
-        assertNotNull(actualResult.orElse(userBeforeUpdate).getRoles());
+        assertNotNull(actualResult.orElse(userBeforeUpdate).getRolesSet());
     }
 
     @Test
