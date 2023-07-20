@@ -2,7 +2,7 @@ package com.gitlab.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import com.gitlab.model.Role;
+
 import com.gitlab.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,7 +13,6 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -22,7 +21,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class UserDto {
 
-    @JsonProperty(access = JsonProperty.Access.READ_WRITE)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
     @Size(min = 1, max = 255, message = "Length of User's email should be between 1 and 255 characters")

@@ -19,7 +19,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class PassportDto {
 
-    @JsonProperty(access = JsonProperty.Access.READ_WRITE)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
     @Enumerated(EnumType.STRING)

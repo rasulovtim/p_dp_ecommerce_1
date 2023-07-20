@@ -16,7 +16,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class BankCardDto {
 
-    @JsonProperty(access = JsonProperty.Access.READ_WRITE)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
     @Pattern(regexp="^[1-9][0-9]*$", message = "cardNumber must contain only positive digits")

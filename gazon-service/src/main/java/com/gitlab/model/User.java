@@ -12,7 +12,11 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "users", schema = "public", catalog = "postgres")
-@NamedEntityGraph(name = "userWithSets", attributeNodes = {@NamedAttributeNode("bankCardsSet"),@NamedAttributeNode("personalAddressSet"),@NamedAttributeNode("rolesSet")})
+@NamedEntityGraph(name = "userWithSets",
+        attributeNodes = {
+        @NamedAttributeNode("bankCardsSet"),
+        @NamedAttributeNode("personalAddressSet"),
+        @NamedAttributeNode("rolesSet")})
 public class User {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)

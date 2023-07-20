@@ -9,15 +9,17 @@ import com.gitlab.service.RoleService;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
+import org.mapstruct.MappingTarget;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public abstract class UserMapper {
 
     @Autowired
-   private RoleService roleService;
+    private RoleService roleService;
 
     @Mapping(source = "bankCardsSet", target = "bankCardsDtoSet")
     @Mapping(source = "personalAddressSet", target = "personalAddressDtoSet")
@@ -31,8 +33,8 @@ public abstract class UserMapper {
             return Collections.emptySet();
         }
         for (Role role: roleSet) {
-            String roleName = role.getName();
-            stringSet.add(roleName);
+            Optional<String> roleName = role.getName().describeConstable();
+            roleName.ifPresent(stringSet::add);
         }
         return stringSet;
     }
@@ -49,11 +51,12 @@ public abstract class UserMapper {
             return Collections.emptySet();
         }
         for (String roleName : stringSet) {
-            Role role = roleService.findByName(roleName);
-            roleSet.add(role);
+            Optional<Role> role = roleService.findByName(roleName);
+            role.ifPresent(roleSet::add);
         }
         return roleSet;
     }
+
 
 }
 

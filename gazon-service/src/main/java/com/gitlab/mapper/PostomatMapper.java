@@ -7,6 +7,7 @@ import org.mapstruct.MappingConstants;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface PostomatMapper {
+
     PostomatDto toDto(Postomat postomat);
 
     Postomat toEntity(PostomatDto postomatDto);

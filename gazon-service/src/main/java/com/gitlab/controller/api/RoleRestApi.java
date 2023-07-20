@@ -1,14 +1,14 @@
 package com.gitlab.controller.api;
 
+import com.gitlab.dto.UserDto;
 import com.gitlab.model.Role;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -25,5 +25,12 @@ public interface RoleRestApi {
     )
     ResponseEntity<List<Role>> getAll();
 
+    @GetMapping("/{name}")
+    @ApiOperation(value = "Get Name by role")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "User found"),
+            @ApiResponse(code = 404, message = "User not found")}
+    )
+    ResponseEntity<Role> get(@ApiParam(name = "name", value = "Role.name")@PathVariable String name);
 
 }

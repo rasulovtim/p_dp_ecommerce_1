@@ -15,7 +15,7 @@ import java.util.Set;
 @Setter
 public class PickupPointDto {
 
-    @JsonProperty(access = JsonProperty.Access.READ_WRITE)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
     @Size(min = 1, max = 255, message = "Length of address should be between 1 and 255 characters")

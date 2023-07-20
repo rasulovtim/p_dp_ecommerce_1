@@ -17,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RoleRestController implements RoleRestApi {
 
-
     private final RoleService roleService;
     @Override
     public ResponseEntity<List<Role>> getAll() {
@@ -26,6 +25,16 @@ public class RoleRestController implements RoleRestApi {
             return ResponseEntity.noContent().build();
         }else {
             return ResponseEntity.ok(roleService.findAll().stream().toList());
+        }
+    }
+
+    @Override
+    public ResponseEntity<Role> get(String name) {
+        var users = roleService.findByName(name);
+        if(users.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }else {
+            return ResponseEntity.ok().build();
         }
     }
 }

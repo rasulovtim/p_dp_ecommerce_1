@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,11 +40,11 @@ class RoleServiceTest {
     @Test
     void should_find_name_role() {
 
-        Role expectedResult = generateRole();
+        Optional<Role> expectedResult = Optional.of(generateRole());
 
         when(roleRepository.findByName(generateRole().getName())).thenReturn(generateRole());
 
-        Role actualResult = roleService.findByName(generateRole().getName());
+        Optional<Role>actualResult = roleService.findByName(generateRole().getName());
 
         assertEquals(expectedResult, actualResult);
     }
