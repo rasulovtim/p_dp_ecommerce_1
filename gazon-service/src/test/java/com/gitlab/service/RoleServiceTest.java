@@ -36,16 +36,18 @@ class RoleServiceTest {
         assertEquals(expectedResult, actualResult);
     }
 
-//    @Test
-//    void should_find_all_name() {
-//        String expectedResult = new Role().getName();
-//        when(roleRepository.findByName("ROLE_ADMIN")).thenReturn(generateRoles());
-//
-//        List<Role> actualResult = roleService.findAll();
-//
-//        assertEquals(expectedResult, actualResult);
-//    }
-//
+    @Test
+    void should_find_name_role() {
+
+        Role expectedResult = generateRole();
+
+        when(roleRepository.findByName(generateRole().getName())).thenReturn(generateRole());
+
+        Role actualResult = roleService.findByName(generateRole().getName());
+
+        assertEquals(expectedResult, actualResult);
+    }
+
 
     private Role generateRole() {
 

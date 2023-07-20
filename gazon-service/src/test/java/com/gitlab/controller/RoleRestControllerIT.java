@@ -29,4 +29,5 @@ class RoleRestControllerIT extends AbstractIntegrationTest{
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
     }
+
 }
