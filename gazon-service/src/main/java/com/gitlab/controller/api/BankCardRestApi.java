@@ -14,7 +14,6 @@ import java.util.List;
 @RequestMapping("/api/bank-card")
 public interface BankCardRestApi {
 
-
     @GetMapping
     @ApiOperation(value = "Get all BankCards")
     @ApiResponses(value = {
