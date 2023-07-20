@@ -29,9 +29,15 @@
         <tagDatabase tag="v-1.3"/>
     </changeSet>
 
+   <include file="v-1.4-product-image/db.changelog-v-1.4.xml" relativeToChangelogFile="true"/>
+    <changeSet id="1.4" author="atsamaz_gudiev">
+        <tagDatabase tag="v-1.4"/>
+    </changeSet>
+
     <include file="v-1.5/db.changelog-v-1.5.xml" relativeToChangelogFile="true"/>
     <changeSet id="1.5" author="mark_morev">
         <tagDatabase tag="v-1.5"/>
     </changeSet>
 
+>>>>>>> gazon-service/src/main/resources/db/changelog/db.changelog-master.xml
 </databaseChangeLog>
