@@ -24,7 +24,6 @@ public abstract class ReviewMapper {
     @Autowired
     protected ProductService productService;
 
-
     @Mapping(source = "reviewImages", target = "reviewImagesId")
     @Mapping(source = "product", target = "productId")
     public abstract ReviewDto toDto(Review review);

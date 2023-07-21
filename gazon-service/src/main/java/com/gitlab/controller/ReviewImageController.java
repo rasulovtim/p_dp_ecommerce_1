@@ -23,7 +23,6 @@ public class ReviewImageController implements ReviewImageRestApi {
     private final ReviewImageService reviewImageService;
     private final ReviewImageMapper reviewImageMapper;
 
-
     @Override
     public ResponseEntity<long[]> getAll() {
         var reviewImages = reviewImageService.findAll();
@@ -65,7 +64,6 @@ public class ReviewImageController implements ReviewImageRestApi {
 
     }
 
-
     @Override
     public ResponseEntity<Void> delete(Long id) {
         Optional<ReviewImage> reviewImage = reviewImageService.delete(id);
@@ -75,4 +73,3 @@ public class ReviewImageController implements ReviewImageRestApi {
                 ResponseEntity.ok().build();
     }
 }
-

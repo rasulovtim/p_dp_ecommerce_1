@@ -18,7 +18,6 @@ public abstract class ReviewImageMapper {
     @Mapping(source = "review", target = "reviewId")
     public abstract ReviewImageDto toDto(ReviewImage reviewImage);
 
-
     public Long mapReviewToReviewId(Review review) {
         if (review == null) {
             return null;
@@ -28,7 +27,6 @@ public abstract class ReviewImageMapper {
 
     @Mapping(source = "reviewId", target = "review")
     public abstract ReviewImage toEntity(ReviewImageDto reviewImageDto);
-
 
     public Review mapReviewIdToReview(Long reviewId) {
         if (reviewId == null) {

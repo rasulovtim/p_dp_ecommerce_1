@@ -23,11 +23,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ReviewController implements ReviewRestApi {
 
-
     private final ReviewService reviewService;
     private final ReviewMapper reviewMapper;
     private final ReviewImageService reviewImageService;
-
 
     @Override
     public ResponseEntity<List<ReviewDto>> getAll() {

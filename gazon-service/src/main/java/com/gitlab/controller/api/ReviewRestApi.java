@@ -16,7 +16,6 @@ import java.util.List;
 @RequestMapping("/api/review")
 public interface ReviewRestApi {
 
-
     @GetMapping
     @ApiOperation(value = "Get all Reviews")
     @ApiResponses(value = {
@@ -60,7 +59,6 @@ public interface ReviewRestApi {
     )
     ResponseEntity<Void> delete(@ApiParam(name = "id", value = "Review.id") @PathVariable Long id);
 
-
     @GetMapping("/{id}/images")
     @ApiOperation(value = "Get all ReviewImages IDs")
     @ApiResponses(value = {
@@ -71,7 +69,6 @@ public interface ReviewRestApi {
     ResponseEntity<long[]> getImagesIDsByReviewId(@ApiParam(name = "id", value = "Review.id")
                                                    @PathVariable Long id);
 
-
     @PostMapping("/{id}/images")
     @ApiOperation(value = "Upload ReviewImages")
     @ApiResponses(value = {
@@ -81,7 +78,6 @@ public interface ReviewRestApi {
     )
     ResponseEntity<String> uploadImagesByReviewId(@RequestParam("files") MultipartFile[] files,
                                                    @PathVariable Long id) throws IOException;
-
 
     @DeleteMapping("/{id}/images")
     @ApiOperation(value = "Delete ReviewImages by Review.id")

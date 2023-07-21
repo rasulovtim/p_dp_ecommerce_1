@@ -16,7 +16,6 @@ public class ReviewImageService {
 
     private final ReviewImageRepository reviewImageRepository;
 
-
     public List<ReviewImage> findAll() {
         return reviewImageRepository.findAll();
     }
@@ -29,7 +28,6 @@ public class ReviewImageService {
     public ReviewImage save(ReviewImage reviewImage) {
         return reviewImageRepository.save(reviewImage);
     }
-
 
     @Transactional
     public Optional<ReviewImage> update(Long id, ReviewImage reviewImage) {

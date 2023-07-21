@@ -15,7 +15,6 @@ import java.io.IOException;
 @RequestMapping("/api/review_images")
 public interface ReviewImageRestApi {
 
-
     @GetMapping
     @ApiOperation(value = "Get all ReviewImages IDs")
     @ApiResponses(value = {
@@ -23,7 +22,6 @@ public interface ReviewImageRestApi {
             @ApiResponse(code = 204, message = "ReviewImages not present")}
     )
     ResponseEntity<long[]> getAll();
-
 
     @GetMapping("/{id}")
     @ApiOperation(value = "Get ReviewImage by id")
@@ -34,7 +32,6 @@ public interface ReviewImageRestApi {
     )
     ResponseEntity<?> get(@PathVariable("id") Long id);
 
-
     @PatchMapping(value = "/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @ApiOperation(value = "Update ReviewImage")
     @ApiResponses(value = {
@@ -44,7 +41,6 @@ public interface ReviewImageRestApi {
     ResponseEntity<ReviewImageDto> update(@RequestParam("file") MultipartFile files,
                                           @PathVariable Long id) throws IOException;
 
-
     @DeleteMapping("/{id}")
     @ApiOperation(value = "Delete ReviewImage by id")
     @ApiResponses(value = {
@@ -52,5 +48,4 @@ public interface ReviewImageRestApi {
             @ApiResponse(code = 404, message = "ReviewImage not found")}
     )
     ResponseEntity<Void> delete(@PathVariable Long id);
-
 }

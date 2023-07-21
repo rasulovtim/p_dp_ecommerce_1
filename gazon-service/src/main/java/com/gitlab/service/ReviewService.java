@@ -16,7 +16,6 @@ public class ReviewService {
 
     private final ReviewRepository reviewRepository;
 
-
     public List<Review> findAll() {
         return reviewRepository.findAll();
     }
@@ -29,7 +28,6 @@ public class ReviewService {
     public Review save(Review review) {
         return reviewRepository.save(review);
     }
-
 
     @Transactional
     public Optional<Review> update(Long id, Review review) {
