@@ -42,14 +42,12 @@ class SelectedProductRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_get_selectedProduct_by_id() throws Exception {
         long id = 1L;
-        String expected = objectMapper.writeValueAsString(
-                selectedProductMapper.toDto(
-                        selectedProductService
-                                .findById(id)
-                                .orElse(null))
-        );
+        var selectedProduct =  selectedProductService.findById(id).orElse(null);
+        var selectedProductDto = selectedProductMapper.toDto(selectedProduct);
+        selectedProductMapper.calculatedUnmappedFields(selectedProductDto, selectedProduct);
+        String expected = objectMapper.writeValueAsString(selectedProductDto);
 
-        mockMvc.perform(get(SELECTED_PRODUCT__URI + "/{id}" + "?no_sum_no_weight=true", id))
+        mockMvc.perform(get(SELECTED_PRODUCT__URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));

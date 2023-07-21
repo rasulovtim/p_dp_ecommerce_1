@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,10 +17,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SelectedProductRestController implements SelectedProductRestAPI {
 
-
     private final SelectedProductService selectedProductService;
     private final SelectedProductMapper selectedProductMapper;
-
 
     @Override
     public ResponseEntity<List<SelectedProductDto>> getAll() {
@@ -33,25 +30,17 @@ public class SelectedProductRestController implements SelectedProductRestAPI {
     }
 
     @Override
-    public ResponseEntity<SelectedProductDto> get(Long id, boolean no_sum_no_weight) {
+    public ResponseEntity<SelectedProductDto> get(Long id) {
         Optional<SelectedProduct> productOptional = selectedProductService.findById(id);
 
         if (productOptional.isEmpty()) return ResponseEntity.notFound().build();
 
         SelectedProduct selectedProduct = productOptional.orElse(null);
         SelectedProductDto selectedProductDto = selectedProductMapper.toDto(selectedProduct);
-
-        if (no_sum_no_weight) return ResponseEntity.status(HttpStatus.OK).body(selectedProductDto);
-
-        selectedProductDto
-                .setSum(selectedProduct.getProduct().getPrice()
-                        .multiply(BigDecimal.valueOf(selectedProduct.getCount())));
-        selectedProductDto
-                .setTotalWeight(selectedProduct.getProduct().getWeight() * selectedProduct.getCount());
+        selectedProductMapper.calculatedUnmappedFields(selectedProductDto, selectedProduct);
 
         return ResponseEntity.status(HttpStatus.OK).body(selectedProductDto);
     }
-
 
     @Override
     public ResponseEntity<SelectedProductDto> create(SelectedProductDto selectedProductDto) {

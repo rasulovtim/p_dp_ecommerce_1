@@ -11,7 +11,6 @@ import java.util.zip.Inflater;
 @UtilityClass
 public class ImageUtils {
 
-
     public static byte[] compressImage(byte[] data) {
         Deflater deflater = new Deflater();
         deflater.setLevel(Deflater.BEST_COMPRESSION);
@@ -30,8 +29,6 @@ public class ImageUtils {
         }
         return outputStream.toByteArray();
     }
-
-
 
     public static byte[] decompressImage(byte[] data) {
         Inflater inflater = new Inflater();
