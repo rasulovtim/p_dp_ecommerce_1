@@ -1,6 +1,7 @@
 package com.gitlab.util;
 
 import com.gitlab.dto.ProductImageDto;
+import com.gitlab.dto.ReviewImageDto;
 import lombok.experimental.UtilityClass;
 
 import java.io.ByteArrayOutputStream;
@@ -46,20 +47,12 @@ public class ImageUtils {
     }
 
     public static ProductImageDto decompressAndReturnDto(ProductImageDto productImageDto) {
-        byte[] data = productImageDto.getData();
-        Inflater inflater = new Inflater();
-        inflater.setInput(data);
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
-        byte[] tmp = new byte[4*1024];
-        try {
-            while (!inflater.finished()) {
-                int count = inflater.inflate(tmp);
-                outputStream.write(tmp, 0, count);
-            }
-            outputStream.close();
-        } catch (Exception ignored) {
-        }
-        productImageDto.setData(outputStream.toByteArray());
+        productImageDto.setData(decompressImage(productImageDto.getData()));
         return productImageDto;
+    }
+
+    public static ReviewImageDto reviewImageDtoDecompressed(ReviewImageDto reviewImageDto) {
+        reviewImageDto.setData(decompressImage(reviewImageDto.getData()));
+        return reviewImageDto;
     }
 }

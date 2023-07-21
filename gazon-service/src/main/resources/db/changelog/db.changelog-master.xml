@@ -39,5 +39,10 @@
         <tagDatabase tag="v-1.5"/>
     </changeSet>
 
+    <include file="v-1.6-review-image/db.changelog-v-1.6.xml" relativeToChangelogFile="true"/>
+    <changeSet id="1.6" author="atsamaz_gudiev">
+        <tagDatabase tag="v-1.6"/>
+    </changeSet>
+
 
 </databaseChangeLog>
