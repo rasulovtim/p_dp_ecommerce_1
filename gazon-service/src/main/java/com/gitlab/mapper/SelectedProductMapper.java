@@ -1,22 +1,30 @@
 package com.gitlab.mapper;
 
-import com.gitlab.dto.ProductImageDto;
+import com.gitlab.dto.SelectedProductDto;
 import com.gitlab.model.Product;
-import com.gitlab.model.ProductImage;
+import com.gitlab.model.SelectedProduct;
 import com.gitlab.service.ProductService;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigDecimal;
+
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
-public abstract class ProductImageMapper {
+public abstract class SelectedProductMapper {
 
     @Autowired
     protected ProductService productService;
 
-    @Mapping(source = "someProduct", target = "productId")
-    public abstract ProductImageDto toDto(ProductImage productImage);
+    @Mapping(source = "product", target = "productId")
+    public abstract SelectedProductDto toDto(SelectedProduct selectedProduct);
+
+    public void calculatedUnmappedFields(SelectedProductDto selectedProductDto, SelectedProduct selectedProduct) {
+        selectedProductDto.setSum(selectedProduct.getProduct().getPrice()
+                .multiply(BigDecimal.valueOf(selectedProduct.getCount())));
+        selectedProductDto.setTotalWeight(selectedProduct.getProduct().getWeight() * selectedProduct.getCount());
+    }
 
     public Long mapProductToProductId(Product product) {
         if (product == null) {
@@ -25,15 +33,14 @@ public abstract class ProductImageMapper {
         return product.getId();
     }
 
-    @Mapping(source = "productId", target = "someProduct")
-    public abstract ProductImage toEntity(ProductImageDto productImageDto);
+    @Mapping(source = "productId", target = "product")
+    public abstract SelectedProduct toEntity(SelectedProductDto selectedProductDto);
 
 
     public Product mapProductIdToProduct(Long productId) {
         if (productId == null) {
             return null;
         }
-
         return productService.findById(productId).
                 orElseThrow(() -> new RuntimeException("Product wasn't found"));
     }

@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -12,7 +14,7 @@ import java.util.Set;
 @NamedEntityGraph(name = "Product.productImages",
         attributeNodes = @NamedAttributeNode("productImages"))
 @Entity
-@EqualsAndHashCode(exclude = "productImages")
+@EqualsAndHashCode(exclude = {"productImages", "selectedProducts"})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -31,6 +33,9 @@ public class Product {
 
     @OneToMany(mappedBy = "someProduct")
     private Set<ProductImage> productImages;
+
+    @OneToMany(mappedBy = "product")
+    private Set<SelectedProduct> selectedProducts;
 
     @Column(name = "description")
     private String description;
