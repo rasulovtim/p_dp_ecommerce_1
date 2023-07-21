@@ -14,7 +14,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @EntityGraph(value = "Product.productImages")
     Optional<Product> findById(Long id);
 
-
     @EntityGraph(value = "Product.productImages")
     List<Product> findAll();
 }

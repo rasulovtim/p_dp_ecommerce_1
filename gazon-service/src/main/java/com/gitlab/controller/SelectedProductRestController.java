@@ -18,10 +18,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SelectedProductRestController implements SelectedProductRestAPI {
 
-
     private final SelectedProductService selectedProductService;
     private final SelectedProductMapper selectedProductMapper;
-
 
     @Override
     public ResponseEntity<List<SelectedProductDto>> getAll() {
@@ -51,7 +49,6 @@ public class SelectedProductRestController implements SelectedProductRestAPI {
 
         return ResponseEntity.status(HttpStatus.OK).body(selectedProductDto);
     }
-
 
     @Override
     public ResponseEntity<SelectedProductDto> create(SelectedProductDto selectedProductDto) {

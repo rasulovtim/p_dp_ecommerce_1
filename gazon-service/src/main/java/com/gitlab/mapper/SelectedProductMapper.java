@@ -15,7 +15,6 @@ public abstract class SelectedProductMapper {
     @Autowired
     protected ProductService productService;
 
-
     @Mapping(source = "product", target = "productId")
     public abstract SelectedProductDto toDto(SelectedProduct selectedProduct);
 
@@ -35,10 +34,7 @@ public abstract class SelectedProductMapper {
         if (productId == null) {
             return null;
         }
-
         return productService.findById(productId).
                 orElseThrow(() -> new RuntimeException("Product wasn't found"));
     }
-
-
 }

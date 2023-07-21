@@ -16,9 +16,6 @@ public class SelectedProductService {
 
     private final SelectedProductRepository selectedProductRepository;
 
-
-
-
     public List<SelectedProduct> findAll() {
         return selectedProductRepository.findAll();
     }
@@ -31,7 +28,6 @@ public class SelectedProductService {
     public SelectedProduct save(SelectedProduct selectedProduct) {
         return selectedProductRepository.save(selectedProduct);
     }
-
 
     @Transactional
     public Optional<SelectedProduct> update(Long id, SelectedProduct selectedProduct) {
@@ -56,5 +52,4 @@ public class SelectedProductService {
         }
         return optionalSelectedProduct;
     }
-
 }

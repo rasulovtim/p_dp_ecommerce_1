@@ -18,7 +18,6 @@ public abstract class ProductImageMapper {
     @Mapping(source = "someProduct", target = "productId")
     public abstract ProductImageDto toDto(ProductImage productImage);
 
-
     public Long mapProductToProductId(Product product) {
         if (product == null) {
             return null;
