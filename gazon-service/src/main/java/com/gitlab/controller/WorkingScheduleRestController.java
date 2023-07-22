@@ -12,8 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.DayOfWeek;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,40 +51,18 @@ public class WorkingScheduleRestController implements WorkingScheduleRestApi {
 
     @Override
     public ResponseEntity<WorkingScheduleDto> update(Long id, WorkingScheduleDto workingScheduleDto) {
-        Optional<WorkingSchedule> optionalWorkingSchedule = workingScheduleService.findById(id);
-        if (optionalWorkingSchedule.isPresent()) {
-            WorkingSchedule existingWorkingSchedule = optionalWorkingSchedule.get();
-            DayOfWeek dayOfWeek = workingScheduleDto.getDayOfWeek();
-            LocalTime from = workingScheduleDto.getFrom();
-            LocalTime to = workingScheduleDto.getTo();
-
-            // Обновляем только те поля, которые присутствуют в запросе
-            if (dayOfWeek != null) {
-                existingWorkingSchedule.setDayOfWeek(dayOfWeek);
-            }
-            if (from != null) {
-                existingWorkingSchedule.setFrom(from);
-            }
-            if (to != null) {
-                existingWorkingSchedule.setTo(to);
-            }
-
-            WorkingSchedule updatedWorkingSchedule = workingScheduleService.save(existingWorkingSchedule);
-            return ResponseEntity.ok(workingScheduleMapper.toDto(updatedWorkingSchedule));
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        Optional<WorkingSchedule> optionalUpdatedWorkingSchedule = workingScheduleService.update(id, workingScheduleMapper.toEntity(workingScheduleDto));
+        return optionalUpdatedWorkingSchedule
+                .map(updatedWorkingSchedule -> ResponseEntity.ok(workingScheduleMapper.toDto(updatedWorkingSchedule)))
+                .orElse(ResponseEntity.notFound().build());
     }
-
 
     @Override
     public ResponseEntity<Void> delete(Long id) {
-        Optional<WorkingSchedule> optionalWorkingSchedule = workingScheduleService.findById(id);
-        if (optionalWorkingSchedule.isPresent()) {
-            workingScheduleService.delete(id);
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        Optional<WorkingSchedule> optionalDeletedWorkingSchedule = workingScheduleService.delete(id);
+        return optionalDeletedWorkingSchedule
+                .map(workingSchedule -> ResponseEntity.ok().<Void>build())
+                .orElse(ResponseEntity.notFound().build());
     }
+
 }

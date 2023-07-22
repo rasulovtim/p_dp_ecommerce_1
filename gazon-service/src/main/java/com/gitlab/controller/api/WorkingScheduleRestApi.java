@@ -3,32 +3,33 @@ package com.gitlab.controller.api;
 import com.gitlab.dto.WorkingScheduleDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 import java.util.List;
 
-import io.swagger.v3.oas.annotations.Operation;
-
-@RestController
-@RequestMapping("/api")
+@Api(tags = "Working Schedule API")
+@RequestMapping("/api/working-schedule")
 public interface WorkingScheduleRestApi {
 
-    @Operation(summary = "Get all working schedules")
-    @GetMapping("/working-schedule")
+    @ApiOperation(value = "Get all working schedules")
+    @GetMapping
     ResponseEntity<List<WorkingScheduleDto>> getAll();
 
-    @Operation(summary = "Get working schedule by ID")
-    @GetMapping("/working-schedule/{id}")
-    ResponseEntity<WorkingScheduleDto> get(@PathVariable Long id);
+    @ApiOperation(value = "Get working schedule by ID")
+    @GetMapping("/{id}")
+    ResponseEntity<WorkingScheduleDto> get(@ApiParam(name = "id", value = "Working Schedule ID") @PathVariable Long id);
 
-    @Operation(summary = "Create a new working schedule")
-    @PostMapping("/working-schedule")
-    ResponseEntity<WorkingScheduleDto> create(@RequestBody WorkingScheduleDto workingScheduleDto);
+    @ApiOperation(value = "Create a new working schedule")
+    @PostMapping
+    ResponseEntity<WorkingScheduleDto> create(@ApiParam(name = "workingScheduleDto", value = "Working Schedule details") @RequestBody WorkingScheduleDto workingScheduleDto);
 
-    @Operation(summary = "Update working schedule by ID")
-    @PutMapping("/working-schedule/{id}")
-    ResponseEntity<WorkingScheduleDto> update(@PathVariable Long id, @RequestBody WorkingScheduleDto workingScheduleDto);
+    @ApiOperation(value = "Update working schedule by ID")
+    @PutMapping("/{id}")
+    ResponseEntity<WorkingScheduleDto> update(@ApiParam(name = "id", value = "Working Schedule ID") @PathVariable Long id, @ApiParam(name = "workingScheduleDto", value = "Updated Working Schedule details") @RequestBody WorkingScheduleDto workingScheduleDto);
 
-    @Operation(summary = "Delete working schedule by ID")
-    @DeleteMapping("/working-schedule/{id}")
-    ResponseEntity<Void> delete(@PathVariable Long id);
+    @ApiOperation(value = "Delete working schedule by ID")
+    @DeleteMapping("/{id}")
+    ResponseEntity<Void> delete(@ApiParam(name = "id", value = "Working Schedule ID") @PathVariable Long id);
 }

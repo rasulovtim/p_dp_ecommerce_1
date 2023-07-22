@@ -1,5 +1,6 @@
 package com.gitlab.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
@@ -9,6 +10,7 @@ import java.time.LocalTime;
 @Data
 public class WorkingScheduleDto {
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
     @NotNull(message = "Day of Week should not be null. Please provide a valid day of week (e.g., MONDAY, TUESDAY, etc.).")
