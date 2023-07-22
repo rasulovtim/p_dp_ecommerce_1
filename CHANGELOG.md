@@ -7,6 +7,9 @@
 - #4 - entity BankCard was created, integrated into gazon-service and tested
 - #6 - added pagination for Example
 - #7 - entities Product and ProductImage were created and integrated
+- #10 - entity SelectedProduct was created, but not fully integrated
+- #9 - entities Review and ReviewImage were created, but not fully integrated
+- #19 - added auto save open api docs. Added guide for postman
 
 ## [1.0.0]
 
