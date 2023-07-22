@@ -5,9 +5,9 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
 		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-     <preConditions>
-         <dbms type="postgresql"/>
-     </preConditions>
+    <preConditions>
+        <dbms type="postgresql"/>
+    </preConditions>
 
     <include file="v-1.0/db.changelog-v-1.0.xml" relativeToChangelogFile="true"/>
     <changeSet id="1.0" author="denis_pronin">
@@ -42,6 +42,20 @@
     <include file="v-1.6-review-image/db.changelog-v-1.6.xml" relativeToChangelogFile="true"/>
     <changeSet id="1.6" author="atsamaz_gudiev">
         <tagDatabase tag="v-1.6"/>
+    </changeSet>
+
+
+    <changeSet id="1.7" author="atsamaz_gudiev">
+        <dropTable tableName="personal_address"/>
+        <dropTable tableName="postomat"/>
+        <dropTable tableName="pickup_point_features_to_pickup_point"/>
+        <dropTable tableName="pickup_point"/>
+    </changeSet>
+
+
+    <include file="v-1.8/db.changelog-v-1.8.xml" relativeToChangelogFile="true"/>
+    <changeSet id="1.8" author="atsamaz_gudiev">
+        <tagDatabase tag="v-1.8"/>
     </changeSet>
 
 
