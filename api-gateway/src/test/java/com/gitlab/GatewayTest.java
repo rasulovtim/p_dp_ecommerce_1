@@ -32,7 +32,7 @@ public class GatewayTest {
         assertFalse(makeRequest("/api/do/not/exist").contains(":8080"));
     }
 
-    private String makeRequest(String path) throws Error {
+    private String makeRequest(String path) {
         WebTestClient client = WebTestClient.bindToApplicationContext(this.context).build();
         return client.get().uri(path).exchange().returnResult(String.class).toString();
     }
