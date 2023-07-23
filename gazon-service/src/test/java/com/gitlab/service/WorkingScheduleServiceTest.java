@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -123,4 +125,26 @@ class WorkingScheduleServiceTest {
     private WorkingSchedule generateWorkingSchedule() {
         return new WorkingSchedule(1L, DayOfWeek.MONDAY, LocalTime.of(9, 0), LocalTime.of(17, 0));
     }
+
+    @Test
+    void should_not_update_working_schedule_with_null_values() {
+        long id = 1L;
+        WorkingSchedule workingScheduleToUpdate = new WorkingSchedule();
+        workingScheduleToUpdate.setDayOfWeek(null);
+        workingScheduleToUpdate.setFrom(null);
+        workingScheduleToUpdate.setTo(null);
+
+        WorkingSchedule workingScheduleBeforeUpdate = new WorkingSchedule(id, DayOfWeek.MONDAY, LocalTime.of(9, 0), LocalTime.of(17, 0));
+
+        when(workingScheduleRepository.findById(id)).thenReturn(Optional.of(workingScheduleBeforeUpdate));
+
+        Optional<WorkingSchedule> actualResult = workingScheduleService.update(id, workingScheduleToUpdate);
+
+        verify(workingScheduleRepository, never()).save(any());
+
+
+        assertFalse(actualResult.isPresent());
+    }
+
+
 }

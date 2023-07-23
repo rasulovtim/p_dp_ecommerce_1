@@ -23,17 +23,20 @@ public class WorkingScheduleService {
     }
 
     public WorkingSchedule save(WorkingSchedule workingSchedule) {
+        if (workingSchedule == null || (workingSchedule.getDayOfWeek() == null && workingSchedule.getFrom() == null && workingSchedule.getTo() == null)) {
+            throw new IllegalArgumentException("WorkingSchedule cannot be null or have all fields null");
+        }
         return workingScheduleRepository.save(workingSchedule);
     }
 
+
     public Optional<WorkingSchedule> update(Long id, WorkingSchedule workingSchedule) {
         Optional<WorkingSchedule> optionalSavedWorkingSchedule = findById(id);
-        WorkingSchedule savedWorkingSchedule;
         if (optionalSavedWorkingSchedule.isEmpty()) {
-            return optionalSavedWorkingSchedule;
-        } else {
-            savedWorkingSchedule = optionalSavedWorkingSchedule.get();
+            return Optional.empty();
         }
+
+        WorkingSchedule savedWorkingSchedule = optionalSavedWorkingSchedule.get();
         if (workingSchedule.getDayOfWeek() != null) {
             savedWorkingSchedule.setDayOfWeek(workingSchedule.getDayOfWeek());
         }
@@ -43,8 +46,17 @@ public class WorkingScheduleService {
         if (workingSchedule.getTo() != null) {
             savedWorkingSchedule.setTo(workingSchedule.getTo());
         }
-        return Optional.of(workingScheduleRepository.save(savedWorkingSchedule));
+
+        // Проверяем, что есть хотя бы одно не пустое поле для сохранения
+        if (workingSchedule.getDayOfWeek() == null && workingSchedule.getFrom() == null && workingSchedule.getTo() == null) {
+            return Optional.empty();
+        }
+
+        savedWorkingSchedule = workingScheduleRepository.save(savedWorkingSchedule);
+        return Optional.of(savedWorkingSchedule);
     }
+
+
 
     public Optional<WorkingSchedule> delete(Long id) {
         Optional<WorkingSchedule> optionalSavedWorkingSchedule = findById(id);
