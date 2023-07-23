@@ -10,6 +10,7 @@
 - #10 - entity SelectedProduct was created, but not fully integrated
 - #9 - entities Review and ReviewImage were created, but not fully integrated
 - #19 - added auto save open api docs. Added guide for postman
+- #18 - added docker multi-stage build
 
 ## [1.0.0]
 
