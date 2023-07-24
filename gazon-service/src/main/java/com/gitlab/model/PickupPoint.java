@@ -10,8 +10,7 @@ import java.util.Set;
 @ToString(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "pickup_point")
+@Entity(name = "pickup_point")
 @NamedEntityGraph(name = "PickupPoint.pickupPointFeatures", attributeNodes = @NamedAttributeNode("pickupPointFeatures"))
 public class PickupPoint extends ShippingAddress {
 
