@@ -43,7 +43,7 @@ class PickupPointRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_get_pickupPoint_by_id() throws Exception {
-        long id = 1L;
+        long id = 7L;
         String expected = objectMapper.writeValueAsString(
                 pickupPointMapper.toDto(
                         pickupPointService
@@ -85,7 +85,7 @@ class PickupPointRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_update_pickupPoint_by_id() throws Exception {
-        long id = 1L;
+        long id = 7L;
         PickupPointDto pickupPointDto = new PickupPointDto();
         pickupPointDto.setAddress("New Address");
         pickupPointDto.setDirections("New Directions");
@@ -127,7 +127,7 @@ class PickupPointRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_delete_pickupPoint_by_id() throws Exception {
-        long id = 2L;
+        long id = 8L;
         mockMvc.perform(delete(URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk());

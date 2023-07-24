@@ -5,15 +5,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@MappedSuperclass
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Entity(name = "shipping_address")
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class ShippingAddress {
 
     @Id
+    @Column(name = "shipping_address_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
