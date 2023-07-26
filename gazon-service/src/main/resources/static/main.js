@@ -22,7 +22,7 @@ async function getSearchResult(event) {
     } else {
         let response = await fetch(url + '/search/product?name=' + form.name.value);
 
-        if (response.status === 200 && form.name.value.length > 1) {
+        if (response.status === 200) {
             let foundProductsList = await response.json();
             loadFoundProducts(foundProductsList);
 
