@@ -5,21 +5,24 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Set;
 
+@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "shipping_address")
-@Inheritance(strategy = InheritanceType.JOINED)
-public abstract class ShippingAddress {
+@Table(name = "selected_product")
+public class SelectedProduct {
+
 
     @Id
-    @Column(name = "shipping_address_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String address;
+    @ManyToOne
+    @JoinColumn(name = "product_id", referencedColumnName = "id")
+    private Product product;
 
-    private String directions;
+    @Column(name = "count")
+    private Integer count;
+
 }

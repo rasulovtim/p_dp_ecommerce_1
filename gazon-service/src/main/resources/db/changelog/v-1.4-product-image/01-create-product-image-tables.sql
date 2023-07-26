@@ -15,7 +15,7 @@ CREATE TABLE product_image
 (
 
     id         BIGSERIAL PRIMARY KEY,
-    product_id BIGINT REFERENCES product (id) NOT NULL,
+    product_id BIGINT REFERENCES product (id) ON DELETE CASCADE NOT NULL,
     name       VARCHAR(255) NOT NULL,
     data       BYTEA NOT NULL
 );

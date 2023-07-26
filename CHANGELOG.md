@@ -9,6 +9,7 @@
 - #7 - entities Product and ProductImage were created and integrated
 - #9 - entities Review and ReviewImage were created, but not fully integrated
 - #10 - entity SelectedProduct was created, but not fully integrated
+- #18 - added docker multi-stage build
 - #19 - added auto save open api docs. Added guide for postman
 - #36 - added Spring cloud gateway
 
