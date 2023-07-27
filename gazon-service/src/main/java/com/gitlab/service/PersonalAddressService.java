@@ -1,5 +1,6 @@
 package com.gitlab.service;
 
+import com.gitlab.model.BankCard;
 import com.gitlab.model.PersonalAddress;
 import com.gitlab.repository.PersonalAddressRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import java.util.Optional;
 public class PersonalAddressService {
 
     private final PersonalAddressRepository personalAddressRepository;
+
 
     public List<PersonalAddress> findAll() {
         return personalAddressRepository.findAll();

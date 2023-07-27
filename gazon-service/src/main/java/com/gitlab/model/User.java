@@ -15,7 +15,7 @@ import java.util.Set;
 @NamedEntityGraph(name = "userWithSets",
         attributeNodes = {
         @NamedAttributeNode("bankCardsSet"),
-        @NamedAttributeNode("personalAddressSet"),
+        @NamedAttributeNode("shippingAddressSet"),
         @NamedAttributeNode("rolesSet")})
 public class User {
 
@@ -62,7 +62,7 @@ public class User {
     private Set<BankCard> bankCardsSet;
 
     @OneToMany(mappedBy="id",cascade = CascadeType.ALL)
-    private Set<PersonalAddress> personalAddressSet;
+    private Set<ShippingAddress> shippingAddressSet;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "users_roles",

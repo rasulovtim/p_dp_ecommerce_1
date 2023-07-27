@@ -381,7 +381,7 @@ class UserDtoTest extends AbstractDtoTest {
                 423
         ));
 
-        Set<PersonalAddressDto> personalAddress = new HashSet<>();
+        Set<ShippingAddressDto> personalAddress = new HashSet<>();
         personalAddress.add(new PersonalAddressDto(1L,
                 "address",
                 "directions",

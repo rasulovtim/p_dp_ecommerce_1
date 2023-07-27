@@ -261,7 +261,7 @@ class UserServiceTest {
         Optional<User> actualResult = userService.update(id, userToUpdate);
 
         verify(userRepository).save(userBeforeUpdate);
-        assertNotNull(actualResult.orElse(userBeforeUpdate).getPersonalAddressSet());
+        assertNotNull(actualResult.orElse(userBeforeUpdate).getShippingAddressSet());
     }
 
     @Test
@@ -341,7 +341,7 @@ class UserServiceTest {
         Set<BankCard> bankCardSet = new HashSet<>();
         bankCardSet.add(new BankCard(1L, "0000000000000", LocalDate.of(1900, 1, 1), 777));
 
-        Set<PersonalAddress> personalAddresses = new HashSet<>();
+        Set<ShippingAddress> personalAddresses = new HashSet<>();
         personalAddresses.add(new PersonalAddress(
                 "apartment",
                 "floor",
@@ -385,7 +385,7 @@ class UserServiceTest {
         Set<BankCard> bankCardSet = new HashSet<>();
         bankCardSet.add(new BankCard(1L, "1111222233444", LocalDate.of(1905, 6, 7), 888));
 
-        Set<PersonalAddress> personalAddresses = new HashSet<>();
+        Set<ShippingAddress> personalAddresses = new HashSet<>();
         personalAddresses.add(new PersonalAddress(
                 "apmentBef",
                 "floBef",

@@ -1,19 +1,18 @@
 package com.gitlab.mapper;
 
-import com.gitlab.dto.UserDto;
+import com.gitlab.dto.*;
 import com.gitlab.model.*;
 
 import java.util.Collections;
 
 import com.gitlab.service.RoleService;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingConstants;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public abstract class UserMapper {
@@ -22,17 +21,17 @@ public abstract class UserMapper {
     private RoleService roleService;
 
     @Mapping(source = "bankCardsSet", target = "bankCardsDtoSet")
-    @Mapping(source = "personalAddressSet", target = "personalAddressDtoSet")
+    @Mapping(source = "shippingAddressSet", target = "shippingAddressDtoSet")
     @Mapping(source = "passport", target = "passportDto")
-    @Mapping(source = "rolesSet", target = "roles")
+    @Mapping(source = "rolesSet", target = "roles")//у роли нету ДТО
     public abstract UserDto toDto(User user);
 
     public Set<String> mapStringSetToRoleSet(Set<Role> roleSet) {
         Set<String> stringSet = new HashSet<>();
-        if(roleSet==null){
+        if (roleSet == null) {
             return Collections.emptySet();
         }
-        for (Role role: roleSet) {
+        for (Role role : roleSet) {
             Optional<String> roleName = role.getName().describeConstable();
             roleName.ifPresent(stringSet::add);
         }
@@ -40,14 +39,14 @@ public abstract class UserMapper {
     }
 
     @Mapping(source = "bankCardsDtoSet", target = "bankCardsSet")
-    @Mapping(source = "personalAddressDtoSet", target = "personalAddressSet")
+    @Mapping(source = "shippingAddressDtoSet", target = "shippingAddressSet")
     @Mapping(source = "passportDto", target = "passport")
-    @Mapping(source = "roles", target = "rolesSet")
+    @Mapping(source = "roles", target = "rolesSet")//у роли нету ДТО
     public abstract User toEntity(UserDto userDto);
 
     public Set<Role> mapRoleSetToStringSet(Set<String> stringSet) {
         Set<Role> roleSet = new HashSet<>();
-        if(stringSet==null){
+        if (stringSet == null) {
             return Collections.emptySet();
         }
         for (String roleName : stringSet) {
@@ -57,6 +56,58 @@ public abstract class UserMapper {
         return roleSet;
     }
 
+    @Named("createShippingAddress")
+    public ShippingAddress createShippingAddress(ShippingAddressDto dto) {
+        if (dto.getClass() == PersonalAddressDto.class) {
+            return createPersonalAddress((PersonalAddressDto) dto);
+        } else if (dto.getClass() == PostomatDto.class) {
+            return createPostomat((PostomatDto) dto);
+        } else if (dto.getClass() == PickupPointDto.class) {
+            return createPickupPoint((PickupPointDto) dto);
+        } else {
+            throw new IllegalArgumentException("Unknown ShippingAddressDto subtype");
+        }
+    }
+
+    @Named("createShippingAddressDto")
+    public ShippingAddressDto createShippingAddressDto(ShippingAddress shippingAddress) {
+        if (shippingAddress.getClass() == PersonalAddress.class) {
+            return createPersonalAddressDto((PersonalAddress) shippingAddress);
+        } else if (shippingAddress.getClass() == Postomat.class) {
+            return createPostomatDto((Postomat) shippingAddress);
+        } else if (shippingAddress.getClass() == PickupPoint.class) {
+            return createPickupPointDto((PickupPoint) shippingAddress);
+        } else {
+            throw new IllegalArgumentException("Unknown ShippingAddress subtype");
+        }
+    }
+
+    public abstract PersonalAddressDto createPersonalAddressDto(PersonalAddress personalAddress);
+
+    public abstract PostomatDto createPostomatDto(Postomat postomat);
+
+    public abstract  PickupPointDto createPickupPointDto(PickupPoint pickupPoint);
+
+
+    public abstract PersonalAddress createPersonalAddress(PersonalAddressDto personalAddressDto);
+
+    public abstract Postomat createPostomat(PostomatDto postomatDto);
+
+    public abstract  PickupPoint createPickupPoint(PickupPointDto pickupPointDto);
+
+
+    public Set<ShippingAddressDto> mapShippingAddressToShippingAddressDto(Set<ShippingAddress> shippingAddress) {
+        return shippingAddress.stream()
+                .map(this::createShippingAddressDto)
+                .collect(Collectors.toSet());
+    }
+
+    public Set<ShippingAddress> mapShippingAddressDtoToShippingAddressSet(Set<ShippingAddressDto> shippingAddressDtoSet) {
+        return shippingAddressDtoSet.stream()
+                .map(this::createShippingAddress)
+                .collect(Collectors.toSet());
+    }
 
 }
+
 

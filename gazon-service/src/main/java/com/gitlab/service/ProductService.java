@@ -1,6 +1,7 @@
 package com.gitlab.service;
 
 import com.gitlab.model.Product;
+import com.gitlab.model.Review;
 import com.gitlab.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

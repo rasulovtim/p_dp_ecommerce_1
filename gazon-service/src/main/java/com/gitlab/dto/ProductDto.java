@@ -1,14 +1,21 @@
 package com.gitlab.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gitlab.model.Review;
+import com.gitlab.service.ReviewService;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
 
 @Data
+@Component
 public class ProductDto {
+    @Autowired
+    protected ReviewService reviewService;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
@@ -44,4 +51,26 @@ public class ProductDto {
     @NotNull(message = "Product's price should not be empty")
     private BigDecimal price;
 
-}
+    private Byte rating ;
+
+//    public Byte getDynamicAverage() {
+//        int sum = 0;
+//        int count = 0;
+//
+//     //   assert reviewService != null;
+//        for (Review review : reviewService.findAll()) {
+//            if (review.getRating() != null) {
+//                sum += review.getRating();
+//                count++;
+//            }
+//        }
+//
+//        if (count > 0) {
+//            double average = (double) sum / count;
+//            return (byte) Math.round(average);
+//        } else {
+//            return null;
+//        }
+    }
+
+
