@@ -58,15 +58,13 @@ class WorkingScheduleServiceTest {
     }
 
     @Test
-    void should_update_working_schedule() {
+    void should_update_working_schedule_day_of_week() {
         long id = 1L;
         WorkingSchedule workingScheduleToUpdate = new WorkingSchedule();
         workingScheduleToUpdate.setDayOfWeek(DayOfWeek.WEDNESDAY);
-        workingScheduleToUpdate.setFrom(LocalTime.of(10, 0));
-        workingScheduleToUpdate.setTo(LocalTime.of(18, 0));
 
         WorkingSchedule workingScheduleBeforeUpdate = new WorkingSchedule(id, DayOfWeek.MONDAY, LocalTime.of(9, 0), LocalTime.of(17, 0));
-        WorkingSchedule updatedWorkingSchedule = new WorkingSchedule(id, DayOfWeek.WEDNESDAY, LocalTime.of(10, 0), LocalTime.of(18, 0));
+        WorkingSchedule updatedWorkingSchedule = new WorkingSchedule(id, DayOfWeek.WEDNESDAY, LocalTime.of(9, 0), LocalTime.of(17, 0));
 
         when(workingScheduleRepository.findById(id)).thenReturn(Optional.of(workingScheduleBeforeUpdate));
         when(workingScheduleRepository.save(updatedWorkingSchedule)).thenReturn(updatedWorkingSchedule);
@@ -74,6 +72,61 @@ class WorkingScheduleServiceTest {
         Optional<WorkingSchedule> actualResult = workingScheduleService.update(id, workingScheduleToUpdate);
 
         assertEquals(updatedWorkingSchedule, actualResult.orElse(null));
+        verify(workingScheduleRepository).save(updatedWorkingSchedule);
+    }
+
+    @Test
+    void should_update_working_schedule_from_time() {
+        long id = 1L;
+        WorkingSchedule workingScheduleToUpdate = new WorkingSchedule();
+        workingScheduleToUpdate.setFrom(LocalTime.of(10, 0));
+
+        WorkingSchedule workingScheduleBeforeUpdate = new WorkingSchedule(id, DayOfWeek.MONDAY, LocalTime.of(9, 0), LocalTime.of(17, 0));
+        WorkingSchedule updatedWorkingSchedule = new WorkingSchedule(id, DayOfWeek.MONDAY, LocalTime.of(10, 0), LocalTime.of(17, 0));
+
+        when(workingScheduleRepository.findById(id)).thenReturn(Optional.of(workingScheduleBeforeUpdate));
+        when(workingScheduleRepository.save(updatedWorkingSchedule)).thenReturn(updatedWorkingSchedule);
+
+        Optional<WorkingSchedule> actualResult = workingScheduleService.update(id, workingScheduleToUpdate);
+
+        assertEquals(updatedWorkingSchedule, actualResult.orElse(null));
+        verify(workingScheduleRepository).save(updatedWorkingSchedule);
+    }
+
+    @Test
+    void should_update_working_schedule_to_time() {
+        long id = 1L;
+        WorkingSchedule workingScheduleToUpdate = new WorkingSchedule();
+        workingScheduleToUpdate.setTo(LocalTime.of(18, 0));
+
+        WorkingSchedule workingScheduleBeforeUpdate = new WorkingSchedule(id, DayOfWeek.MONDAY, LocalTime.of(9, 0), LocalTime.of(17, 0));
+        WorkingSchedule updatedWorkingSchedule = new WorkingSchedule(id, DayOfWeek.MONDAY, LocalTime.of(9, 0), LocalTime.of(18, 0));
+
+        when(workingScheduleRepository.findById(id)).thenReturn(Optional.of(workingScheduleBeforeUpdate));
+        when(workingScheduleRepository.save(updatedWorkingSchedule)).thenReturn(updatedWorkingSchedule);
+
+        Optional<WorkingSchedule> actualResult = workingScheduleService.update(id, workingScheduleToUpdate);
+
+        assertEquals(updatedWorkingSchedule, actualResult.orElse(null));
+        verify(workingScheduleRepository).save(updatedWorkingSchedule);
+    }
+
+    @Test
+    void should_not_update_working_schedule_with_all_fields_null() {
+        long id = 1L;
+        WorkingSchedule workingScheduleToUpdate = new WorkingSchedule();
+        workingScheduleToUpdate.setDayOfWeek(null);
+        workingScheduleToUpdate.setFrom(null);
+        workingScheduleToUpdate.setTo(null);
+
+        WorkingSchedule workingScheduleBeforeUpdate = new WorkingSchedule(id, DayOfWeek.MONDAY, LocalTime.of(9, 0), LocalTime.of(17, 0));
+
+        when(workingScheduleRepository.findById(id)).thenReturn(Optional.of(workingScheduleBeforeUpdate));
+
+        Optional<WorkingSchedule> actualResult = workingScheduleService.update(id, workingScheduleToUpdate);
+
+        verify(workingScheduleRepository, never()).save(any());
+        assertFalse(actualResult.isPresent());
     }
 
     @Test
@@ -89,7 +142,7 @@ class WorkingScheduleServiceTest {
         Optional<WorkingSchedule> actualResult = workingScheduleService.update(id, workingScheduleToUpdate);
 
         verify(workingScheduleRepository, never()).save(any());
-        assertNull(actualResult.orElse(null));
+        assertFalse(actualResult.isPresent());
     }
 
     @Test
@@ -125,26 +178,4 @@ class WorkingScheduleServiceTest {
     private WorkingSchedule generateWorkingSchedule() {
         return new WorkingSchedule(1L, DayOfWeek.MONDAY, LocalTime.of(9, 0), LocalTime.of(17, 0));
     }
-
-    @Test
-    void should_not_update_working_schedule_with_null_values() {
-        long id = 1L;
-        WorkingSchedule workingScheduleToUpdate = new WorkingSchedule();
-        workingScheduleToUpdate.setDayOfWeek(null);
-        workingScheduleToUpdate.setFrom(null);
-        workingScheduleToUpdate.setTo(null);
-
-        WorkingSchedule workingScheduleBeforeUpdate = new WorkingSchedule(id, DayOfWeek.MONDAY, LocalTime.of(9, 0), LocalTime.of(17, 0));
-
-        when(workingScheduleRepository.findById(id)).thenReturn(Optional.of(workingScheduleBeforeUpdate));
-
-        Optional<WorkingSchedule> actualResult = workingScheduleService.update(id, workingScheduleToUpdate);
-
-        verify(workingScheduleRepository, never()).save(any());
-
-
-        assertFalse(actualResult.isPresent());
-    }
-
-
 }
