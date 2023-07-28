@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 - #task_number - short task description
+- #1 - added working schedule entity
 - #2 - entities personal_address, pickup_point, postomat where created, integrated into gazon-service and tested
 - #3 - created passport entity
 - #4 - entity BankCard was created, integrated into gazon-service and tested

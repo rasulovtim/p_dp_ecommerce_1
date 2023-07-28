@@ -62,8 +62,6 @@ class ExampleRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(content().json(expected));
     }
 
-
-
     @Test
     void should_get_example_by_id() throws Exception {
         long id = 1L;
