@@ -13,6 +13,7 @@
 - #18 - added docker multi-stage build
 - #19 - added auto save open api docs. Added guide for postman
 - #36 - added Spring cloud gateway
+- #37 - added SearchProduct feature
 
 ## [1.0.0]
 

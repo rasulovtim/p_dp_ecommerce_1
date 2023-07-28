@@ -1,5 +1,7 @@
 package com.gitlab.service;
 
+import com.gitlab.dto.ProductDto;
+import com.gitlab.mapper.ProductMapper;
 import com.gitlab.model.Product;
 import com.gitlab.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,7 @@ import java.util.Optional;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final ProductMapper productMapper;
 
     public List<Product> findAll() {
         return productRepository.findAll();
@@ -72,5 +75,10 @@ public class ProductService {
             productRepository.deleteById(id);
         }
         return foundProduct;
+    }
+
+    public List<ProductDto> findByNameIgnoreCaseContaining(String name) {
+        return productRepository.findByNameIgnoreCaseContaining(name)
+                .stream().map(productMapper::toDto).toList();
     }
 }
