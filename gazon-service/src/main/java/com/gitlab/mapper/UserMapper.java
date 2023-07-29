@@ -1,5 +1,6 @@
 package com.gitlab.mapper;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.gitlab.dto.*;
 import com.gitlab.model.*;
 
@@ -15,6 +16,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+//@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 public abstract class UserMapper {
 
     @Autowired
@@ -23,7 +25,7 @@ public abstract class UserMapper {
     @Mapping(source = "bankCardsSet", target = "bankCardsDtoSet")
     @Mapping(source = "shippingAddressSet", target = "shippingAddressDtoSet")
     @Mapping(source = "passport", target = "passportDto")
-    @Mapping(source = "rolesSet", target = "roles")//у роли нету ДТО
+    @Mapping(source = "rolesSet", target = "roles")
     public abstract UserDto toDto(User user);
 
     public Set<String> mapStringSetToRoleSet(Set<Role> roleSet) {
@@ -41,7 +43,7 @@ public abstract class UserMapper {
     @Mapping(source = "bankCardsDtoSet", target = "bankCardsSet")
     @Mapping(source = "shippingAddressDtoSet", target = "shippingAddressSet")
     @Mapping(source = "passportDto", target = "passport")
-    @Mapping(source = "roles", target = "rolesSet")//у роли нету ДТО
+    @Mapping(source = "roles", target = "rolesSet")
     public abstract User toEntity(UserDto userDto);
 
     public Set<Role> mapRoleSetToStringSet(Set<String> stringSet) {
@@ -59,11 +61,11 @@ public abstract class UserMapper {
     @Named("createShippingAddress")
     public ShippingAddress createShippingAddress(ShippingAddressDto dto) {
         if (dto.getClass() == PersonalAddressDto.class) {
-            return createPersonalAddress((PersonalAddressDto) dto);
+            return createPersonalAddressEntity((PersonalAddressDto) dto);
         } else if (dto.getClass() == PostomatDto.class) {
-            return createPostomat((PostomatDto) dto);
+            return createPostomatEntity((PostomatDto) dto);
         } else if (dto.getClass() == PickupPointDto.class) {
-            return createPickupPoint((PickupPointDto) dto);
+            return createPickupPointEntity((PickupPointDto) dto);
         } else {
             throw new IllegalArgumentException("Unknown ShippingAddressDto subtype");
         }
@@ -89,20 +91,20 @@ public abstract class UserMapper {
     public abstract  PickupPointDto createPickupPointDto(PickupPoint pickupPoint);
 
 
-    public abstract PersonalAddress createPersonalAddress(PersonalAddressDto personalAddressDto);
+    public abstract PersonalAddress createPersonalAddressEntity(PersonalAddressDto personalAddressDto);
 
-    public abstract Postomat createPostomat(PostomatDto postomatDto);
+    public abstract Postomat createPostomatEntity(PostomatDto postomatDto);
 
-    public abstract  PickupPoint createPickupPoint(PickupPointDto pickupPointDto);
+    public abstract  PickupPoint createPickupPointEntity(PickupPointDto pickupPointDto);
 
 
-    public Set<ShippingAddressDto> mapShippingAddressToShippingAddressDto(Set<ShippingAddress> shippingAddress) {
+    public Set<ShippingAddressDto> mapShippingAddressEntityToShippingAddressDto(Set<ShippingAddress> shippingAddress) {
         return shippingAddress.stream()
                 .map(this::createShippingAddressDto)
                 .collect(Collectors.toSet());
     }
 
-    public Set<ShippingAddress> mapShippingAddressDtoToShippingAddressSet(Set<ShippingAddressDto> shippingAddressDtoSet) {
+    public Set<ShippingAddress> mapShippingAddressDtoToShippingAddressSetEntity(Set<ShippingAddressDto> shippingAddressDtoSet) {
         return shippingAddressDtoSet.stream()
                 .map(this::createShippingAddress)
                 .collect(Collectors.toSet());

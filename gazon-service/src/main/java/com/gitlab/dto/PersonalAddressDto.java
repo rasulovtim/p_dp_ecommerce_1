@@ -1,8 +1,8 @@
 package com.gitlab.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import lombok.*;
-import org.mapstruct.Mapper;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -12,6 +12,7 @@ import javax.validation.constraints.Size;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonTypeName("PersonalAddressDto")
 public class PersonalAddressDto extends ShippingAddressDto {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -41,4 +42,5 @@ public class PersonalAddressDto extends ShippingAddressDto {
 
     @Size(max = 12, message = "Length of post code should not exceed 12 characters")
     private String postCode;
+
 }

@@ -1,9 +1,7 @@
 package com.gitlab.service;
 
-import com.gitlab.dto.PersonalAddressDto;
-import com.gitlab.mapper.PersonalAddressMapper;
-import com.gitlab.mapper.PersonalAddressMapperImpl;
 import com.gitlab.model.*;
+import com.gitlab.repository.BankCardRepository;
 import com.gitlab.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,8 +17,6 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    private final PersonalAddressMapper personalAddressMapper;
-
     public List<User> findAll() {
         return userRepository.findAll();
     }
@@ -28,7 +24,7 @@ public class UserService {
     public Optional<User> findById(Long id) {
         return userRepository.findById(id);
     }
-
+    @Transactional
     public User save(User user) {
         user.setCreateDate(LocalDate.from(LocalDateTime.now()));
         return userRepository.save(user);
@@ -79,108 +75,56 @@ public class UserService {
             }
             savedUser.setPassport(newPassport);
         }
-//
-        if (user.getBankCardsSet() != null) {
-            Set<BankCard> newBankCards = user.getBankCardsSet();
-            Set<BankCard> savedBankCards = savedUser.getBankCardsSet();
-            if (savedBankCards != null) {
-                for (BankCard newBankCard : newBankCards) {
-                    newBankCards.clear();
-                    newBankCard.setId(user.getBankCardsSet()
-                            .stream()
-                            .mapToLong(BankCard::getId)
-                            .findFirst()
-                            .orElse(0L));
-                    newBankCards.add(newBankCard);
-                }
-            }
-            savedUser.setBankCardsSet(newBankCards);
-        }
 
-//        if ((user.getShippingAddressSet() != null)) {
-//            Set<ShippingAddress> newShippingAddress = user.getShippingAddressSet();
-//            Set<ShippingAddress> savedShippingAddress = savedUser.getShippingAddressSet();
-//
-//            if ((savedShippingAddress != null)) {
-//                if (savedShippingAddress.getClass() == PersonalAddress.class) {
-//                    Set<ShippingAddress> updatedShippingAddress = new HashSet<>();
-//
-//                    for (ShippingAddress newShipAddress : newShippingAddress) {
-//                        ShippingAddress update = newShipAddress;
-//                        update.setId(user.getShippingAddressSet().stream().mapToLong(ShippingAddress::getId).findFirst().orElse(0L));
-//                        updatedShippingAddress.add(update);
-//                    }
-//                    savedUser.setShippingAddressSet(updatedShippingAddress);
-//
-//
-//                } else if (savedShippingAddress.getClass().equals(Postomat.class)) {
-//                    Set<ShippingAddress> updatedShippingAddress1 = new HashSet<>();
-//
-//                    for (ShippingAddress newShipAddress : newShippingAddress) {
-//                        ShippingAddress update = newShipAddress;
-//                        update.setId(user.getShippingAddressSet().stream().mapToLong(ShippingAddress::getId).findFirst().orElse(0L));
-//                        updatedShippingAddress1.add(update);
-//                    }
-//                    savedUser.setShippingAddressSet(updatedShippingAddress1);
-//
-//                } else if (savedShippingAddress.getClass() == PickupPoint.class) {
-//                    Set<ShippingAddress> updatedShippingAddress3 = new HashSet<>();
-//
-//                    for (ShippingAddress newShipAddress : newShippingAddress) {
-//                        ShippingAddress update = newShipAddress;
-//                        update.setId(user.getShippingAddressSet().stream().mapToLong(ShippingAddress::getId).findFirst().orElse(0L));
-//                        updatedShippingAddress3.add(update);
-//                    }
-//                    savedUser.setShippingAddressSet(updatedShippingAddress3);
-//                }
-//            }
-//        }
-//        if (savedUser.getShippingAddressSet() != null) {
-//            Set<PersonalAddressDto extends PersonalAddress> personalAddresses = new HashSet<>();
-//            for (ShippingAddress newShippAddress : user.getShippingAddressSet()) {
-//                if (newShippAddress.getClass() ==  PersonalAddress.class) {
-//                    PersonalAddressDto newPerAddDto = personalAddressMapper.toDto((PersonalAddress) newShippAddress);
-//                    newPerAddDto.setId(user.getShippingAddressSet().stream().mapToLong(ShippingAddress::getId).findFirst().orElse(0L));
-//                    personalAddresses.add(newPerAddDto);
-//                }
-//            }
-//            savedUser.setShippingAddressSet(personalAddresses);
-//        }
-
-
-//////////////
-        if ((user.getShippingAddressSet() != null)) {
-            Set<ShippingAddress> newShippingAddress = user.getShippingAddressSet();
-            Set<ShippingAddress> savedShippingAddress = savedUser.getShippingAddressSet();
-
-            if(savedShippingAddress != null) {
-                    for (ShippingAddress newShipAddress : newShippingAddress) {
-                        newShippingAddress.clear();
-                        newShipAddress.setId(user.getShippingAddressSet().stream().mapToLong(ShippingAddress::getId).findFirst().orElse(0L));
-                        newShippingAddress.add(newShipAddress);
+        if (user.getShippingAddressSet() != null) {
+            Set<ShippingAddress> newShippAddr = new HashSet<>();
+            Set<ShippingAddress> savedShippAddr = savedUser.getShippingAddressSet();
+            if(savedShippAddr != null){
+                for (ShippingAddress address : user.getShippingAddressSet()){
+                    for(ShippingAddress addressId : savedShippAddr){
+                        Long shippAddress = addressId.getId();
+                        address.setId(shippAddress);
+                        address.setAddress(address.getAddress());
+                        address.setDirections(address.getDirections());
                     }
+                    newShippAddr.add(address);
                 }
-            savedUser.setShippingAddressSet(newShippingAddress);
+            }
+            savedUser.setShippingAddressSet(newShippAddr);
         }
 
-
-            if (user.getRolesSet() != null) {
-                savedUser.getRolesSet().clear();
-                savedUser.setRolesSet(user.getRolesSet());
-            }
-            return Optional.of(userRepository.save(savedUser));
+        if (user.getBankCardsSet() != null) {
+            Set<BankCard> newCard = new HashSet<>();
+            Set<BankCard> savedCard = savedUser.getBankCardsSet();
+                if (savedCard != null) {
+                     for (BankCard bankCard : user.getBankCardsSet()){
+                         for (BankCard cardId : savedCard) {
+                             Long bankCardId = cardId.getId();
+                             bankCard.setId(bankCardId);
+                         }
+                         newCard.add(bankCard);
+                     }
+                }
+            savedUser.setBankCardsSet(newCard);
         }
 
-        public Optional<User> delete (Long id){
-            Optional<User> optionalSavedExample = findById(id);
-            if (optionalSavedExample.isEmpty()) {
-                return optionalSavedExample;
-            } else {
-                userRepository.deleteById(id);
-                return optionalSavedExample;
-            }
+        if (user.getRolesSet() != null) {
+            savedUser.setRolesSet(user.getRolesSet());
+        }
+        return Optional.of(userRepository.save(savedUser));
+    }
+    @Transactional
+    public Optional<User> delete(Long id) {
+        Optional<User> optionalSavedExample = findById(id);
+        if (optionalSavedExample.isEmpty()) {
+            return optionalSavedExample;
+        } else {
+            userRepository.deleteById(id);
+            return optionalSavedExample;
         }
     }
+
+}
 
 
 

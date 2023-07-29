@@ -379,6 +379,7 @@ class UserServiceTest {
     }
 
     private User generateUserBefore() {
+        User user = new User();
         Set<Role> roleSet = new HashSet<>();
         roleSet.add(new Role(1L, "ROLE_USER"));
 
@@ -386,6 +387,16 @@ class UserServiceTest {
         bankCardSet.add(new BankCard(1L, "1111222233444", LocalDate.of(1905, 6, 7), 888));
 
         Set<ShippingAddress> personalAddresses = new HashSet<>();
+
+        for(ShippingAddress shippingAddress : personalAddresses){
+            for (ShippingAddress address: user.getShippingAddressSet()){
+                Long sa = address.getId();
+                shippingAddress.setId(sa);
+            }
+            personalAddresses.add(shippingAddress);
+
+        }
+
         personalAddresses.add(new PersonalAddress(
                 "apmentBef",
                 "floBef",

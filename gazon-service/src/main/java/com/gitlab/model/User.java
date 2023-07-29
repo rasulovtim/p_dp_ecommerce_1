@@ -58,7 +58,7 @@ public class User {
     @Column(name = "create_date")
     private LocalDate createDate;
 
-    @OneToMany(mappedBy="id", cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy="id", cascade = CascadeType.ALL)
     private Set<BankCard> bankCardsSet;
 
     @OneToMany(mappedBy="id",cascade = CascadeType.ALL)
