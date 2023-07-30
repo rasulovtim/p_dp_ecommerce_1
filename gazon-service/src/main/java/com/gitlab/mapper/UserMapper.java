@@ -1,6 +1,5 @@
 package com.gitlab.mapper;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.gitlab.dto.*;
 import com.gitlab.model.*;
 
@@ -16,7 +15,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
-//@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 public abstract class UserMapper {
 
     @Autowired
