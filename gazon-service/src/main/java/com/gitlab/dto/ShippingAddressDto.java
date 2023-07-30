@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.Size;
+
 @Data
 @Setter
 @AllArgsConstructor
@@ -20,9 +22,9 @@ public class ShippingAddressDto {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
-
+    @Size(min = 1, max = 255, message = "Length of address should be between 1 and 255 characters")
     private String address;
-
+    @Size(min = 1, max = 255, message = "Length of directions should be between 1 and 255 characters")
     private String directions;
 
 }
