@@ -1,7 +1,6 @@
 package com.gitlab.model;
 
 import lombok.*;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 

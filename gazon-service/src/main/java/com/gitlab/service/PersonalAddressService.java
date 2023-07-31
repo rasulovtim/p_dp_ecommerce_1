@@ -1,6 +1,5 @@
 package com.gitlab.service;
 
-import com.gitlab.model.BankCard;
 import com.gitlab.model.PersonalAddress;
 import com.gitlab.repository.PersonalAddressRepository;
 import lombok.RequiredArgsConstructor;

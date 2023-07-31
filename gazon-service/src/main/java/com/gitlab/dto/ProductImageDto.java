@@ -22,4 +22,5 @@ public class ProductImageDto {
 
     @NotNull(message = "ProductImage's data should not be empty")
     private byte[] data;
+
 }
