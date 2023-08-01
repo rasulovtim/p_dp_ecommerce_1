@@ -14,9 +14,9 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXTERNAL_PROPERTY, property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = PersonalAddressDto.class, name = "PersonalAddressDto"),
-        @JsonSubTypes.Type(value = PostomatDto.class, name = "PostomatDto"),
-        @JsonSubTypes.Type(value = PickupPointDto.class, name = "PickupPointDto")
+        @JsonSubTypes.Type(value = PersonalAddressDto.class, name = "personalAddress"),
+        @JsonSubTypes.Type(value = PostomatDto.class, name = "postomat"),
+        @JsonSubTypes.Type(value = PickupPointDto.class, name = "pickupPoint")
 })
 public class ShippingAddressDto {
 

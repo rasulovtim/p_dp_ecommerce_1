@@ -134,7 +134,7 @@ class PersonalAddressRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_delete_personalAddress_by_id() throws Exception {
-        long id = 2L;
+        long id = 3L;
         mockMvc.perform(delete(URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk());

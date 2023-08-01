@@ -4,7 +4,6 @@ import com.gitlab.controller.AbstractIntegrationTest;
 import com.gitlab.dto.*;
 import com.gitlab.model.*;
 import org.junit.jupiter.api.Test;
-import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
@@ -14,7 +13,6 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.testcontainers.shaded.org.hamcrest.Matchers.containsInAnyOrder;
 
 class UserMapperTest extends AbstractIntegrationTest {
 
@@ -81,13 +79,13 @@ class UserMapperTest extends AbstractIntegrationTest {
         assertEquals(user.getCreateDate(), LocalDate.now());
 
         //Test all collections of fields ShippingAddress & ShippingAddressDto
-        assertEquals(user.getShippingAddressSet().stream().map(ShippingAddress::getAddress).collect(Collectors.toSet()), actualResult.getShippingAddressDtoSet().stream().map(ShippingAddressDto::getAddress).collect(Collectors.toSet()));
-        assertEquals(user.getShippingAddressSet().stream().map(ShippingAddress::getDirections).collect(Collectors.toSet()), actualResult.getShippingAddressDtoSet().stream().map(ShippingAddressDto::getDirections).collect(Collectors.toSet()));
+        assertEquals(user.getShippingAddressSet().stream().map(ShippingAddress::getAddress).collect(Collectors.toSet()), actualResult.getShippingAddressDtos().stream().map(ShippingAddressDto::getAddress).collect(Collectors.toSet()));
+        assertEquals(user.getShippingAddressSet().stream().map(ShippingAddress::getDirections).collect(Collectors.toSet()), actualResult.getShippingAddressDtos().stream().map(ShippingAddressDto::getDirections).collect(Collectors.toSet()));
 
         //Test all collections of fields BankCard & BankCardDto
-        assertEquals(user.getBankCardsSet().stream().map(BankCard::getCardNumber).collect(Collectors.toSet()), actualResult.getBankCardsDtoSet().stream().map(BankCardDto::getCardNumber).collect(Collectors.toSet()));
-        assertEquals(user.getBankCardsSet().stream().map(BankCard::getDueDate).collect(Collectors.toSet()), actualResult.getBankCardsDtoSet().stream().map(BankCardDto::getDueDate).collect(Collectors.toSet()));
-        assertEquals(user.getBankCardsSet().stream().map(BankCard::getSecurityCode).collect(Collectors.toSet()), actualResult.getBankCardsDtoSet().stream().map(BankCardDto::getSecurityCode).collect(Collectors.toSet()));
+        assertEquals(user.getBankCardsSet().stream().map(BankCard::getCardNumber).collect(Collectors.toSet()), actualResult.getBankCardDtos().stream().map(BankCardDto::getCardNumber).collect(Collectors.toSet()));
+        assertEquals(user.getBankCardsSet().stream().map(BankCard::getDueDate).collect(Collectors.toSet()), actualResult.getBankCardDtos().stream().map(BankCardDto::getDueDate).collect(Collectors.toSet()));
+        assertEquals(user.getBankCardsSet().stream().map(BankCard::getSecurityCode).collect(Collectors.toSet()), actualResult.getBankCardDtos().stream().map(BankCardDto::getSecurityCode).collect(Collectors.toSet()));
 
         //Test all collections of field Role & String
         assertEquals(user.getRolesSet().stream().map(Role::getName).collect(Collectors.toSet()), actualResult.getRoles().stream().flatMap(String::lines).collect(Collectors.toSet()));
@@ -185,13 +183,13 @@ class UserMapperTest extends AbstractIntegrationTest {
         assertEquals(userDto.getPassportDto().getIssuerNumber(), actualResult.getPassport().getIssuerNumber());
 
         //Test all collections of fields ShippingAddress & ShippingAddressDto
-        assertEquals(userDto.getShippingAddressDtoSet().stream().map(ShippingAddressDto::getAddress).collect(Collectors.toSet()), actualResult.getShippingAddressSet().stream().map(ShippingAddress::getAddress).collect(Collectors.toSet()));
-        assertEquals(userDto.getShippingAddressDtoSet().stream().map(ShippingAddressDto::getDirections).collect(Collectors.toSet()), actualResult.getShippingAddressSet().stream().map(ShippingAddress::getDirections).collect(Collectors.toSet()));
+        assertEquals(userDto.getShippingAddressDtos().stream().map(ShippingAddressDto::getAddress).collect(Collectors.toSet()), actualResult.getShippingAddressSet().stream().map(ShippingAddress::getAddress).collect(Collectors.toSet()));
+        assertEquals(userDto.getShippingAddressDtos().stream().map(ShippingAddressDto::getDirections).collect(Collectors.toSet()), actualResult.getShippingAddressSet().stream().map(ShippingAddress::getDirections).collect(Collectors.toSet()));
 
         //Test all collections of fields BankCard & BankCardDto
-        assertEquals(userDto.getBankCardsDtoSet().stream().map(BankCardDto::getCardNumber).collect(Collectors.toSet()), actualResult.getBankCardsSet().stream().map(BankCard::getCardNumber).collect(Collectors.toSet()));
-        assertEquals(userDto.getBankCardsDtoSet().stream().map(BankCardDto::getDueDate).collect(Collectors.toSet()), actualResult.getBankCardsSet().stream().map(BankCard::getDueDate).collect(Collectors.toSet()));
-        assertEquals(userDto.getBankCardsDtoSet().stream().map(BankCardDto::getSecurityCode).collect(Collectors.toSet()), actualResult.getBankCardsSet().stream().map(BankCard::getSecurityCode).collect(Collectors.toSet()));
+        assertEquals(userDto.getBankCardDtos().stream().map(BankCardDto::getCardNumber).collect(Collectors.toSet()), actualResult.getBankCardsSet().stream().map(BankCard::getCardNumber).collect(Collectors.toSet()));
+        assertEquals(userDto.getBankCardDtos().stream().map(BankCardDto::getDueDate).collect(Collectors.toSet()), actualResult.getBankCardsSet().stream().map(BankCard::getDueDate).collect(Collectors.toSet()));
+        assertEquals(userDto.getBankCardDtos().stream().map(BankCardDto::getSecurityCode).collect(Collectors.toSet()), actualResult.getBankCardsSet().stream().map(BankCard::getSecurityCode).collect(Collectors.toSet()));
         //Test all collections of fields Role & String
         assertEquals(userDto.getRoles().stream().flatMap(String::lines).collect(Collectors.toSet()), actualResult.getRolesSet().stream().map(Role::getName).collect(Collectors.toSet()));
 

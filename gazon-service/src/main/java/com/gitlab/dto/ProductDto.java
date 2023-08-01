@@ -11,8 +11,6 @@ import java.math.BigDecimal;
 @Data
 public class ProductDto {
 
-    ReviewDto reviewDto ;
-
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
@@ -46,7 +44,4 @@ public class ProductDto {
     @DecimalMax(value = "2147483333", message = "Product's price should be between 0.1 and 2147483333")
     @NotNull(message = "Product's price should not be empty")
     private BigDecimal price;
-
 }
-
-

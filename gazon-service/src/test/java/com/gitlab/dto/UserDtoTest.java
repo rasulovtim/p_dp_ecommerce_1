@@ -353,7 +353,7 @@ class UserDtoTest extends AbstractDtoTest {
     void test_default_message_null_object_bankCards() {
         UserDto userDto = generateUser();
 
-        userDto.setBankCardsDtoSet(null);
+        userDto.setBankCardDtos(null);
         String expectedMessage = "User bankCards cannot be null";
         String actualMessage = validator.validate(userDto).iterator().next().getMessage();
         assertEquals(expectedMessage, actualMessage);

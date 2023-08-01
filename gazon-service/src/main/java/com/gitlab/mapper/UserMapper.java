@@ -20,8 +20,8 @@ public abstract class UserMapper {
     @Autowired
     private RoleService roleService;
 
-    @Mapping(source = "bankCardsSet", target = "bankCardsDtoSet")
-    @Mapping(source = "shippingAddressSet", target = "shippingAddressDtoSet")
+    @Mapping(source = "bankCardsSet", target = "bankCardDtos")
+    @Mapping(source = "shippingAddressSet", target = "shippingAddressDtos")
     @Mapping(source = "passport", target = "passportDto")
     @Mapping(source = "rolesSet", target = "roles")
     public abstract UserDto toDto(User user);
@@ -38,8 +38,8 @@ public abstract class UserMapper {
         return stringSet;
     }
 
-    @Mapping(source = "bankCardsDtoSet", target = "bankCardsSet")
-    @Mapping(source = "shippingAddressDtoSet", target = "shippingAddressSet")
+    @Mapping(source = "bankCardDtos", target = "bankCardsSet")
+    @Mapping(source = "shippingAddressDtos", target = "shippingAddressSet")
     @Mapping(source = "passportDto", target = "passport")
     @Mapping(source = "roles", target = "rolesSet")
     public abstract User toEntity(UserDto userDto);

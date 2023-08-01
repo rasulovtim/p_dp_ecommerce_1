@@ -1,8 +1,6 @@
 package com.gitlab.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.gitlab.model.PickupPoint;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -17,8 +15,7 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Setter
-@JsonTypeName("PickupPointDto")
-public class PickupPointDto extends ShippingAddressDto{
+public class PickupPointDto extends ShippingAddressDto {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;

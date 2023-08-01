@@ -1,10 +1,10 @@
 package com.gitlab.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotNull;
@@ -13,8 +13,7 @@ import javax.validation.constraints.Size;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Setter
-@JsonTypeName("PostomatDto")
-public class PostomatDto extends ShippingAddressDto{
+public class PostomatDto extends ShippingAddressDto {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Schema(name = "id", example = "1", required = true)
