@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 - #task_number - short task description
+
+## [1.0.0] - 30.07.2023
 - #1 - added working schedule entity
 - #2 - entities personal_address, pickup_point, postomat where created, integrated into gazon-service and tested
 - #3 - created passport entity
@@ -15,8 +17,3 @@
 - #19 - added auto save open api docs. Added guide for postman
 - #36 - added Spring cloud gateway
 - #37 - added SearchProduct feature
-
-## [1.0.0]
-
-- #no_task example API
-- #no_task project documentation
