@@ -44,4 +44,5 @@ public class ReviewDto {
 
     @Range(min = 1, max = 2147483333, message = "Review's notHelpfulCounter should be between 0 and 2147483333")
     private Integer notHelpfulCounter;
+
 }

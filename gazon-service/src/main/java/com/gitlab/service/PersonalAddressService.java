@@ -14,6 +14,7 @@ public class PersonalAddressService {
 
     private final PersonalAddressRepository personalAddressRepository;
 
+
     public List<PersonalAddress> findAll() {
         return personalAddressRepository.findAll();
     }

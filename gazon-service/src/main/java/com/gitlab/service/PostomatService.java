@@ -34,7 +34,6 @@ public class PostomatService {
         } else {
             savedPostomat = optionalSavedPostomat.get();
         }
-
         if (postomat.getDirections() != null) {
             savedPostomat.setDirections(postomat.getDirections());
         }

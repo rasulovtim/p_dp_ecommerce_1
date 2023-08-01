@@ -2,8 +2,7 @@ package com.gitlab.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gitlab.model.Passport;
-import lombok.Data;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -13,8 +12,11 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
+
 @Data
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class PassportDto {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -57,4 +59,5 @@ public class PassportDto {
     @NotEmpty(message = "Passport's issuer number shouldn't be empty")
     @Size(min = 7, max = 7, message = "Passport number must consist of 7 characters")
     private String issuerNumber;
+
 }

@@ -1,15 +1,17 @@
 package com.gitlab.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Setter
-public class PersonalAddressDto {
+@AllArgsConstructor
+@NoArgsConstructor
+public class PersonalAddressDto extends ShippingAddressDto {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
@@ -38,4 +40,5 @@ public class PersonalAddressDto {
 
     @Size(max = 12, message = "Length of post code should not exceed 12 characters")
     private String postCode;
+
 }
