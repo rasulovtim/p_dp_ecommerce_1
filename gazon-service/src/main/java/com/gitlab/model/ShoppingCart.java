@@ -26,7 +26,7 @@ public class ShoppingCart {
 
     private Long totalWeight;
 
-  
+
     public ShoppingCart() {
     }
 
