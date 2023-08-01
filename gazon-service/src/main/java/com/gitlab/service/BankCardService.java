@@ -10,7 +10,6 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class BankCardService {
-
     private final BankCardRepository bankCardRepository;
 
     public List<BankCard> findAll () {

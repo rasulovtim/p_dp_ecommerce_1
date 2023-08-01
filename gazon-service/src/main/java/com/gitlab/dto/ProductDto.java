@@ -7,6 +7,7 @@ import org.hibernate.validator.constraints.Range;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
 
+
 @Data
 public class ProductDto {
 
@@ -43,5 +44,4 @@ public class ProductDto {
     @DecimalMax(value = "2147483333", message = "Product's price should be between 0.1 and 2147483333")
     @NotNull(message = "Product's price should not be empty")
     private BigDecimal price;
-
 }

@@ -7,6 +7,7 @@ import org.mapstruct.MappingConstants;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface PersonalAddressMapper {
+
     PersonalAddressDto toDto(PersonalAddress personalAddress);
 
     PersonalAddress toEntity(PersonalAddressDto personalAddressDto);
