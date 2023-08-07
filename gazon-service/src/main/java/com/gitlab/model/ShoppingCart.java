@@ -38,6 +38,8 @@ public class ShoppingCart {
         this.totalWeight = totalWeight;
     }
 
+
+
     public Long getUserId() {
         if (user != null) {
             return user.getId();

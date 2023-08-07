@@ -27,24 +27,22 @@ public class ShoppingCartService {
 
     public ShoppingCart createShoppingCart(ShoppingCart shoppingCart) {
         Long userId = shoppingCart.getUserId();
+        Optional<User> optionalUser = userService.findById(userId);
 
-        if (userId != null) {
-            Optional<User> optionalUser = userService.findById(userId);
-
-            if (optionalUser.isEmpty()) {
-
-                User newUser = new User();
-                newUser.setId(userId);
-                User savedUser = userService.save(newUser);
-                shoppingCart.setUser(savedUser);
-            } else {
-
-                shoppingCart.setUser(optionalUser.get());
-            }
+        if (optionalUser.isEmpty()) {
+            // Создаем нового пользователя, если не найден
+            User newUser = new User();
+            newUser.setId(userId);
+            User savedUser = userService.save(newUser);
+            shoppingCart.setUser(savedUser);
+        } else {
+            // Используем найденного пользователя
+            shoppingCart.setUser(optionalUser.get());
         }
 
         return shoppingCartRepository.save(shoppingCart);
     }
+
 
 
     public Optional<ShoppingCart> updateShoppingCart(Long id, ShoppingCart shoppingCart) {

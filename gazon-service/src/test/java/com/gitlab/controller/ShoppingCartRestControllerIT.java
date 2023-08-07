@@ -3,12 +3,15 @@ package com.gitlab.controller;
 import com.gitlab.dto.ShoppingCartDto;
 import com.gitlab.mapper.ShoppingCartMapper;
 import com.gitlab.model.ShoppingCart;
+import com.gitlab.model.User;
+import com.gitlab.repository.UserRepository;
 import com.gitlab.service.ShoppingCartService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Collections;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -17,7 +20,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
-
+    @Autowired
+    private UserRepository userRepository;
     private static final String SHOPPING_CART_URN = "/api/shopping_cart";
     private static final String SHOPPING_CART_URI = URL + SHOPPING_CART_URN;
 
@@ -50,19 +54,31 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_create_shoppingCart() throws Exception {
+        // Создаем и сохраняем пользователя в базе данных
+        User user = generateUser();
+        userRepository.save(user);
+
         ShoppingCartDto shoppingCartDto = generateShoppingCartDto();
+        shoppingCartDto.setUserId(user.getId()); // Устанавливаем ID пользователя
 
-        shoppingCartDto.setUserId(1L);
+        // Создаем объект ShoppingCart с заполненными полями
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setUser(user);
+        shoppingCart.setSelectedProducts(shoppingCartDto.getSelectedProducts());
+        shoppingCart.setSum(shoppingCartDto.getSum());
+        shoppingCart.setTotalWeight(shoppingCartDto.getTotalWeight());
 
-        String jsonShoppingCartDto = objectMapper.writeValueAsString(shoppingCartDto);
+        // Преобразуем объект ShoppingCart в JSON
+        String jsonShoppingCart = objectMapper.writeValueAsString(shoppingCart);
 
         mockMvc.perform(post(SHOPPING_CART_URI)
-                        .content(jsonShoppingCartDto)
+                        .content(jsonShoppingCart)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isCreated());
     }
+
 
 
 
@@ -116,19 +132,41 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
 
     private ShoppingCartDto generateShoppingCartDto() {
         ShoppingCartDto shoppingCartDto = new ShoppingCartDto();
-        shoppingCartDto.setUserId(1L);  // Установите корректное значение userId
+        shoppingCartDto.setId(1L); // Устанавливаем id
+        shoppingCartDto.setUserId(1L);
         shoppingCartDto.setSelectedProducts(Collections.singleton("product1"));
         shoppingCartDto.setSum(BigDecimal.valueOf(100));
         shoppingCartDto.setTotalWeight(500L);
-
         return shoppingCartDto;
     }
 
+
     private ShoppingCart generateShoppingCart() {
         ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setId(1L);
         shoppingCart.setSelectedProducts(Collections.singleton("product1"));
         shoppingCart.setSum(BigDecimal.valueOf(100));
         shoppingCart.setTotalWeight(500L);
         return shoppingCart;
     }
+    private User generateUser() {
+        User user = new User();
+        user.setId(1L); // Временное значение для тестирования
+        user.setEmail("test@example.com");
+        user.setPassword("password");
+        user.setSecurityQuestion("Security question");
+        user.setAnswerQuestion("Answer question");
+        user.setFirstName("John");
+        user.setLastName("Doe");
+        user.setBirthDate(LocalDate.of(1990, 1, 1));
+        user.setGender(User.Gender.MALE);
+        user.setPhoneNumber("1234567890");
+
+        // Установите остальные поля пользователя
+        user.setCreateDate(LocalDate.now());
+
+        return user;
+    }
+
+
 }
