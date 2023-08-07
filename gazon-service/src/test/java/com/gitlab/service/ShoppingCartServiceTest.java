@@ -39,7 +39,7 @@ class ShoppingCartServiceTest {
         updatedShoppingCart.setTotalWeight(250L);
         when(shoppingCartRepository.save(any(ShoppingCart.class))).thenReturn(updatedShoppingCart);
 
-        Optional<ShoppingCart> actualShoppingCart = shoppingCartService.update(id, updatedShoppingCart);
+        Optional<ShoppingCart> actualShoppingCart = shoppingCartService.updateShoppingCart(id, updatedShoppingCart);
 
         assertTrue(actualShoppingCart.isPresent());
         assertEquals(updatedShoppingCart, actualShoppingCart.get());
@@ -59,7 +59,7 @@ class ShoppingCartServiceTest {
         updatedShoppingCart.setSum(BigDecimal.valueOf(75.0));
         updatedShoppingCart.setTotalWeight(250L);
 
-        Optional<ShoppingCart> actualShoppingCart = shoppingCartService.update(id, updatedShoppingCart);
+        Optional<ShoppingCart> actualShoppingCart = shoppingCartService.updateShoppingCart(id, updatedShoppingCart);
 
         assertFalse(actualShoppingCart.isPresent());
         verify(shoppingCartRepository, times(1)).findById(id);
@@ -71,7 +71,7 @@ class ShoppingCartServiceTest {
         List<ShoppingCart> expectedShoppingCarts = generateShoppingCarts();
         when(shoppingCartRepository.findAll()).thenReturn(expectedShoppingCarts);
 
-        List<ShoppingCart> actualShoppingCarts = shoppingCartService.findAll();
+        List<ShoppingCart> actualShoppingCarts = shoppingCartService.getAllShoppingCarts();
 
         assertEquals(expectedShoppingCarts, actualShoppingCarts);
     }
@@ -82,7 +82,7 @@ class ShoppingCartServiceTest {
         ShoppingCart expectedShoppingCart = generateShoppingCart();
         when(shoppingCartRepository.findById(id)).thenReturn(Optional.of(expectedShoppingCart));
 
-        Optional<ShoppingCart> actualShoppingCart = shoppingCartService.findById(id);
+        Optional<ShoppingCart> actualShoppingCart = shoppingCartService.getShoppingCartById(id);
 
         assertTrue(actualShoppingCart.isPresent());
         assertEquals(expectedShoppingCart, actualShoppingCart.get());
@@ -93,7 +93,7 @@ class ShoppingCartServiceTest {
         long id = 1L;
         when(shoppingCartRepository.findById(id)).thenReturn(Optional.empty());
 
-        Optional<ShoppingCart> actualShoppingCart = shoppingCartService.findById(id);
+        Optional<ShoppingCart> actualShoppingCart = shoppingCartService.getShoppingCartById(id);
 
         assertFalse(actualShoppingCart.isPresent());
     }
@@ -101,16 +101,13 @@ class ShoppingCartServiceTest {
     @Test
     void should_delete_shoppingCart() {
         long id = 1L;
+        when(shoppingCartRepository.findById(id)).thenReturn(Optional.of(generateShoppingCart()));
 
-        when(shoppingCartRepository.findById(id)).thenReturn(Optional.empty());
+        boolean deleted = shoppingCartService.deleteShoppingCart(id);
 
-        shoppingCartService.deleteById(id);
-
-
-        verify(shoppingCartRepository, never()).deleteById(id);
+        assertTrue(deleted);
+        verify(shoppingCartRepository, times(1)).deleteById(id);
     }
-
-
 
 
     @Test
@@ -118,12 +115,11 @@ class ShoppingCartServiceTest {
         long id = 1L;
         when(shoppingCartRepository.findById(id)).thenReturn(Optional.empty());
 
-        shoppingCartService.deleteById(id);
+        boolean deleted = shoppingCartService.deleteShoppingCart(id);
 
+        assertFalse(deleted);
         verify(shoppingCartRepository, never()).deleteById(anyLong());
     }
-
-
 
     private ShoppingCart generateShoppingCart() {
         ShoppingCart shoppingCart = new ShoppingCart();
@@ -141,5 +137,4 @@ class ShoppingCartServiceTest {
                 new ShoppingCart(3L, null, new HashSet<>(), BigDecimal.valueOf(75.0), 300L)
         );
     }
-
 }
