@@ -27,17 +27,20 @@ public class ShoppingCartService {
 
     public ShoppingCart createShoppingCart(ShoppingCart shoppingCart) {
         Long userId = shoppingCart.getUserId();
-        Optional<User> optionalUser = userService.findById(userId);
 
-        if (optionalUser.isEmpty()) {
-            // Создаем нового пользователя, если не найден
-            User newUser = new User();
-            newUser.setId(userId);
-            User savedUser = userService.save(newUser);
-            shoppingCart.setUser(savedUser);
-        } else {
-            // Используем найденного пользователя
-            shoppingCart.setUser(optionalUser.get());
+        if (userId != null) {
+            Optional<User> optionalUser = userService.findById(userId);
+
+            if (optionalUser.isEmpty()) {
+
+                User newUser = new User();
+                newUser.setId(userId);
+                User savedUser = userService.save(newUser);
+                shoppingCart.setUser(savedUser);
+            } else {
+
+                shoppingCart.setUser(optionalUser.get());
+            }
         }
 
         return shoppingCartRepository.save(shoppingCart);
@@ -50,8 +53,8 @@ public class ShoppingCartService {
             return Optional.empty();
         }
         shoppingCart.setId(id);
-        shoppingCart.setSelectedProducts(existingShoppingCart.get().getSelectedProducts()); // Keep the existing selected products
-        shoppingCart.setUser(existingShoppingCart.get().getUser()); // Keep the existing user
+        shoppingCart.setSelectedProducts(existingShoppingCart.get().getSelectedProducts());
+        shoppingCart.setUser(existingShoppingCart.get().getUser());
         return Optional.of(shoppingCartRepository.save(shoppingCart));
     }
 

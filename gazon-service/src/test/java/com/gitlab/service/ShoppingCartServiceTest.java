@@ -31,8 +31,8 @@ class ShoppingCartServiceTest {
 
     @BeforeEach
     void setUp() {
-        userService = mock(UserService.class); // Инициализируем мок UserService
-        shoppingCartService = new ShoppingCartService(shoppingCartRepository, userService); // Используем нашу зависимость UserService
+        userService = mock(UserService.class);
+        shoppingCartService = new ShoppingCartService(shoppingCartRepository, userService);
     }
 
 

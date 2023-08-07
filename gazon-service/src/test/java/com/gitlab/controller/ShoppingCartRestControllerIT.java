@@ -52,7 +52,6 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
     void should_create_shoppingCart() throws Exception {
         ShoppingCartDto shoppingCartDto = generateShoppingCartDto();
 
-        // Установите корректный идентификатор пользователя
         shoppingCartDto.setUserId(1L);
 
         String jsonShoppingCartDto = objectMapper.writeValueAsString(shoppingCartDto);
@@ -64,6 +63,8 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isCreated());
     }
+
+
 
 
     @Test
