@@ -1,6 +1,7 @@
 package com.gitlab.service;
 
 import com.gitlab.model.ShoppingCart;
+import com.gitlab.model.User;
 import com.gitlab.repository.ShoppingCartRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import java.util.Optional;
 public class ShoppingCartService {
 
     private final ShoppingCartRepository shoppingCartRepository;
+    private final UserService userService;
 
     public List<ShoppingCart> getAllShoppingCarts() {
         return shoppingCartRepository.findAll();
@@ -24,8 +26,23 @@ public class ShoppingCartService {
     }
 
     public ShoppingCart createShoppingCart(ShoppingCart shoppingCart) {
+        Long userId = shoppingCart.getUserId();
+        Optional<User> optionalUser = userService.findById(userId);
+
+        if (optionalUser.isEmpty()) {
+            // Создаем нового пользователя, если не найден
+            User newUser = new User();
+            newUser.setId(userId);
+            User savedUser = userService.save(newUser);
+            shoppingCart.setUser(savedUser);
+        } else {
+            // Используем найденного пользователя
+            shoppingCart.setUser(optionalUser.get());
+        }
+
         return shoppingCartRepository.save(shoppingCart);
     }
+
 
     public Optional<ShoppingCart> updateShoppingCart(Long id, ShoppingCart shoppingCart) {
         Optional<ShoppingCart> existingShoppingCart = shoppingCartRepository.findById(id);
@@ -34,6 +51,7 @@ public class ShoppingCartService {
         }
         shoppingCart.setId(id);
         shoppingCart.setSelectedProducts(existingShoppingCart.get().getSelectedProducts()); // Keep the existing selected products
+        shoppingCart.setUser(existingShoppingCart.get().getUser()); // Keep the existing user
         return Optional.of(shoppingCartRepository.save(shoppingCart));
     }
 

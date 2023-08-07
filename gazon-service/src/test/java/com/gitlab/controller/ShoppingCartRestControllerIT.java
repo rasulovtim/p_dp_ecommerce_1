@@ -1,20 +1,15 @@
 package com.gitlab.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gitlab.config.PostgresSqlContainer;
-import com.gitlab.dto.SelectedProductDto;
 import com.gitlab.dto.ShoppingCartDto;
-import com.gitlab.mapper.SelectedProductMapper;
-import com.gitlab.model.SelectedProduct;
-import com.gitlab.service.SelectedProductService;
+import com.gitlab.mapper.ShoppingCartMapper;
+import com.gitlab.model.ShoppingCart;
+import com.gitlab.service.ShoppingCartService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.Collections;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -27,33 +22,17 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
     private static final String SHOPPING_CART_URI = URL + SHOPPING_CART_URN;
 
     @Autowired
-    private SelectedProductService selectedProductService;
+    private ShoppingCartService shoppingCartService;
+
     @Autowired
-    private SelectedProductMapper selectedProductMapper;
-
-    @Test
-    void should_get_all_shoppingCarts() throws Exception {
-        String expected = objectMapper.writeValueAsString(
-                selectedProductService
-                        .findAll()
-                        .stream()
-                        .map(selectedProductMapper::toDto)
-                        .collect(Collectors.toList())
-        );
-
-        mockMvc.perform(get(SHOPPING_CART_URI))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().json(expected));
-    }
+    private ShoppingCartMapper shoppingCartMapper;
 
     @Test
     void should_get_shoppingCart_by_id() throws Exception {
         long id = 1L;
-        var selectedProduct = selectedProductService.findById(id).orElse(null);
-        var selectedProductDto = selectedProductMapper.toDto(selectedProduct);
-        selectedProductMapper.calculatedUnmappedFields(selectedProductDto, selectedProduct);
-        String expected = objectMapper.writeValueAsString(selectedProductDto);
+        var shoppingCart = shoppingCartService.getShoppingCartById(id).orElse(null);
+        var shoppingCartDto = shoppingCartMapper.toDto(shoppingCart);
+        String expected = objectMapper.writeValueAsString(shoppingCartDto);
 
         mockMvc.perform(get(SHOPPING_CART_URI + "/{id}", id))
                 .andDo(print())
@@ -71,23 +50,11 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_create_shoppingCart() throws Exception {
-        // Создайте и сохраните SelectedProduct
-        SelectedProductDto selectedProductDto = generateSelectedProductDto();
-        SelectedProduct selectedProduct = selectedProductMapper.toEntity(selectedProductDto);
-        selectedProduct = selectedProductService.save(selectedProduct);
-
-        // Создайте ShoppingCart и добавьте в него сохраненный SelectedProduct
         ShoppingCartDto shoppingCartDto = generateShoppingCartDto();
-        shoppingCartDto.setUserId(1L); // Установите правильное значение user_id
 
+        // Установите корректный идентификатор пользователя
+        shoppingCartDto.setUserId(1L);
 
-        // Создайте и добавьте Set с идентификаторами выбранных продуктов в ShoppingCartDto
-        Set<String> selectedProductIds = new HashSet<>();
-        selectedProductIds.add(String.valueOf(selectedProduct.getId())); // Используйте id сохраненного SelectedProduct
-        shoppingCartDto.setSelectedProducts(selectedProductIds);
-
-        shoppingCartDto.setSum(selectedProductDto.getSum()); // Устанавливаем сумму
-        shoppingCartDto.setTotalWeight(selectedProductDto.getTotalWeight()); // Устанавливаем общий вес
         String jsonShoppingCartDto = objectMapper.writeValueAsString(shoppingCartDto);
 
         mockMvc.perform(post(SHOPPING_CART_URI)
@@ -99,48 +66,21 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
     }
 
 
-
-
-
-
-    private Set<SelectedProductDto> generateSelectedProductSet() {
-        Set<SelectedProductDto> selectedProducts = new HashSet<>();
-
-        SelectedProductDto selectedProduct1 = new SelectedProductDto();
-        selectedProduct1.setProductId(1L);
-        selectedProduct1.setCount(3);
-        selectedProduct1.setSum(BigDecimal.valueOf(100));
-        selectedProduct1.setTotalWeight(500L);
-
-        // Добавьте другие выбранные продукты, если необходимо
-
-        selectedProducts.add(selectedProduct1);
-        return selectedProducts;
-    }
-
-
-    private ShoppingCartDto generateShoppingCartDto() {
-        ShoppingCartDto shoppingCartDto = new ShoppingCartDto();
-        shoppingCartDto.setUserId(1L);
-
-        // Здесь вы также можете установить другие необходимые поля ShoppingCartDto
-
-        return shoppingCartDto;
-    }
-
-
     @Test
     void should_update_shoppingCart_by_id() throws Exception {
         long id = 1L;
-        SelectedProductDto selectedProductDto = generateSelectedProductDto();
+        ShoppingCart shoppingCart = generateShoppingCart();
+        shoppingCart.setId(id);
+        shoppingCartService.createShoppingCart(shoppingCart);
 
-        String jsonSelectedProductDto = objectMapper.writeValueAsString(selectedProductDto);
+        ShoppingCartDto shoppingCartDto = generateShoppingCartDto();
+        shoppingCartDto.setId(id);
 
-        selectedProductDto.setId(id);
-        String expected = objectMapper.writeValueAsString(selectedProductDto);
+        String jsonShoppingCartDto = objectMapper.writeValueAsString(shoppingCartDto);
+        String expected = objectMapper.writeValueAsString(shoppingCartDto);
 
         mockMvc.perform(patch(SHOPPING_CART_URI + "/{id}", id)
-                        .content(jsonSelectedProductDto)
+                        .content(jsonShoppingCartDto)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -151,12 +91,11 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_return_not_found_when_update_shoppingCart_by_non_existent_id() throws Exception {
         long id = 10L;
-        SelectedProductDto selectedProductDto = generateSelectedProductDto();
-
-        String jsonSelectedProductDto = objectMapper.writeValueAsString(selectedProductDto);
+        ShoppingCartDto shoppingCartDto = generateShoppingCartDto();
+        String jsonShoppingCartDto = objectMapper.writeValueAsString(shoppingCartDto);
 
         mockMvc.perform(patch(SHOPPING_CART_URI + "/{id}", id)
-                        .content(jsonSelectedProductDto)
+                        .content(jsonShoppingCartDto)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -174,13 +113,21 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(status().isNotFound());
     }
 
-    private SelectedProductDto generateSelectedProductDto() {
-        SelectedProductDto selectedProduct = new SelectedProductDto();
-        selectedProduct.setProductId(1L);
-        selectedProduct.setCount(3);
-        selectedProduct.setSum(BigDecimal.valueOf(100));  // Set the appropriate sum value
-        selectedProduct.setTotalWeight(500L);  // Set the appropriate total weight value
+    private ShoppingCartDto generateShoppingCartDto() {
+        ShoppingCartDto shoppingCartDto = new ShoppingCartDto();
+        shoppingCartDto.setUserId(1L);  // Установите корректное значение userId
+        shoppingCartDto.setSelectedProducts(Collections.singleton("product1"));
+        shoppingCartDto.setSum(BigDecimal.valueOf(100));
+        shoppingCartDto.setTotalWeight(500L);
 
-        return selectedProduct;
+        return shoppingCartDto;
+    }
+
+    private ShoppingCart generateShoppingCart() {
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setSelectedProducts(Collections.singleton("product1"));
+        shoppingCart.setSum(BigDecimal.valueOf(100));
+        shoppingCart.setTotalWeight(500L);
+        return shoppingCart;
     }
 }

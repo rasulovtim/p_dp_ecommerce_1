@@ -6,11 +6,11 @@ import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 class ShoppingCartMapperTest {
 
@@ -57,4 +57,40 @@ class ShoppingCartMapperTest {
         assertEquals(shoppingCartDto.getSum(), actualResult.getSum());
         assertEquals(shoppingCartDto.getSelectedProducts(), actualResult.getSelectedProducts());
     }
+
+    @Test
+    void should_map_null_shoppingCart_to_Dto() {
+        ShoppingCartDto dto = mapper.toDto(null);
+        assertNull(dto);
+    }
+
+    @Test
+    void should_map_null_shoppingCartDto_to_Entity() {
+        ShoppingCart entity = mapper.toEntity(null);
+        assertNull(entity);
+    }
+
+    @Test
+    void should_map_empty_selectedProducts_to_Dto() {
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setSelectedProducts(Collections.emptySet());
+
+        ShoppingCartDto dto = mapper.toDto(shoppingCart);
+
+        assertNotNull(dto);
+        assertTrue(dto.getSelectedProducts().isEmpty());
+    }
+
+    @Test
+    void should_map_empty_selectedProducts_to_Entity() {
+        ShoppingCartDto dto = new ShoppingCartDto();
+        dto.setSelectedProducts(Collections.emptySet());
+
+        ShoppingCart entity = mapper.toEntity(dto);
+
+        assertNotNull(entity);
+        assertTrue(entity.getSelectedProducts().isEmpty());
+    }
+
+    // Добавьте здесь еще тесты для других сценариев
 }

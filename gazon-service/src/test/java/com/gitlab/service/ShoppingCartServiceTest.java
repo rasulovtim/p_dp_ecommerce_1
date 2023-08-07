@@ -2,6 +2,7 @@ package com.gitlab.service;
 
 import com.gitlab.model.ShoppingCart;
 import com.gitlab.repository.ShoppingCartRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,9 +23,33 @@ class ShoppingCartServiceTest {
 
     @Mock
     private ShoppingCartRepository shoppingCartRepository;
+    @Mock
+    private UserService userService;
 
     @InjectMocks
     private ShoppingCartService shoppingCartService;
+
+    @BeforeEach
+    void setUp() {
+        userService = mock(UserService.class); // Инициализируем мок UserService
+        shoppingCartService = new ShoppingCartService(shoppingCartRepository, userService); // Используем нашу зависимость UserService
+    }
+
+
+    @Test
+    void should_create_shoppingCart() {
+        ShoppingCart shoppingCart = generateShoppingCart();
+        when(shoppingCartRepository.save(any(ShoppingCart.class))).thenReturn(shoppingCart);
+
+        ShoppingCart createdShoppingCart = shoppingCartService.createShoppingCart(shoppingCart);
+
+        assertNotNull(createdShoppingCart);
+        assertEquals(shoppingCart.getSelectedProducts(), createdShoppingCart.getSelectedProducts());
+        assertEquals(shoppingCart.getSum(), createdShoppingCart.getSum());
+        assertEquals(shoppingCart.getTotalWeight(), createdShoppingCart.getTotalWeight());
+
+        verify(shoppingCartRepository, times(1)).save(any(ShoppingCart.class));
+    }
 
     @Test
     void should_update_shoppingCart_when_exists() {
@@ -108,7 +133,6 @@ class ShoppingCartServiceTest {
         assertTrue(deleted);
         verify(shoppingCartRepository, times(1)).deleteById(id);
     }
-
 
     @Test
     void should_not_delete_shoppingCart_when_not_exists() {

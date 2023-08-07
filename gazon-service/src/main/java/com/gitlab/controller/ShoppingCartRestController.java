@@ -22,6 +22,7 @@ public class ShoppingCartRestController implements ShoppingCartRestApi {
     private final ShoppingCartService shoppingCartService;
     private final ShoppingCartMapper shoppingCartMapper;
 
+
     @Override
     public ResponseEntity<ShoppingCartDto> getById(Long id) {
         return shoppingCartService.getShoppingCartById(id)

@@ -37,4 +37,12 @@ public class ShoppingCart {
         this.sum = sum;
         this.totalWeight = totalWeight;
     }
+
+    public Long getUserId() {
+        if (user != null) {
+            return user.getId();
+        }
+        return null;
+    }
+
 }
