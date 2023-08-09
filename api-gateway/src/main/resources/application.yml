@@ -5,11 +5,9 @@ spring:
   application:
     name: api-gateway
 
-  cloud:
-    discovery:
-      locator:
-        enabled: true
-        lower-case-service-id: true
+  locator:
+    enabled: true
+    lower-case-service-id: true
 
   main:
     web-application-type: reactive
