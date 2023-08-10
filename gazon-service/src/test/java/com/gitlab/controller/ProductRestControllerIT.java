@@ -62,7 +62,7 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_return_not_found_when_get_product_by_non_existent_id() throws Exception {
-        long id = 10L;
+        long id = -10L;
         mockMvc.perform(get(PRODUCT_URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isNotFound());
@@ -116,7 +116,7 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_return_not_found_when_update_product_by_non_existent_id() throws Exception {
-        long id = 10L;
+        long id = -10L;
         ProductDto productDto = new ProductDto();
         productDto.setName("name1");
         productDto.setStockCount(1);

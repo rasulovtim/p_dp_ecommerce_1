@@ -18,3 +18,4 @@
 - #19 - added auto save open api docs. Added guide for postman
 - #36 - added Spring cloud gateway
 - #37 - added SearchProduct feature
+- #50 - added fifty products to product table
