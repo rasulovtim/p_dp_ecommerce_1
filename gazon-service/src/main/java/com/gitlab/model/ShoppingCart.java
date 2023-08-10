@@ -3,7 +3,6 @@ package com.gitlab.model;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.util.Set;
 
 @Data
@@ -15,30 +14,21 @@ public class ShoppingCart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> selectedProducts;
-
-    private BigDecimal sum;
-
-    private Long totalWeight;
-
 
     public ShoppingCart() {
     }
 
-    public ShoppingCart(Long id, User user, Set<String> selectedProducts, BigDecimal sum, Long totalWeight) {
+    public ShoppingCart(Long id, User user, Set<String> selectedProducts) {
         this.id = id;
         this.user = user;
         this.selectedProducts = selectedProducts;
-        this.sum = sum;
-        this.totalWeight = totalWeight;
     }
-
-
 
     public Long getUserId() {
         if (user != null) {
@@ -46,5 +36,6 @@ public class ShoppingCart {
         }
         return null;
     }
+
 
 }

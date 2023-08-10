@@ -5,7 +5,6 @@ import com.gitlab.model.ShoppingCart;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
-import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,8 +19,6 @@ class ShoppingCartMapperTest {
     void should_map_shoppingCart_to_Dto() {
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.setId(1L);
-        shoppingCart.setTotalWeight(100L);
-        shoppingCart.setSum(BigDecimal.valueOf(100.50));
 
         Set<String> selectedProducts = new HashSet<>();
         selectedProducts.add("Product1");
@@ -32,8 +29,6 @@ class ShoppingCartMapperTest {
 
         assertNotNull(actualResult);
         assertEquals(shoppingCart.getId(), actualResult.getId());
-        assertEquals(shoppingCart.getTotalWeight(), actualResult.getTotalWeight());
-        assertEquals(shoppingCart.getSum(), actualResult.getSum());
         assertEquals(shoppingCart.getSelectedProducts(), actualResult.getSelectedProducts());
     }
 
@@ -41,8 +36,6 @@ class ShoppingCartMapperTest {
     void should_map_shoppingCartDto_to_Entity() {
         ShoppingCartDto shoppingCartDto = new ShoppingCartDto();
         shoppingCartDto.setId(1L);
-        shoppingCartDto.setTotalWeight(100L);
-        shoppingCartDto.setSum(BigDecimal.valueOf(100.50));
 
         Set<String> selectedProducts = new HashSet<>();
         selectedProducts.add("Product1");
@@ -53,8 +46,6 @@ class ShoppingCartMapperTest {
 
         assertNotNull(actualResult);
         assertEquals(shoppingCartDto.getId(), actualResult.getId());
-        assertEquals(shoppingCartDto.getTotalWeight(), actualResult.getTotalWeight());
-        assertEquals(shoppingCartDto.getSum(), actualResult.getSum());
         assertEquals(shoppingCartDto.getSelectedProducts(), actualResult.getSelectedProducts());
     }
 
@@ -92,5 +83,5 @@ class ShoppingCartMapperTest {
         assertTrue(entity.getSelectedProducts().isEmpty());
     }
 
-    // Добавьте здесь еще тесты для других сценариев
+
 }

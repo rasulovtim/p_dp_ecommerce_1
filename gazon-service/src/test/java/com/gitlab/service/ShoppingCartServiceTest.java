@@ -9,7 +9,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -31,22 +30,18 @@ class ShoppingCartServiceTest {
 
     @BeforeEach
     void setUp() {
-        userService = mock(UserService.class);
         shoppingCartService = new ShoppingCartService(shoppingCartRepository, userService);
     }
-
 
     @Test
     void should_create_shoppingCart() {
         ShoppingCart shoppingCart = generateShoppingCart();
         when(shoppingCartRepository.save(any(ShoppingCart.class))).thenReturn(shoppingCart);
 
-        ShoppingCart createdShoppingCart = shoppingCartService.createShoppingCart(shoppingCart);
+        ShoppingCart createdShoppingCart = shoppingCartService.createShoppingCartForUser(shoppingCart);
 
         assertNotNull(createdShoppingCart);
         assertEquals(shoppingCart.getSelectedProducts(), createdShoppingCart.getSelectedProducts());
-        assertEquals(shoppingCart.getSum(), createdShoppingCart.getSum());
-        assertEquals(shoppingCart.getTotalWeight(), createdShoppingCart.getTotalWeight());
 
         verify(shoppingCartRepository, times(1)).save(any(ShoppingCart.class));
     }
@@ -60,8 +55,7 @@ class ShoppingCartServiceTest {
         ShoppingCart updatedShoppingCart = new ShoppingCart();
         updatedShoppingCart.setId(id);
         updatedShoppingCart.setSelectedProducts(Set.of("Product3", "Product4"));
-        updatedShoppingCart.setSum(BigDecimal.valueOf(75.0));
-        updatedShoppingCart.setTotalWeight(250L);
+
         when(shoppingCartRepository.save(any(ShoppingCart.class))).thenReturn(updatedShoppingCart);
 
         Optional<ShoppingCart> actualShoppingCart = shoppingCartService.updateShoppingCart(id, updatedShoppingCart);
@@ -81,8 +75,6 @@ class ShoppingCartServiceTest {
         ShoppingCart updatedShoppingCart = new ShoppingCart();
         updatedShoppingCart.setId(id);
         updatedShoppingCart.setSelectedProducts(Set.of("Product3", "Product4"));
-        updatedShoppingCart.setSum(BigDecimal.valueOf(75.0));
-        updatedShoppingCart.setTotalWeight(250L);
 
         Optional<ShoppingCart> actualShoppingCart = shoppingCartService.updateShoppingCart(id, updatedShoppingCart);
 
@@ -149,16 +141,15 @@ class ShoppingCartServiceTest {
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.setId(1L);
         shoppingCart.setSelectedProducts(Set.of("Product1", "Product2"));
-        shoppingCart.setSum(BigDecimal.valueOf(50.0));
-        shoppingCart.setTotalWeight(200L);
+
         return shoppingCart;
     }
 
     private List<ShoppingCart> generateShoppingCarts() {
         return List.of(
                 generateShoppingCart(),
-                new ShoppingCart(2L, null, new HashSet<>(), BigDecimal.valueOf(100.0), 400L),
-                new ShoppingCart(3L, null, new HashSet<>(), BigDecimal.valueOf(75.0), 300L)
+                new ShoppingCart(2L, null, new HashSet<>()),
+                new ShoppingCart(3L, null, new HashSet<>())
         );
     }
 }

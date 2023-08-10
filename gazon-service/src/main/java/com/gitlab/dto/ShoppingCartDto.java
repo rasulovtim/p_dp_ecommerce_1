@@ -27,6 +27,4 @@ public class ShoppingCartDto {
 
     @NotNull(message = "Total weight should not be null.")
     private Long totalWeight;
-
-
 }

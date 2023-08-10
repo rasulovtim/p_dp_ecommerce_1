@@ -25,18 +25,16 @@ public class ShoppingCartService {
         return shoppingCartRepository.findById(id);
     }
 
-    public ShoppingCart createShoppingCart(ShoppingCart shoppingCart) {
+    public ShoppingCart createShoppingCartForUser(ShoppingCart shoppingCart) {
         Long userId = shoppingCart.getUserId();
         Optional<User> optionalUser = userService.findById(userId);
 
         if (optionalUser.isEmpty()) {
-            // Создаем нового пользователя, если не найден
             User newUser = new User();
             newUser.setId(userId);
             User savedUser = userService.save(newUser);
             shoppingCart.setUser(savedUser);
         } else {
-            // Используем найденного пользователя
             shoppingCart.setUser(optionalUser.get());
         }
 
