@@ -3,6 +3,7 @@
 ## [Unreleased]
 - #task_number - short task description
 - #5 - added user entity
+- #no_task - added vaadin
 
 ## [1.0.0] - 30.07.2023
 - #1 - added working schedule entity
