@@ -16,7 +16,7 @@ public class AdminView extends HorizontalLayout {
 
     public AdminView() {
         name = new TextField("Your name");
-        Button sayHello = new Button("Say hello");
+        var sayHello = new Button("Say hello");
         sayHello.addClickListener(e -> Notification.show("Hello " + name.getValue()));
         sayHello.addClickShortcut(Key.ENTER);
         setMargin(true);
