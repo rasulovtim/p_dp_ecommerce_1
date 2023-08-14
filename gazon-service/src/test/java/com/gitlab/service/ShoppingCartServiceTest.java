@@ -1,15 +1,16 @@
 package com.gitlab.service;
 
+import com.gitlab.model.Product;
+import com.gitlab.model.SelectedProduct;
 import com.gitlab.model.ShoppingCart;
+import com.gitlab.model.User;
 import com.gitlab.repository.ShoppingCartRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -22,97 +23,72 @@ class ShoppingCartServiceTest {
 
     @Mock
     private ShoppingCartRepository shoppingCartRepository;
-    @Mock
-    private UserService userService;
-
     @InjectMocks
     private ShoppingCartService shoppingCartService;
 
-    @BeforeEach
-    void setUp() {
-        shoppingCartService = new ShoppingCartService(shoppingCartRepository, userService);
-    }
-
-    @Test
-    void should_create_shoppingCart() {
-        ShoppingCart shoppingCart = generateShoppingCart();
-        when(shoppingCartRepository.save(any(ShoppingCart.class))).thenReturn(shoppingCart);
-
-        ShoppingCart createdShoppingCart = shoppingCartService.createShoppingCartForUser(shoppingCart);
-
-        assertNotNull(createdShoppingCart);
-        assertEquals(shoppingCart.getSelectedProducts(), createdShoppingCart.getSelectedProducts());
-
-        verify(shoppingCartRepository, times(1)).save(any(ShoppingCart.class));
-    }
-
-    @Test
-    void should_update_shoppingCart_when_exists() {
-        long id = 1L;
-        ShoppingCart originalShoppingCart = generateShoppingCart();
-        when(shoppingCartRepository.findById(id)).thenReturn(Optional.of(originalShoppingCart));
-
-        ShoppingCart updatedShoppingCart = new ShoppingCart();
-        updatedShoppingCart.setId(id);
-        updatedShoppingCart.setSelectedProducts(Set.of("Product3", "Product4"));
-
-        when(shoppingCartRepository.save(any(ShoppingCart.class))).thenReturn(updatedShoppingCart);
-
-        Optional<ShoppingCart> actualShoppingCart = shoppingCartService.updateShoppingCart(id, updatedShoppingCart);
-
-        assertTrue(actualShoppingCart.isPresent());
-        assertEquals(updatedShoppingCart, actualShoppingCart.get());
-
-        verify(shoppingCartRepository, times(1)).findById(id);
-        verify(shoppingCartRepository, times(1)).save(updatedShoppingCart);
-    }
-
-    @Test
-    void should_not_update_shoppingCart_when_not_exists() {
-        long id = 1L;
-        when(shoppingCartRepository.findById(id)).thenReturn(Optional.empty());
-
-        ShoppingCart updatedShoppingCart = new ShoppingCart();
-        updatedShoppingCart.setId(id);
-        updatedShoppingCart.setSelectedProducts(Set.of("Product3", "Product4"));
-
-        Optional<ShoppingCart> actualShoppingCart = shoppingCartService.updateShoppingCart(id, updatedShoppingCart);
-
-        assertFalse(actualShoppingCart.isPresent());
-        verify(shoppingCartRepository, times(1)).findById(id);
-        verify(shoppingCartRepository, never()).save(any(ShoppingCart.class));
-    }
-
     @Test
     void should_find_all_shoppingCarts() {
-        List<ShoppingCart> expectedShoppingCarts = generateShoppingCarts();
-        when(shoppingCartRepository.findAll()).thenReturn(expectedShoppingCarts);
+        List<ShoppingCart> expectedResult = generateShoppingCarts();
+        when(shoppingCartRepository.findAll()).thenReturn(generateShoppingCarts());
 
-        List<ShoppingCart> actualShoppingCarts = shoppingCartService.getAllShoppingCarts();
+        List<ShoppingCart> actualResult = shoppingCartService.findAll();
 
-        assertEquals(expectedShoppingCarts, actualShoppingCarts);
+        assertEquals(expectedResult, actualResult);
     }
 
     @Test
     void should_find_shoppingCart_by_id() {
         long id = 1L;
-        ShoppingCart expectedShoppingCart = generateShoppingCart();
-        when(shoppingCartRepository.findById(id)).thenReturn(Optional.of(expectedShoppingCart));
+        ShoppingCart expectedResult = generateShoppingCart();
+        when(shoppingCartRepository.findById(id)).thenReturn(Optional.of(expectedResult));
 
-        Optional<ShoppingCart> actualShoppingCart = shoppingCartService.getShoppingCartById(id);
+        Optional<ShoppingCart> actualResult = shoppingCartService.findById(id);
 
-        assertTrue(actualShoppingCart.isPresent());
-        assertEquals(expectedShoppingCart, actualShoppingCart.get());
+        assertEquals(expectedResult, actualResult.orElse(null));
     }
 
     @Test
-    void should_not_find_shoppingCart_when_not_exists() {
+    void should_save_shoppingCart() {
+        ShoppingCart expectedResult = generateShoppingCart();
+        when(shoppingCartRepository.save(expectedResult)).thenReturn(expectedResult);
+
+        ShoppingCart actualResult = shoppingCartService.save(expectedResult);
+
+        assertEquals(expectedResult, actualResult);
+    }
+
+    @Test
+    void should_update_shoppingCart() {
+        long id = 2L;
+        ShoppingCart shoppingCartToUpdate = generateShoppingCart();
+
+        ShoppingCart shoppingCartBeforeUpdate = new ShoppingCart();
+        shoppingCartBeforeUpdate.setId(id);
+        shoppingCartBeforeUpdate.setUser(new User());
+        shoppingCartBeforeUpdate.setSelectedProducts(generateSelectedProducts());
+
+        ShoppingCart updatedShoppingCart = generateShoppingCart();
+        updatedShoppingCart.setId(id);
+
+        when(shoppingCartRepository.findById(id)).thenReturn(Optional.of(shoppingCartBeforeUpdate));
+        when(shoppingCartRepository.save(updatedShoppingCart)).thenReturn(updatedShoppingCart);
+
+        Optional<ShoppingCart> actualResult = shoppingCartService.update(id, shoppingCartToUpdate);
+
+        assertEquals(updatedShoppingCart, actualResult.orElse(null));
+    }
+
+    @Test
+    void should_not_update_shoppingCart_when_entity_not_found() {
         long id = 1L;
+        ShoppingCart shoppingCartToUpdate = generateShoppingCart();
+
         when(shoppingCartRepository.findById(id)).thenReturn(Optional.empty());
 
-        Optional<ShoppingCart> actualShoppingCart = shoppingCartService.getShoppingCartById(id);
+        Optional<ShoppingCart> actualResult = shoppingCartService.update(id, shoppingCartToUpdate);
 
-        assertFalse(actualShoppingCart.isPresent());
+        verify(shoppingCartRepository, never()).save(any());
+        assertNull(actualResult.orElse(null));
     }
 
     @Test
@@ -120,36 +96,61 @@ class ShoppingCartServiceTest {
         long id = 1L;
         when(shoppingCartRepository.findById(id)).thenReturn(Optional.of(generateShoppingCart()));
 
-        boolean deleted = shoppingCartService.deleteShoppingCart(id);
+        shoppingCartService.delete(id);
 
-        assertTrue(deleted);
-        verify(shoppingCartRepository, times(1)).deleteById(id);
+        verify(shoppingCartRepository).deleteById(id);
     }
 
     @Test
-    void should_not_delete_shoppingCart_when_not_exists() {
+    void should_not_delete_shoppingCart_when_entity_not_found() {
         long id = 1L;
         when(shoppingCartRepository.findById(id)).thenReturn(Optional.empty());
 
-        boolean deleted = shoppingCartService.deleteShoppingCart(id);
+        boolean deleted = shoppingCartService.delete(id);
 
         assertFalse(deleted);
         verify(shoppingCartRepository, never()).deleteById(anyLong());
     }
 
+
+
+    private List<ShoppingCart> generateShoppingCarts() {
+        return List.of(
+                generateShoppingCart(1L),
+                generateShoppingCart(2L),
+                generateShoppingCart(3L),
+                generateShoppingCart(4L),
+                generateShoppingCart(5L)
+        );
+    }
+
+    private ShoppingCart generateShoppingCart(Long id) {
+        ShoppingCart shoppingCart = generateShoppingCart();
+        shoppingCart.setId(id);
+        return shoppingCart;
+    }
+
     private ShoppingCart generateShoppingCart() {
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.setId(1L);
-        shoppingCart.setSelectedProducts(Set.of("Product1", "Product2"));
+        shoppingCart.setUser(new User());
+        shoppingCart.setSelectedProducts(generateSelectedProducts());
 
         return shoppingCart;
     }
 
-    private List<ShoppingCart> generateShoppingCarts() {
-        return List.of(
-                generateShoppingCart(),
-                new ShoppingCart(2L, null, new HashSet<>()),
-                new ShoppingCart(3L, null, new HashSet<>())
+    private Set<SelectedProduct> generateSelectedProducts() {
+        return Set.of(
+                generateSelectedProduct(1L),
+                generateSelectedProduct(2L)
         );
+    }
+
+    private SelectedProduct generateSelectedProduct(Long id) {
+        SelectedProduct selectedProduct = new SelectedProduct();
+        selectedProduct.setId(id);
+        selectedProduct.setProduct(new Product());
+        selectedProduct.setCount(1);
+        return selectedProduct;
     }
 }

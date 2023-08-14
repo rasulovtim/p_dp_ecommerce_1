@@ -1,67 +1,54 @@
 package com.gitlab.service;
 
 import com.gitlab.model.ShoppingCart;
-import com.gitlab.model.User;
 import com.gitlab.repository.ShoppingCartRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ShoppingCartService {
 
     private final ShoppingCartRepository shoppingCartRepository;
-    private final UserService userService;
 
-    public List<ShoppingCart> getAllShoppingCarts() {
+    public List<ShoppingCart> findAll() {
         return shoppingCartRepository.findAll();
     }
 
-    public Optional<ShoppingCart> getShoppingCartById(Long id) {
+    public Optional<ShoppingCart> findById(Long id) {
         return shoppingCartRepository.findById(id);
     }
 
-    public ShoppingCart createShoppingCartForUser(ShoppingCart shoppingCart) {
-        Long userId = shoppingCart.getUserId();
-        Optional<User> optionalUser = userService.findById(userId);
-
-        if (optionalUser.isEmpty()) {
-            User newUser = new User();
-            newUser.setId(userId);
-            User savedUser = userService.save(newUser);
-            shoppingCart.setUser(savedUser);
-        } else {
-            shoppingCart.setUser(optionalUser.get());
-        }
-
+    @Transactional
+    public ShoppingCart save(ShoppingCart shoppingCart) {
         return shoppingCartRepository.save(shoppingCart);
     }
 
-
-
-    public Optional<ShoppingCart> updateShoppingCart(Long id, ShoppingCart shoppingCart) {
-        Optional<ShoppingCart> existingShoppingCart = shoppingCartRepository.findById(id);
-        if (existingShoppingCart.isEmpty()) {
-            return Optional.empty();
+    @Transactional
+    public Optional<ShoppingCart> update(Long id, ShoppingCart shoppingCart) {
+        Optional<ShoppingCart> optionalShoppingCart = findById(id);
+        if (optionalShoppingCart.isPresent()) {
+            shoppingCart.setId(id);
+            return Optional.of(shoppingCartRepository.save(shoppingCart));
         }
-        shoppingCart.setId(id);
-        shoppingCart.setSelectedProducts(existingShoppingCart.get().getSelectedProducts());
-        shoppingCart.setUser(existingShoppingCart.get().getUser());
-        return Optional.of(shoppingCartRepository.save(shoppingCart));
+        return Optional.empty();
     }
 
-    public boolean deleteShoppingCart(Long id) {
-        Optional<ShoppingCart> shoppingCart = shoppingCartRepository.findById(id);
-        if (shoppingCart.isPresent()) {
+    @Transactional
+    public boolean delete(Long id) {
+        Optional<ShoppingCart> optionalShoppingCart = findById(id);
+
+        if (optionalShoppingCart.isPresent()) {
             shoppingCartRepository.deleteById(id);
             return true;
         }
+
         return false;
     }
-
 
 }

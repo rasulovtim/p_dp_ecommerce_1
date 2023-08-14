@@ -2,10 +2,12 @@ package com.gitlab.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import org.hibernate.validator.constraints.Range;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.util.Set;
 
@@ -15,16 +17,17 @@ public class ShoppingCartDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
-    @NotNull(message = "User ID should not be null.")
+    @NotNull(message = "ShoppingCart's userId should not be empty")
     private Long userId;
 
-    @NotEmpty(message = "At least one selected product should be present.")
-    @Size(min = 1, message = "At least one selected product should be present.")
-    private Set<String> selectedProducts;
+    private Set<SelectedProductDto> selectedProducts;
 
-    @NotNull(message = "Sum should not be null.")
+    @DecimalMin(value = "0", message = "SelectedProduct's sum should be between 0 and 9223372036854775000")
+    @DecimalMax(value = "9223372036854775000", message = "SelectedProduct's sum should be between 0 and 9223372036854775000")
+    @Digits(integer=20, fraction=3, message = "SelectedProduct sum's fractional part should not exceed 3 digits")
     private BigDecimal sum;
 
-    @NotNull(message = "Total weight should not be null.")
+    @Range(min = 0, max = Long.MAX_VALUE - 807L,
+            message = "SelectedProduct's totalWeight should be between 0 and 9223372036854775000")
     private Long totalWeight;
 }

@@ -10,48 +10,53 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-@Api(tags = "Shopping Cart REST")
-@Tag(name = "Shopping Cart REST", description = "API for managing shopping carts")
-@RequestMapping("/api/shopping-carts")
+@Api(tags = "ShoppingCart REST")
+@Tag(name = "ShoppingCart REST", description = "ShoppingCart API description")
+@RequestMapping("/api/shopping_cart")
 public interface ShoppingCartRestApi {
 
-    @GetMapping("/{id}")
-    @ApiOperation(value = "Get Shopping Cart by id")
+    @GetMapping
+    @ApiOperation(value = "Get all ShoppingCarts")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Shopping Cart found"),
-            @ApiResponse(code = 404, message = "Shopping Cart not found")}
+            @ApiResponse(code = 200, message = "ShoppingCarts found"),
+            @ApiResponse(code = 204, message = "ShoppingCarts not present")}
+    )
+    ResponseEntity<List<ShoppingCartDto>> getAll();
+
+    @GetMapping("/{id}")
+    @ApiOperation(value = "Get ShoppingCart by id")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "ShoppingCart found"),
+            @ApiResponse(code = 404, message = "ShoppingCart not found")}
     )
     ResponseEntity<ShoppingCartDto> get(@ApiParam(name = "id", value = "ShoppingCart.id") @PathVariable Long id);
 
     @PostMapping
-    @ApiOperation(value = "Create Shopping Cart")
+    @ApiOperation(value = "Create ShoppingCart")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Shopping Cart created"),
-            @ApiResponse(code = 400, message = "Shopping Cart not created")}
+            @ApiResponse(code = 201, message = "ShoppingCart created"),
+            @ApiResponse(code = 400, message = "ShoppingCart not created")}
     )
-    ResponseEntity<ShoppingCartDto> create(@ApiParam(name = "shoppingCart", value = "ShoppingCartDto") @Valid @RequestBody ShoppingCartDto shoppingCartDto);
+    ResponseEntity<ShoppingCartDto> create(@ApiParam(name = "ShoppingCart", value = "ShoppingCartDto")
+                                           @Valid @RequestBody ShoppingCartDto shoppingCartDto);
 
     @PatchMapping("/{id}")
-    @ApiOperation(value = "Update Shopping Cart")
+    @ApiOperation(value = "Update ShoppingCart")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Shopping Cart updated"),
-            @ApiResponse(code = 400, message = "Shopping Cart not updated")}
+            @ApiResponse(code = 200, message = "ShoppingCart updated"),
+            @ApiResponse(code = 404, message = "Previous ShoppingCart not found"),
+            @ApiResponse(code = 400, message = "ShoppingCart not updated")}
     )
     ResponseEntity<ShoppingCartDto> update(@ApiParam(name = "id", value = "ShoppingCart.id") @PathVariable Long id,
-                                           @ApiParam(name = "shoppingCart", value = "ShoppingCartDto") @Valid @RequestBody ShoppingCartDto shoppingCartDto);
+                                           @ApiParam(name = "ShoppingCart", value = "ShoppingCartDto")
+                                           @Valid @RequestBody ShoppingCartDto shoppingCartDto);
 
     @DeleteMapping("/{id}")
-    @ApiOperation(value = "Delete Shopping Cart by id")
+    @ApiOperation(value = "Delete ShoppingCart by id")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Shopping Cart deleted"),
-            @ApiResponse(code = 404, message = "Shopping Cart not found")}
+            @ApiResponse(code = 200, message = "ShoppingCart deleted"),
+            @ApiResponse(code = 404, message = "ShoppingCart not found")}
     )
     ResponseEntity<Void> delete(@ApiParam(name = "id", value = "ShoppingCart.id") @PathVariable Long id);
-
-    @GetMapping
-    @ApiOperation(value = "Get all Shopping Carts")
-    @ApiResponse(code = 200, message = "List of Shopping Carts")
-    List<ShoppingCartDto> getAll();
-
 
 }

@@ -4,12 +4,17 @@ import com.gitlab.dto.ShoppingCartDto;
 import com.gitlab.model.ShoppingCart;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
+import org.springframework.beans.factory.annotation.Autowired;
 
-@Mapper(componentModel = "spring")
-public interface ShoppingCartMapper {
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+public abstract class ShoppingCartMapper {
 
-    ShoppingCartDto toDto(ShoppingCart shoppingCart);
+    @Autowired
+    protected SelectedProductMapper selectedProductMapper;
 
-    @Mapping(source = "userId", target = "user.id") // Map userId to user.id
-    ShoppingCart toEntity(ShoppingCartDto shoppingCartDto);
+    @Mapping(source = "user.id", target = "userId")
+    public abstract ShoppingCartDto toDto(ShoppingCart shoppingCart);
+
+    public abstract ShoppingCart toEntity(ShoppingCartDto shoppingCartDto);
 }
