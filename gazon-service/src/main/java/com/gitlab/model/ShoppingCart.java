@@ -2,15 +2,16 @@ package com.gitlab.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(exclude = "selectedProducts")
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "shopping_cart")
@@ -20,13 +21,11 @@ public class ShoppingCart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)
+    @OneToOne(optional = false)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @JsonBackReference
     private User user;
 
-    @OneToMany(mappedBy = "shoppingCart")
-    @JsonManagedReference
+    @OneToMany(mappedBy = "shoppingCart", fetch = FetchType.EAGER)
     private Set<SelectedProduct> selectedProducts;
 }
 

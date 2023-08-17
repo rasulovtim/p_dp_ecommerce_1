@@ -9,7 +9,9 @@ import org.hibernate.Hibernate;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,43 +31,7 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
     @Autowired
     private ShoppingCartMapper shoppingCartMapper;
 
-    @Test
-    void should_get_all_shoppingCarts() throws Exception {
-        List<ShoppingCart> shoppingCarts = shoppingCartService.findAll();
-
-        List<ShoppingCartDto> shoppingCartDtos = new ArrayList<>();
-
-        for (ShoppingCart shoppingCart : shoppingCarts) {
-            // Инициализируем коллекцию selectedProducts в пределах транзакции
-            Hibernate.initialize(shoppingCart.getSelectedProducts());
-
-            ShoppingCartDto shoppingCartDto = shoppingCartMapper.toDto(shoppingCart);
-            shoppingCartDtos.add(shoppingCartDto);
-        }
-
-        String expected = objectMapper.writeValueAsString(shoppingCartDtos);
-
-        mockMvc.perform(get(SHOPPING_CART_URI))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().json(expected));
-    }
-
-
-
-    @Test
-    void should_get_shoppingCart_by_id() throws Exception {
-        long id = 1L;
-        var shoppingCart = shoppingCartService.findById(id).orElse(null);
-        var shoppingCartDto = shoppingCartMapper.toDto(shoppingCart);
-        String expected = objectMapper.writeValueAsString(shoppingCartDto);
-
-        mockMvc.perform(get(SHOPPING_CART_URI + "/{id}", id))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().json(expected));
-    }
-
+    @Transactional
     @Test
     void should_return_not_found_when_get_shoppingCart_by_non_existent_id() throws Exception {
         long id = 10L;
@@ -87,7 +53,7 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isCreated());
     }
-
+    @Transactional
     @Test
     void should_update_shoppingCart_by_id() throws Exception {
         long id = 1L;
@@ -106,7 +72,7 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
     }
-
+    @Transactional
     @Test
     void should_return_not_found_when_update_shoppingCart_by_non_existent_id() throws Exception {
         long id = 10L;
@@ -121,10 +87,35 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
+    @Test
+    void should_get_all_shoppingCarts() throws Exception {
+        List<ShoppingCartDto> shoppingCarts = shoppingCartService.findAll().stream().map(shoppingCartMapper::toDto).toList();
+        String expected = objectMapper.writeValueAsString(shoppingCarts);
 
+        mockMvc.perform(get(SHOPPING_CART_URI))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(expected));
+   }
+
+
+    @Test
+    void should_get_shoppingCart_by_id() throws Exception {
+        long id = 1L;
+        var shoppingCart = shoppingCartService.findById(id).orElse(null);
+        var shoppingCartDto = shoppingCartMapper.toDto(shoppingCart);
+        String expected = objectMapper.writeValueAsString(shoppingCartDto);
+
+        mockMvc.perform(get(SHOPPING_CART_URI + "/{id}", id))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(expected));
+    }
+    @Transactional
     @Test
     void should_delete_shoppingCart_by_id() throws Exception {
         long id = 2L;
+
         mockMvc.perform(delete(SHOPPING_CART_URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -132,4 +123,9 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
+
+
+
+
+
 }

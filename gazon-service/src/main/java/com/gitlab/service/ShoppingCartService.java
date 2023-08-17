@@ -5,18 +5,15 @@ import com.gitlab.model.User;
 import com.gitlab.repository.ShoppingCartRepository;
 import com.gitlab.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
-import lombok.extern.slf4j.Slf4j;
-
-import javax.persistence.EntityNotFoundException;
-
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Slf4j
 public class ShoppingCartService {
@@ -34,13 +31,27 @@ public class ShoppingCartService {
         return shoppingCartRepository.findById(id);
     }
 
+    /*
+    @Transactional
+public Optional<ShoppingCart> findById(Long id) {
+    log.info("Getting shopping cart by ID: {}", id);
+    Optional<ShoppingCart> optionalShoppingCart = shoppingCartRepository.findById(id);
+
+    optionalShoppingCart.ifPresent(shoppingCart -> {
+        Hibernate.initialize(shoppingCart.getSelectedProducts());
+    });
+
+    return optionalShoppingCart;
+}
+
+     */
+
     @Transactional
     public ShoppingCart save(ShoppingCart shoppingCart) {
         log.info("Saving shopping cart: {}", shoppingCart);
 
 
-        User user = userRepository.findById(shoppingCart.getUser().getId())
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        User user = userRepository.findById(shoppingCart.getUser().getId()).orElseThrow(() -> new EntityNotFoundException("User not found"));
 
         shoppingCart.setUser(user);
         return shoppingCartRepository.save(shoppingCart);
