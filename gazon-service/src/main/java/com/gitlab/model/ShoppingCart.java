@@ -1,5 +1,7 @@
 package com.gitlab.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,8 +22,12 @@ public class ShoppingCart {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JsonBackReference
     private User user;
 
     @OneToMany(mappedBy = "shoppingCart")
+    @JsonManagedReference
     private Set<SelectedProduct> selectedProducts;
 }
+
+

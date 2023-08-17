@@ -1,13 +1,15 @@
 package com.gitlab.mapper;
 
+import com.gitlab.dto.SelectedProductDto;
 import com.gitlab.dto.ShoppingCartDto;
+import com.gitlab.model.SelectedProduct;
 import com.gitlab.model.ShoppingCart;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingConstants;
+import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+import java.util.Set;
+
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = SelectedProductMapper.class)
 public abstract class ShoppingCartMapper {
 
     @Autowired
@@ -16,5 +18,21 @@ public abstract class ShoppingCartMapper {
     @Mapping(source = "user.id", target = "userId")
     public abstract ShoppingCartDto toDto(ShoppingCart shoppingCart);
 
+    @Mapping(source = "selectedProducts", target = "selectedProducts")
+    @Mapping(source = "userId", target = "user.id")
     public abstract ShoppingCart toEntity(ShoppingCartDto shoppingCartDto);
+
+    @AfterMapping
+    protected void updateSelectedProducts(ShoppingCartDto dto, @MappingTarget ShoppingCart entity) {
+        if (dto.getSelectedProducts() != null) {
+            entity.getSelectedProducts().forEach(selectedProduct ->
+                    selectedProductMapper.calculatedUnmappedFields(selectedProductMapper.toDto(selectedProduct), selectedProduct)
+            );
+        }
+    }
+
+    protected abstract Set<SelectedProduct> toSelectedProductSet(Set<SelectedProductDto> selectedProducts);
 }
+
+
+
