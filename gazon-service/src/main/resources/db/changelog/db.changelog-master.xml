@@ -55,12 +55,12 @@
     </changeSet>
 
     <include file="v-1.9-user/db.changelog-v-1.9.xml" relativeToChangelogFile="true"/>
-    <changeSet id="1.9" author="mark_morev">
+    <changeSet id="1.8" author="mark_morev">
         <tagDatabase tag="v-1.9"/>
     </changeSet>
 
-    <include file="v-1.10-shoppingCart/db.changelog-v1.10.xml" relativeToChangelogFile="true"/>
-    <changeSet id="1.10" author="aleksandr_shibaev" >
+    <include file="v-1.10/db.changelog-v-1.10.xml" relativeToChangelogFile="true"/>
+    <changeSet id="1.10" author="evgeniy_gokov">
         <tagDatabase tag="v-1.10"/>
     </changeSet>
 

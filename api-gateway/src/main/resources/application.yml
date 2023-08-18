@@ -2,6 +2,13 @@ server:
   port: 8081
 
 spring:
+  application:
+    name: api-gateway
+
+  locator:
+    enabled: true
+    lower-case-service-id: true
+
   main:
     web-application-type: reactive
   liquibase:
