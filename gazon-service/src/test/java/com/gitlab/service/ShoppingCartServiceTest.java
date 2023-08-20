@@ -5,6 +5,7 @@ import com.gitlab.model.SelectedProduct;
 import com.gitlab.model.ShoppingCart;
 import com.gitlab.model.User;
 import com.gitlab.repository.ShoppingCartRepository;
+import com.gitlab.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,10 +22,14 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class ShoppingCartServiceTest {
 
-    @Mock
-    private ShoppingCartRepository shoppingCartRepository;
     @InjectMocks
     private ShoppingCartService shoppingCartService;
+
+    @Mock
+    private ShoppingCartRepository shoppingCartRepository;
+
+    @Mock
+    private UserRepository userRepository;
 
     @Test
     void should_find_all_shoppingCarts() {
@@ -47,9 +52,14 @@ class ShoppingCartServiceTest {
         assertEquals(expectedResult, actualResult.orElse(null));
     }
 
+
     @Test
     void should_save_shoppingCart() {
         ShoppingCart expectedResult = generateShoppingCart();
+
+        when(userRepository.findById(expectedResult.getUser().getId())).thenReturn(Optional.of(expectedResult.getUser()));
+
+
         when(shoppingCartRepository.save(expectedResult)).thenReturn(expectedResult);
 
         ShoppingCart actualResult = shoppingCartService.save(expectedResult);
@@ -111,7 +121,6 @@ class ShoppingCartServiceTest {
         assertFalse(deleted);
         verify(shoppingCartRepository, never()).deleteById(anyLong());
     }
-
 
 
     private List<ShoppingCart> generateShoppingCarts() {

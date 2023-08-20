@@ -31,20 +31,6 @@ public class ShoppingCartService {
         return shoppingCartRepository.findById(id);
     }
 
-    /*
-    @Transactional
-public Optional<ShoppingCart> findById(Long id) {
-    log.info("Getting shopping cart by ID: {}", id);
-    Optional<ShoppingCart> optionalShoppingCart = shoppingCartRepository.findById(id);
-
-    optionalShoppingCart.ifPresent(shoppingCart -> {
-        Hibernate.initialize(shoppingCart.getSelectedProducts());
-    });
-
-    return optionalShoppingCart;
-}
-
-     */
 
     @Transactional
     public ShoppingCart save(ShoppingCart shoppingCart) {
