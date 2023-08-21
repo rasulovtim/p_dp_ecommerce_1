@@ -50,11 +50,15 @@ public abstract class UserMapper {
             return Collections.emptySet();
         }
         for (String roleName : stringSet) {
-            Optional<Role> role = roleService.findByName(roleName);
-            role.ifPresent(roleSet::add);
+            Optional<Role> roleOptional = roleService.findByName(roleName);
+            if (roleOptional.isPresent()) {
+                Role role = roleOptional.get();
+                roleSet.add(role);
+            }
         }
         return roleSet;
     }
+
 
     @Named("createShippingAddress")
     public ShippingAddress createShippingAddress(ShippingAddressDto dto) {
