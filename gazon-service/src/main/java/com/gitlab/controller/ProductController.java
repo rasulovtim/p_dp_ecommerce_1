@@ -95,7 +95,7 @@ public class ProductController implements ProductRestApi {
 
         List<ProductImage> imageList = new ArrayList<>();
         for (MultipartFile file : files) {
-            ProductImage image = new ProductImage();
+            var image = new ProductImage();
             image.setSomeProduct(product.get());
             image.setName(file.getOriginalFilename());
             image.setData(ImageUtils.compressImage(file.getBytes()));

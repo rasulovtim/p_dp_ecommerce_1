@@ -55,7 +55,7 @@ public class ProductImageController implements ProductImageRestApi {
         if (productImage.isEmpty())
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
-        ProductImage imageToBeUpdated = new ProductImage();
+        var imageToBeUpdated = new ProductImage();
         imageToBeUpdated.setName(file.getOriginalFilename());
         imageToBeUpdated.setData(ImageUtils.compressImage(file.getBytes()));
 

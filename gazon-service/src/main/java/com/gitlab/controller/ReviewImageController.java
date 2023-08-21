@@ -53,7 +53,7 @@ public class ReviewImageController implements ReviewImageRestApi {
 
         if (reviewImage.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
-        ReviewImage imageToBeUpdated = new ReviewImage();
+        var imageToBeUpdated = new ReviewImage();
         imageToBeUpdated.setName(file.getOriginalFilename());
         imageToBeUpdated.setData(ImageUtils.compressImage(file.getBytes()));
 
