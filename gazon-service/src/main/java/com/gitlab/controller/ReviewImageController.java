@@ -2,7 +2,6 @@ package com.gitlab.controller;
 
 import com.gitlab.controller.api.ReviewImageRestApi;
 import com.gitlab.dto.ReviewImageDto;
-import com.gitlab.mapper.ReviewImageMapper;
 import com.gitlab.model.ReviewImage;
 import com.gitlab.service.ReviewImageService;
 import com.gitlab.util.ImageUtils;
@@ -21,7 +20,6 @@ import java.util.Optional;
 public class ReviewImageController implements ReviewImageRestApi {
 
     private final ReviewImageService reviewImageService;
-    private final ReviewImageMapper reviewImageMapper;
 
     @Override
     public ResponseEntity<long[]> getAll() {
@@ -34,34 +32,47 @@ public class ReviewImageController implements ReviewImageRestApi {
 
     @Override
     public ResponseEntity<?> get(Long id) {
-        Optional<ReviewImage> reviewImage = reviewImageService.findById(id);
+        Optional<ReviewImageDto> reviewImageDto = reviewImageService.findByIdDto(id);
 
-        if (reviewImage.isEmpty()) return ResponseEntity.notFound().build();
+        if (reviewImageDto.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
 
-        if (reviewImage.get().getData().length < 60) return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT)
-                .contentType(MediaType.APPLICATION_JSON).body(reviewImageMapper.toDto(reviewImage.get()));
+        ReviewImageDto dto = reviewImageDto.get();
 
-        return reviewImage.map(image -> ResponseEntity.status(HttpStatus.OK)
+        if (dto.getData().length < 60) {
+            return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(dto);
+        }
+
+        byte[] decompressedData = ImageUtils.decompressImage(dto.getData());
+
+        return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(MediaType.IMAGE_JPEG_VALUE))
-                .body(ImageUtils.decompressImage(image.getData()))).orElse(null);
-
+                .body(decompressedData);
     }
 
     @Override
     public ResponseEntity<ReviewImageDto> update(MultipartFile file, Long id) throws IOException {
-        Optional<ReviewImage> reviewImage = reviewImageService.findById(id);
+        Optional<ReviewImageDto> reviewImageDto = reviewImageService.findByIdDto(id);
 
-        if (reviewImage.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        if (reviewImageDto.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
 
-        var imageToBeUpdated = new ReviewImage();
-        imageToBeUpdated.setName(file.getOriginalFilename());
-        imageToBeUpdated.setData(ImageUtils.compressImage(file.getBytes()));
+        var dtoToBeUpdated = new ReviewImageDto();
+        dtoToBeUpdated.setName(file.getOriginalFilename());
+        dtoToBeUpdated.setData(ImageUtils.compressImage(file.getBytes()));
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(ImageUtils.reviewImageDtoDecompressed(reviewImageMapper
-                        .toDto(reviewImageService
-                                .update(id, imageToBeUpdated).orElse(null))));
+        Optional<ReviewImageDto> updatedDto = reviewImageService.updateDto(id, dtoToBeUpdated);
 
+        if (updatedDto.isPresent()) {
+            ReviewImageDto decompressedDto = ImageUtils.reviewImageDtoDecompressed(updatedDto.get());
+            return ResponseEntity.status(HttpStatus.OK).body(decompressedDto);
+        }
+
+        return ResponseEntity.notFound().build();
     }
 
     @Override

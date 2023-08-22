@@ -2,7 +2,6 @@ package com.gitlab.controller;
 
 import com.gitlab.controller.api.ProductRestApi;
 import com.gitlab.dto.ProductDto;
-import com.gitlab.mapper.ProductMapper;
 import com.gitlab.model.Product;
 import com.gitlab.model.ProductImage;
 import com.gitlab.service.ProductImageService;
@@ -24,41 +23,41 @@ import java.util.Optional;
 public class ProductController implements ProductRestApi {
 
     private final ProductService productService;
-    private final ProductMapper productMapper;
+
     private final ProductImageService productImageService;
 
     @Override
     public ResponseEntity<List<ProductDto>> getAll() {
-        var products = productService.findAll();
+        var productDtos = productService.findAllDto();
 
-        return products.isEmpty() ?
+        return productDtos.isEmpty() ?
                 ResponseEntity.noContent().build() :
-                ResponseEntity.ok(products.stream().map(productMapper::toDto).toList());
+                ResponseEntity.ok(productDtos);
     }
 
     @Override
     public ResponseEntity<ProductDto> get(Long id) {
-        Optional<Product> productOptional = productService.findById(id);
+        Optional<ProductDto> productDtoOptional = productService.findByIdDto(id);
 
-        return productOptional.map(productMapper::toDto)
-                .map(productDto -> ResponseEntity.status(HttpStatus.OK).body(productDto))
+        return productDtoOptional.map(productDto -> ResponseEntity.status(HttpStatus.OK).body(productDto))
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @Override
     public ResponseEntity<ProductDto> create(ProductDto productDto) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(productMapper
-                        .toDto(productService
-                                .save(productMapper
-                                        .toEntity(productDto))));
+        ProductDto createdProductDto = productService.createDto(productDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdProductDto);
     }
 
     @Override
     public ResponseEntity<ProductDto> update(Long id, ProductDto productDto) {
-        return productService.update(id, productMapper.toEntity(productDto))
-                .map(product -> ResponseEntity.ok(productMapper.toDto(product)))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        Optional<ProductDto> updatedProductDtoOptional = productService.updateDto(id, productDto);
+
+        if (updatedProductDtoOptional.isPresent()) {
+            return ResponseEntity.ok(updatedProductDtoOptional.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @Override

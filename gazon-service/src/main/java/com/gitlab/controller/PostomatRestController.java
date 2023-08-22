@@ -2,7 +2,6 @@ package com.gitlab.controller;
 
 import com.gitlab.controller.api.PostomatRestApi;
 import com.gitlab.dto.PostomatDto;
-import com.gitlab.mapper.PostomatMapper;
 import com.gitlab.service.PostomatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,42 +19,43 @@ import java.util.List;
 public class PostomatRestController implements PostomatRestApi {
 
     private final PostomatService postomatService;
-    private final PostomatMapper postomatMapper;
 
     @Override
     public ResponseEntity<List<PostomatDto>> getAll() {
-        var postomats = postomatService.findAll();
-        return postomats.isEmpty() ?
-                ResponseEntity.noContent().build() :
-                ResponseEntity.ok(postomats.stream().map(postomatMapper::toDto).toList());
+        List<PostomatDto> postomatDtos = postomatService.findAllDto();
+
+        if (postomatDtos.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(postomatDtos);
+        }
     }
 
     @Override
     public ResponseEntity<PostomatDto> get(Long id) {
-        return postomatService.findById(id)
-                .map(value -> ResponseEntity.ok(postomatMapper.toDto(value)))
+        return postomatService.findByIdDto(id)
+                .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @Override
     public ResponseEntity<PostomatDto> create(PostomatDto postomatDto) {
+        PostomatDto createdPostomatDto = postomatService.saveDto(postomatDto);
+
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(postomatMapper
-                        .toDto(postomatService
-                                .save(postomatMapper
-                                        .toEntity(postomatDto))));
+                .body(createdPostomatDto);
     }
 
     @Override
     public ResponseEntity<PostomatDto> update(Long id, PostomatDto postomatDto) {
-        return postomatService.update(id, postomatMapper.toEntity(postomatDto))
-                .map(value -> ResponseEntity.ok(postomatMapper.toDto(value)))
+        return postomatService.updateDto(id, postomatDto)
+                .map(value -> ResponseEntity.ok(value))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @Override
     public ResponseEntity<Void> delete(Long id) {
-        return postomatService.delete(id).isEmpty() ?
+        return postomatService.deleteDto(id).isEmpty() ?
                 ResponseEntity.notFound().build() :
                 ResponseEntity.ok().build();
     }

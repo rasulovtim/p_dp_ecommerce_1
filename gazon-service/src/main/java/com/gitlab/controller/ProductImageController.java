@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,7 +34,7 @@ public class ProductImageController implements ProductImageRestApi {
     }
 
     @Override
-    public ResponseEntity<?> get(Long id) {
+    public ResponseEntity<?> get(@PathVariable Long id) {
         Optional<ProductImage> productImage = productImageService.findById(id);
         if (productImage.isEmpty())
             return ResponseEntity.notFound().build();
@@ -43,13 +44,14 @@ public class ProductImageController implements ProductImageRestApi {
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(productImageMapper.toDto(productImage.get()));
 
-        return productImage.map(image -> ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.parseMediaType(MediaType.IMAGE_JPEG_VALUE))
-                .body(ImageUtils.decompressImage(image.getData()))).orElse(null);
+        return productImage.map(image ->
+                ResponseEntity.status(HttpStatus.OK)
+                        .contentType(MediaType.parseMediaType(MediaType.IMAGE_JPEG_VALUE))
+                        .body(ImageUtils.decompressImage(image.getData()))).orElse(null);
     }
 
     @Override
-    public ResponseEntity<ProductImageDto> update(MultipartFile file, Long id) throws IOException {
+    public ResponseEntity<ProductImageDto> update(MultipartFile file, @PathVariable Long id) throws IOException {
         Optional<ProductImage> productImage = productImageService.findById(id);
 
         if (productImage.isEmpty())
@@ -66,7 +68,7 @@ public class ProductImageController implements ProductImageRestApi {
     }
 
     @Override
-    public ResponseEntity<Void> delete(Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         Optional<ProductImage> productImage = productImageService.delete(id);
 
         return productImage.isEmpty() ?
