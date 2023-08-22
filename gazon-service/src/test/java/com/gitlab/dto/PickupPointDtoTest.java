@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class PickupPointDtoTest extends AbstractDtoTest {
 
     private PickupPointDto getValidPickupPointDto() {
-        PickupPointDto pickupPointDto = new PickupPointDto();
+        var pickupPointDto = new PickupPointDto();
         pickupPointDto.setId(1L);
         pickupPointDto.setAddress("Test Address");
         pickupPointDto.setDirections("Test Directions");

@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 class ProductImageDtoTest extends AbstractDtoTest {
 
     private ProductImageDto getValidImageDto() {
-        ProductImageDto productImageDto = new ProductImageDto();
+        var productImageDto = new ProductImageDto();
         productImageDto.setProductId(1L);
         productImageDto.setName("image1");
         productImageDto.setData(new byte[1]);

@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class SelectedProductDtoTest extends AbstractDtoTest{
 
     private SelectedProductDto getValidSelectedProductDto() {
-        SelectedProductDto selectedProductDto = new SelectedProductDto();
+        var selectedProductDto = new SelectedProductDto();
         selectedProductDto.setProductId(1L);
         selectedProductDto.setCount(1);
         return selectedProductDto;

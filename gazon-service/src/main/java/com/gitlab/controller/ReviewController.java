@@ -94,7 +94,7 @@ public class ReviewController implements ReviewRestApi {
 
         List<ReviewImage> imageList = new ArrayList<>();
         for (MultipartFile file : files) {
-            ReviewImage image = new ReviewImage();
+            var image = new ReviewImage();
             image.setReview(reviewOptional.get());
             image.setName(file.getOriginalFilename());
             image.setData(ImageUtils.compressImage(file.getBytes()));

@@ -11,7 +11,7 @@ class WorkingScheduleDtoTest extends AbstractDtoTest {
 
     @Test
     void test_valid_working_schedule() {
-        WorkingScheduleDto workingScheduleDto = new WorkingScheduleDto();
+        var workingScheduleDto = new WorkingScheduleDto();
         workingScheduleDto.setDayOfWeek(DayOfWeek.MONDAY);
         workingScheduleDto.setFrom(LocalTime.of(9, 0));
         workingScheduleDto.setTo(LocalTime.of(17, 0));
@@ -21,7 +21,7 @@ class WorkingScheduleDtoTest extends AbstractDtoTest {
 
     @Test
     void test_invalid_day_of_week() {
-        WorkingScheduleDto workingScheduleDto = new WorkingScheduleDto();
+        var workingScheduleDto = new WorkingScheduleDto();
         workingScheduleDto.setDayOfWeek(null);
         workingScheduleDto.setFrom(LocalTime.of(9, 0));
         workingScheduleDto.setTo(LocalTime.of(17, 0));
@@ -31,7 +31,7 @@ class WorkingScheduleDtoTest extends AbstractDtoTest {
 
     @Test
     void test_invalid_from_time() {
-        WorkingScheduleDto workingScheduleDto = new WorkingScheduleDto();
+        var workingScheduleDto = new WorkingScheduleDto();
         workingScheduleDto.setDayOfWeek(DayOfWeek.MONDAY);
         workingScheduleDto.setFrom(null);
         workingScheduleDto.setTo(LocalTime.of(17, 0));
@@ -41,7 +41,7 @@ class WorkingScheduleDtoTest extends AbstractDtoTest {
 
     @Test
     void test_invalid_to_time() {
-        WorkingScheduleDto workingScheduleDto = new WorkingScheduleDto();
+        var workingScheduleDto = new WorkingScheduleDto();
         workingScheduleDto.setDayOfWeek(DayOfWeek.MONDAY);
         workingScheduleDto.setFrom(LocalTime.of(9, 0));
         workingScheduleDto.setTo(null);
@@ -51,7 +51,7 @@ class WorkingScheduleDtoTest extends AbstractDtoTest {
 
     @Test
     void test_default_message_day_of_week_null() {
-        WorkingScheduleDto workingScheduleDto = new WorkingScheduleDto();
+        var workingScheduleDto = new WorkingScheduleDto();
         workingScheduleDto.setDayOfWeek(null);
         workingScheduleDto.setFrom(LocalTime.of(9, 0));
         workingScheduleDto.setTo(LocalTime.of(17, 0));
@@ -66,7 +66,7 @@ class WorkingScheduleDtoTest extends AbstractDtoTest {
 
     @Test
     void test_default_message_from_time_null() {
-        WorkingScheduleDto workingScheduleDto = new WorkingScheduleDto();
+        var workingScheduleDto = new WorkingScheduleDto();
         workingScheduleDto.setDayOfWeek(DayOfWeek.MONDAY);
         workingScheduleDto.setFrom(null);
         workingScheduleDto.setTo(LocalTime.of(17, 0));
@@ -81,7 +81,7 @@ class WorkingScheduleDtoTest extends AbstractDtoTest {
 
     @Test
     void test_default_message_to_time_null() {
-        WorkingScheduleDto workingScheduleDto = new WorkingScheduleDto();
+        var workingScheduleDto = new WorkingScheduleDto();
         workingScheduleDto.setDayOfWeek(DayOfWeek.MONDAY);
         workingScheduleDto.setFrom(LocalTime.of(9, 0));
         workingScheduleDto.setTo(null);

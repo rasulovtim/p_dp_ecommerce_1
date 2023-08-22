@@ -31,7 +31,7 @@ public class MainLayout extends AppLayout {
     }
 
     private void addDrawerContent() {
-        DrawerToggle toggle = new DrawerToggle();
+        var toggle = new DrawerToggle();
         addToDrawer(new Footer());
         Tabs tabs = getTabs();
         addToDrawer(tabs);
@@ -44,7 +44,7 @@ public class MainLayout extends AppLayout {
      * @link <a href="https://vaadin.com/docs/v23/components/icons">Icons</a>
      */
     private Tabs getTabs() {
-        Tabs tabs = new Tabs();
+        var tabs = new Tabs();
         tabs.add(createTab(VaadinIcon.HANDS_UP, "Hello", AdminView.class));
         tabs.add(createTab(VaadinIcon.CLOSE_CIRCLE_O, "Examples", ExampleView.class));
         tabs.add(createTab(VaadinIcon.GROUP, "Roles", RoleView.class));
@@ -58,7 +58,7 @@ public class MainLayout extends AppLayout {
                 .set("margin-inline-end", "var(--lumo-space-m)")
                 .set("margin-inline-start", "var(--lumo-space-xs)")
                 .set("padding", "var(--lumo-space-xs)");
-        RouterLink link = new RouterLink();
+        var link = new RouterLink();
         link.add(icon, new Span(viewName));
         link.setRoute(routeClass);
         link.setTabIndex(-1);

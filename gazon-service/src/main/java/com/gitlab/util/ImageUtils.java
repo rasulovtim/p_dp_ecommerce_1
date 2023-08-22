@@ -12,12 +12,12 @@ import java.util.zip.Inflater;
 public class ImageUtils {
 
     public static byte[] compressImage(byte[] data) {
-        Deflater deflater = new Deflater();
+        var deflater = new Deflater();
         deflater.setLevel(Deflater.BEST_COMPRESSION);
         deflater.setInput(data);
         deflater.finish();
 
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
+        var outputStream = new ByteArrayOutputStream(data.length);
         byte[] tmp = new byte[4*1024];
         while (!deflater.finished()) {
             int size = deflater.deflate(tmp);
@@ -31,9 +31,9 @@ public class ImageUtils {
     }
 
     public static byte[] decompressImage(byte[] data) {
-        Inflater inflater = new Inflater();
+        var inflater = new Inflater();
         inflater.setInput(data);
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
+        var outputStream = new ByteArrayOutputStream(data.length);
         byte[] tmp = new byte[4*1024];
         try {
             while (!inflater.finished()) {
