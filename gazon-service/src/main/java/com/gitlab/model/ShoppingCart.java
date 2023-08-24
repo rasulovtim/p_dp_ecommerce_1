@@ -1,7 +1,5 @@
 package com.gitlab.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -28,5 +26,3 @@ public class ShoppingCart {
     @OneToMany(mappedBy = "shoppingCart", fetch = FetchType.EAGER)
     private Set<SelectedProduct> selectedProducts;
 }
-
-

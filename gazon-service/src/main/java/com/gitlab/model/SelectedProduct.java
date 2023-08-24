@@ -1,6 +1,5 @@
 package com.gitlab.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,15 +19,12 @@ public class SelectedProduct {
 
     @ManyToOne
     @JoinColumn(name = "shopping_cart_id", referencedColumnName = "id")
-    @JsonBackReference
     private ShoppingCart shoppingCart;
 
     @ManyToOne
     @JoinColumn(name = "product_id", referencedColumnName = "id")
-    @JsonBackReference
     private Product product;
+
     @Column(name = "count")
     private Integer count;
-
 }
-
