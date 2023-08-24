@@ -17,7 +17,7 @@ public abstract class SelectedProductMapper {
     @Autowired
     protected ProductService productService;
 
-    @Mapping(source = "product", target = "productId")
+    @Mapping(source = "product.id", target = "productId")
     public abstract SelectedProductDto toDto(SelectedProduct selectedProduct);
 
     public void calculatedUnmappedFields(SelectedProductDto selectedProductDto, SelectedProduct selectedProduct) {
@@ -26,22 +26,14 @@ public abstract class SelectedProductMapper {
         selectedProductDto.setTotalWeight(selectedProduct.getProduct().getWeight() * selectedProduct.getCount());
     }
 
-    public Long mapProductToProductId(Product product) {
-        if (product == null) {
-            return null;
-        }
-        return product.getId();
-    }
-
     @Mapping(source = "productId", target = "product")
     public abstract SelectedProduct toEntity(SelectedProductDto selectedProductDto);
-
 
     public Product mapProductIdToProduct(Long productId) {
         if (productId == null) {
             return null;
         }
-        return productService.findById(productId).
-                orElseThrow(() -> new RuntimeException("Product wasn't found"));
+        return productService.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product wasn't found"));
     }
 }
