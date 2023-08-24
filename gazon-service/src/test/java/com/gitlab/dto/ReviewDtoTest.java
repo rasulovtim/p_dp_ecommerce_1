@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ReviewDtoTest extends AbstractDtoTest {
 
     private ReviewDto getValidReviewDto() {
-        ReviewDto reviewDto = new ReviewDto();
+        var reviewDto = new ReviewDto();
         reviewDto.setProductId(1L);
         reviewDto.setPros("pros1");
         reviewDto.setCons("cons1");

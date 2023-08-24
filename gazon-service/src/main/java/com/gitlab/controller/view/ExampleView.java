@@ -40,8 +40,8 @@ public class ExampleView extends VerticalLayout {
         this.exampleService = exampleService;
         this.exampleMapper = exampleMapper;
         this.dataSource = exampleService.findAll().stream().map(exampleMapper::toDto).collect(Collectors.toList());
-        ValidationMessage idValidationMessage = new ValidationMessage();
-        ValidationMessage exampleTextValidationMessage = new ValidationMessage();
+        var idValidationMessage = new ValidationMessage();
+        var exampleTextValidationMessage = new ValidationMessage();
 
         Grid.Column<ExampleDto> idColumn = createIdColumn();
         Grid.Column<ExampleDto> exampleTextColumn = createExampleTextColumn();
@@ -53,10 +53,10 @@ public class ExampleView extends VerticalLayout {
         createIdField(binder, idValidationMessage, idColumn);
         createExampleTextField(binder, exampleTextValidationMessage, exampleTextColumn);
 
-        Button updateButton = new Button("Update", e -> editor.save());
-        Button cancelButton = new Button(VaadinIcon.CLOSE.create(), e -> editor.cancel());
+        var updateButton = new Button("Update", e -> editor.save());
+        var cancelButton = new Button(VaadinIcon.CLOSE.create(), e -> editor.cancel());
         cancelButton.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_ERROR);
-        HorizontalLayout actions = new HorizontalLayout(updateButton, cancelButton);
+        var actions = new HorizontalLayout(updateButton, cancelButton);
         actions.setPadding(false);
         updateColumn.setEditorComponent(actions);
 
@@ -64,7 +64,7 @@ public class ExampleView extends VerticalLayout {
         grid.setItems(dataSource);
         addTheme();
 
-        Div contentContainer = new Div();
+        var contentContainer = new Div();
         contentContainer.setSizeFull();
         Tabs tabs = createTabs(contentContainer);
 
@@ -82,7 +82,7 @@ public class ExampleView extends VerticalLayout {
 
     private Grid.Column<ExampleDto> createEditColumn() {
         return grid.addComponentColumn(example -> {
-            Button updateButton = new Button("Update");
+            var updateButton = new Button("Update");
             updateButton.addClickListener(e -> {
                 if (editor.isOpen())
                     editor.cancel();
@@ -94,7 +94,7 @@ public class ExampleView extends VerticalLayout {
 
     private Grid.Column<ExampleDto> createDeleteColumn() {
         return grid.addComponentColumn(example -> {
-            Button deleteButton = new Button("Delete");
+            var deleteButton = new Button("Delete");
             // FIXME сомнительная конструкция
             deleteButton.addClickListener(e -> {
                 if (editor.isOpen())
@@ -120,7 +120,7 @@ public class ExampleView extends VerticalLayout {
     private void createIdField(Binder<ExampleDto> binder,
                                ValidationMessage idValidationMessage,
                                Grid.Column<ExampleDto> idColumn) {
-        IntegerField idField = new IntegerField();
+        var idField = new IntegerField();
         idField.setWidthFull();
         binder.forField(idField)
                 .asRequired("Id must not be empty")
@@ -133,7 +133,7 @@ public class ExampleView extends VerticalLayout {
     private void createExampleTextField(Binder<ExampleDto> binder,
                                         ValidationMessage exampleTextValidationMessage,
                                         Grid.Column<ExampleDto> exampleTextColumn) {
-        TextField exampleTextField = new TextField();
+        var exampleTextField = new TextField();
         exampleTextField.setWidthFull();
         binder.forField(exampleTextField).asRequired("Example text must not be empty")
                 .withStatusLabel(exampleTextValidationMessage)
@@ -155,11 +155,11 @@ public class ExampleView extends VerticalLayout {
     }
 
     private Tabs createTabs(Div contentContainer) {
-        Tabs tabs = new Tabs();
+        var tabs = new Tabs();
 
-        Tab tableTab = new Tab("Examples table");
-        FormLayout formLayout = new FormLayout();
-        Tab createTab = createCreateTab(formLayout);
+        var tableTab = new Tab("Examples table");
+        var formLayout = new FormLayout();
+        var createTab = createCreateTab(formLayout);
 
         contentContainer.add(grid);
         tabs.add(tableTab, createTab);
@@ -179,14 +179,14 @@ public class ExampleView extends VerticalLayout {
     }
 
     private Tab createCreateTab(FormLayout formLayout) {
-        Tab createTab = new Tab("Create example");
-        TextField exampleTextField = new TextField("Example Text");
-        Button createButton = new Button("Create");
+        var createTab = new Tab("Create example");
+        var exampleTextField = new TextField("Example Text");
+        var createButton = new Button("Create");
         formLayout.add(exampleTextField, createButton);
         createButton.addClickListener(event -> {
-            Example example = new Example();
+            var example = new Example();
             example.setExampleText(exampleTextField.getValue());
-            Example savedExample = exampleService.save(example);
+            var savedExample = exampleService.save(example);
             dataSource.add(exampleMapper.toDto(savedExample));
             exampleTextField.clear();
             grid.getDataProvider().refreshAll();

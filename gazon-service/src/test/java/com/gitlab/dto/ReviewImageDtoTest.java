@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ReviewImageDtoTest extends AbstractDtoTest {
 
     private ReviewImageDto getValidReviewImageDto() {
-        ReviewImageDto reviewImageDto = new ReviewImageDto();
+        var reviewImageDto = new ReviewImageDto();
         reviewImageDto.setReviewId(1L);
         reviewImageDto.setName("name1");
         reviewImageDto.setData(new byte[]{1});

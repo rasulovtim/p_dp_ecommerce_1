@@ -67,8 +67,8 @@ public class UserService {
         }
 
         if (user.getPassport() != null) {
-            Passport newPassport = user.getPassport();
-            Passport savePassport = savedUser.getPassport();
+            var newPassport = user.getPassport();
+            var savePassport = savedUser.getPassport();
             if (savePassport != null) {
                 newPassport.setId(savedUser.getPassport().getId());
             }

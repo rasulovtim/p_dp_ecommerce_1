@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class PersonalAddressDtoTest extends AbstractDtoTest {
 
     private PersonalAddressDto getValidPersonalAddressDto() {
-        PersonalAddressDto personalAddress = new PersonalAddressDto();
+        var personalAddress = new PersonalAddressDto();
         personalAddress.setId(1L);
         personalAddress.setAddress("Test Address");
         personalAddress.setDirections("Test Directions");

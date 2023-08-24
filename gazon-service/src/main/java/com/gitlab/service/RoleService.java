@@ -18,7 +18,31 @@ public class RoleService {
     }
 
     public Optional<Role> findByName(String name) {
-        return Optional.of(roleRepository.findByName(name));
+        return Optional.ofNullable(roleRepository.findByName(name));
     }
 
+    public Optional<Role> findById(Long id) {
+        return roleRepository.findById(id);
+    }
+
+    public Role save(Role role) {
+        return roleRepository.save(role);
+    }
+
+    public Role update(Long id, Role updatedRole) {
+        Optional<Role> existingRoleOptional = roleRepository.findById(id);
+
+        if (existingRoleOptional.isPresent()) {
+            Role existingRole = existingRoleOptional.get();
+            existingRole.setName(updatedRole.getName());
+
+            return roleRepository.save(existingRole);
+        } else {
+            throw new RuntimeException("Role with ID " + id + " not found");
+        }
+    }
+
+    public void delete(Role role) {
+        roleRepository.delete(role);
+    }
 }
