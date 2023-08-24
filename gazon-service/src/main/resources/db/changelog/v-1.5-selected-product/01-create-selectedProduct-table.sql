@@ -1,4 +1,3 @@
-
 CREATE TABLE selected_product
 (
     id         BIGSERIAL PRIMARY KEY,
