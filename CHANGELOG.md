@@ -4,9 +4,11 @@
 - #task_number - short task description
 - #5 - added user entity
 - #no_task - added vaadin
+- #8-Create_Store
 - #50 - added fifty products to product table
 - #53 - added api-gateway
 - #69 - added front for the Role
+
 
 ## [1.0.0] - 30.07.2023
 - #1 - added working schedule entity
@@ -15,6 +17,7 @@
 - #4 - entity BankCard was created, integrated into gazon-service and tested
 - #6 - added pagination for Example
 - #7 - entities Product and ProductImage were created and integrated
+- #8 - added entity Store
 - #9 - entities Review and ReviewImage were created, but not fully integrated
 - #10 - entity SelectedProduct was created, but not fully integrated
 - #18 - added docker multi-stage build
