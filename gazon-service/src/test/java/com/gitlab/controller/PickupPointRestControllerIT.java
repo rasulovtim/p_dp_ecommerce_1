@@ -86,6 +86,8 @@ class PickupPointRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_update_pickupPoint_by_id() throws Exception {
         long id = 7L;
+        long numberOfEntitiesExpected = pickupPointService.findAll().size();
+
         PickupPointDto pickupPointDto = new PickupPointDto();
         pickupPointDto.setAddress("New Address");
         pickupPointDto.setDirections("New Directions");
@@ -104,6 +106,10 @@ class PickupPointRestControllerIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
+
+        if (numberOfEntitiesExpected != pickupPointService.findAll().size()){
+            throw new Exception("The number of entities has changed.");
+        }
     }
 
     @Test

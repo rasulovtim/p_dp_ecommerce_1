@@ -94,6 +94,7 @@ class PassportRestControllerTest extends AbstractIntegrationTest {
     @Test
     void should_update_passport_by_id() throws Exception {
         Long id = 1L;
+        long numberOfEntitiesExpected = passportService.findAll().size();
         PassportDto passportDto = new PassportDto();
 
         passportDto.setFirstName("updFirstName");
@@ -107,18 +108,22 @@ class PassportRestControllerTest extends AbstractIntegrationTest {
         passportDto.setIssuer("Test Otedel police №1");
         passportDto.setIssuerNumber("111-111");
 
-        String jsonExampleDto = objectMapper.writeValueAsString(passportDto);
+        String jsonPassportDto = objectMapper.writeValueAsString(passportDto);
 
         passportDto.setId(id);
         String expected = objectMapper.writeValueAsString(passportDto);
 
         mockMvc.perform(patch(PASSPORT_URI + "/{id}", id)
-                        .content(jsonExampleDto)
+                        .content(jsonPassportDto)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
+
+        if (numberOfEntitiesExpected != passportService.findAll().size()){
+            throw new Exception("The number of entities has changed.");
+        }
     }
 
     @Test

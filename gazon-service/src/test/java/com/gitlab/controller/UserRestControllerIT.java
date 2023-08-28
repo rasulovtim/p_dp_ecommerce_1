@@ -85,6 +85,8 @@ class UserRestControllerIT extends AbstractIntegrationTest{
     @Test
     void should_update_user_by_id() throws Exception {
         long id = 1L;
+        long numberOfEntitiesExpected = userService.findAll().size();
+
         UserDto userDto = generateUser();
 
         String jsonExampleDto = objectMapper.writeValueAsString(userDto);
@@ -99,6 +101,10 @@ class UserRestControllerIT extends AbstractIntegrationTest{
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
+
+        if (numberOfEntitiesExpected != userService.findAll().size()){
+            throw new Exception("The number of entities has changed.");
+        }
     }
 
     @Test

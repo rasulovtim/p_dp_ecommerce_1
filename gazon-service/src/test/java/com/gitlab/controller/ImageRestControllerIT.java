@@ -70,6 +70,7 @@ class ImageRestControllerIT extends AbstractIntegrationTest {
     void should_update_productImage_by_id() throws Exception {
         long id = 1L;
         byte[] newData = new byte[]{1, 2, 3};
+        long numberOfEntitiesExpected = productImageService.findAll().size();
 
         ProductImageDto productImageDto = new ProductImageDto();
         productImageDto.setProductId(1L);
@@ -93,6 +94,10 @@ class ImageRestControllerIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
+
+        if (numberOfEntitiesExpected != productImageService.findAll().size()){
+            throw new Exception("The number of entities has changed.");
+        }
     }
 
     @Test

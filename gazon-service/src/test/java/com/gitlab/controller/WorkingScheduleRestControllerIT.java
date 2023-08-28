@@ -84,6 +84,8 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_update_working_schedule_by_id() throws Exception {
         long id = 1L;
+        long numberOfEntitiesExpected = workingScheduleService.findAll().size();
+
         WorkingScheduleDto workingScheduleDto = new WorkingScheduleDto();
         workingScheduleDto.setDayOfWeek(DayOfWeek.WEDNESDAY);
         workingScheduleDto.setFrom(LocalTime.of(10, 0));
@@ -100,6 +102,10 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
+
+        if (numberOfEntitiesExpected != workingScheduleService.findAll().size()){
+            throw new Exception("The number of entities has changed.");
+        }
     }
 
 

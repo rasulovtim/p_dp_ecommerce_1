@@ -87,6 +87,8 @@ class PersonalAddressRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_update_personalAddress_by_id() throws Exception {
         long id = 1L;
+        long numberOfEntitiesExpected = personalAddressService.findAll().size();
+
         PersonalAddressDto personalAddressDto = new PersonalAddressDto();
         personalAddressDto.setAddress("New Address");
         personalAddressDto.setDirections("New Directions");
@@ -108,6 +110,10 @@ class PersonalAddressRestControllerIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
+
+        if (numberOfEntitiesExpected != personalAddressService.findAll().size()){
+            throw new Exception("The number of entities has changed.");
+        }
     }
 
     @Test

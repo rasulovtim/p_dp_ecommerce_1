@@ -84,6 +84,7 @@ class BankCardRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_update_bankCard_by_id() throws Exception {
         long id = 1L;
+        long numberOfEntitiesExpected = bankCardService.findAll().size();
         BankCardDto bankCardDto = new BankCardDto();
         bankCardDto.setCardNumber(/*updatedCardNumber*/"123456789"/*updatedCardNumber*/);
         bankCardDto.setDueDate(LocalDate.parse("2024-12-12"));
@@ -100,6 +101,10 @@ class BankCardRestControllerIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
+
+        if (numberOfEntitiesExpected != bankCardService.findAll().size()){
+            throw new Exception("The number of entities has changed.");
+        }
     }
 
     @Test

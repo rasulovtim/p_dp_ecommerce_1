@@ -77,6 +77,8 @@ class SelectedProductRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_update_selectedProduct_by_id() throws Exception {
         long id = 1L;
+        long numberOfEntitiesExpected = selectedProductService.findAll().size();
+
         SelectedProductDto selectedProductDto = generateSelectedProductDto();
 
         String jsonSelectedProductDto = objectMapper.writeValueAsString(selectedProductDto);
@@ -91,6 +93,10 @@ class SelectedProductRestControllerIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
+
+        if (numberOfEntitiesExpected != selectedProductService.findAll().size()){
+            throw new Exception("The number of entities has changed.");
+        }
     }
 
     @Test

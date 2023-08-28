@@ -68,6 +68,7 @@ public class ReviewImageRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_update_reviewImage_by_id() throws Exception {
         long id = 1L;
+        long numberOfEntitiesExpected = reviewImageService.findAll().size();
 
         ReviewImageDto reviewImageDto = generateReviewDto();
         reviewImageDto.setId(id);
@@ -89,6 +90,10 @@ public class ReviewImageRestControllerIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
+
+        if (numberOfEntitiesExpected != reviewImageService.findAll().size()){
+            throw new Exception("The number of entities has changed.");
+        }
     }
 
     @Test

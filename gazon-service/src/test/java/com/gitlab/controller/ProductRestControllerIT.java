@@ -91,6 +91,8 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_update_product_by_id() throws Exception {
         long id = 1L;
+        long numberOfEntitiesExpected = productService.findAll().size();
+
         ProductDto productDto = new ProductDto();
         productDto.setName("name1");
         productDto.setStockCount(1);
@@ -112,6 +114,10 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
+
+        if (numberOfEntitiesExpected != productService.findAll().size()){
+            throw new Exception("The number of entities has changed.");
+        }
     }
 
     @Test
@@ -135,7 +141,6 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
-
 
     @Test
     void should_delete_product_by_id() throws Exception {

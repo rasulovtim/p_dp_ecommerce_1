@@ -85,6 +85,8 @@ public class ReviewRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_update_review_by_id() throws Exception {
         long id = 1L;
+        long numberOfEntitiesExpected = reviewService.findAll().size();
+
         ReviewDto reviewDto = generateReviewDto();
 
         String jsonReviewDto = objectMapper.writeValueAsString(reviewDto);
@@ -99,6 +101,10 @@ public class ReviewRestControllerIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
+
+        if (numberOfEntitiesExpected != reviewService.findAll().size()){
+            throw new Exception("The number of entities has changed.");
+        }
     }
 
     @Test

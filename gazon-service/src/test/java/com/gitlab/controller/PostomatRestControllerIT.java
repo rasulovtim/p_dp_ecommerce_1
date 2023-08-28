@@ -83,6 +83,8 @@ class PostomatRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_update_postomat_by_id() throws Exception {
         long id = 4L;
+        long numberOfEntitiesExpected = postomatService.findAll().size();
+
         PostomatDto postomatDto = new PostomatDto();
         postomatDto.setAddress("New Address");
         postomatDto.setDirections("New Directions");
@@ -100,6 +102,10 @@ class PostomatRestControllerIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
+
+        if (numberOfEntitiesExpected != postomatService.findAll().size()){
+            throw new Exception("The number of entities has changed.");
+        }
     }
 
     @Test

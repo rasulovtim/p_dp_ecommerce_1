@@ -103,6 +103,7 @@ class ExampleRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_update_example_by_id() throws Exception {
         long id = 1L;
+        long numberOfEntitiesExpected = exampleService.findAll().size();
         ExampleDto exampleDto = new ExampleDto();
         exampleDto.setExampleText("updatedText");
         String jsonExampleDto = objectMapper.writeValueAsString(exampleDto);
@@ -117,6 +118,10 @@ class ExampleRestControllerIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
+
+        if (numberOfEntitiesExpected != exampleService.findAll().size()){
+            throw new Exception("The number of entities has changed.");
+        }
     }
 
     @Test
