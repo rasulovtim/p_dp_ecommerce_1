@@ -36,3 +36,9 @@ build/
 
 ### openApi documentation ###
 openApi.json
+
+### Frontend(Vaadin) ###
+*.ts
+*.json
+/gazon-service/frontend/
+/gazon-service/node_modules/
