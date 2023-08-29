@@ -6,6 +6,7 @@
 - #no_task - added vaadin
 - #50 - added fifty products to product table
 - #53 - added api-gateway
+- #69 - added front for the Role
 - #56 - transferring the mapper from the controller to the service
 
 ## [1.0.0] - 30.07.2023

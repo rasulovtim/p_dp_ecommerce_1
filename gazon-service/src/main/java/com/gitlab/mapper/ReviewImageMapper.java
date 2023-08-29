@@ -3,18 +3,17 @@ package com.gitlab.mapper;
 import com.gitlab.dto.ReviewImageDto;
 import com.gitlab.model.Review;
 import com.gitlab.model.ReviewImage;
+import com.gitlab.repository.ReviewRepository;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public abstract class ReviewImageMapper {
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    @Autowired
+    private ReviewRepository reviewRepository;
 
     @Mapping(source = "review", target = "reviewId")
     public abstract ReviewImageDto toDto(ReviewImage reviewImage);
@@ -34,6 +33,6 @@ public abstract class ReviewImageMapper {
             return null;
         }
 
-        return entityManager.find(Review.class, reviewId);
+        return reviewRepository.findById(reviewId).orElse(null);
     }
 }
