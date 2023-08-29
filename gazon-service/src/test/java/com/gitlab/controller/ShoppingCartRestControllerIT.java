@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
@@ -57,6 +58,7 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_update_shoppingCart_by_id() throws Exception {
         long id = 1L;
+        long numberOfEntitiesExpected = shoppingCartService.findAll().size();
         ShoppingCartDto shoppingCartDto = new ShoppingCartDto();
         shoppingCartDto.setUserId(2L);
         String jsonShoppingCartDto = objectMapper.writeValueAsString(shoppingCartDto);
@@ -71,6 +73,11 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
+
+        mockMvc.perform(get(SHOPPING_CART_URI))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(numberOfEntitiesExpected));
     }
     @Transactional
     @Test

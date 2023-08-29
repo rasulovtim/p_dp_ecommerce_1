@@ -18,6 +18,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class UserRestControllerIT extends AbstractIntegrationTest{
@@ -102,9 +103,10 @@ class UserRestControllerIT extends AbstractIntegrationTest{
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
 
-        if (numberOfEntitiesExpected != userService.findAll().size()){
-            throw new Exception("The number of entities has changed.");
-        }
+        mockMvc.perform(get(USER_URI))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(numberOfEntitiesExpected));
     }
 
     @Test

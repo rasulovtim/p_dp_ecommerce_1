@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
@@ -103,9 +104,10 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
 
-        if (numberOfEntitiesExpected != workingScheduleService.findAll().size()){
-            throw new Exception("The number of entities has changed.");
-        }
+        mockMvc.perform(get(WORKING_SCHEDULE_URI))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(numberOfEntitiesExpected));
     }
 
 

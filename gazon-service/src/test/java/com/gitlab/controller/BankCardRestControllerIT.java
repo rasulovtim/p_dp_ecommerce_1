@@ -3,6 +3,7 @@ package com.gitlab.controller;
 import com.gitlab.dto.BankCardDto;
 import com.gitlab.mapper.BankCardMapper;
 import com.gitlab.service.BankCardService;
+import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -10,10 +11,14 @@ import org.springframework.http.MediaType;
 import java.time.LocalDate;
 import java.util.stream.Collectors;
 
+import static net.bytebuddy.matcher.ElementMatchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class BankCardRestControllerIT extends AbstractIntegrationTest {
@@ -102,9 +107,10 @@ class BankCardRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
 
-        if (numberOfEntitiesExpected != bankCardService.findAll().size()){
-            throw new Exception("The number of entities has changed.");
-        }
+        mockMvc.perform(get(BANK_CARD_URI))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(numberOfEntitiesExpected));
     }
 
     @Test

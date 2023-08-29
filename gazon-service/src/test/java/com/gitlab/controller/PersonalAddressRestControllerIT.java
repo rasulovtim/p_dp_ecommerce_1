@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class PersonalAddressRestControllerIT extends AbstractIntegrationTest {
@@ -57,7 +58,7 @@ class PersonalAddressRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_return_not_found_when_get_personalAddress_by_non_existent_id() throws Exception {
-        long id = 10L;
+        long id = 11L;
         mockMvc.perform(get(URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isNotFound());
@@ -111,9 +112,10 @@ class PersonalAddressRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
 
-        if (numberOfEntitiesExpected != personalAddressService.findAll().size()){
-            throw new Exception("The number of entities has changed.");
-        }
+        mockMvc.perform(get(URI))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(numberOfEntitiesExpected));
     }
 
     @Test
