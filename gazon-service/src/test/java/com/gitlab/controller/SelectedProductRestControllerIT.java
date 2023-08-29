@@ -9,7 +9,10 @@ import org.springframework.http.MediaType;
 
 import java.util.stream.Collectors;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -43,7 +46,7 @@ class SelectedProductRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_get_selectedProduct_by_id() throws Exception {
         long id = 1L;
-        var selectedProduct =  selectedProductService.findById(id).orElse(null);
+        var selectedProduct = selectedProductService.findById(id).orElse(null);
         var selectedProductDto = selectedProductMapper.toDto(selectedProduct);
         selectedProductMapper.calculatedUnmappedFields(selectedProductDto, selectedProduct);
         String expected = objectMapper.writeValueAsString(selectedProductDto);

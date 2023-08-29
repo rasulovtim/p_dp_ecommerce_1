@@ -4,14 +4,12 @@ import com.gitlab.service.RoleService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.stream.Collectors;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class RoleRestControllerIT extends AbstractIntegrationTest{
+class RoleRestControllerIT extends AbstractIntegrationTest {
     private static final String ROLE_URN = "/api/role";
     private static final String ROLE_URI = URL + ROLE_URN;
     @Autowired

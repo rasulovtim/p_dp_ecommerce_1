@@ -3,7 +3,6 @@ package com.gitlab.controller;
 import com.gitlab.dto.BankCardDto;
 import com.gitlab.mapper.BankCardMapper;
 import com.gitlab.service.BankCardService;
-import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -11,11 +10,10 @@ import org.springframework.http.MediaType;
 import java.time.LocalDate;
 import java.util.stream.Collectors;
 
-import static net.bytebuddy.matcher.ElementMatchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -75,7 +73,7 @@ class BankCardRestControllerIT extends AbstractIntegrationTest {
         BankCardDto bankCardDto = new BankCardDto();
         bankCardDto.setCardNumber("123456789");
         bankCardDto.setDueDate(LocalDate.parse("2024-12-12"));
-        bankCardDto.setSecurityCode( 123);
+        bankCardDto.setSecurityCode(123);
         String jsonBankCardDto = objectMapper.writeValueAsString(bankCardDto);
 
         mockMvc.perform(post(BANK_CARD_URI)
