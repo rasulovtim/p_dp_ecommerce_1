@@ -10,9 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
 public class ProductService {
 
@@ -23,16 +24,32 @@ public class ProductService {
         return productRepository.findAll();
     }
 
+    public List<ProductDto> findAllDto() {
+        List<Product> products = productRepository.findAll();
+        return products.stream()
+                .map(productMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
     public Optional<Product> findById(Long id) {
         return productRepository.findById(id);
     }
 
-    @Transactional
+    public Optional<ProductDto> findByIdDto(Long id) {
+        return productRepository.findById(id)
+                .map(productMapper::toDto);
+    }
+
     public Product save(Product product) {
         return productRepository.save(product);
     }
 
-    @Transactional
+    public ProductDto saveDto(ProductDto productDto) {
+        Product product = productMapper.toEntity(productDto);
+        Product savedProduct = productRepository.save(product);
+        return productMapper.toDto(savedProduct);
+    }
+
     public Optional<Product> update(Long id, Product product) {
         Optional<Product> currentOptionalProduct = findById(id);
         Product currentProduct;
@@ -68,13 +85,62 @@ public class ProductService {
         return Optional.of(productRepository.save(currentProduct));
     }
 
-    @Transactional
+    public Optional<ProductDto> updateDto(Long id, ProductDto productDto) {
+        Optional<Product> currentOptionalProduct = findById(id);
+
+        if (currentOptionalProduct.isEmpty()) {
+            return Optional.empty();
+        }
+
+        Product currentProduct = currentOptionalProduct.get();
+
+        if (productDto.getName() != null) {
+            currentProduct.setName(productDto.getName());
+        }
+        if (productDto.getStockCount() != null) {
+            currentProduct.setStockCount(productDto.getStockCount());
+        }
+
+        if (productDto.getDescription() != null) {
+            currentProduct.setDescription(productDto.getDescription());
+        }
+        if (productDto.getIsAdult() != null) {
+            currentProduct.setIsAdult(productDto.getIsAdult());
+        }
+        if (productDto.getCode() != null) {
+            currentProduct.setCode(productDto.getCode());
+        }
+        if (productDto.getWeight() != null) {
+            currentProduct.setWeight(productDto.getWeight());
+        }
+        if (productDto.getPrice() != null) {
+            currentProduct.setPrice(productDto.getPrice());
+        }
+
+        Product updatedProduct = productRepository.save(currentProduct);
+        return Optional.ofNullable(productMapper.toDto(updatedProduct));
+    }
+
     public Optional<Product> delete(Long id) {
         Optional<Product> foundProduct = findById(id);
         if (foundProduct.isPresent()) {
             productRepository.deleteById(id);
         }
         return foundProduct;
+    }
+
+    public Optional<ProductDto> deleteDto(Long id) {
+        Optional<Product> foundProduct = findById(id);
+        if (foundProduct.isPresent()) {
+            productRepository.deleteById(id);
+        }
+        return foundProduct.map(productMapper::toDto);
+    }
+
+    public ProductDto createDto(ProductDto productDto) {
+        Product productEntity = productMapper.toEntity(productDto);
+        Product savedProduct = productRepository.save(productEntity);
+        return productMapper.toDto(savedProduct);
     }
 
     public List<ProductDto> findByNameIgnoreCaseContaining(String name) {

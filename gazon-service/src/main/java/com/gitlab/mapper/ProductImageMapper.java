@@ -3,7 +3,7 @@ package com.gitlab.mapper;
 import com.gitlab.dto.ProductImageDto;
 import com.gitlab.model.Product;
 import com.gitlab.model.ProductImage;
-import com.gitlab.service.ProductService;
+import com.gitlab.repository.ProductRepository;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class ProductImageMapper {
 
     @Autowired
-    protected ProductService productService;
+    private ProductRepository productRepository;
 
     @Mapping(source = "someProduct", target = "productId")
     public abstract ProductImageDto toDto(ProductImage productImage);
@@ -28,13 +28,11 @@ public abstract class ProductImageMapper {
     @Mapping(source = "productId", target = "someProduct")
     public abstract ProductImage toEntity(ProductImageDto productImageDto);
 
-
     public Product mapProductIdToProduct(Long productId) {
         if (productId == null) {
             return null;
         }
 
-        return productService.findById(productId).
-                orElseThrow(() -> new RuntimeException("Product wasn't found"));
+        return productRepository.findById(productId).orElse(null);
     }
 }
