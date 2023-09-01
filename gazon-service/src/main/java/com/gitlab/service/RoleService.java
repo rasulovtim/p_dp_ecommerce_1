@@ -4,6 +4,7 @@ import com.gitlab.model.Role;
 import com.gitlab.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +14,7 @@ import java.util.Optional;
 public class RoleService {
     private final RoleRepository roleRepository;
 
+    @Cacheable("roles")
     public List<Role> findAll() {
         return roleRepository.findAll();
     }
