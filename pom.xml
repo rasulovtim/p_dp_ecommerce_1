@@ -21,6 +21,7 @@
         <module>search-service</module>
         <module>security-service</module>
         <module>api-gateway</module>
+        <module>fronted-module</module>
     </modules>
 
     <properties>

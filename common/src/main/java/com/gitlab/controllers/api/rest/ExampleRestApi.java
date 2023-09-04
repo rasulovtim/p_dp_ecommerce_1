@@ -1,4 +1,4 @@
-package com.gitlab.controller.api;
+package com.gitlab.controllers.api.rest;
 
 import com.gitlab.dto.ExampleDto;
 import io.swagger.annotations.*;
@@ -11,27 +11,26 @@ import javax.validation.Valid;
 
 @Api(tags = "Example REST")
 @Tag(name = "Example REST", description = "API example description")
-@RequestMapping("/api/example")
 public interface ExampleRestApi {
 
-    @GetMapping
+    @RequestMapping(value = "/api/example/", method = RequestMethod.GET)
     @ApiOperation(value = "Get Page of Examples")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Examples Page found"),
             @ApiResponse(code = 204, message = "Examples Page not present")}
     )
-    ResponseEntity<Page<ExampleDto>> getPage(@ApiParam(name = "page") @RequestParam(required = false) Integer page,
-                                             @ApiParam(name = "size") @RequestParam(required = false) Integer size);
+    ResponseEntity<Page<ExampleDto>> getPage(@ApiParam(name = "page") @RequestParam(required = false, value = "page") Integer page,
+                                             @ApiParam(name = "size") @RequestParam(required = false, value = "size") Integer size);
 
-    @GetMapping("/{id}")
+    @RequestMapping(value = "/api/example/{id}", method = RequestMethod.GET)
     @ApiOperation(value = "Get Example by id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Example found"),
             @ApiResponse(code = 404, message = "Example not found")}
     )
-    ResponseEntity<ExampleDto> get(@ApiParam(name = "id", value = "Example.id") @PathVariable Long id);
+    ResponseEntity<ExampleDto> get(@ApiParam(name = "id", value = "Example.id") @PathVariable(value = "id") Long id);
 
-    @PostMapping
+    @RequestMapping(value = "/api/example/", method = RequestMethod.POST)
     @ApiOperation(value = "Create Example")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Example created"),
@@ -39,20 +38,20 @@ public interface ExampleRestApi {
     )
     ResponseEntity<ExampleDto> create(@ApiParam(name = "example", value = "ExampleDto") @Valid @RequestBody ExampleDto exampleDto);
 
-    @PatchMapping("/{id}")
+    @RequestMapping(value = "/api/example/{id}", method = RequestMethod.PATCH)
     @ApiOperation(value = "Update Example")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Example updated"),
             @ApiResponse(code = 400, message = "Example not updated")}
     )
-    ResponseEntity<ExampleDto> update(@ApiParam(name = "id", value = "Example.id") @PathVariable Long id,
+    ResponseEntity<ExampleDto> update(@ApiParam(name = "id", value = "Example.id") @PathVariable(value = "id") Long id,
                                       @ApiParam(name = "example", value = "ExampleDto") @Valid @RequestBody ExampleDto exampleDto);
 
-    @DeleteMapping("/{id}")
+    @RequestMapping(value = "/api/example/{id}", method = RequestMethod.DELETE)
     @ApiOperation(value = "Delete Example by id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Example deleted"),
             @ApiResponse(code = 404, message = "Example not found")}
     )
-    ResponseEntity<Void> delete(@ApiParam(name = "id", value = "Example.id") @PathVariable Long id);
+    ResponseEntity<Void> delete(@ApiParam(name = "id", value = "Example.id") @PathVariable(value = "id") Long id);
 }
