@@ -6,9 +6,11 @@ import com.gitlab.service.WorkingScheduleService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.stream.Collectors;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -67,10 +69,7 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_create_working_schedule() throws Exception {
-        WorkingScheduleDto workingScheduleDto = new WorkingScheduleDto();
-        workingScheduleDto.setDayOfWeek(DayOfWeek.MONDAY);
-        workingScheduleDto.setFrom(LocalTime.of(9, 0));
-        workingScheduleDto.setTo(LocalTime.of(17, 0));
+        WorkingScheduleDto workingScheduleDto = generateWorkingScheduleDto();
         String jsonWorkingScheduleDto = objectMapper.writeValueAsString(workingScheduleDto);
 
         mockMvc.perform(post(WORKING_SCHEDULE_URI)
@@ -84,10 +83,7 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_update_working_schedule_by_id() throws Exception {
         long id = 1L;
-        WorkingScheduleDto workingScheduleDto = new WorkingScheduleDto();
-        workingScheduleDto.setDayOfWeek(DayOfWeek.WEDNESDAY);
-        workingScheduleDto.setFrom(LocalTime.of(10, 0));
-        workingScheduleDto.setTo(LocalTime.of(18, 0));
+        WorkingScheduleDto workingScheduleDto = generateWorkingScheduleDto();
         String jsonWorkingScheduleDto = objectMapper.writeValueAsString(workingScheduleDto);
 
         workingScheduleDto.setId(id);
@@ -106,10 +102,7 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_return_not_found_when_update_working_schedule_by_non_existent_id() throws Exception {
         long id = 10L;
-        WorkingScheduleDto workingScheduleDto = new WorkingScheduleDto();
-        workingScheduleDto.setDayOfWeek(DayOfWeek.WEDNESDAY);
-        workingScheduleDto.setFrom(LocalTime.of(10, 0));
-        workingScheduleDto.setTo(LocalTime.of(18, 0));
+        WorkingScheduleDto workingScheduleDto = generateWorkingScheduleDto();
         String jsonWorkingScheduleDto = objectMapper.writeValueAsString(workingScheduleDto);
 
         mockMvc.perform(put(WORKING_SCHEDULE_URI + "/{id}", id)  // Заменяем patch на put
@@ -130,5 +123,15 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
         mockMvc.perform(get(WORKING_SCHEDULE_URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isNotFound());
+    }
+
+    private WorkingScheduleDto generateWorkingScheduleDto() {
+        WorkingScheduleDto workingScheduleDto = new WorkingScheduleDto();
+        workingScheduleDto.setId(1L);
+        workingScheduleDto.setFrom(LocalTime.of(10, 0));
+        workingScheduleDto.setTo(LocalTime.of(18, 0));
+        workingScheduleDto.setDayOfWeek(DayOfWeek.WEDNESDAY);
+
+        return workingScheduleDto;
     }
 }
