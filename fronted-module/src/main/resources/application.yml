@@ -7,7 +7,7 @@ server:
 app:
   feign:
     config:
-      name: gazon
+      name: Gazon
       url: http://localhost:8080
 
 feign:

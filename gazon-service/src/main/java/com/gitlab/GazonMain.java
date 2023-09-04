@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
 @EnableCaching
-
 @RestController
 @EnableFeignClients
 public class GazonMain {
