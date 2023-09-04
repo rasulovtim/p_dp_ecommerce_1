@@ -3,7 +3,7 @@ package com.gitlab.mapper;
 import com.gitlab.dto.ReviewImageDto;
 import com.gitlab.model.Review;
 import com.gitlab.model.ReviewImage;
-import com.gitlab.service.ReviewService;
+import com.gitlab.repository.ReviewRepository;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class ReviewImageMapper {
 
     @Autowired
-    protected ReviewService reviewService;
+    private ReviewRepository reviewRepository;
 
     @Mapping(source = "review", target = "reviewId")
     public abstract ReviewImageDto toDto(ReviewImage reviewImage);
@@ -33,7 +33,6 @@ public abstract class ReviewImageMapper {
             return null;
         }
 
-        return reviewService.findById(reviewId).
-                orElseThrow(() -> new RuntimeException("Review wasn't found"));
+        return reviewRepository.findById(reviewId).orElse(null);
     }
 }

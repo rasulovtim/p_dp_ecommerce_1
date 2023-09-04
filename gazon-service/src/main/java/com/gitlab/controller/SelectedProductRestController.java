@@ -2,7 +2,6 @@ package com.gitlab.controller;
 
 import com.gitlab.controller.api.SelectedProductRestAPI;
 import com.gitlab.dto.SelectedProductDto;
-import com.gitlab.mapper.SelectedProductMapper;
 import com.gitlab.model.SelectedProduct;
 import com.gitlab.service.SelectedProductService;
 import lombok.RequiredArgsConstructor;
@@ -18,44 +17,44 @@ import java.util.Optional;
 public class SelectedProductRestController implements SelectedProductRestAPI {
 
     private final SelectedProductService selectedProductService;
-    private final SelectedProductMapper selectedProductMapper;
 
     @Override
     public ResponseEntity<List<SelectedProductDto>> getAll() {
-        var selectedProducts = selectedProductService.findAll();
+        List<SelectedProductDto> selectedProductDtos = selectedProductService.findAllDto();
 
-        return selectedProducts.isEmpty() ?
+        return selectedProductDtos.isEmpty() ?
                 ResponseEntity.noContent().build() :
-                ResponseEntity.ok(selectedProducts.stream().map(selectedProductMapper::toDto).toList());
+                ResponseEntity.ok(selectedProductDtos);
     }
 
     @Override
     public ResponseEntity<SelectedProductDto> get(Long id) {
-        Optional<SelectedProduct> productOptional = selectedProductService.findById(id);
+        Optional<SelectedProductDto> selectedProductOptional = selectedProductService.findByIdAndMapToDto(id);
 
-        if (productOptional.isEmpty()) return ResponseEntity.notFound().build();
+        if (selectedProductOptional.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
 
-        SelectedProduct selectedProduct = productOptional.orElse(null);
-        SelectedProductDto selectedProductDto = selectedProductMapper.toDto(selectedProduct);
-        selectedProductMapper.calculatedUnmappedFields(selectedProductDto, selectedProduct);
+        SelectedProductDto selectedProductDto = selectedProductOptional.get();
+        double totalWeight = selectedProductService.calculateTotalWeight(selectedProductDto);
+        selectedProductDto.setTotalWeight((long) totalWeight);
 
         return ResponseEntity.status(HttpStatus.OK).body(selectedProductDto);
     }
 
     @Override
     public ResponseEntity<SelectedProductDto> create(SelectedProductDto selectedProductDto) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(selectedProductMapper
-                        .toDto(selectedProductService
-                                .save(selectedProductMapper
-                                        .toEntity(selectedProductDto))));
+        SelectedProductDto savedSelectedProductDto = selectedProductService.saveDto(selectedProductDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedSelectedProductDto);
     }
 
     @Override
     public ResponseEntity<SelectedProductDto> update(Long id, SelectedProductDto selectedProductDto) {
-        return selectedProductService.update(id, selectedProductMapper.toEntity(selectedProductDto))
-                .map(product -> ResponseEntity.ok(selectedProductMapper.toDto(product)))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        Optional<SelectedProductDto> updatedProductDtoOptional = selectedProductService.updateSelectedProduct(id, selectedProductDto);
+
+        return updatedProductDtoOptional
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @Override

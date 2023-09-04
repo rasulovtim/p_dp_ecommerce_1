@@ -9,6 +9,8 @@ spring:
     name: gazon-service
   profiles:
     active: dev
+  cache:
+    type: SIMPLE
 
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml

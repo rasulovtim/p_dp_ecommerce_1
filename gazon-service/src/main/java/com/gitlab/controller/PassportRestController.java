@@ -2,8 +2,6 @@ package com.gitlab.controller;
 
 import com.gitlab.controller.api.PassportRestApi;
 import com.gitlab.dto.PassportDto;
-import com.gitlab.mapper.PassportMapper;
-import com.gitlab.model.Passport;
 import com.gitlab.service.PassportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,48 +20,50 @@ import java.util.Optional;
 public class PassportRestController implements PassportRestApi {
 
     private final PassportService passportService;
-    private final PassportMapper passportMapper;
 
     @Override
     public ResponseEntity<List<PassportDto>> getAll() {
-        var passports = passportService.findAll();
-        if (passports.isEmpty()) {
+        List<PassportDto> passportDtos = passportService.findAllDto();
+
+        if (passportDtos.isEmpty()) {
             return ResponseEntity.noContent().build();
         } else {
-            return ResponseEntity.ok(passports.stream().map(passportMapper::toDto).toList());
+            return ResponseEntity.ok(passportDtos);
         }
     }
 
     @Override
     public ResponseEntity<PassportDto> get(Long id) {
-        return passportService.findById(id)
-                .map(passport -> ResponseEntity.ok(passportMapper.toDto(passport)))
+        return passportService.findByIdDto(id)
+                .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @Override
     public ResponseEntity<PassportDto> create(PassportDto passportDto) {
+        PassportDto savedPassportDto = passportService.saveDto(passportDto);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(passportMapper
-                        .toDto(passportService
-                                .save(passportMapper
-                                        .toEntity(passportDto))));
+                .body(savedPassportDto);
     }
 
     @Override
     public ResponseEntity<PassportDto> update(Long id, PassportDto passportDto) {
-        return passportService.update(id, passportMapper.toEntity(passportDto))
-                .map(passport -> ResponseEntity.ok(passportMapper.toDto(passport)))
+        Optional<PassportDto> updatedPassportDto = passportService.updateDto(id, passportDto);
+
+        return updatedPassportDto
+                .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @Override
     public ResponseEntity<Void> delete(Long id) {
-        Optional<Passport> passport = passportService.delete(id);
-        if (passport.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        } else {
+        Optional<PassportDto> deletedPassportDto = passportService.deleteDto(id);
+
+        if (deletedPassportDto.isPresent()) {
             return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
         }
     }
+
 }

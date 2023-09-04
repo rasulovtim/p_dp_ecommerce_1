@@ -7,7 +7,6 @@
 - #50 - added fifty products to product table
 - #53 - added api-gateway
 - #69 - added front for the Role
-- #49 - checking the number of entities
 
 ## [1.0.0] - 30.07.2023
 - #1 - added working schedule entity

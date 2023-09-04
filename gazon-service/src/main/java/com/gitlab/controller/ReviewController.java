@@ -2,7 +2,6 @@ package com.gitlab.controller;
 
 import com.gitlab.controller.api.ReviewRestApi;
 import com.gitlab.dto.ReviewDto;
-import com.gitlab.mapper.ReviewMapper;
 import com.gitlab.model.Review;
 import com.gitlab.model.ReviewImage;
 import com.gitlab.service.ReviewImageService;
@@ -24,41 +23,39 @@ import java.util.Optional;
 public class ReviewController implements ReviewRestApi {
 
     private final ReviewService reviewService;
-    private final ReviewMapper reviewMapper;
+
     private final ReviewImageService reviewImageService;
 
     @Override
     public ResponseEntity<List<ReviewDto>> getAll() {
-        var reviews = reviewService.findAll();
-        return reviews.isEmpty() ?
+        List<ReviewDto> reviewDtos = reviewService.findAllDto();
+        return reviewDtos.isEmpty() ?
                 ResponseEntity.noContent().build() :
-                ResponseEntity.ok(reviews.stream().map(reviewMapper::toDto).toList());
+                ResponseEntity.ok(reviewDtos);
     }
 
     @Override
     public ResponseEntity<ReviewDto> get(Long id) {
-        Optional<Review> ReviewOptional = reviewService.findById(id);
+        Optional<ReviewDto> reviewDtoOptional = reviewService.findByIdDto(id);
 
-        return ReviewOptional.map(reviewMapper::toDto).map(ReviewDto -> ResponseEntity.status(HttpStatus.OK)
-                .body(ReviewDto)).orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
-
+        return reviewDtoOptional.map(reviewDto ->
+                ResponseEntity.ok(reviewDto)).orElse(ResponseEntity.notFound().build());
     }
 
 
     @Override
     public ResponseEntity<ReviewDto> create(ReviewDto reviewDto) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(reviewMapper
-                        .toDto(reviewService
-                                .save(reviewMapper
-                                        .toEntity(reviewDto))));
+        ReviewDto createdReviewDto = reviewService.saveDto(reviewDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdReviewDto);
     }
+
 
     @Override
     public ResponseEntity<ReviewDto> update(Long id, ReviewDto reviewDto) {
-        return reviewService.update(id, reviewMapper.toEntity(reviewDto))
-                .map(Review -> ResponseEntity.ok(reviewMapper.toDto(Review)))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        Optional<ReviewDto> updatedReviewDtoOptional = reviewService.updateDto(id, reviewDto);
+
+        return updatedReviewDtoOptional.map(updatedReviewDto ->
+                ResponseEntity.ok(updatedReviewDto)).orElse(ResponseEntity.notFound().build());
     }
 
     @Override
