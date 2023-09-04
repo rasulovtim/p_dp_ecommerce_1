@@ -21,8 +21,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.testcontainers.shaded.org.hamcrest.CoreMatchers.equalTo;
+import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 
 public class ReviewRestControllerIT extends AbstractIntegrationTest {
 
@@ -89,7 +90,7 @@ public class ReviewRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_update_review_by_id() throws Exception {
         long id = 1L;
-        long numberOfEntitiesExpected = reviewService.findAll().size();
+        int numberOfEntitiesExpected = reviewService.findAll().size();
 
         ReviewDto reviewDto = generateReviewDto();
 
@@ -104,12 +105,9 @@ public class ReviewRestControllerIT extends AbstractIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(expected));
-
-        mockMvc.perform(get(REVIEW_URI))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(numberOfEntitiesExpected));
+                .andExpect(content().json(expected))
+                .andExpect(result -> assertThat(reviewService.findAll().size(),
+                        equalTo(numberOfEntitiesExpected)));
     }
 
     @Test

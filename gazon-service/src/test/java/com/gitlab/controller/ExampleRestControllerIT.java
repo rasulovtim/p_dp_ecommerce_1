@@ -17,8 +17,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.testcontainers.shaded.org.hamcrest.CoreMatchers.equalTo;
+import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 
 class ExampleRestControllerIT extends AbstractIntegrationTest {
 
@@ -107,7 +108,7 @@ class ExampleRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_update_example_by_id() throws Exception {
         long id = 1L;
-        long numberOfEntitiesExpected = exampleService.findAll().size();
+        int numberOfEntitiesExpected = exampleService.findAll().size();
         ExampleDto exampleDto = new ExampleDto();
         exampleDto.setExampleText("updatedText");
         String jsonExampleDto = objectMapper.writeValueAsString(exampleDto);
@@ -121,10 +122,9 @@ class ExampleRestControllerIT extends AbstractIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(expected));
-
-        mockMvc.perform(get(EXAMPLE_URI))
-                .andExpect(jsonPath("$.content.length()").value(numberOfEntitiesExpected));
+                .andExpect(content().json(expected))
+                .andExpect(result -> assertThat(exampleService.findAll().size(),
+                        equalTo(numberOfEntitiesExpected)));
     }
 
     @Test

@@ -15,8 +15,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.testcontainers.shaded.org.hamcrest.CoreMatchers.equalTo;
+import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 
 class ImageRestControllerIT extends AbstractIntegrationTest {
 
@@ -70,7 +71,7 @@ class ImageRestControllerIT extends AbstractIntegrationTest {
     void should_update_productImage_by_id() throws Exception {
         long id = 1L;
         byte[] newData = new byte[]{1, 2, 3};
-        long numberOfEntitiesExpected = productImageService.findAll().size();
+        int numberOfEntitiesExpected = productImageService.findAll().size();
 
         ProductImageDto productImageDto = new ProductImageDto();
         productImageDto.setProductId(1L);
@@ -93,12 +94,9 @@ class ImageRestControllerIT extends AbstractIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(expected));
-
-        mockMvc.perform(get(PRODUCT_IMAGE_URI))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(numberOfEntitiesExpected));
+                .andExpect(content().json(expected))
+                .andExpect(result -> assertThat(productImageService.findAll().size(),
+                        equalTo(numberOfEntitiesExpected)));
     }
 
     @Test

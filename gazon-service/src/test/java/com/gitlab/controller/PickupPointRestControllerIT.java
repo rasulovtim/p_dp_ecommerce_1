@@ -17,8 +17,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.testcontainers.shaded.org.hamcrest.CoreMatchers.equalTo;
+import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 
 class PickupPointRestControllerIT extends AbstractIntegrationTest {
 
@@ -90,7 +91,7 @@ class PickupPointRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_update_pickupPoint_by_id() throws Exception {
         long id = 7L;
-        long numberOfEntitiesExpected = pickupPointService.findAll().size();
+        int numberOfEntitiesExpected = pickupPointService.findAll().size();
 
         PickupPointDto pickupPointDto = new PickupPointDto();
         pickupPointDto.setAddress("New Address");
@@ -109,12 +110,9 @@ class PickupPointRestControllerIT extends AbstractIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(expected));
-
-        mockMvc.perform(get(URI))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(numberOfEntitiesExpected));
+                .andExpect(content().json(expected))
+                .andExpect(result -> assertThat(pickupPointService.findAll().size(),
+                        equalTo(numberOfEntitiesExpected)));
     }
 
     @Test

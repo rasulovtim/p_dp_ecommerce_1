@@ -17,8 +17,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.testcontainers.shaded.org.hamcrest.CoreMatchers.equalTo;
+import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 
 class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
 
@@ -90,7 +91,7 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_update_working_schedule_by_id() throws Exception {
         long id = 1L;
-        long numberOfEntitiesExpected = workingScheduleService.findAll().size();
+        int numberOfEntitiesExpected = workingScheduleService.findAll().size();
 
         WorkingScheduleDto workingScheduleDto = new WorkingScheduleDto();
         workingScheduleDto.setDayOfWeek(DayOfWeek.WEDNESDAY);
@@ -107,12 +108,9 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(expected));
-
-        mockMvc.perform(get(WORKING_SCHEDULE_URI))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(numberOfEntitiesExpected));
+                .andExpect(content().json(expected))
+                .andExpect(result -> assertThat(workingScheduleService.findAll().size(),
+                        equalTo(numberOfEntitiesExpected)));
     }
 
 

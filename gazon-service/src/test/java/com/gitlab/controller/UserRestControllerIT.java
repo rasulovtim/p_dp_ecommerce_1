@@ -24,8 +24,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.testcontainers.shaded.org.hamcrest.CoreMatchers.equalTo;
+import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 
 class UserRestControllerIT extends AbstractIntegrationTest {
     private static final String USER_URN = "/api/user";
@@ -92,7 +93,7 @@ class UserRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_update_user_by_id() throws Exception {
         long id = 1L;
-        long numberOfEntitiesExpected = userService.findAll().size();
+        int numberOfEntitiesExpected = userService.findAll().size();
 
         UserDto userDto = generateUser();
 
@@ -107,12 +108,9 @@ class UserRestControllerIT extends AbstractIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(expected));
-
-        mockMvc.perform(get(USER_URI))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(numberOfEntitiesExpected));
+                .andExpect(content().json(expected))
+                .andExpect(result -> assertThat(userService.findAll().size(),
+                        equalTo(numberOfEntitiesExpected)));
     }
 
     @Test

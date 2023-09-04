@@ -15,8 +15,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.testcontainers.shaded.org.hamcrest.CoreMatchers.equalTo;
+import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 
 public class ReviewImageRestControllerIT extends AbstractIntegrationTest {
 
@@ -69,7 +70,7 @@ public class ReviewImageRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_update_reviewImage_by_id() throws Exception {
         long id = 1L;
-        long numberOfEntitiesExpected = reviewImageService.findAll().size();
+        int numberOfEntitiesExpected = reviewImageService.findAll().size();
 
         ReviewImageDto reviewImageDto = generateReviewDto();
         reviewImageDto.setId(id);
@@ -90,12 +91,9 @@ public class ReviewImageRestControllerIT extends AbstractIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(expected));
-
-        mockMvc.perform(get(REVIEW_IMAGE_URI))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(numberOfEntitiesExpected));
+                .andExpect(content().json(expected))
+                .andExpect(result -> assertThat(reviewImageService.findAll().size(),
+                        equalTo(numberOfEntitiesExpected)));
     }
 
     @Test
