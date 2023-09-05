@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.testcontainers.shaded.org.hamcrest.CoreMatchers.equalTo;
 import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 
-public class ReviewRestControllerIT extends AbstractIntegrationTest {
+class ReviewRestControllerIT extends AbstractIntegrationTest {
 
     private static final String REVIEW_URN = "/api/review";
     private static final String REVIEW_URI = URL + REVIEW_URN;
@@ -125,7 +125,6 @@ public class ReviewRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(status().isNotFound());
     }
 
-
     @Test
     void should_delete_review_by_id() throws Exception {
         long id = 3L;
@@ -136,7 +135,6 @@ public class ReviewRestControllerIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
-
 
     @Test
     void should_get_images_ids_by_review_id() throws Exception {
@@ -155,7 +153,6 @@ public class ReviewRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(content().json(expected));
     }
 
-
     @Test
     void should_create_multiple_reviewImages_by_review_id() throws Exception {
         long id = 1L;
@@ -169,7 +166,6 @@ public class ReviewRestControllerIT extends AbstractIntegrationTest {
                         .accept(MediaType.ALL))
                 .andExpect(status().isCreated());
     }
-
 
     @Test
     void should_delete_all_reviewImages_by_review_id() throws Exception {

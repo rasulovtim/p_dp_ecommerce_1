@@ -157,7 +157,6 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(status().isNotFound());
     }
 
-
     @Test
     void should_get_images_ids_by_product_id() throws Exception {
         long id = 3L;
@@ -175,7 +174,6 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(content().json(expected));
     }
 
-
     @Test
     void should_create_multiple_productImages_by_product_id() throws Exception {
         long id = 1L;
@@ -189,7 +187,6 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
                         .accept(MediaType.ALL))
                 .andExpect(status().isCreated());
     }
-
 
     @Test
     void should_delete_all_productImages_by_product_id() throws Exception {

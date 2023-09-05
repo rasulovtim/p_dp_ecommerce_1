@@ -29,6 +29,7 @@ import static org.testcontainers.shaded.org.hamcrest.CoreMatchers.equalTo;
 import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 
 class UserRestControllerIT extends AbstractIntegrationTest {
+
     private static final String USER_URN = "/api/user";
     private static final String USER_URI = URL + USER_URN;
     @Autowired

@@ -166,5 +166,4 @@ class PassportRestControllerTest extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
-
 }

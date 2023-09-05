@@ -135,5 +135,4 @@ class ImageRestControllerIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
-
 }

@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.testcontainers.shaded.org.hamcrest.CoreMatchers.equalTo;
 import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 
-public class ReviewImageRestControllerIT extends AbstractIntegrationTest {
+class ReviewImageRestControllerIT extends AbstractIntegrationTest {
 
     private static final String REVIEW_IMAGE_URN = "/api/review_images";
     private static final String REVIEW_IMAGE_URI = URL + REVIEW_IMAGE_URN;

@@ -136,5 +136,4 @@ class BankCardRestControllerIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
-
 }

@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class RoleRestControllerIT extends AbstractIntegrationTest {
+
     private static final String ROLE_URN = "/api/role";
     private static final String ROLE_URI = URL + ROLE_URN;
     @Autowired
@@ -27,5 +28,4 @@ class RoleRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
     }
-
 }

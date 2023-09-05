@@ -117,7 +117,6 @@ class SelectedProductRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(status().isNotFound());
     }
 
-
     @Test
     void should_delete_selectedProduct_by_id() throws Exception {
         long id = 3L;
@@ -129,7 +128,6 @@ class SelectedProductRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(status().isNotFound());
     }
 
-
     private SelectedProductDto generateSelectedProductDto() {
         SelectedProductDto selectedProduct = new SelectedProductDto();
         selectedProduct.setProductId(1L);
@@ -138,4 +136,3 @@ class SelectedProductRestControllerIT extends AbstractIntegrationTest {
         return selectedProduct;
     }
 }
-

@@ -103,7 +103,6 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(content().json(expected));
     }
 
-
     @Test
     void should_get_shoppingCart_by_id() throws Exception {
         long id = 1L;
@@ -129,6 +128,4 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
-
-
 }
