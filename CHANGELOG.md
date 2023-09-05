@@ -10,6 +10,7 @@
 - #56 - transferring the mapper from the controller to the service
 - #23 - added role caching
 - #49 - entities number check after update tests
+- #78 - Generate test data for BankCardRestControllerIT
 
 ## [1.0.0] - 30.07.2023
 - #1 - added working schedule entity
