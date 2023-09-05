@@ -71,10 +71,7 @@ class BankCardRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_create_bankCard() throws Exception {
-        BankCardDto bankCardDto = new BankCardDto();
-        bankCardDto.setCardNumber("123456789");
-        bankCardDto.setDueDate(LocalDate.parse("2024-12-12"));
-        bankCardDto.setSecurityCode(123);
+        BankCardDto bankCardDto = generateBankCardDto();
         String jsonBankCardDto = objectMapper.writeValueAsString(bankCardDto);
 
         mockMvc.perform(post(BANK_CARD_URI)
@@ -89,10 +86,7 @@ class BankCardRestControllerIT extends AbstractIntegrationTest {
     void should_update_bankCard_by_id() throws Exception {
         long id = 1L;
         int numberOfEntitiesExpected = bankCardService.findAll().size();
-        BankCardDto bankCardDto = new BankCardDto();
-        bankCardDto.setCardNumber(/*updatedCardNumber*/"123456789"/*updatedCardNumber*/);
-        bankCardDto.setDueDate(LocalDate.parse("2024-12-12"));
-        bankCardDto.setSecurityCode(123);
+        BankCardDto bankCardDto = generateBankCardDto();
         String jsonBankCardDto = objectMapper.writeValueAsString(bankCardDto);
 
         bankCardDto.setId(id);
@@ -112,10 +106,7 @@ class BankCardRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_return_not_found_when_update_bankCard_by_non_existent_id() throws Exception {
         long id = 10L;
-        BankCardDto bankCardDto = new BankCardDto();
-        bankCardDto.setCardNumber(/*updatedCardNumber*/"123456789"/*updatedCardNumber*/);
-        bankCardDto.setDueDate(LocalDate.MIN);
-        bankCardDto.setSecurityCode(123);
+        BankCardDto bankCardDto = generateBankCardDto();
         String jsonBankCardDto = objectMapper.writeValueAsString(bankCardDto);
 
         mockMvc.perform(patch(BANK_CARD_URI + "/{id}", id)
@@ -135,5 +126,13 @@ class BankCardRestControllerIT extends AbstractIntegrationTest {
         mockMvc.perform(get(BANK_CARD_URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isNotFound());
+    }
+
+    private BankCardDto generateBankCardDto() {
+        BankCardDto bankCardDto = new BankCardDto();
+        bankCardDto.setCardNumber("123456789");
+        bankCardDto.setDueDate(LocalDate.now());
+        bankCardDto.setSecurityCode(123);
+        return bankCardDto;
     }
 }
