@@ -1,26 +1,35 @@
 package com.gitlab.controller;
 
-import com.gitlab.dto.*;
+import com.gitlab.dto.BankCardDto;
+import com.gitlab.dto.PassportDto;
+import com.gitlab.dto.PersonalAddressDto;
+import com.gitlab.dto.ShippingAddressDto;
+import com.gitlab.dto.UserDto;
 import com.gitlab.mapper.UserMapper;
-import com.gitlab.model.*;
+import com.gitlab.model.Passport;
+import com.gitlab.model.User;
 import com.gitlab.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-
 
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.testcontainers.shaded.org.hamcrest.CoreMatchers.equalTo;
+import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 
-class UserRestControllerIT extends AbstractIntegrationTest{
+class UserRestControllerIT extends AbstractIntegrationTest {
+
     private static final String USER_URN = "/api/user";
     private static final String USER_URI = URL + USER_URN;
     @Autowired
@@ -85,6 +94,8 @@ class UserRestControllerIT extends AbstractIntegrationTest{
     @Test
     void should_update_user_by_id() throws Exception {
         long id = 1L;
+        int numberOfEntitiesExpected = userService.findAll().size();
+
         UserDto userDto = generateUser();
 
         String jsonExampleDto = objectMapper.writeValueAsString(userDto);
@@ -98,7 +109,9 @@ class UserRestControllerIT extends AbstractIntegrationTest{
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(expected));
+                .andExpect(content().json(expected))
+                .andExpect(result -> assertThat(userService.findAll().size(),
+                        equalTo(numberOfEntitiesExpected)));
     }
 
     @Test

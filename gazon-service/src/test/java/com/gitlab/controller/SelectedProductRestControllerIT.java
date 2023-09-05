@@ -9,10 +9,15 @@ import org.springframework.http.MediaType;
 
 import java.util.stream.Collectors;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.testcontainers.shaded.org.hamcrest.CoreMatchers.equalTo;
+import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 
 class SelectedProductRestControllerIT extends AbstractIntegrationTest {
 
@@ -42,7 +47,7 @@ class SelectedProductRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_get_selectedProduct_by_id() throws Exception {
         long id = 1L;
-        var selectedProduct =  selectedProductService.findById(id).orElse(null);
+        var selectedProduct = selectedProductService.findById(id).orElse(null);
         var selectedProductDto = selectedProductMapper.toDto(selectedProduct);
         selectedProductMapper.calculatedUnmappedFields(selectedProductDto, selectedProduct);
         String expected = objectMapper.writeValueAsString(selectedProductDto);
@@ -77,6 +82,8 @@ class SelectedProductRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_update_selectedProduct_by_id() throws Exception {
         long id = 1L;
+        int numberOfEntitiesExpected = selectedProductService.findAll().size();
+
         SelectedProductDto selectedProductDto = generateSelectedProductDto();
 
         String jsonSelectedProductDto = objectMapper.writeValueAsString(selectedProductDto);
@@ -90,7 +97,9 @@ class SelectedProductRestControllerIT extends AbstractIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(expected));
+                .andExpect(content().json(expected))
+                .andExpect(result -> assertThat(selectedProductService.findAll().size(),
+                        equalTo(numberOfEntitiesExpected)));
     }
 
     @Test
@@ -108,7 +117,6 @@ class SelectedProductRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(status().isNotFound());
     }
 
-
     @Test
     void should_delete_selectedProduct_by_id() throws Exception {
         long id = 3L;
@@ -120,7 +128,6 @@ class SelectedProductRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(status().isNotFound());
     }
 
-
     private SelectedProductDto generateSelectedProductDto() {
         SelectedProductDto selectedProduct = new SelectedProductDto();
         selectedProduct.setProductId(1L);
@@ -129,4 +136,3 @@ class SelectedProductRestControllerIT extends AbstractIntegrationTest {
         return selectedProduct;
     }
 }
-

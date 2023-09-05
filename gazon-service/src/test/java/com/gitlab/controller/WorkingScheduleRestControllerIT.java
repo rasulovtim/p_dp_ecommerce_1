@@ -6,13 +6,20 @@ import com.gitlab.service.WorkingScheduleService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.stream.Collectors;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.testcontainers.shaded.org.hamcrest.CoreMatchers.equalTo;
+import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 
 class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
 
@@ -84,6 +91,8 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_update_working_schedule_by_id() throws Exception {
         long id = 1L;
+        int numberOfEntitiesExpected = workingScheduleService.findAll().size();
+
         WorkingScheduleDto workingScheduleDto = new WorkingScheduleDto();
         workingScheduleDto.setDayOfWeek(DayOfWeek.WEDNESDAY);
         workingScheduleDto.setFrom(LocalTime.of(10, 0));
@@ -99,7 +108,9 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(expected));
+                .andExpect(content().json(expected))
+                .andExpect(result -> assertThat(workingScheduleService.findAll().size(),
+                        equalTo(numberOfEntitiesExpected)));
     }
 
 
@@ -119,7 +130,6 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isNotFound());  // Ожидаем статус 404 Not Found
     }
-
 
     @Test
     void should_delete_working_schedule_by_id() throws Exception {
