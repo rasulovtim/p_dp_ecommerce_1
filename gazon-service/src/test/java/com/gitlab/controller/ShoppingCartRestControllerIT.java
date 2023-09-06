@@ -1,25 +1,24 @@
 package com.gitlab.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gitlab.dto.ShoppingCartDto;
 import com.gitlab.mapper.ShoppingCartMapper;
-import com.gitlab.model.ShoppingCart;
 import com.gitlab.service.ShoppingCartService;
-import org.hibernate.Hibernate;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.testcontainers.shaded.org.hamcrest.CoreMatchers.equalTo;
+import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 
 class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
 
@@ -53,10 +52,12 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isCreated());
     }
+
     @Transactional
     @Test
     void should_update_shoppingCart_by_id() throws Exception {
         long id = 1L;
+        int numberOfEntitiesExpected = shoppingCartService.findAll().size();
         ShoppingCartDto shoppingCartDto = new ShoppingCartDto();
         shoppingCartDto.setUserId(2L);
         String jsonShoppingCartDto = objectMapper.writeValueAsString(shoppingCartDto);
@@ -70,8 +71,11 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(expected));
+                .andExpect(content().json(expected))
+                .andExpect(result -> assertThat(shoppingCartService.findAll().size(),
+                        equalTo(numberOfEntitiesExpected)));
     }
+
     @Transactional
     @Test
     void should_return_not_found_when_update_shoppingCart_by_non_existent_id() throws Exception {
@@ -87,6 +91,7 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
+
     @Test
     void should_get_all_shoppingCarts() throws Exception {
         List<ShoppingCartDto> shoppingCarts = shoppingCartService.findAll().stream().map(shoppingCartMapper::toDto).toList();
@@ -96,8 +101,7 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
-   }
-
+    }
 
     @Test
     void should_get_shoppingCart_by_id() throws Exception {
@@ -111,6 +115,7 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
     }
+
     @Transactional
     @Test
     void should_delete_shoppingCart_by_id() throws Exception {
@@ -123,9 +128,4 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
-
-
-
-
-
 }

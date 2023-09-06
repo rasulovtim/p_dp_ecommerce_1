@@ -11,10 +11,15 @@ import org.springframework.http.MediaType;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.testcontainers.shaded.org.hamcrest.CoreMatchers.equalTo;
+import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 
 class PickupPointRestControllerIT extends AbstractIntegrationTest {
 
@@ -86,6 +91,8 @@ class PickupPointRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_update_pickupPoint_by_id() throws Exception {
         long id = 7L;
+        int numberOfEntitiesExpected = pickupPointService.findAll().size();
+
         PickupPointDto pickupPointDto = new PickupPointDto();
         pickupPointDto.setAddress("New Address");
         pickupPointDto.setDirections("New Directions");
@@ -103,7 +110,9 @@ class PickupPointRestControllerIT extends AbstractIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(expected));
+                .andExpect(content().json(expected))
+                .andExpect(result -> assertThat(pickupPointService.findAll().size(),
+                        equalTo(numberOfEntitiesExpected)));
     }
 
     @Test

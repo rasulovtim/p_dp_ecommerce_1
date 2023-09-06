@@ -14,10 +14,16 @@ import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.testcontainers.shaded.org.hamcrest.CoreMatchers.equalTo;
+import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 
 class ProductRestControllerIT extends AbstractIntegrationTest {
 
@@ -91,6 +97,8 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_update_product_by_id() throws Exception {
         long id = 1L;
+        int numberOfEntitiesExpected = productService.findAll().size();
+
         ProductDto productDto = new ProductDto();
         productDto.setName("name1");
         productDto.setStockCount(1);
@@ -111,7 +119,9 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(expected));
+                .andExpect(content().json(expected))
+                .andExpect(result -> assertThat(productService.findAll().size(),
+                        equalTo(numberOfEntitiesExpected)));
     }
 
     @Test
@@ -136,7 +146,6 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(status().isNotFound());
     }
 
-
     @Test
     void should_delete_product_by_id() throws Exception {
         long id = 2L;
@@ -147,7 +156,6 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
-
 
     @Test
     void should_get_images_ids_by_product_id() throws Exception {
@@ -166,7 +174,6 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(content().json(expected));
     }
 
-
     @Test
     void should_create_multiple_productImages_by_product_id() throws Exception {
         long id = 1L;
@@ -180,7 +187,6 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
                         .accept(MediaType.ALL))
                 .andExpect(status().isCreated());
     }
-
 
     @Test
     void should_delete_all_productImages_by_product_id() throws Exception {

@@ -9,10 +9,15 @@ import org.springframework.http.MediaType;
 
 import java.util.stream.Collectors;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.testcontainers.shaded.org.hamcrest.CoreMatchers.equalTo;
+import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 
 class PostomatRestControllerIT extends AbstractIntegrationTest {
 
@@ -83,6 +88,8 @@ class PostomatRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_update_postomat_by_id() throws Exception {
         long id = 4L;
+        int numberOfEntitiesExpected = postomatService.findAll().size();
+
         PostomatDto postomatDto = new PostomatDto();
         postomatDto.setAddress("New Address");
         postomatDto.setDirections("New Directions");
@@ -99,7 +106,9 @@ class PostomatRestControllerIT extends AbstractIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(expected));
+                .andExpect(content().json(expected))
+                .andExpect(result -> assertThat(postomatService.findAll().size(),
+                        equalTo(numberOfEntitiesExpected)));
     }
 
     @Test

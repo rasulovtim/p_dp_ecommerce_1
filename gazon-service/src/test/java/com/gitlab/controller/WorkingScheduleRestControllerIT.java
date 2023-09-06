@@ -11,10 +11,15 @@ import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.stream.Collectors;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.testcontainers.shaded.org.hamcrest.CoreMatchers.equalTo;
+import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 
 class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
 
@@ -69,7 +74,10 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_create_working_schedule() throws Exception {
-        WorkingScheduleDto workingScheduleDto = generateWorkingScheduleDto();
+        WorkingScheduleDto workingScheduleDto = new WorkingScheduleDto();
+        workingScheduleDto.setDayOfWeek(DayOfWeek.MONDAY);
+        workingScheduleDto.setFrom(LocalTime.of(9, 0));
+        workingScheduleDto.setTo(LocalTime.of(17, 0));
         String jsonWorkingScheduleDto = objectMapper.writeValueAsString(workingScheduleDto);
 
         mockMvc.perform(post(WORKING_SCHEDULE_URI)
@@ -83,7 +91,12 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_update_working_schedule_by_id() throws Exception {
         long id = 1L;
-        WorkingScheduleDto workingScheduleDto = generateWorkingScheduleDto();
+        int numberOfEntitiesExpected = workingScheduleService.findAll().size();
+
+        WorkingScheduleDto workingScheduleDto = new WorkingScheduleDto();
+        workingScheduleDto.setDayOfWeek(DayOfWeek.WEDNESDAY);
+        workingScheduleDto.setFrom(LocalTime.of(10, 0));
+        workingScheduleDto.setTo(LocalTime.of(18, 0));
         String jsonWorkingScheduleDto = objectMapper.writeValueAsString(workingScheduleDto);
 
         workingScheduleDto.setId(id);
@@ -95,14 +108,19 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(expected));
+                .andExpect(content().json(expected))
+                .andExpect(result -> assertThat(workingScheduleService.findAll().size(),
+                        equalTo(numberOfEntitiesExpected)));
     }
 
 
     @Test
     void should_return_not_found_when_update_working_schedule_by_non_existent_id() throws Exception {
         long id = 10L;
-        WorkingScheduleDto workingScheduleDto = generateWorkingScheduleDto();
+        WorkingScheduleDto workingScheduleDto = new WorkingScheduleDto();
+        workingScheduleDto.setDayOfWeek(DayOfWeek.WEDNESDAY);
+        workingScheduleDto.setFrom(LocalTime.of(10, 0));
+        workingScheduleDto.setTo(LocalTime.of(18, 0));
         String jsonWorkingScheduleDto = objectMapper.writeValueAsString(workingScheduleDto);
 
         mockMvc.perform(put(WORKING_SCHEDULE_URI + "/{id}", id)  // Заменяем patch на put
@@ -113,7 +131,6 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(status().isNotFound());  // Ожидаем статус 404 Not Found
     }
 
-
     @Test
     void should_delete_working_schedule_by_id() throws Exception {
         long id = 2L;
@@ -123,15 +140,5 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
         mockMvc.perform(get(WORKING_SCHEDULE_URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isNotFound());
-    }
-
-    private WorkingScheduleDto generateWorkingScheduleDto() {
-        WorkingScheduleDto workingScheduleDto = new WorkingScheduleDto();
-        workingScheduleDto.setId(1L);
-        workingScheduleDto.setFrom(LocalTime.of(10, 0));
-        workingScheduleDto.setTo(LocalTime.of(18, 0));
-        workingScheduleDto.setDayOfWeek(DayOfWeek.WEDNESDAY);
-
-        return workingScheduleDto;
     }
 }
