@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class FeignConfiguration {
+
     @Bean
     public PageJacksonModule pageJacksonModule() {
         return new PageJacksonModule();
@@ -16,4 +17,5 @@ public class FeignConfiguration {
     public SortJacksonModule sortJacksonModule() {
         return new SortJacksonModule();
     }
+
 }
