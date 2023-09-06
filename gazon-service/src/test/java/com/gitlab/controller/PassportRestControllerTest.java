@@ -11,10 +11,15 @@ import org.springframework.http.MediaType;
 import java.time.LocalDate;
 import java.util.stream.Collectors;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.testcontainers.shaded.org.hamcrest.CoreMatchers.equalTo;
+import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 
 class PassportRestControllerTest extends AbstractIntegrationTest {
 
@@ -94,6 +99,7 @@ class PassportRestControllerTest extends AbstractIntegrationTest {
     @Test
     void should_update_passport_by_id() throws Exception {
         Long id = 1L;
+        int numberOfEntitiesExpected = passportService.findAll().size();
         PassportDto passportDto = new PassportDto();
 
         passportDto.setFirstName("updFirstName");
@@ -107,18 +113,20 @@ class PassportRestControllerTest extends AbstractIntegrationTest {
         passportDto.setIssuer("Test Otedel police №1");
         passportDto.setIssuerNumber("111-111");
 
-        String jsonExampleDto = objectMapper.writeValueAsString(passportDto);
+        String jsonPassportDto = objectMapper.writeValueAsString(passportDto);
 
         passportDto.setId(id);
         String expected = objectMapper.writeValueAsString(passportDto);
 
         mockMvc.perform(patch(PASSPORT_URI + "/{id}", id)
-                        .content(jsonExampleDto)
+                        .content(jsonPassportDto)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(expected));
+                .andExpect(content().json(expected))
+                .andExpect(result -> assertThat(passportService.findAll().size(),
+                        equalTo(numberOfEntitiesExpected)));
     }
 
     @Test
@@ -158,5 +166,4 @@ class PassportRestControllerTest extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
-
 }
