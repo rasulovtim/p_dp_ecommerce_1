@@ -3,6 +3,7 @@ package com.gitlab.service;
 import com.gitlab.model.Role;
 import com.gitlab.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.cache.annotation.Cacheable;
 
@@ -19,18 +20,22 @@ public class RoleService {
         return roleRepository.findAll();
     }
 
+    @Cacheable("roles")
     public Optional<Role> findByName(String name) {
         return Optional.ofNullable(roleRepository.findByName(name));
     }
 
+    @Cacheable("roles")
     public Optional<Role> findById(Long id) {
         return roleRepository.findById(id);
     }
 
+    @CacheEvict(value = "roles", allEntries = true)
     public Role save(Role role) {
         return roleRepository.save(role);
     }
 
+    @CacheEvict(value = "roles", allEntries = true)
     public Role update(Long id, Role updatedRole) {
         Optional<Role> existingRoleOptional = roleRepository.findById(id);
 
@@ -44,6 +49,7 @@ public class RoleService {
         }
     }
 
+    @CacheEvict(value = "roles", allEntries = true)
     public void delete(Role role) {
         roleRepository.delete(role);
     }
