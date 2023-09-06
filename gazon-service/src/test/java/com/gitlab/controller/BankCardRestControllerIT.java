@@ -2,12 +2,14 @@ package com.gitlab.controller;
 
 import com.gitlab.dto.BankCardDto;
 import com.gitlab.mapper.BankCardMapper;
+import com.gitlab.model.BankCard;
 import com.gitlab.service.BankCardService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -119,7 +121,8 @@ class BankCardRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_delete_bankCard_by_id() throws Exception {
-        long id = 2L;
+        BankCardDto bankCardDto = bankCardService.saveDto(generateBankCardDto());
+        long id = bankCardDto.getId();
         mockMvc.perform(delete(BANK_CARD_URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk());
