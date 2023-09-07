@@ -9,7 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class SearchProductRestIT extends AbstractIntegrationTest {
+class SearchProductRestIT extends AbstractIntegrationTest {
 
     private static final String PRODUCT_URN = "/api/search/product";
     private static final String PRODUCT_URI = URL + PRODUCT_URN;

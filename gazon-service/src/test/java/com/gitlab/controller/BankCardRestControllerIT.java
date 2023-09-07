@@ -10,11 +10,15 @@ import org.springframework.http.MediaType;
 import java.time.LocalDate;
 import java.util.stream.Collectors;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.testcontainers.shaded.org.hamcrest.CoreMatchers.equalTo;
+import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 
 class BankCardRestControllerIT extends AbstractIntegrationTest {
 
@@ -70,7 +74,7 @@ class BankCardRestControllerIT extends AbstractIntegrationTest {
         BankCardDto bankCardDto = new BankCardDto();
         bankCardDto.setCardNumber("123456789");
         bankCardDto.setDueDate(LocalDate.parse("2024-12-12"));
-        bankCardDto.setSecurityCode( 123);
+        bankCardDto.setSecurityCode(123);
         String jsonBankCardDto = objectMapper.writeValueAsString(bankCardDto);
 
         mockMvc.perform(post(BANK_CARD_URI)
@@ -84,6 +88,7 @@ class BankCardRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_update_bankCard_by_id() throws Exception {
         long id = 1L;
+        int numberOfEntitiesExpected = bankCardService.findAll().size();
         BankCardDto bankCardDto = new BankCardDto();
         bankCardDto.setCardNumber(/*updatedCardNumber*/"123456789"/*updatedCardNumber*/);
         bankCardDto.setDueDate(LocalDate.parse("2024-12-12"));
@@ -99,7 +104,9 @@ class BankCardRestControllerIT extends AbstractIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(expected));
+                .andExpect(content().json(expected))
+                .andExpect(result -> assertThat(bankCardService.findAll().size(),
+                        equalTo(numberOfEntitiesExpected)));
     }
 
     @Test
@@ -129,5 +136,4 @@ class BankCardRestControllerIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
-
 }

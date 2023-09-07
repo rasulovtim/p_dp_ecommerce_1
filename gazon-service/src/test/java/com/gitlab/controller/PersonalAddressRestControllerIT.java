@@ -9,10 +9,15 @@ import org.springframework.http.MediaType;
 
 import java.util.stream.Collectors;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.testcontainers.shaded.org.hamcrest.CoreMatchers.equalTo;
+import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 
 class PersonalAddressRestControllerIT extends AbstractIntegrationTest {
 
@@ -57,7 +62,7 @@ class PersonalAddressRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_return_not_found_when_get_personalAddress_by_non_existent_id() throws Exception {
-        long id = 10L;
+        long id = 11L;
         mockMvc.perform(get(URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isNotFound());
@@ -87,6 +92,8 @@ class PersonalAddressRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_update_personalAddress_by_id() throws Exception {
         long id = 1L;
+        int numberOfEntitiesExpected = personalAddressService.findAll().size();
+
         PersonalAddressDto personalAddressDto = new PersonalAddressDto();
         personalAddressDto.setAddress("New Address");
         personalAddressDto.setDirections("New Directions");
@@ -107,7 +114,9 @@ class PersonalAddressRestControllerIT extends AbstractIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(expected));
+                .andExpect(content().json(expected))
+                .andExpect(result -> assertThat(personalAddressService.findAll().size(),
+                        equalTo(numberOfEntitiesExpected)));
     }
 
     @Test
