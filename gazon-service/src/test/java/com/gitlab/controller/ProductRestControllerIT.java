@@ -12,7 +12,6 @@ import org.springframework.mock.web.MockMultipartFile;
 
 import java.math.BigDecimal;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -38,10 +37,7 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
     void should_get_all_products() throws Exception {
         String expected = objectMapper.writeValueAsString(
                 productService
-                        .findAll()
-                        .stream()
-                        .map(productMapper::toDto)
-                        .collect(Collectors.toList())
+                        .findAllDto()
         );
 
         mockMvc.perform(get(PRODUCT_URI))
@@ -54,10 +50,7 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
     void should_get_product_by_id() throws Exception {
         long id = 1L;
         String expected = objectMapper.writeValueAsString(
-                productMapper.toDto(
-                        productService
-                                .findById(id)
-                                .orElse(null))
+                productService.findByIdDto(id).orElse(null)
         );
 
         mockMvc.perform(get(PRODUCT_URI + "/{id}", id))
@@ -108,6 +101,7 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
         productDto.setCode("name");
         productDto.setWeight(1L);
         productDto.setPrice(BigDecimal.ONE);
+        productDto.setRating(productService.findByIdDto(id).get().getRating());
         String jsonProductDto = objectMapper.writeValueAsString(productDto);
 
         productDto.setId(id);

@@ -5,14 +5,22 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.util.Set;
 
 @NamedEntityGraph(name = "Product.productImages",
         attributeNodes = @NamedAttributeNode("productImages"))
 @Entity
-@EqualsAndHashCode(exclude = {"productImages", "selectedProducts"})
+@EqualsAndHashCode(exclude = {"productImages", "selectedProducts", "review"})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -34,6 +42,9 @@ public class Product {
 
     @OneToMany(mappedBy = "product")
     private Set<SelectedProduct> selectedProducts;
+
+    @OneToMany(mappedBy = "product")
+    private Set<Review> review;
 
     @Column(name = "description")
     private String description;

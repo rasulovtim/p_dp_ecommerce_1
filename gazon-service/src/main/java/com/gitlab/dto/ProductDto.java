@@ -4,7 +4,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 
 
@@ -44,4 +48,6 @@ public class ProductDto {
     @DecimalMax(value = "2147483333", message = "Product's price should be between 0.1 and 2147483333")
     @NotNull(message = "Product's price should not be empty")
     private BigDecimal price;
+
+    private Byte rating;
 }

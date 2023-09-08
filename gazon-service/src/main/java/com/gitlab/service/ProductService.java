@@ -3,14 +3,15 @@ package com.gitlab.service;
 import com.gitlab.dto.ProductDto;
 import com.gitlab.mapper.ProductMapper;
 import com.gitlab.model.Product;
+import com.gitlab.model.Review;
 import com.gitlab.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -25,10 +26,19 @@ public class ProductService {
     }
 
     public List<ProductDto> findAllDto() {
-        List<Product> products = productRepository.findAll();
-        return products.stream()
-                .map(productMapper::toDto)
-                .collect(Collectors.toList());
+        List<Product> products = findAll();
+        List<ProductDto> allProductDto = new ArrayList();
+        for (Product product : products) {
+            ProductDto productDto = productMapper.toDto(product);
+            if (!product.getReview().isEmpty()) {
+                long rating = Math.round(product.getReview().stream()
+                        .map(Review::getRating).mapToInt(a -> a)
+                        .average().getAsDouble());
+                productDto.setRating((byte) rating);
+            }
+            allProductDto.add(productDto);
+        }
+        return allProductDto;
     }
 
     public Optional<Product> findById(Long id) {
@@ -36,8 +46,17 @@ public class ProductService {
     }
 
     public Optional<ProductDto> findByIdDto(Long id) {
-        return productRepository.findById(id)
-                .map(productMapper::toDto);
+        Optional<Product> currentOptionalProduct = productRepository.findById(id);
+        Optional<ProductDto> currentOptionalProductDto = currentOptionalProduct.map(productMapper::toDto);
+        if (currentOptionalProduct.isPresent()) {
+            Product currentProduct = currentOptionalProduct.get();
+            if (!currentProduct.getReview().isEmpty()) {
+                long rating = Math.round(currentProduct.getReview().stream()
+                        .map(Review::getRating).mapToInt(a -> a).average().getAsDouble());
+                currentOptionalProductDto.get().setRating((byte) rating);
+            }
+        }
+        return currentOptionalProductDto;
     }
 
     public Product save(Product product) {
@@ -117,12 +136,13 @@ public class ProductService {
             currentProduct.setPrice(productDto.getPrice());
         }
 
-        Product updatedProduct = productRepository.save(currentProduct);
-        return Optional.ofNullable(productMapper.toDto(updatedProduct));
+        productRepository.save(currentProduct);
+
+        return findByIdDto(currentProduct.getId());
     }
 
     public Optional<Product> delete(Long id) {
-        Optional<Product> foundProduct = findById(id);
+        Optional<Product> foundProduct = productRepository.findById(id);
         if (foundProduct.isPresent()) {
             productRepository.deleteById(id);
         }
