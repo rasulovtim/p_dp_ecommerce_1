@@ -1,4 +1,4 @@
-package com.gitlab.controller.view;
+package com.gitlab.view;
 
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;

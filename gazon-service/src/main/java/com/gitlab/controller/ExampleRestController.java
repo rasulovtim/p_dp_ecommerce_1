@@ -1,6 +1,6 @@
 package com.gitlab.controller;
 
-import com.gitlab.controller.api.ExampleRestApi;
+import com.gitlab.controllers.api.rest.ExampleRestApi;
 import com.gitlab.dto.ExampleDto;
 import com.gitlab.model.Example;
 import com.gitlab.service.ExampleService;
