@@ -8,9 +8,11 @@
 - #53 - added api-gateway
 - #69 - added front for the Role
 - #56 - transferring the mapper from the controller to the service
-- #87 - Generate test data for WorkingScheduleRestControllerIT
+- #75 - frontend moved to a separate module
 - #23 - added role caching
 - #49 - entities number check after update tests
+- #78 - Generate test data for BankCardRestControllerIT
+- #87 - Generate test data for WorkingScheduleRestControllerIT
 
 ## [1.0.0] - 30.07.2023
 - #1 - added working schedule entity

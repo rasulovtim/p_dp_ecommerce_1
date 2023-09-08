@@ -1,4 +1,4 @@
-package com.gitlab.controller.view;
+package com.gitlab.view;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -47,7 +47,7 @@ public class MainLayout extends AppLayout {
         var tabs = new Tabs();
         tabs.add(createTab(VaadinIcon.HANDS_UP, "Hello", AdminView.class));
         tabs.add(createTab(VaadinIcon.CLOSE_CIRCLE_O, "Examples", ExampleView.class));
-        tabs.add(createTab(VaadinIcon.GROUP, "Roles", RoleView.class));
+//        tabs.add(createTab(VaadinIcon.GROUP, "Roles", RoleView.class));
         tabs.setOrientation(Tabs.Orientation.VERTICAL);
         return tabs;
     }
