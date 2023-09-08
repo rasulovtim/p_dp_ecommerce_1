@@ -2,12 +2,14 @@ package com.gitlab.controller;
 
 import com.gitlab.dto.BankCardDto;
 import com.gitlab.mapper.BankCardMapper;
+import com.gitlab.model.BankCard;
 import com.gitlab.service.BankCardService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -71,10 +73,7 @@ class BankCardRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_create_bankCard() throws Exception {
-        BankCardDto bankCardDto = new BankCardDto();
-        bankCardDto.setCardNumber("123456789");
-        bankCardDto.setDueDate(LocalDate.parse("2024-12-12"));
-        bankCardDto.setSecurityCode(123);
+        BankCardDto bankCardDto = generateBankCardDto();
         String jsonBankCardDto = objectMapper.writeValueAsString(bankCardDto);
 
         mockMvc.perform(post(BANK_CARD_URI)
@@ -89,10 +88,7 @@ class BankCardRestControllerIT extends AbstractIntegrationTest {
     void should_update_bankCard_by_id() throws Exception {
         long id = 1L;
         int numberOfEntitiesExpected = bankCardService.findAll().size();
-        BankCardDto bankCardDto = new BankCardDto();
-        bankCardDto.setCardNumber(/*updatedCardNumber*/"123456789"/*updatedCardNumber*/);
-        bankCardDto.setDueDate(LocalDate.parse("2024-12-12"));
-        bankCardDto.setSecurityCode(123);
+        BankCardDto bankCardDto = generateBankCardDto();
         String jsonBankCardDto = objectMapper.writeValueAsString(bankCardDto);
 
         bankCardDto.setId(id);
@@ -112,10 +108,7 @@ class BankCardRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_return_not_found_when_update_bankCard_by_non_existent_id() throws Exception {
         long id = 10L;
-        BankCardDto bankCardDto = new BankCardDto();
-        bankCardDto.setCardNumber(/*updatedCardNumber*/"123456789"/*updatedCardNumber*/);
-        bankCardDto.setDueDate(LocalDate.MIN);
-        bankCardDto.setSecurityCode(123);
+        BankCardDto bankCardDto = generateBankCardDto();
         String jsonBankCardDto = objectMapper.writeValueAsString(bankCardDto);
 
         mockMvc.perform(patch(BANK_CARD_URI + "/{id}", id)
@@ -128,12 +121,21 @@ class BankCardRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_delete_bankCard_by_id() throws Exception {
-        long id = 2L;
+        BankCardDto bankCardDto = bankCardService.saveDto(generateBankCardDto());
+        long id = bankCardDto.getId();
         mockMvc.perform(delete(BANK_CARD_URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk());
         mockMvc.perform(get(BANK_CARD_URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isNotFound());
+    }
+
+    private BankCardDto generateBankCardDto() {
+        BankCardDto bankCardDto = new BankCardDto();
+        bankCardDto.setCardNumber("123456789");
+        bankCardDto.setDueDate(LocalDate.now());
+        bankCardDto.setSecurityCode(123);
+        return bankCardDto;
     }
 }
