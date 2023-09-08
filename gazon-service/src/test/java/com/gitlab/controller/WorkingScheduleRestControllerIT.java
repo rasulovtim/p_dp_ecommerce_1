@@ -74,10 +74,7 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_create_working_schedule() throws Exception {
-        WorkingScheduleDto workingScheduleDto = new WorkingScheduleDto();
-        workingScheduleDto.setDayOfWeek(DayOfWeek.MONDAY);
-        workingScheduleDto.setFrom(LocalTime.of(9, 0));
-        workingScheduleDto.setTo(LocalTime.of(17, 0));
+        WorkingScheduleDto workingScheduleDto = generateWorkingScheduleDto();
         String jsonWorkingScheduleDto = objectMapper.writeValueAsString(workingScheduleDto);
 
         mockMvc.perform(post(WORKING_SCHEDULE_URI)
@@ -93,10 +90,7 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
         long id = 1L;
         int numberOfEntitiesExpected = workingScheduleService.findAll().size();
 
-        WorkingScheduleDto workingScheduleDto = new WorkingScheduleDto();
-        workingScheduleDto.setDayOfWeek(DayOfWeek.WEDNESDAY);
-        workingScheduleDto.setFrom(LocalTime.of(10, 0));
-        workingScheduleDto.setTo(LocalTime.of(18, 0));
+        WorkingScheduleDto workingScheduleDto = generateWorkingScheduleDto();
         String jsonWorkingScheduleDto = objectMapper.writeValueAsString(workingScheduleDto);
 
         workingScheduleDto.setId(id);
@@ -117,10 +111,7 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_return_not_found_when_update_working_schedule_by_non_existent_id() throws Exception {
         long id = 10L;
-        WorkingScheduleDto workingScheduleDto = new WorkingScheduleDto();
-        workingScheduleDto.setDayOfWeek(DayOfWeek.WEDNESDAY);
-        workingScheduleDto.setFrom(LocalTime.of(10, 0));
-        workingScheduleDto.setTo(LocalTime.of(18, 0));
+        WorkingScheduleDto workingScheduleDto = generateWorkingScheduleDto();
         String jsonWorkingScheduleDto = objectMapper.writeValueAsString(workingScheduleDto);
 
         mockMvc.perform(put(WORKING_SCHEDULE_URI + "/{id}", id)  // Заменяем patch на put
@@ -133,12 +124,24 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_delete_working_schedule_by_id() throws Exception {
-        long id = 2L;
+        WorkingScheduleDto workingScheduleDto= workingScheduleService.saveDto(generateWorkingScheduleDto());
+
+        long id = workingScheduleDto.getId();
         mockMvc.perform(delete(WORKING_SCHEDULE_URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk());
         mockMvc.perform(get(WORKING_SCHEDULE_URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isNotFound());
+    }
+
+    private WorkingScheduleDto generateWorkingScheduleDto() {
+        WorkingScheduleDto workingScheduleDto = new WorkingScheduleDto();
+        workingScheduleDto.setId(1L);
+        workingScheduleDto.setFrom(LocalTime.of(10, 0));
+        workingScheduleDto.setTo(LocalTime.of(18, 0));
+        workingScheduleDto.setDayOfWeek(DayOfWeek.WEDNESDAY);
+
+        return workingScheduleDto;
     }
 }
