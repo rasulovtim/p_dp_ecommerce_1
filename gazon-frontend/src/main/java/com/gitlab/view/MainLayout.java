@@ -1,4 +1,4 @@
-package com.gitlab.controllers.view;
+package com.gitlab.view;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;

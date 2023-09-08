@@ -10,11 +10,10 @@
         <version>2.7.15</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
     <groupId>com.gitlab</groupId>
-    <artifactId>frontend-module</artifactId>
+    <artifactId>gazon-frontend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>fronted-module</name>
-    <description>fronted-module</description>
 
     <properties>
         <java.version>17</java.version>

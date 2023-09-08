@@ -1,4 +1,4 @@
-package com.gitlab.controllers.view;
+package com.gitlab.view;
 
 import com.vaadin.flow.component.HasText;
 import com.vaadin.flow.component.html.Span;

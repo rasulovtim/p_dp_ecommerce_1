@@ -1,4 +1,4 @@
-package com.gitlab.controllers.view;
+package com.gitlab.view;
 
 import com.gitlab.clients.ExampleClient;
 import com.gitlab.dto.ExampleDto;
