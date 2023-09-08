@@ -30,7 +30,7 @@ public class SwaggerConfig {
         return new ApiInfoBuilder()
                 .title("Gazon API")
                 .description("UI для работы с API проекта Gazon.")
-                .version("1.0.0")
+                .version("1.1.0")
                 .build();
     }
 }
