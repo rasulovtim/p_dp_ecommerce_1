@@ -31,6 +31,7 @@ public class ShoppingCartRestController implements ShoppingCartRestApi {
 
     private final ShoppingCartService shoppingCartService;
     private final ShoppingCartMapper shoppingCartMapper;
+
     private final EntityManager entityManager;
 
     @Override
