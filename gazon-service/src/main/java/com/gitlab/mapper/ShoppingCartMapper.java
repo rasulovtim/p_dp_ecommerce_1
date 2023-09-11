@@ -22,16 +22,16 @@ public abstract class ShoppingCartMapper {
     @Mapping(source = "user.id", target = "userId")
     public abstract ShoppingCartDto toDto(ShoppingCart shoppingCart);
 
-    @Mapping(source = "selectedProducts", target = "selectedProducts")
     @Mapping(source = "userId", target = "user.id")
     public abstract ShoppingCart toEntity(ShoppingCartDto shoppingCartDto);
 
     @AfterMapping
     protected void updateSelectedProducts(ShoppingCartDto dto, @MappingTarget ShoppingCart entity) {
-        if (dto.getSelectedProducts() != null) {
-            entity.getSelectedProducts().forEach(selectedProduct ->
-                    selectedProductMapper.calculatedUnmappedFields(selectedProductMapper.toDto(selectedProduct), selectedProduct)
-            );
+        if (dto.getSelectedProducts() != null && !dto.getSelectedProducts().isEmpty()) {
+            Set<SelectedProduct> selectedProducts = toSelectedProductSet(dto.getSelectedProducts());
+            entity.setSelectedProducts(selectedProducts);
+        } else {
+            entity.setSelectedProducts(null);
         }
     }
 
