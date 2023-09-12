@@ -21,9 +21,13 @@ public class SelectedProduct {
     @JoinColumn(name = "shopping_cart_id", referencedColumnName = "id")
     private ShoppingCart shoppingCart;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "product_id", referencedColumnName = "id")
     private Product product;
+
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
 
     @Column(name = "count")
     private Integer count;

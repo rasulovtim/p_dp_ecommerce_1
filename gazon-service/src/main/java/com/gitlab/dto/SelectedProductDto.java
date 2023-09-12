@@ -31,4 +31,6 @@ public class SelectedProductDto {
     @Range(min = 0, max = Long.MAX_VALUE - 807L,
             message = "SelectedProduct's totalWeight should be between 0 and 9223372036854775000")
     private Long totalWeight;
+
+    private Long userId;
 }
