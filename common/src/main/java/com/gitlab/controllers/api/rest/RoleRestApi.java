@@ -1,6 +1,6 @@
 package com.gitlab.controllers.api.rest;
 
-import com.gitlab.dto.roledto.RoleDto;
+import com.gitlab.dto.RoleDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;

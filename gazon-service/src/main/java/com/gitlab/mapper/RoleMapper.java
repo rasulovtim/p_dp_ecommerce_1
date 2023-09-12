@@ -1,7 +1,7 @@
 package com.gitlab.mapper;
 
 
-import com.gitlab.dto.roledto.RoleDto;
+import com.gitlab.dto.RoleDto;
 import com.gitlab.model.Role;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -20,7 +20,7 @@ public interface RoleMapper {
     @Mapping(target = "name", source = "roleName")
     Role toEntity(RoleDto roleDto);
 
-    default List<com.gitlab.dto.roledto.RoleDto> toDtoList(List<Role> roles) {
+    default List<RoleDto> toDtoList(List<Role> roles) {
         return roles.stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());

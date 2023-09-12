@@ -1,7 +1,7 @@
 package com.gitlab.view;
 
 import com.gitlab.clients.RoleClient;
-import com.gitlab.dto.roledto.RoleDto;
+import com.gitlab.dto.RoleDto;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;

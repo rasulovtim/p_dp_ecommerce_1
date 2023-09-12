@@ -1,6 +1,6 @@
 package com.gitlab.service;
 
-import com.gitlab.dto.roledto.RoleDto;
+import com.gitlab.dto.RoleDto;
 import com.gitlab.mapper.RoleMapper;
 import com.gitlab.model.Role;
 import com.gitlab.repository.RoleRepository;

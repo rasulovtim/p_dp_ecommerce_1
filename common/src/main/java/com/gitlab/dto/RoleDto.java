@@ -1,4 +1,4 @@
-package com.gitlab.dto.roledto;
+package com.gitlab.dto;
 
 import lombok.Data;
 import lombok.Setter;

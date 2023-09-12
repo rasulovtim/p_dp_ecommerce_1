@@ -2,7 +2,7 @@ package com.gitlab.controller;
 
 
 import com.gitlab.controllers.api.rest.RoleRestApi;
-import com.gitlab.dto.roledto.RoleDto;
+import com.gitlab.dto.RoleDto;
 import com.gitlab.model.Role;
 import com.gitlab.service.RoleService;
 import lombok.RequiredArgsConstructor;
