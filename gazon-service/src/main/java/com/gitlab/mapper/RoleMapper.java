@@ -1,5 +1,6 @@
 package com.gitlab.mapper;
 
+
 import com.gitlab.dto.RoleDto;
 import com.gitlab.model.Role;
 import org.mapstruct.Mapper;
