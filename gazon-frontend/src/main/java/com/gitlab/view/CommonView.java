@@ -30,9 +30,10 @@ public abstract class CommonView extends FlexLayout {
     }
 
     private void createFirstRow() {
-        RouterLink catalogLink = new RouterLink("Каталог", CatalogView.class);
         Button catalogButton = new Button("Каталог");
-        catalogButton.addClickListener(event -> catalogLink.getUI().ifPresent(ui -> ui.navigate(catalogLink.getHref())));
+        catalogButton.addClickListener(event -> {
+            // code for handling events when the "Catalog" button is clicked
+        });
         catalogButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         HorizontalLayout searchContainer = new HorizontalLayout();
