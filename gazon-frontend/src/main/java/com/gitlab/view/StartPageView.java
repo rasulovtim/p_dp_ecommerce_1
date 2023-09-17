@@ -1,98 +1,33 @@
 package com.gitlab.view;
 
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.html.*;
-import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouterLink;
 
 @Route("")
-public class StartPageView extends FlexLayout {
+public class StartPageView extends CommonView {
 
     public StartPageView() {
-        setWidthFull();
-        setFlexWrap(FlexWrap.WRAP);
-        getElement().getStyle().set("max-width", "1280px");
-        getElement().getStyle().set("margin", "0 auto");
+        createHistorySection();
+        createImageSection();
+        createStoresSection();
+    }
 
-        RouterLink catalogLink = new RouterLink("Каталог", CatalogView.class);
-        Button catalogButton = new Button("Каталог");
-        catalogButton.addClickListener(event -> catalogLink.getUI().ifPresent(ui -> ui.navigate(catalogLink.getHref())));
-
-        catalogButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-
-        HorizontalLayout searchContainer = new HorizontalLayout();
-
-        SearchBar searchBar = new SearchBar();
-
-        searchContainer.add(searchBar);
-
-        Div loginButton = createIconAndTextDiv(VaadinIcon.SMILEY_O, "Войти");
-        Div ordersDiv = createIconAndTextDiv(VaadinIcon.PACKAGE, "Заказы");
-        Div favoritesButton = createIconAndTextDiv(VaadinIcon.HEART_O, "Избранное");
-        Div cartButton = createIconAndTextDiv(VaadinIcon.CART_O, "Корзина");
-
-        FlexLayout firstRow = new FlexLayout(catalogButton, searchContainer, loginButton, ordersDiv, favoritesButton, cartButton);
-        firstRow.getStyle().set("display", "flex");
-        firstRow.getStyle().set("align-items", "center");
-        firstRow.getStyle().set("gap", "10px");
-        firstRow.getStyle().set("max-width", "100%");
-        firstRow.getStyle().set("width", "100%");
-        firstRow.getStyle().set("justify-content", "space-between");
-
-        add(firstRow);
-
-        FlexLayout otherButtonsDiv = new FlexLayout();
-        otherButtonsDiv.setFlexWrap(FlexWrap.WRAP);
-
-        String[] buttonNames = {
-                "Билеты, отели, туры",
-                "Одежда и обувь",
-                "Электроника",
-                "Дом и сад",
-                "Детские товары",
-                "Premium",
-                "Бренды",
-                "Продукты питания",
-                "Бытовая техника"
-        };
-
-        VaadinIcon[] buttonIcons = {
-                VaadinIcon.FLIGHT_TAKEOFF,
-                VaadinIcon.FEMALE,
-                VaadinIcon.MOBILE,
-                VaadinIcon.HOME,
-                VaadinIcon.CHILD,
-                VaadinIcon.GIFT,
-                VaadinIcon.TAGS,
-                VaadinIcon.CROSS_CUTLERY,
-                VaadinIcon.PRESENTATION
-        };
-
-        for (int i = 0; i < buttonNames.length; i++) {
-            Div buttonDiv = createIconAndTextDiv(buttonIcons[i], buttonNames[i]);
-            otherButtonsDiv.add(buttonDiv);
-        }
-
-        add(otherButtonsDiv);
-
-        Div historyContainer = new Div();
-        VerticalLayout historyLayout = new VerticalLayout();
+    private void createHistorySection() {
+        VerticalLayout historyContainer = new VerticalLayout();
         H2 history = new H2("Истории");
         history.getStyle()
                 .set("text-align", "left")
                 .set("font-weight", "bold");
-        historyLayout.add(history);
-
-        historyContainer.add(historyLayout);
+        historyContainer.add(history);
         historyContainer.getStyle().set("margin-top", "20px");
         add(historyContainer);
+    }
 
+    private void createImageSection() {
         FlexLayout imageContainer = new FlexLayout();
         imageContainer.getStyle().set("display", "flex")
                 .set("flex-wrap", "nowrap")
@@ -135,7 +70,9 @@ public class StartPageView extends FlexLayout {
                 .set("margin", "10px 0");
 
         add(imageScrollContainer);
+    }
 
+    private void createStoresSection() {
         H2 allStoresHeading = new H2("Магазины");
         allStoresHeading.getStyle().set("font-weight", "bold").set("color", "blue");
 
@@ -178,16 +115,16 @@ public class StartPageView extends FlexLayout {
 
     private FlexLayout createStoreContainer(String storeName, String storeDescription, String... imageUrls) {
         FlexLayout storeContainer = new FlexLayout();
-        storeContainer.setClassName("a3142-a2 cw1");
 
         VerticalLayout verticalStoreInfo = new VerticalLayout();
 
-        Label storeLabel = new Label(storeName);
+        H2 storeLabel = new H2(storeName);
         storeLabel.getStyle().set("font-weight", "bold");
 
-        Paragraph storeDescriptionParagraph = new Paragraph(storeDescription);
+        Div storeDescriptionDiv = new Div();
+        storeDescriptionDiv.setText(storeDescription);
 
-        verticalStoreInfo.add(storeLabel, storeDescriptionParagraph);
+        verticalStoreInfo.add(storeLabel, storeDescriptionDiv);
 
         for (String imageUrl : imageUrls) {
             Image image = new Image(imageUrl, "");
@@ -200,31 +137,4 @@ public class StartPageView extends FlexLayout {
 
         return storeContainer;
     }
-
-    private Div createIconAndTextDiv(VaadinIcon icon, String text) {
-        Icon vaadinIcon = new Icon(icon);
-        Span spanText = new Span(text);
-
-        vaadinIcon.getStyle().set("width", "18px");
-        vaadinIcon.getStyle().set("height", "18px");
-
-        vaadinIcon.getStyle().set("margin-right", "auto");
-        vaadinIcon.getStyle().set("margin-left", "auto");
-
-        spanText.getStyle().set("font", "bold 12px Arial, sans-serif");
-
-        Div iconAndTextDiv = new Div(vaadinIcon, spanText);
-
-        iconAndTextDiv.getStyle().set("display", "flex");
-
-        if (text.equals("Войти") || text.equals("Заказы") || text.equals("Избранное") || text.equals("Корзина")) {
-            iconAndTextDiv.getStyle().set("flex-direction", "column");
-        } else {
-            vaadinIcon.getStyle().set("margin-right", "10px");
-            vaadinIcon.getStyle().set("margin-left", "15px");
-        }
-
-        return iconAndTextDiv;
-    }
 }
-

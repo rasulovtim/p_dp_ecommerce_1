@@ -2,8 +2,7 @@ package com.gitlab.view;
 
 import com.gitlab.clients.SearchProductClient;
 import com.gitlab.dto.ProductDto;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEvent;
@@ -16,18 +15,14 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 @Route("search")
-public class SearchResultsView extends Div implements HasUrlParameter<String> {
+public class SearchResultsView extends CommonView implements HasUrlParameter<String> {
     private final SearchProductClient searchProductClient;
-    private final SearchBar searchBar;
     private final VerticalLayout contentContainer;
 
     public SearchResultsView(SearchProductClient searchProductClient) {
         this.searchProductClient = searchProductClient;
-        searchBar = new SearchBar();
-        searchBar.setSearchListener(this::performSearch);
-
         contentContainer = new VerticalLayout();
-        add(searchBar, contentContainer);
+        add(contentContainer);
     }
 
     @Override
@@ -75,11 +70,11 @@ public class SearchResultsView extends Div implements HasUrlParameter<String> {
 
     private void displayNoResults() {
         contentContainer.removeAll();
-        contentContainer.add(new H1("Ничего не найдено"));
+        contentContainer.add(new H2("Ничего не найдено"));
     }
 
     private void displayError() {
         contentContainer.removeAll();
-        contentContainer.add(new H1("Произошла ошибка при выполнении поиска"));
+        contentContainer.add(new H2("Произошла ошибка при выполнении поиска"));
     }
 }
