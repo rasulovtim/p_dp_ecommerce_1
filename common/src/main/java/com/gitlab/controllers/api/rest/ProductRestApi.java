@@ -88,4 +88,13 @@ public interface ProductRestApi {
             @ApiResponse(code = 404, message = "Product not found")}
     )
     ResponseEntity<String> deleteAllImagesByProductId(@PathVariable Long id);
+
+    @GetMapping("/api/product/search")
+    @ApiOperation(value = "Search Products by text")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Products found"),
+            @ApiResponse(code = 204, message = "Products not present")}
+    )
+    ResponseEntity<List<ProductDto>> searchProductsByText(@ApiParam(name = "text", value = "Search text") @RequestParam String text);
+
 }

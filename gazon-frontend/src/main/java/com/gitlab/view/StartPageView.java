@@ -1,26 +1,19 @@
 package com.gitlab.view;
 
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.router.QueryParameters;
-import com.vaadin.flow.router.Route;
-import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
-import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Route("")
 public class StartPageView extends FlexLayout {
+
     public StartPageView() {
         setWidthFull();
         setFlexWrap(FlexWrap.WRAP);
@@ -36,7 +29,6 @@ public class StartPageView extends FlexLayout {
         HorizontalLayout searchContainer = new HorizontalLayout();
 
         SearchBar searchBar = new SearchBar();
-        TextField searchField = searchBar.getSearchField();
 
         searchContainer.add(searchBar);
 
@@ -58,38 +50,63 @@ public class StartPageView extends FlexLayout {
         FlexLayout otherButtonsDiv = new FlexLayout();
         otherButtonsDiv.setFlexWrap(FlexWrap.WRAP);
 
-        Div ticketsButton = createIconAndTextDiv(VaadinIcon.FLIGHT_TAKEOFF, "Билеты, отели, туры");
-        Div clothingButton = createIconAndTextDiv(VaadinIcon.FEMALE, "Одежда и обувь");
-        Div electronicsButton = createIconAndTextDiv(VaadinIcon.MOBILE, "Электроника");
-        Div homeButton = createIconAndTextDiv(VaadinIcon.HOME, "Дом и сад");
-        Div kidsButton = createIconAndTextDiv(VaadinIcon.CHILD, "Детские товары");
-        Div premiumButton = createIconAndTextDiv(VaadinIcon.GIFT, "Premium");
-        Div brandsButton = createIconAndTextDiv(VaadinIcon.TAGS, "Бренды");
-        Div foodButton = createIconAndTextDiv(VaadinIcon.CROSS_CUTLERY, "Продукты питания");
-        Div appliancesButton = createIconAndTextDiv(VaadinIcon.PRESENTATION, "Бытовая техника");
+        String[] buttonNames = {
+                "Билеты, отели, туры",
+                "Одежда и обувь",
+                "Электроника",
+                "Дом и сад",
+                "Детские товары",
+                "Premium",
+                "Бренды",
+                "Продукты питания",
+                "Бытовая техника"
+        };
 
-        otherButtonsDiv.add(ticketsButton, clothingButton, electronicsButton, homeButton,
-                kidsButton, premiumButton, brandsButton, foodButton, appliancesButton);
+        VaadinIcon[] buttonIcons = {
+                VaadinIcon.FLIGHT_TAKEOFF,
+                VaadinIcon.FEMALE,
+                VaadinIcon.MOBILE,
+                VaadinIcon.HOME,
+                VaadinIcon.CHILD,
+                VaadinIcon.GIFT,
+                VaadinIcon.TAGS,
+                VaadinIcon.CROSS_CUTLERY,
+                VaadinIcon.PRESENTATION
+        };
+
+        for (int i = 0; i < buttonNames.length; i++) {
+            Div buttonDiv = createIconAndTextDiv(buttonIcons[i], buttonNames[i]);
+            otherButtonsDiv.add(buttonDiv);
+        }
 
         add(otherButtonsDiv);
 
         Div historyContainer = new Div();
+        VerticalLayout historyLayout = new VerticalLayout();
         H2 history = new H2("Истории");
-        history.getStyle().set("text-align", "left");
-        historyContainer.add(history);
+        history.getStyle()
+                .set("text-align", "left")
+                .set("font-weight", "bold");
+        historyLayout.add(history);
+
+        historyContainer.add(historyLayout);
         historyContainer.getStyle().set("margin-top", "20px");
         add(historyContainer);
 
         FlexLayout imageContainer = new FlexLayout();
-        imageContainer.getStyle().set("display", "flex");
-        imageContainer.getStyle().set("flex-wrap", "nowrap");
-        imageContainer.getStyle().set("gap", "20px");
+        imageContainer.getStyle().set("display", "flex")
+                .set("flex-wrap", "nowrap")
+                .set("gap", "20px");
 
         String[] imageUrls = {
                 "https://ir.ozone.ru/s3/cms/98/t81/wc150/270_480_russian_beauty.jpg",
                 "https://ir.ozone.ru/s3/cms/6e/t9b/wc150/preview-270x480-min.jpg",
                 "https://ir.ozone.ru/s3/cms/81/t79/wc150/0.jpg",
                 "https://ir.ozone.ru/s3/cms/02/t92/wc150/preview-270x480.jpg",
+                "https://ir.ozone.ru/s3/cms/1f/t1c/wc150/270_480.jpg",
+                "https://ir.ozone.ru/s3/cms/34/t54/wc150/270_480.jpg",
+                "https://ir.ozone.ru/s3/cms/f4/t93/wc150/270_480_cover.jpg",
+                "https://ir.ozone.ru/s3/cms/07/t80/wc150/270_480.jpg",
                 "https://ir.ozone.ru/s3/cms/64/te5/wc150/preview-270x480_aeroflot-min.jpg",
                 "https://ir.ozone.ru/s3/cms/9e/t2e/wc150/preview-270x480-min.jpg",
                 "https://ir.ozone.ru/s3/cms/3b/t1a/wc150/preview-270x480-min.jpg",
@@ -104,42 +121,84 @@ public class StartPageView extends FlexLayout {
 
         for (String imageUrl : imageUrls) {
             Image image = new Image(imageUrl, "");
-            image.getStyle().set("width", "160px");
-            image.getStyle().set("height", "150px");
+            image.getStyle()
+                    .set("width", "160px")
+                    .set("height", "150px");
             imageContainer.getStyle().set("max-width", "1280px");
             imageContainer.add(image);
         }
 
         Div imageScrollContainer = new Div(imageContainer);
-        imageScrollContainer.getStyle().set("overflow-x", "auto");
-        imageScrollContainer.getStyle().set("white-space", "nowrap");
-        imageScrollContainer.getStyle().set("margin", "10px 0");
+        imageScrollContainer.getStyle()
+                .set("overflow-x", "auto")
+                .set("white-space", "nowrap")
+                .set("margin", "10px 0");
 
         add(imageScrollContainer);
 
-        H2 allStoresHeading = new H2("Все магазины");
-
+        H2 allStoresHeading = new H2("Магазины");
         allStoresHeading.getStyle().set("font-weight", "bold").set("color", "blue");
 
-        add(allStoresHeading);
+        FlexLayout storeContainer1 = createStoreContainer(
+                "RIVASSA",
+                "ОДЕЖДА РУЧНОЙ РАБОТЫ!",
+                "https://ir.ozone.ru/s3/multimedia-q/wc200/6614783414.jpg",
+                "https://ir.ozone.ru/s3/multimedia-6/wc200/6612931626.jpg",
+                "https://ir.ozone.ru/s3/multimedia-l/wc200/6611740293.jpg"
+        );
+        storeContainer1.getStyle()
+                .set("border", "1px solid #ccc")
+                .set("padding", "10px")
+                .set("margin-right", "10px");
 
-        searchField.addKeyPressListener(Key.ENTER, event -> performSearch(searchField));
+        FlexLayout storeContainer2 = createStoreContainer(
+                "byDeryaeva",
+                "ТАЛИСМАНЫ АЛЁНЫ ДЕРЯЕВОЙ",
+                "https://ir.ozone.ru/s3/multimedia-h/wc200/6407871629.jpg",
+                "https://ir.ozone.ru/s3/multimedia-r/wc200/6439230195.jpg",
+                "https://ir.ozone.ru/s3/multimedia-h/wc200/6407871629.jpg"
+        );
+        storeContainer2.getStyle()
+                .set("border", "1px solid #ccc")
+                .set("padding", "10px")
+                .set("margin-right", "10px");
 
-        firstRow.getStyle().set("margin-bottom", "20px");
+        FlexLayout horizontalStoreContainer = new FlexLayout(storeContainer1, storeContainer2);
+        horizontalStoreContainer.getStyle()
+                .set("display", "flex")
+                .set("flex-direction", "row");
 
-        otherButtonsDiv.getStyle().set("margin-bottom", "20px");
+        Div storesContainer = new Div(allStoresHeading, horizontalStoreContainer);
+        storesContainer.getStyle()
+                .set("display", "flex")
+                .set("flex-direction", "column");
+
+        add(storesContainer);
     }
 
-    private void performSearch(TextField searchField) {
-        String query = searchField.getValue();
-        if (!query.isEmpty()) {
-            Map<String, List<String>> parametersMap = new HashMap<>();
-            parametersMap.put("text", Collections.singletonList(query));
+    private FlexLayout createStoreContainer(String storeName, String storeDescription, String... imageUrls) {
+        FlexLayout storeContainer = new FlexLayout();
+        storeContainer.setClassName("a3142-a2 cw1");
 
-            QueryParameters queryParameters = new QueryParameters(parametersMap);
+        VerticalLayout verticalStoreInfo = new VerticalLayout();
 
-            UI.getCurrent().navigate("search", queryParameters);
+        Label storeLabel = new Label(storeName);
+        storeLabel.getStyle().set("font-weight", "bold");
+
+        Paragraph storeDescriptionParagraph = new Paragraph(storeDescription);
+
+        verticalStoreInfo.add(storeLabel, storeDescriptionParagraph);
+
+        for (String imageUrl : imageUrls) {
+            Image image = new Image(imageUrl, "");
+            image.getStyle().set("width", "160px");
+            image.getStyle().set("height", "150px");
+            storeContainer.add(image);
         }
+
+        storeContainer.add(verticalStoreInfo);
+
+        return storeContainer;
     }
 
     private Div createIconAndTextDiv(VaadinIcon icon, String text) {
@@ -168,3 +227,4 @@ public class StartPageView extends FlexLayout {
         return iconAndTextDiv;
     }
 }
+

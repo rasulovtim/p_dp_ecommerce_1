@@ -1,19 +1,85 @@
 package com.gitlab.view;
 
-import com.gitlab.clients.ProductClient;
+import com.gitlab.clients.SearchProductClient;
+import com.gitlab.dto.ProductDto;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.BeforeEvent;
+import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.WildcardParameter;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 @Route("search")
-public class SearchResultsView extends Div {
-    private final ProductClient productClient;
+public class SearchResultsView extends Div implements HasUrlParameter<String> {
+    private final SearchProductClient searchProductClient;
+    private final SearchBar searchBar;
+    private final VerticalLayout contentContainer;
 
-    public SearchResultsView(ProductClient productClient) {
-        this.productClient = productClient;
-        SearchBar searchBar = new SearchBar();
-        // adding a search component
-        add(searchBar);
+    public SearchResultsView(SearchProductClient searchProductClient) {
+        this.searchProductClient = searchProductClient;
+        searchBar = new SearchBar();
+        searchBar.setSearchListener(this::performSearch);
 
-        // contents of the search results page
+        contentContainer = new VerticalLayout();
+        add(searchBar, contentContainer);
+    }
+
+    @Override
+    public void setParameter(BeforeEvent event, @WildcardParameter String parameter) {
+        if (parameter != null && !parameter.isEmpty()) {
+            performSearch(parameter);
+        }
+    }
+
+    private void performSearch(String query) {
+        if (!query.isEmpty()) {
+            ResponseEntity<List<ProductDto>> response = searchProductClient.search(query);
+            HttpStatus statusCode = response.getStatusCode();
+
+            if (statusCode.is2xxSuccessful()) {
+                List<ProductDto> products = response.getBody();
+
+                if (products != null) {
+                    displaySearchResults(products);
+                } else {
+                    displayNoResults();
+                }
+            } else if (statusCode == HttpStatus.NO_CONTENT) {
+                displayNoResults();
+            } else {
+                displayError();
+            }
+        }
+    }
+
+    private void displaySearchResults(List<ProductDto> products) {
+        contentContainer.removeAll();
+
+        if (!products.isEmpty()) {
+            for (ProductDto product : products) {
+                Label nameLabel = new Label(product.getName());
+                Label priceLabel = new Label("Price: " + product.getPrice());
+
+                contentContainer.add(nameLabel, priceLabel);
+            }
+        } else {
+            displayNoResults();
+        }
+    }
+
+    private void displayNoResults() {
+        contentContainer.removeAll();
+        contentContainer.add(new H1("Ничего не найдено"));
+    }
+
+    private void displayError() {
+        contentContainer.removeAll();
+        contentContainer.add(new H1("Произошла ошибка при выполнении поиска"));
     }
 }
