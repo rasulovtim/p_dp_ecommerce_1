@@ -10,6 +10,12 @@ import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.router.RouterLink;
 
+/**
+ * Base class CommonView for views.
+ * This class provides general functionality that can be used
+ * in other views. It involves creating the first and second line,
+ * as well as methods for creating icons with text.
+ */
 public abstract class CommonView extends FlexLayout {
 
     public CommonView() {
