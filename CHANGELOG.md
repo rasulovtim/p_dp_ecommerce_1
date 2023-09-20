@@ -19,6 +19,7 @@
 - #75 - frontend moved to a separate module
 - #78 - Generate test data for BankCardRestControllerIT
 - #87 - Generate test data for WorkingScheduleRestControllerIT
+- #90 - added front for improvement
 
 ## [1.0.0] - 30.07.2023
 - #1 - added working schedule entity

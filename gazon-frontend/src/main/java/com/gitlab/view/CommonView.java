@@ -1,5 +1,6 @@
 package com.gitlab.view;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Div;
@@ -18,6 +19,8 @@ import com.vaadin.flow.router.RouterLink;
  */
 public abstract class CommonView extends FlexLayout {
 
+    private SearchBar.SearchListener searchListener;
+
     public CommonView() {
         setWidthFull();
         setFlexWrap(FlexWrap.WRAP);
@@ -30,9 +33,13 @@ public abstract class CommonView extends FlexLayout {
     }
 
     private void createFirstRow() {
+        RouterLink catalogLink = new RouterLink("Каталог", CatalogView.class);
         Button catalogButton = new Button("Каталог");
         catalogButton.addClickListener(event -> {
-            // code for handling events when the "Catalog" button is clicked
+            UI ui = UI.getCurrent();
+            if (ui != null) {
+                ui.navigate(catalogLink.getHref());
+            }
         });
         catalogButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 

@@ -66,7 +66,7 @@ public interface ProductRestApi {
             @ApiResponse(code = 404, message = "Product's ProductImages not found")}
     )
     ResponseEntity<long[]> getImagesIDsByProductId(@ApiParam(name = "id", value = "Product.id")
-                                                   @PathVariable Long id);
+                                                   @PathVariable (value = "id") Long id);
 
 
     @PostMapping("/api/product/{id}/images")
@@ -76,8 +76,8 @@ public interface ProductRestApi {
             @ApiResponse(code = 400, message = "ProductImages not uploaded"),
             @ApiResponse(code = 404, message = "Product not found, unable to upload images without product")}
     )
-    ResponseEntity<String> uploadImagesByProductId(@RequestParam("files") MultipartFile[] files,
-                                                   @PathVariable Long id) throws IOException;
+    ResponseEntity<String> uploadImagesByProductId(@RequestParam(value = "files") MultipartFile[] files,
+                                                   @PathVariable (value = "id") Long id) throws IOException;
 
 
     @DeleteMapping("/api/product/{id}/images")
@@ -87,7 +87,7 @@ public interface ProductRestApi {
             @ApiResponse(code = 204, message = "Product with such id has no images"),
             @ApiResponse(code = 404, message = "Product not found")}
     )
-    ResponseEntity<String> deleteAllImagesByProductId(@PathVariable Long id);
+    ResponseEntity<String> deleteAllImagesByProductId(@PathVariable (value = "id") Long id);
 
     @GetMapping("/api/product/search")
     @ApiOperation(value = "Search Products by text")
@@ -95,6 +95,6 @@ public interface ProductRestApi {
             @ApiResponse(code = 200, message = "Products found"),
             @ApiResponse(code = 204, message = "Products not present")}
     )
-    ResponseEntity<List<ProductDto>> searchProductsByText(@ApiParam(name = "text", value = "Search text") @RequestParam String text);
+    ResponseEntity<List<ProductDto>> searchProductsByText(@ApiParam(name = "text", value = "Search text") @RequestParam (value = "text") String text);
 
 }

@@ -1,6 +1,6 @@
 package com.gitlab.controller;
 
-import com.gitlab.controller.api.ProductRestApi;
+import com.gitlab.controllers.api.rest.ProductRestApi;
 import com.gitlab.dto.ProductDto;
 import com.gitlab.model.Product;
 import com.gitlab.model.ProductImage;
@@ -115,5 +115,14 @@ public class ProductController implements ProductRestApi {
 
         product.get().getProductImages().stream().map(ProductImage::getId).forEach(productImageService::delete);
         return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public ResponseEntity<List<ProductDto>> searchProductsByText(String searchText) {
+        List<ProductDto> foundProducts = productService.findByNameIgnoreCaseContaining(searchText);
+
+        return foundProducts.isEmpty() ?
+                ResponseEntity.noContent().build() :
+                ResponseEntity.ok(foundProducts);
     }
 }
