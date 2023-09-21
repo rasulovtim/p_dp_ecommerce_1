@@ -4,6 +4,7 @@
 - #task_number - short task description
 - #73 - added User field to SelectedProduct
 - #88 - Front CRUD for Role
+- #90 - added front for improvement
 
 ## [1.1.0] - 8.09.2023
 - #5 - added user entity
@@ -19,7 +20,6 @@
 - #75 - frontend moved to a separate module
 - #78 - Generate test data for BankCardRestControllerIT
 - #87 - Generate test data for WorkingScheduleRestControllerIT
-- #90 - added front for improvement
 
 ## [1.0.0] - 30.07.2023
 - #1 - added working schedule entity
