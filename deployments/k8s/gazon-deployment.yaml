@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gazon-service-deployment
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: gazon-service
+    spec:
+      containers:
+        - name: gazon-service-pod
+          image: gazon-service:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: JAVA_OPTS
+              value: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+            - name: JAVA_ENABLE_DEBUG
+              value: "true"
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+            - name: remotedebugging
+              containerPort: 5005
+              protocol: TCP
+          volumeMounts:
+            - name: application-config
+              mountPath: /config/application.yml
+              subPath: application.yml
+      volumes:
+        - name: application-config
+          configMap:
+            name: gazon-config-map
+  selector:
+    matchLabels:
+      app: gazon-service
