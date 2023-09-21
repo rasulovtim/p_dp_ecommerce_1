@@ -4,6 +4,7 @@
 - #task_number - short task description
 - #73 - added User field to SelectedProduct
 - #88 - Front CRUD for Role
+- #90 - added front for improvement
 
 ## [1.1.0] - 8.09.2023
 - #5 - added user entity

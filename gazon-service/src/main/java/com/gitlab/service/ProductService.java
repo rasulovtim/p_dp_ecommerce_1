@@ -1,8 +1,8 @@
 package com.gitlab.service;
 
-import com.gitlab.dto.ProductDto;
 import com.gitlab.mapper.ProductMapper;
 import com.gitlab.model.Product;
+import com.gitlab.dto.ProductDto;
 import com.gitlab.model.Review;
 import com.gitlab.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
