@@ -64,8 +64,8 @@ Minikube - это Kubernetes с одной нодой. Из-за этой осо
 Ознакомьтесь с существующими Kubernetes-объектами в нашем проекте в директории deployments/k8s. Попробуем их развернуть:
 
 1. Запустите Minikube <code>minikube start</code>
-2. Находясь в директории deployments/k8s, выполните команду <code>kubectl apply -f db-statefulset.yaml</code>, чтобы развернуть БД
-3. Выполните команду <code>kubectl apply -f db-service.yaml</code>, чтобы создать Service для БД 
+2. Находясь в директории deployments/k8s, выполните команду <code>kubectl apply -f gazon-db-statefulset.yaml</code>, чтобы развернуть БД
+3. Выполните команду <code>kubectl apply -f gazon-db-service.yaml</code>, чтобы создать Service для БД 
 4. Выполните команду <code>minikube image load gazon-service</code>, чтобы загрузить образ нашего основого приложения в кеш Minikube
 5. Разверните оставшиеся объекты (ingress.yaml можно пока не трогать)
 6. Выполните команды <code>kubectl get service</code>, <code>kubectl get deployment</code>, <code>kubectl get statefulset</code>, <code>kubectl get pod</code>, чтобы увидеть созданные вами объекты

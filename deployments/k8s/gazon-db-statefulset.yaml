@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: db-statefulset
+  name: gazon-db-statefulset
 spec:
   replicas: 1
-  serviceName: db-service
+  serviceName: gazon-db-service
   template:
     metadata:
       labels:
-        app: db
+        app: gazon-db
     spec:
       containers:
-        - name: db-pod
+        - name: gazon-db-pod
           image: postgres:12.12
           imagePullPolicy: IfNotPresent
           env:
@@ -22,14 +22,14 @@ spec:
           ports:
             - containerPort: 5432
           volumeMounts:
-            - name: db-data
+            - name: gazon-db-data
               mountPath: /usr/data
   selector:
     matchLabels:
-      app: db
+      app: gazon-db
   volumeClaimTemplates:
     - metadata:
-        name: db-data
+        name: gazon-db-data
       spec:
         accessModes:
           - ReadWriteOnce

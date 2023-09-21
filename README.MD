@@ -32,7 +32,7 @@ Swagger UI при запущенном приложении находится [
 
 Таск-борд находится в [Gitlab](https://gitlab.com/de.pronin/p_dp_ecommerce_1/-/boards).
 
-Dev-stand будем поднимать и разворачивать через Minikube.
+Dev-stand будем поднимать и разворачивать через [Minikube (Kubernetes)](./guides/guide_kubernetes.md).
 
 ### MVP
 
@@ -69,6 +69,7 @@ Dev-stand будем поднимать и разворачивать через
 <li>если на предыдущем шаге не получилось создать контейнер с БД, то создай локальную базу данных с названием <code>gazon_db</code></li>
 <li>добейся успешного запуска проекта. <a href="http://localhost:8080/"> Проверить</a>.</li>
 <li>изучи <a href="https://gitlab.com/de.pronin/p_dp_ecommerce_1/-/boards">таск-борд</a>
+<li>изучи гайд guide_kubernetes.md из директории guides</li>
 <li>ознакомься с остальными гайдами из директории guides</li>
 </ol>
 
@@ -151,6 +152,7 @@ Dev-stand будем поднимать и разворачивать через
 В порядке приоритетности:
 - Изучить используемые на проекте технологии
 - Изучить гайд по [докеру](./guides/guide_docker.md)
+- Изучить гайд по [куберу](./guides/guide_kubernetes.md)
 - Изучить гайд по [микросервисам](./guides/microservices_development.md)
 - Изучить остальные гайды из директории guides
 - Изучить курс Advanced на Платформе (модули 1, 2, 5, 7, 8, 9, 10)
