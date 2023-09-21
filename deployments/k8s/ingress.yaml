@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gazon-service-ingress
+spec:
+  rules:
+    - host: gazon-service.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: gazon-service
+                port:
+                  number: 8080
