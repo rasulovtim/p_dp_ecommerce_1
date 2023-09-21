@@ -1,6 +1,6 @@
 package com.gitlab.controller;
 
-import com.gitlab.controller.api.SearchProductRestApi;
+import com.gitlab.controllers.api.rest.SearchProductRestApi;
 import com.gitlab.dto.ProductDto;
 import com.gitlab.service.ProductService;
 import lombok.RequiredArgsConstructor;
