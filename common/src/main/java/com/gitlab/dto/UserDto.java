@@ -1,8 +1,5 @@
 package com.gitlab.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-
 import com.gitlab.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,6 +1,5 @@
 package com.gitlab.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gitlab.model.PickupPoint;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

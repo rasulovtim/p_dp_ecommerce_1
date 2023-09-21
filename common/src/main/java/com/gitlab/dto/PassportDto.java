@@ -1,6 +1,5 @@
 package com.gitlab.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gitlab.model.Passport;
 import lombok.*;
 import org.springframework.data.annotation.ReadOnlyProperty;
