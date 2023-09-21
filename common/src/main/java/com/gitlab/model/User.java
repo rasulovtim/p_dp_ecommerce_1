@@ -71,14 +71,13 @@ public class User {
     private Set<Role> rolesSet;
 
 
+    @AllArgsConstructor
+    @Getter
     public enum Gender {
         MALE("МУЖСКОЙ"),FEMALE("ЖЕНСКИЙ"),NOT_SPECIFIED("НЕ УКАЗАН");
 
         private final String sex;
 
-        Gender(String sex) {
-            this.sex = sex;
-        }
     }
 
 }
