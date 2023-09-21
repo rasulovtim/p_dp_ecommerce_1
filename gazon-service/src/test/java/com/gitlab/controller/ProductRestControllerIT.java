@@ -119,7 +119,8 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_delete_product_by_id() throws Exception {
-        long id = 2L;
+        ProductDto productDto = productService.saveDto(generateProductDTO());
+        long id = productDto.getId();
         mockMvc.perform(delete(PRODUCT_URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk());
