@@ -69,14 +69,7 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_create_product() throws Exception {
-        ProductDto productDto = new ProductDto();
-        productDto.setName("name1");
-        productDto.setStockCount(1);
-        productDto.setDescription("name");
-        productDto.setIsAdult(true);
-        productDto.setCode("name");
-        productDto.setWeight(1L);
-        productDto.setPrice(BigDecimal.ONE);
+        ProductDto productDto = generateProductDTO();
         String jsonProductDto = objectMapper.writeValueAsString(productDto);
 
         mockMvc.perform(post(PRODUCT_URI)
@@ -92,15 +85,7 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
         long id = 1L;
         int numberOfEntitiesExpected = productService.findAll().size();
 
-        ProductDto productDto = new ProductDto();
-        productDto.setName("name1");
-        productDto.setStockCount(1);
-        productDto.setImagesId(new Long[]{1L});
-        productDto.setDescription("name");
-        productDto.setIsAdult(true);
-        productDto.setCode("name");
-        productDto.setWeight(1L);
-        productDto.setPrice(BigDecimal.ONE);
+        ProductDto productDto = generateProductDTO();
         productDto.setRating(productService.findByIdDto(id).get().getRating());
         String jsonProductDto = objectMapper.writeValueAsString(productDto);
 
@@ -121,15 +106,7 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_return_not_found_when_update_product_by_non_existent_id() throws Exception {
         long id = -10L;
-        ProductDto productDto = new ProductDto();
-        productDto.setName("name1");
-        productDto.setStockCount(1);
-        productDto.setImagesId(new Long[]{1L});
-        productDto.setDescription("name");
-        productDto.setIsAdult(true);
-        productDto.setCode("name");
-        productDto.setWeight(1L);
-        productDto.setPrice(BigDecimal.ONE);
+        ProductDto productDto = generateProductDTO();
         String jsonProductDto = objectMapper.writeValueAsString(productDto);
 
         mockMvc.perform(patch(PRODUCT_URI + "/{id}", id)
@@ -142,7 +119,8 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_delete_product_by_id() throws Exception {
-        long id = 2L;
+        ProductDto productDto = productService.saveDto(generateProductDTO());
+        long id = productDto.getId();
         mockMvc.perform(delete(PRODUCT_URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -191,5 +169,18 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
         mockMvc.perform(get(PRODUCT_URI + "/{id}" + "/images", id))
                 .andDo(print())
                 .andExpect(status().isNoContent());
+    }
+
+    private ProductDto generateProductDTO() {
+        ProductDto productDto = new ProductDto();
+        productDto.setName("name1");
+        productDto.setStockCount(1);
+        productDto.setImagesId(new Long[]{1L});
+        productDto.setDescription("name");
+        productDto.setIsAdult(true);
+        productDto.setCode("name");
+        productDto.setWeight(1L);
+        productDto.setPrice(BigDecimal.ONE);
+        return productDto;
     }
 }
