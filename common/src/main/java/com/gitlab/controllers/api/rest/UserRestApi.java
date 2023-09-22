@@ -1,4 +1,4 @@
-package com.gitlab.controller.api;
+package com.gitlab.controllers.api.rest;
 
 import com.gitlab.dto.UserDto;
 import io.swagger.annotations.*;
@@ -11,9 +11,9 @@ import java.util.List;
 
 @Api(tags = "User REST")
 @Tag(name = "User REST", description = "API user description")
-@RequestMapping("/api/user")
 public interface UserRestApi {
-    @GetMapping
+
+    @GetMapping("/api/user")
     @ApiOperation(value = "Get all Users")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Users found"),
@@ -21,15 +21,15 @@ public interface UserRestApi {
     )
     ResponseEntity<List<UserDto>> getAll();
 
-    @GetMapping("/{id}")
+    @GetMapping("/api/user/{id}")
     @ApiOperation(value = "Get User by id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "User found"),
             @ApiResponse(code = 404, message = "User not found")}
     )
-    ResponseEntity<UserDto> get(@ApiParam(name = "id", value = "User.id") @PathVariable Long id);
+    ResponseEntity<UserDto> get(@ApiParam(name = "id", value = "User.id") @PathVariable(value = "id") Long id);
 
-    @PostMapping
+    @PostMapping("/api/user")
     @ApiOperation(value = "Create User")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "User created"),
@@ -37,20 +37,20 @@ public interface UserRestApi {
     )
     ResponseEntity<UserDto> create(@ApiParam(name = "user", value = "UserDto") @Valid @RequestBody UserDto userDto);
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/api/user/{id}")
     @ApiOperation(value = "Update User")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "User updated"),
             @ApiResponse(code = 400, message = "User not updated")}
     )
-    ResponseEntity<UserDto> update(@ApiParam(name = "id", value = "User.id") @PathVariable Long id,
+    ResponseEntity<UserDto> update(@ApiParam(name = "id", value = "User.id") @PathVariable(value = "id") Long id,
                                       @ApiParam(name = "user", value = "UserDto") @Valid @RequestBody UserDto userDto);
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/api/user/{id}")
     @ApiOperation(value = "Delete User by id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "User deleted"),
             @ApiResponse(code = 404, message = "User not found")}
     )
-    ResponseEntity<Void> delete(@ApiParam(name = "id", value = "User.id") @PathVariable Long id);
+    ResponseEntity<Void> delete(@ApiParam(name = "id", value = "User.id") @PathVariable(value = "id") Long id);
 }

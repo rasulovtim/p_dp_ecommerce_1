@@ -1,7 +1,7 @@
 package com.gitlab.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+import org.springframework.data.annotation.ReadOnlyProperty;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 public class PersonalAddressDto extends ShippingAddressDto {
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @ReadOnlyProperty
     private Long id;
 
     @Size(min = 1, max = 255, message = "Length of address should be between 1 and 255 characters")

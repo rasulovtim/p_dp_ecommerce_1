@@ -1,8 +1,8 @@
 package com.gitlab.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gitlab.model.Passport;
 import lombok.*;
+import org.springframework.data.annotation.ReadOnlyProperty;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -19,7 +19,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class PassportDto {
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @ReadOnlyProperty
     private Long id;
 
     @Enumerated(EnumType.STRING)
