@@ -1,8 +1,6 @@
 package com.gitlab.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -10,6 +8,8 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(exclude = {"shoppingCart", "user", "order"})
+
 @Table(name = "selected_product")
 public class SelectedProduct {
 
@@ -31,4 +31,8 @@ public class SelectedProduct {
 
     @Column(name = "count")
     private Integer count;
+
+    @ManyToOne
+    @JoinColumn(name = "order_id", referencedColumnName = "id")
+    private Order order;
 }
