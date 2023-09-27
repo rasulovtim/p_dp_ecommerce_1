@@ -70,10 +70,7 @@ class PostomatRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_create_postomat() throws Exception {
-        PostomatDto postomatDto = new PostomatDto();
-        postomatDto.setAddress("TestAddress");
-        postomatDto.setDirections("TestDirections");
-        postomatDto.setShelfLifeDays((byte) 10);
+        PostomatDto postomatDto = generatePostomateDto();
 
         String jsonPostomatDto = objectMapper.writeValueAsString(postomatDto);
 
@@ -90,10 +87,7 @@ class PostomatRestControllerIT extends AbstractIntegrationTest {
         long id = 4L;
         int numberOfEntitiesExpected = postomatService.findAll().size();
 
-        PostomatDto postomatDto = new PostomatDto();
-        postomatDto.setAddress("New Address");
-        postomatDto.setDirections("New Directions");
-        postomatDto.setShelfLifeDays((byte) 16);
+        PostomatDto postomatDto = generatePostomateDto();
 
         String jsonPostomatDto = objectMapper.writeValueAsString(postomatDto);
 
@@ -114,10 +108,7 @@ class PostomatRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_return_not_found_when_update_postomat_by_non_existent_id() throws Exception {
         long id = 20L;
-        PostomatDto postomatDto = new PostomatDto();
-        postomatDto.setAddress("New Address");
-        postomatDto.setDirections("New Directions");
-        postomatDto.setShelfLifeDays((byte) 16);
+        PostomatDto postomatDto = generatePostomateDto();
 
         String jsonPostomatDto = objectMapper.writeValueAsString(postomatDto);
 
@@ -138,5 +129,13 @@ class PostomatRestControllerIT extends AbstractIntegrationTest {
         mockMvc.perform(get(URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isNotFound());
+    }
+
+    private PostomatDto generatePostomateDto(){
+        PostomatDto postomatDto = new PostomatDto();
+        postomatDto.setAddress("TestAddress");
+        postomatDto.setDirections("TestDirections");
+        postomatDto.setShelfLifeDays((byte) 10);
+        return postomatDto;
     }
 }
