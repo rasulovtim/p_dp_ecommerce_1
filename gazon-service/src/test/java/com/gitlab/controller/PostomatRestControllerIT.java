@@ -71,7 +71,6 @@ class PostomatRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_create_postomat() throws Exception {
         PostomatDto postomatDto = generatePostomateDto();
-
         String jsonPostomatDto = objectMapper.writeValueAsString(postomatDto);
 
         mockMvc.perform(post(URI)
@@ -88,7 +87,6 @@ class PostomatRestControllerIT extends AbstractIntegrationTest {
         int numberOfEntitiesExpected = postomatService.findAll().size();
 
         PostomatDto postomatDto = generatePostomateDto();
-
         String jsonPostomatDto = objectMapper.writeValueAsString(postomatDto);
 
         postomatDto.setId(id);
@@ -122,7 +120,10 @@ class PostomatRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_delete_postomat_by_id() throws Exception {
-        long id = 5L;
+
+        PostomatDto postomatDto = postomatService.saveDto(generatePostomateDto());
+        long id = postomatDto.getId();
+
         mockMvc.perform(delete(URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk());
