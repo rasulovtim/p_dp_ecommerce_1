@@ -89,7 +89,7 @@ class PostomatRestControllerIT extends AbstractIntegrationTest {
         PostomatDto postomatDto = generatePostomateDto();
         String jsonPostomatDto = objectMapper.writeValueAsString(postomatDto);
 
-        postomatDto.setId(id);
+        postomatDto.setId(postomatService.findByIdDto(id).get().getId());
         String expected = objectMapper.writeValueAsString(postomatDto);
 
         mockMvc.perform(patch(URI + "/{id}", id)
@@ -107,7 +107,6 @@ class PostomatRestControllerIT extends AbstractIntegrationTest {
     void should_return_not_found_when_update_postomat_by_non_existent_id() throws Exception {
         long id = 20L;
         PostomatDto postomatDto = generatePostomateDto();
-
         String jsonPostomatDto = objectMapper.writeValueAsString(postomatDto);
 
         mockMvc.perform(patch(URI + "/{id}", id)
