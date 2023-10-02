@@ -109,10 +109,10 @@ class ExampleRestControllerIT extends AbstractIntegrationTest {
     void should_update_example_by_id() throws Exception {
         long id = 1L;
         int numberOfEntitiesExpected = exampleService.findAll().size();
+
         ExampleDto exampleDto = new ExampleDto();
         exampleDto.setExampleText("updatedText");
         String jsonExampleDto = objectMapper.writeValueAsString(exampleDto);
-
         exampleDto.setId(id);
         String expected = objectMapper.writeValueAsString(exampleDto);
 

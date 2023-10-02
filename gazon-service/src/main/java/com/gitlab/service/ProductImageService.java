@@ -13,7 +13,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
+//        (readOnly = true)
 @RequiredArgsConstructor
 public class ProductImageService {
 
@@ -46,6 +47,9 @@ public class ProductImageService {
     }
 
     public ProductImageDto saveDto(ProductImageDto productImageDto) {
+        if (productImageDto == null || (productImageDto.getProductId() == null && productImageDto.getName() == null && productImageDto.getData() == null)) {
+            throw new IllegalArgumentException("productImageDto cannot be null or have all fields null");
+        }
         ProductImage productImage = productImageMapper.toEntity(productImageDto);
         ProductImage savedProductImage = productImageRepository.save(productImage);
         return productImageMapper.toDto(savedProductImage);

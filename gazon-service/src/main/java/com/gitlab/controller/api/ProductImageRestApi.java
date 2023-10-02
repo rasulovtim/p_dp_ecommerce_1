@@ -1,10 +1,7 @@
 package com.gitlab.controller.api;
 
 import com.gitlab.dto.ProductImageDto;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +33,12 @@ public interface ProductImageRestApi {
             @ApiResponse(code = 404, message = "ProductImage not found")}
     )
     ResponseEntity<?> get(@PathVariable("id") Long id);
+
+
+    @ApiOperation(value = "Create a new ProductImage")
+    @PostMapping
+    ResponseEntity<ProductImageDto> create(@ApiParam(name = "productImageDto", value = "Product images details") @RequestBody ProductImageDto productImageDto);
+
 
 
     @PatchMapping(value = "/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
