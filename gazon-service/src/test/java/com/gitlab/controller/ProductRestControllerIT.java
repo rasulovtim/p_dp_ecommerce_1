@@ -1,6 +1,7 @@
 package com.gitlab.controller;
 
 import com.gitlab.dto.ProductDto;
+import com.gitlab.mapper.ProductMapper;
 import com.gitlab.model.Product;
 import com.gitlab.model.ProductImage;
 import com.gitlab.service.ProductService;
@@ -27,6 +28,8 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
     private static final String PRODUCT_URI = URL + PRODUCT_URN;
     @Autowired
     private ProductService productService;
+    @Autowired
+    private ProductMapper productMapper;
 
     @Test
     void should_get_all_products() throws Exception {
@@ -169,7 +172,8 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
         ProductDto productDto = new ProductDto();
         productDto.setName("name1");
         productDto.setStockCount(1);
-        productDto.setImagesId(new Long[]{1L, 2L});
+//        productDto.setImagesId(new Long[]{1L, 2L});
+        productDto.setImagesId(productMapper.toDto(productService.findById(1L).get()).getImagesId());
         productDto.setDescription("name");
         productDto.setIsAdult(true);
         productDto.setCode("name");
