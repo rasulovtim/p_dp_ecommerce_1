@@ -33,6 +33,8 @@ public class ProductImageController implements ProductImageRestApi {
                         .map(ProductImage::getId).mapToLong(Long::valueOf).toArray());
     }
 
+
+
     @Override
     public ResponseEntity<?> get(@PathVariable Long id) {
         Optional<ProductImage> productImage = productImageService.findById(id);
@@ -48,6 +50,13 @@ public class ProductImageController implements ProductImageRestApi {
                 ResponseEntity.status(HttpStatus.OK)
                         .contentType(MediaType.parseMediaType(MediaType.IMAGE_JPEG_VALUE))
                         .body(ImageUtils.decompressImage(image.getData()))).orElse(null);
+    }
+
+    @Override
+    public ResponseEntity<ProductImageDto> create(ProductImageDto productImageDto) {
+        ProductImageDto saveProductImageDto = productImageService.saveDto(productImageDto);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(saveProductImageDto);
     }
 
     @Override
