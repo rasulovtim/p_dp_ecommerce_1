@@ -172,7 +172,6 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
         ProductDto productDto = new ProductDto();
         productDto.setName("name1");
         productDto.setStockCount(1);
-//        productDto.setImagesId(new Long[]{1L, 2L});
         productDto.setImagesId(productMapper.toDto(productService.findById(1L).get()).getImagesId());
         productDto.setDescription("name");
         productDto.setIsAdult(true);
