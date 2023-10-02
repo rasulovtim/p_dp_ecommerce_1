@@ -8,6 +8,7 @@
 - #91 - Add Kubernetes to the project
 - #71 - Front CRUD for User
 - #84 - Generate test data for ProductTestControllerIT
+- #95 - Change Dockerfile_Gazon
 
 ## [1.1.0] - 8.09.2023
 - #5 - added user entity
