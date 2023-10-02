@@ -90,16 +90,13 @@ class ImageRestControllerIT extends AbstractIntegrationTest {
 
         ProductImageDto productImageDto = generateProductImageDto();
         productImageDto.setId(id);
-
         String expected = objectMapper.writeValueAsString(productImageDto);
-
         MockMultipartHttpServletRequestBuilder builder =
                 MockMvcRequestBuilders.multipart(PRODUCT_IMAGE_URI + "/{id}", id);
         builder.with(request -> {
             request.setMethod("PATCH");
             return request;
         });
-
         mockMvc.perform(builder
                         .file(new MockMultipartFile("file",
                                 "file.txt", MediaType.TEXT_PLAIN_VALUE, productImageDto.getData()))
