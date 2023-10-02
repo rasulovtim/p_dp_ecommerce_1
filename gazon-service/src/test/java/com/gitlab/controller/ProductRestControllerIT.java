@@ -1,7 +1,6 @@
 package com.gitlab.controller;
 
 import com.gitlab.dto.ProductDto;
-import com.gitlab.mapper.ProductMapper;
 import com.gitlab.model.Product;
 import com.gitlab.model.ProductImage;
 import com.gitlab.service.ProductService;
@@ -9,11 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Optional;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -31,8 +27,6 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
     private static final String PRODUCT_URI = URL + PRODUCT_URN;
     @Autowired
     private ProductService productService;
-    @Autowired
-    private ProductMapper productMapper;
 
     @Test
     void should_get_all_products() throws Exception {
