@@ -9,10 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-
 import java.math.BigDecimal;
 import java.util.Optional;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -84,11 +82,9 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
     void should_update_product_by_id() throws Exception {
         long id = 1L;
         int numberOfEntitiesExpected = productService.findAll().size();
-
         ProductDto productDto = generateProductDTO();
         productDto.setRating(productService.findByIdDto(id).get().getRating());
         String jsonProductDto = objectMapper.writeValueAsString(productDto);
-
         productDto.setId(id);
         String expected = objectMapper.writeValueAsString(productDto);
 
@@ -101,6 +97,7 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(content().json(expected))
                 .andExpect(result -> assertThat(productService.findAll().size(),
                         equalTo(numberOfEntitiesExpected)));
+
     }
 
     @Test
@@ -175,7 +172,7 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
         ProductDto productDto = new ProductDto();
         productDto.setName("name1");
         productDto.setStockCount(1);
-        productDto.setImagesId(new Long[]{1L});
+        productDto.setImagesId(productMapper.toDto(productService.findById(1L).get()).getImagesId());
         productDto.setDescription("name");
         productDto.setIsAdult(true);
         productDto.setCode("name");
