@@ -37,7 +37,7 @@ public class Review {
     @Column(name = "comment")
     private String comment;
 
-    @OneToMany(mappedBy = "review")
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
     private Set<ReviewImage> reviewImages;
 
     @Column(name = "rating")
