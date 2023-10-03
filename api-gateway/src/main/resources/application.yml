@@ -13,3 +13,5 @@ spring:
     web-application-type: reactive
   liquibase:
     enabled: false
+
+jwt_secret: d935b276bd281799fd1fcb79a12c6633b1a3688871c493190b29b6cd53c57971
