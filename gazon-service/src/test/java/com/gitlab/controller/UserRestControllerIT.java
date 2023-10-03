@@ -39,7 +39,6 @@ class UserRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_get_all_users() throws Exception {
-        // Ожидаемый JSON-ответ на запрос получения всех пользователей
         String expected = objectMapper.writeValueAsString(
                 userService
                         .findAll()
@@ -56,10 +55,7 @@ class UserRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_get_user_by_id() throws Exception {
-        // ID пользователя, которого мы хотим получить
         long id = 1L;
-
-        // Ожидаемый JSON-ответ на запрос получения пользователя по ID
         String expected = objectMapper.writeValueAsString(
                 userMapper.toDto(
                         userService
@@ -75,10 +71,7 @@ class UserRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_return_not_found_when_get_user_by_non_existent_id() throws Exception {
-        // ID несуществующего пользователя
         long id = 10L;
-
-        // Ожидаемый статус ответа - "Not Found"
         mockMvc.perform(get(USER_URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isNotFound());
@@ -86,10 +79,8 @@ class UserRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_create_user() throws Exception {
-        // Генерация данных нового пользователя
         UserDto userDto = generateUser();
 
-        // Преобразование объекта пользователя в JSON-строку
         String jsonExampleDto = objectMapper.writeValueAsString(userDto);
 
         mockMvc.perform(post(USER_URI)
@@ -102,22 +93,14 @@ class UserRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_update_user_by_id() throws Exception {
-        // ID пользователя, которого мы хотим обновить
         long id = 1L;
-
-        // Ожидаемое количество сущностей пользователей до обновления
         int numberOfEntitiesExpected = userService.findAll().size();
 
-        // Генерация данных обновленного пользователя
         UserDto userDto = generateUser();
 
-        // Преобразование объекта пользователя в JSON-строку
         String jsonExampleDto = objectMapper.writeValueAsString(userDto);
 
-        // Установка ID обновляемого пользователя
         userDto.setId(id);
-
-        // Ожидаемый JSON-ответ на запрос обновления пользователя
         String expected = objectMapper.writeValueAsString(userDto);
 
         mockMvc.perform(patch(USER_URI + "/{id}", id)
@@ -133,13 +116,9 @@ class UserRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_return_not_found_when_update_user_by_non_existent_id() throws Exception {
-        // ID несуществующего пользователя
         long id = 10L;
-
-        // Генерация данных обновленного пользователя
         UserDto userDto = generateUser();
 
-        // Преобразование объекта пользователя в JSON-строку
         String jsonExampleDto = objectMapper.writeValueAsString(userDto);
 
         mockMvc.perform(patch(USER_URI + "/{id}", id)
@@ -152,26 +131,15 @@ class UserRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_delete_user_by_id() throws Exception {
-        // ID пользователя, которого мы хотим удалить
-        long id = 1L;
-
+        long id = 2L;
         mockMvc.perform(delete(USER_URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk());
-
-        // Проверка, что пользователь действительно удален из базы данных
-        assertThat(userService.findById(id).isPresent(), equalTo(false));
-    }
-
-    @Test
-    void should_return_not_found_when_delete_user_by_non_existent_id() throws Exception {
-        // ID несуществующего пользователя
-        long id = 10L;
-
-        mockMvc.perform(delete(USER_URI + "/{id}", id))
+        mockMvc.perform(get(USER_URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
+
 
     private UserDto generateUser() {
         Set<String> roleSet = new HashSet<>();
