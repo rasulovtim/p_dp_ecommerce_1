@@ -22,7 +22,6 @@ import java.util.Optional;
 public class OrderRestController implements OrderRestApi {
 
     private final OrderService orderService;
-    private final OrderMapper orderMapper;
 
     @Override
     public ResponseEntity<List<OrderDto>> getAll() {
