@@ -47,7 +47,7 @@ public class Order {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     User user;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.REMOVE)
     Set<SelectedProduct> selectedProducts;
 
     @Enumerated(EnumType.STRING)

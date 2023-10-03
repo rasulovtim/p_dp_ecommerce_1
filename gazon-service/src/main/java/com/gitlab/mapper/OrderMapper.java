@@ -2,65 +2,48 @@ package com.gitlab.mapper;
 
 import com.gitlab.dto.OrderDto;
 import com.gitlab.model.Order;
-import com.gitlab.model.SelectedProduct;
 import com.gitlab.model.User;
-import com.gitlab.service.SelectedProductService;
 import com.gitlab.service.UserService;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingConstants;
-import org.mapstruct.factory.Mappers;
+import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = {SelectedProductMapper.class, ShippingAddressMapper.class})
 public abstract class OrderMapper {
 
     @Autowired
-    private UserService userService;
+    protected SelectedProductMapper selectedProductMapper;
 
     @Autowired
-    private SelectedProductService selectedProductService;
+    protected UserService userService;
 
-
-    @Mapping(source = "user", target = "userId")
+    @Mapping(source = "user.id", target = "userId")
+    @Mapping(source = "shippingAddress", target = "shippingAddressDto")
     public abstract OrderDto toDto(Order order);
-
-    public Long mapUserToUserId(User user) {
-        if (user == null) {
-            return null;
-        }
-        return user.getId();
-    }
-
-    @Mapping(source = "userId", target = "user")
-    public abstract Order toEntity(OrderDto orderDto);
 
     public User mapUserIdToUser(Long userId) {
         if (userId == null) {
             return null;
         }
-        return userService.findById(userId).orElse(null);
+        return userService.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User wasn't found"));
     }
 
-    public Long[] mapSelectedProductsToSelectedProductId(Set<SelectedProduct> selectedProducts) {
-        if (selectedProducts == null || selectedProducts.isEmpty()) {
-            return new Long[0];
-        }
-        return selectedProducts.stream().map(SelectedProduct::getId).toArray(Long[]::new);
-    }
+    @Mapping(source = "userId", target = "user.id")
+    @Mapping(source = "shippingAddressDto", target = "shippingAddress")
+    public abstract Order toEntity(OrderDto orderDto);
 
-    public Set<SelectedProduct> mapSelectedProductIdTOSelectedProducts(Long[] selectedProductId) {
 
-        if (selectedProductId == null || selectedProductId.length == 0) {
-            return null;
-        }
-        return Arrays.stream(selectedProductId).map(selectedProductService::findById).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toSet());
-    }
-
+//    protected Set<SelectedProduct> selectedProductDtoSetToSelectedProductSet(Set<SelectedProductDto> set) {
+//        if (set == null) {
+//            return null;
+//        }
+//
+//        Set<SelectedProduct> set1 = new LinkedHashSet<SelectedProduct>(Math.max((int) (set.size() / .75f) + 1, 16));
+//        for (SelectedProductDto selectedProductDto : set) {
+//            set1.add(selectedProductMapper.toEntity(selectedProductDto));
+//        }
+//
+//        return set1;
+//    }
 
 }

@@ -3,21 +3,16 @@ package com.gitlab.controller;
 import com.gitlab.dto.*;
 import com.gitlab.mapper.OrderMapper;
 import com.gitlab.model.Order;
-import com.gitlab.model.ShippingAddress;
 import com.gitlab.service.OrderService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -38,8 +33,8 @@ public class OrderRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_get_all_orders() throws Exception {
-     List<OrderDto> orders = orderService.findAllDto();
-     String expected = objectMapper.writeValueAsString(orders);
+        List<OrderDto> orders = orderService.findAllDto();
+        String expected = objectMapper.writeValueAsString(orders);
 
         mockMvc.perform(get(ORDER_URI))
                 .andDo(print())
@@ -63,6 +58,7 @@ public class OrderRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_create_order() throws Exception{
         OrderDto orderDto = generateOrderDto();
+
         String jsonOrderDto = objectMapper.writeValueAsString(orderDto);
 
         mockMvc.perform(post(ORDER_URI)
@@ -132,11 +128,13 @@ public class OrderRestControllerIT extends AbstractIntegrationTest {
 
 
     private OrderDto generateOrderDto() {
-        ShippingAddress shippingAddress = new ShippingAddress();
-        shippingAddress.setId(1L);
         OrderDto orderDto = new OrderDto();
+        ShippingAddressDto shippingAddressDto = new ShippingAddressDto();
+        shippingAddressDto.setId(1L);
+        shippingAddressDto.setAddress("dfdefdf");
+        shippingAddressDto.setDirections("dgfgg");
         orderDto.setSelectedProducts(Set.of(new SelectedProductDto()));
-        orderDto.setShippingAddress(shippingAddress);
+        orderDto.setShippingAddressDto(shippingAddressDto);
         orderDto.setUserId(1L);
         orderDto.setOrderCode("123");
         orderDto.setShippingDate(LocalDate.parse("2027-05-01"));
@@ -144,7 +142,7 @@ public class OrderRestControllerIT extends AbstractIntegrationTest {
         orderDto.setSum(new BigDecimal(5));
         orderDto.setDiscount(new BigDecimal(6));
         orderDto.setBagCounter((byte)5);
-        orderDto.setOrderStatus(Order.OrderStatus.ARRIVED);
+        orderDto.setOrderStatus(Order.OrderStatus.DONE);
         return orderDto;
     }
 

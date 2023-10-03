@@ -1,7 +1,6 @@
 package com.gitlab.dto;
 
 import com.gitlab.model.Order;
-import com.gitlab.model.ShippingAddress;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -23,7 +22,7 @@ public class OrderDtoTest extends AbstractDtoTest {
     @Test
     void test_invalid_shipping_address(){
         var orderDto = generateOrderDto();
-        orderDto.setShippingAddress(null);
+        orderDto.setShippingAddressDto(null);
 
         assertFalse(validator.validate(orderDto).isEmpty());
     }
@@ -86,10 +85,10 @@ public class OrderDtoTest extends AbstractDtoTest {
 
     OrderDto generateOrderDto() {
         OrderDto orderDto = new OrderDto();
-        ShippingAddress shippingAddress = new ShippingAddress();
-        shippingAddress.setId(1L);
+        ShippingAddressDto shippingAddressDto = new ShippingAddressDto();
+        shippingAddressDto.setId(1L);
         orderDto.setSelectedProducts(Set.of(new SelectedProductDto()));
-        orderDto.setShippingAddress(shippingAddress);
+        orderDto.setShippingAddressDto(shippingAddressDto);
         orderDto.setUserId(1L);
         orderDto.setOrderCode("123");
         orderDto.setShippingDate(LocalDate.parse("2027-05-01"));

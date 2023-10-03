@@ -3,9 +3,7 @@ package com.gitlab.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gitlab.model.Order;
-import com.gitlab.model.ShippingAddress;
 import lombok.Data;
-
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -21,33 +19,33 @@ public class OrderDto {
     private Long id;
 
     @NotNull(message = "Shipping address should not be null. Please provide a valid shipping address")
-    ShippingAddress shippingAddress;
+    private ShippingAddressDto shippingAddressDto;
 
     @NotNull(message = "Shipping date should not be null. Please provide a valid shipping date")
-    LocalDate shippingDate;
+    private LocalDate shippingDate;
 
     @NotEmpty(message = "Order code should be empty. Please provide a valid order code")
     @Size(min = 1, max = 20)
-    String orderCode;
+    private String orderCode;
 
     @NotNull(message = "Datetime of creation should not be null. Please provide a valid datetime")
-    LocalDateTime createDateTime;
+    private LocalDateTime createDateTime;
 
     @NotNull(message = "Sum should not be null. Please provide a valid sum")
-    BigDecimal sum;
+    private BigDecimal sum;
 
     @NotNull(message = "Discount should not be null. Please provide a valid discount")
-    BigDecimal discount;
+    private BigDecimal discount;
 
     @NotNull(message = "Bag counter should not be null. Please provide a valid bag counter")
-    Byte bagCounter;
+    private Byte bagCounter;
 
     @NotNull(message = "User ID should not be null. Please provide a valid user ID")
-    Long userId;
+    private Long userId;
 
-    Set<SelectedProductDto> selectedProducts;
+    private Set<SelectedProductDto> selectedProducts;
 
-    Order.OrderStatus orderStatus;
+    private Order.OrderStatus orderStatus;
 
 
 }

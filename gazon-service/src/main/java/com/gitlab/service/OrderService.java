@@ -3,6 +3,7 @@ package com.gitlab.service;
 import com.gitlab.dto.OrderDto;
 import com.gitlab.mapper.OrderMapper;
 import com.gitlab.mapper.SelectedProductMapper;
+import com.gitlab.mapper.ShippingAddressMapper;
 import com.gitlab.model.Order;
 import com.gitlab.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,9 +25,8 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final UserService userService;
-
     private final OrderMapper orderMapper;
-
+    private final ShippingAddressMapper shippingAddressMapper;
     private final SelectedProductMapper selectedProductMapper;
 
 
@@ -116,8 +116,8 @@ public class OrderService {
             return Optional.empty();
         }
         Order savedOrder = optionalSavedOrder.get();
-        if (orderDto.getShippingAddress() != null) {
-            savedOrder.setShippingAddress(orderDto.getShippingAddress());
+        if (orderDto.getShippingAddressDto() != null) {
+            savedOrder.setShippingAddress(shippingAddressMapper.toEntity(orderDto.getShippingAddressDto()));
         }
         if (orderDto.getShippingDate() != null) {
             savedOrder.setShippingDate(orderDto.getShippingDate());

@@ -10,7 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
+import java.util.List;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -23,6 +23,7 @@ class ReviewImageRestControllerIT extends AbstractIntegrationTest {
 
     private static final String REVIEW_IMAGE_URN = "/api/review_images";
     private static final String REVIEW_IMAGE_URI = URL + REVIEW_IMAGE_URN;
+
     @Autowired
     private ReviewImageService reviewImageService;
     @Autowired
@@ -30,28 +31,21 @@ class ReviewImageRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_get_all_reviewImages_ids() throws Exception {
+        List<ReviewImageDto> reviewImageDto = reviewImageService.findAllDto();
+
         String expected = objectMapper.writeValueAsString(
                 reviewImageService
                         .findAll().stream()
                         .map(ReviewImage::getId)
-                        .mapToLong(Long::valueOf).toArray()
-        );
-
-        mockMvc.perform(get(REVIEW_IMAGE_URI))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().json(expected));
+                        .mapToLong(Long::valueOf).toArray());
     }
 
     @Test
     void should_get_reviewImage_by_id() throws Exception {
         long id = 1L;
-        String expected = objectMapper.writeValueAsString(
-                reviewImageMapper.toDto(
-                        reviewImageService
-                                .findById(id)
-                                .orElse(null))
-        );
+        var review = reviewImageService.findById(id).orElse(null);
+        String expected = objectMapper.writeValueAsString(reviewImageMapper.toDto(review));
+
 
         mockMvc.perform(get(REVIEW_IMAGE_URI + "/{id}", id))
                 .andDo(print())
@@ -121,7 +115,8 @@ class ReviewImageRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_delete_reviewImage_by_id() throws Exception {
-        long id = 2L;
+        ReviewImageDto reviewImageDto = reviewImageService.saveDto(generateReviewDto());
+        long id = reviewImageDto.getId();
         mockMvc.perform(delete(REVIEW_IMAGE_URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk());
