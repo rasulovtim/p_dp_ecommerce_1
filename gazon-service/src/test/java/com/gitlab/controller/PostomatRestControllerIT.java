@@ -70,11 +70,7 @@ class PostomatRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_create_postomat() throws Exception {
-        PostomatDto postomatDto = new PostomatDto();
-        postomatDto.setAddress("TestAddress");
-        postomatDto.setDirections("TestDirections");
-        postomatDto.setShelfLifeDays((byte) 10);
-
+        PostomatDto postomatDto = generatePostomateDto();
         String jsonPostomatDto = objectMapper.writeValueAsString(postomatDto);
 
         mockMvc.perform(post(URI)
@@ -90,14 +86,10 @@ class PostomatRestControllerIT extends AbstractIntegrationTest {
         long id = 4L;
         int numberOfEntitiesExpected = postomatService.findAll().size();
 
-        PostomatDto postomatDto = new PostomatDto();
-        postomatDto.setAddress("New Address");
-        postomatDto.setDirections("New Directions");
-        postomatDto.setShelfLifeDays((byte) 16);
-
+        PostomatDto postomatDto = generatePostomateDto();
         String jsonPostomatDto = objectMapper.writeValueAsString(postomatDto);
 
-        postomatDto.setId(id);
+        postomatDto.setId(postomatService.findByIdDto(id).get().getId());
         String expected = objectMapper.writeValueAsString(postomatDto);
 
         mockMvc.perform(patch(URI + "/{id}", id)
@@ -114,11 +106,7 @@ class PostomatRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_return_not_found_when_update_postomat_by_non_existent_id() throws Exception {
         long id = 20L;
-        PostomatDto postomatDto = new PostomatDto();
-        postomatDto.setAddress("New Address");
-        postomatDto.setDirections("New Directions");
-        postomatDto.setShelfLifeDays((byte) 16);
-
+        PostomatDto postomatDto = generatePostomateDto();
         String jsonPostomatDto = objectMapper.writeValueAsString(postomatDto);
 
         mockMvc.perform(patch(URI + "/{id}", id)
@@ -131,12 +119,23 @@ class PostomatRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_delete_postomat_by_id() throws Exception {
-        long id = 5L;
+
+        PostomatDto postomatDto = postomatService.saveDto(generatePostomateDto());
+        long id = postomatDto.getId();
+
         mockMvc.perform(delete(URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk());
         mockMvc.perform(get(URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isNotFound());
+    }
+
+    private PostomatDto generatePostomateDto(){
+        PostomatDto postomatDto = new PostomatDto();
+        postomatDto.setAddress("TestAddress");
+        postomatDto.setDirections("TestDirections");
+        postomatDto.setShelfLifeDays((byte) 10);
+        return postomatDto;
     }
 }

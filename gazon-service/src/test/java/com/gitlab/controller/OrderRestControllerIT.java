@@ -76,7 +76,6 @@ public class OrderRestControllerIT extends AbstractIntegrationTest {
         int numberOfEntitiesExpected = orderService.findAll().size();
         OrderDto orderDto = generateOrderDto();
         String jsonOrderDto = objectMapper.writeValueAsString(orderDto);
-
         orderDto.setId(id);
         String expected = objectMapper.writeValueAsString(orderDto);
 

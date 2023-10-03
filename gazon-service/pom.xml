@@ -34,7 +34,7 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
-    </dependencies>
+     </dependencies>
 
     <build>
         <finalName>gazon-service</finalName>
