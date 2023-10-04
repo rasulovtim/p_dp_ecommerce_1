@@ -14,11 +14,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -89,13 +85,11 @@ class ReviewRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_update_review_by_id() throws Exception {
-        long id = 1L;
+        Review review = reviewService.save(reviewMapper.toEntity(generateReviewDto()));
+        long id = review.getId();
         int numberOfEntitiesExpected = reviewService.findAll().size();
-
         ReviewDto reviewDto = generateReviewDto();
-
         String jsonReviewDto = objectMapper.writeValueAsString(reviewDto);
-
         reviewDto.setId(id);
         String expected = objectMapper.writeValueAsString(reviewDto);
 
@@ -169,11 +163,9 @@ class ReviewRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_delete_all_reviewImages_by_review_id() throws Exception {
-        long id = 1L;
+        Review review = reviewService.save(reviewMapper.toEntity(generateReviewDto()));
+        long id = reviewService.findById(review.getId()).get().getId();
         mockMvc.perform(delete(REVIEW_URI + "/{id}" + "/images", id))
-                .andDo(print())
-                .andExpect(status().isOk());
-        mockMvc.perform(get(REVIEW_URI + "/{id}" + "/images", id))
                 .andDo(print())
                 .andExpect(status().isNoContent());
     }

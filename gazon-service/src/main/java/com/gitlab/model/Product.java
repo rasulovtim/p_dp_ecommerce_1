@@ -4,11 +4,29 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
+import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
+import org.apache.lucene.analysis.core.StopFilterFactory;
+import org.apache.lucene.analysis.snowball.SnowballPorterFilterFactory;
+import org.apache.lucene.analysis.standard.StandardTokenizerFactory;
+import org.hibernate.search.annotations.*;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Parameter;
+import org.hibernate.search.annotations.Store;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Set;
 
+
+@AnalyzerDef(name = "customanalyzer",
+        tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
+        filters = {
+                @TokenFilterDef(factory = LowerCaseFilterFactory.class),
+                @TokenFilterDef(factory = StopFilterFactory.class),
+                @TokenFilterDef(factory = SnowballPorterFilterFactory.class,
+                        params = @Parameter(name = "language", value = "Russian")
+                )
+        }
+)
 @NamedEntityGraph(name = "Product.productImages",
         attributeNodes = @NamedAttributeNode("productImages"))
 @Entity
@@ -17,6 +35,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "product")
+@Indexed
 public class Product {
 
     @Id
@@ -24,6 +43,10 @@ public class Product {
     private Long id;
 
     @Column(name = "name")
+//    @Field(termVector = TermVector.YES)
+//    @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO)
+    @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO,
+            analyzer = @Analyzer(definition = "customanalyzer"))
     private String name;
 
     @Column(name = "stock_count")

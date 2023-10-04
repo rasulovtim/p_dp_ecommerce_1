@@ -108,6 +108,11 @@
             <artifactId>spring-boot-devtools</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-search-orm</artifactId>
+            <version>5.11.8.Final</version> <!-- Версию можно изменить на актуальную -->
+        </dependency>
     </dependencies>
 
     <build>

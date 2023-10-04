@@ -95,6 +95,6 @@ public interface ProductRestApi {
             @ApiResponse(code = 200, message = "Products found"),
             @ApiResponse(code = 204, message = "Products not present")}
     )
-    ResponseEntity<List<ProductDto>> searchProductsByText(@ApiParam(name = "text", value = "Search text") @RequestParam (value = "text") String text);
+    ResponseEntity<List<ProductDto>> searchProductsByText(@ApiParam(name = "text", value = "Search text") @RequestParam (value = "text") String text) throws InterruptedException;
 
 }

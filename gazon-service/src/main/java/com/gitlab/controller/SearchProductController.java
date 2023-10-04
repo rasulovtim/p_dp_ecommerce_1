@@ -13,10 +13,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SearchProductController implements SearchProductRestApi {
 
+
     private final ProductService productService;
 
     @Override
-    public ResponseEntity<List<ProductDto>> search(String name) {
+    public ResponseEntity<List<ProductDto>> search(String name) throws InterruptedException {
         var products = productService.findByNameIgnoreCaseContaining(name);
 
         return products.isEmpty() ?

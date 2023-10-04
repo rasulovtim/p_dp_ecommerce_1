@@ -8,6 +8,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
+
 @Route
 @PageTitle("Поиск")
 public class SearchBar extends VerticalLayout {
@@ -45,10 +46,12 @@ public class SearchBar extends VerticalLayout {
     }
 
     private void performSearch() {
-        String query = searchField.getValue();
-        if (!query.isEmpty()) {
-            String searchResultsUrl = "search/" + query;
+        String strQuery = searchField.getValue();
+
+        if (!strQuery.isEmpty()) {
+            String searchResultsUrl = "search/" + strQuery;
             getUI().ifPresent(ui -> ui.navigate(searchResultsUrl));
         }
+
     }
 }

@@ -6,9 +6,15 @@ import com.gitlab.dto.ProductDto;
 import com.gitlab.model.Review;
 import com.gitlab.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.lucene.search.Query;
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.hibernate.search.jpa.FullTextQuery;
+import org.hibernate.search.jpa.Search;
+import org.hibernate.search.query.dsl.QueryBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +24,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ProductService {
 
+    private final EntityManager entityManager;
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
 
@@ -163,8 +170,32 @@ public class ProductService {
         return productMapper.toDto(savedProduct);
     }
 
-    public List<ProductDto> findByNameIgnoreCaseContaining(String name) {
-        return productRepository.findByNameIgnoreCaseContaining(name)
-                .stream().map(productMapper::toDto).toList();
+
+    public List<ProductDto> findByNameIgnoreCaseContaining(String name) throws InterruptedException {
+        FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(entityManager);
+        fullTextEntityManager.createIndexer().startAndWait();
+
+        QueryBuilder queryBuilder = fullTextEntityManager.getSearchFactory()
+                .buildQueryBuilder()
+                .forEntity(Product.class)
+                .get();
+
+        Query query = queryBuilder
+                .keyword()
+                .fuzzy()
+                .withEditDistanceUpTo(2)
+                .withPrefixLength(0)
+                .onField("name")
+                .matching(name)
+                .createQuery();
+
+        FullTextQuery jpaQuery = fullTextEntityManager.createFullTextQuery(query, Product.class);
+        List<Product> list = jpaQuery.getResultList();
+
+        return list.stream().map(productMapper::toDto).toList();
+
+//        return productRepository.findByNameIgnoreCaseContaining(name)
+//                .stream().map(productMapper::toDto).toList();
     }
+
 }
