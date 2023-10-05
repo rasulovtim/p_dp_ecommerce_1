@@ -30,7 +30,11 @@
             <artifactId>spring-cloud-starter-openfeign</artifactId>
             <version>3.1.1</version>
         </dependency>
-    </dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+     </dependencies>
 
     <build>
         <finalName>gazon-service</finalName>
