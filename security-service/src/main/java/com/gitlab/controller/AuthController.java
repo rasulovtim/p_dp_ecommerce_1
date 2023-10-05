@@ -1,19 +1,18 @@
 package com.gitlab.controller;
 
 import com.gitlab.controller.api.AuthRestApi;
-import com.gitlab.dto.AuthDto;
+import com.gitlab.dto.AuthRequest;
 import com.gitlab.dto.JwtDto;
+import com.gitlab.dto.MessageResponse;
 import com.gitlab.dto.UserDto;
 import com.gitlab.mapper.UserMapper;
 import com.gitlab.service.AuthService;
-import com.gitlab.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthController implements AuthRestApi {
 
-    private final UserService userService;
     private final AuthService authService;
     private final UserMapper userMapper;
     private final AuthenticationManager authenticationManager;
@@ -36,24 +34,19 @@ public class AuthController implements AuthRestApi {
     }
 
     @Override
-    public ResponseEntity<?> createToken(@RequestBody AuthDto authDto) {
+    public ResponseEntity<?> createToken(@RequestBody AuthRequest authRequest) {
         Authentication authenticate = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authDto.getEmail(), authDto.getPassword()));
+                new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
         if (authenticate.isAuthenticated()) {
-            return ResponseEntity.ok().body(authService.generateToken(authDto.getEmail()));
+            return ResponseEntity.ok().body(new JwtDto(authService.generateToken(authRequest.getEmail())));
         } else {
-            throw new RuntimeException("invalid access");
+            return ResponseEntity.badRequest().body(new MessageResponse("Invalid access"));
         }
     }
 
     @Override
     public ResponseEntity<?> validationToken(@RequestBody JwtDto tokenDto) {
         authService.validateToken(tokenDto.getToken());
-        return ResponseEntity.ok().body("Dfg");
-    }
-
-    @GetMapping("/auth/test")
-    public void testing() {
-
+        return ResponseEntity.ok().body(new MessageResponse("Validation success"));
     }
 }

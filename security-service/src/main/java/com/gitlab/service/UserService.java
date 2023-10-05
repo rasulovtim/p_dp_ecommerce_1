@@ -1,26 +1,20 @@
 package com.gitlab.service;
 
 import com.gitlab.dto.UserDto;
-import com.gitlab.mapper.BankCardMapper;
-import com.gitlab.mapper.PassportMapper;
 import com.gitlab.mapper.UserMapper;
-import com.gitlab.model.BankCard;
-import com.gitlab.model.Passport;
 import com.gitlab.model.Role;
-import com.gitlab.model.ShippingAddress;
 import com.gitlab.model.User;
 import com.gitlab.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-//import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -31,10 +25,7 @@ import java.util.stream.Collectors;
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
-//    private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
-    private final BankCardMapper bankCardMapper;
-    private final PassportMapper passportMapper;
 
     public List<User> findAll() {
         return userRepository.findAll();
@@ -54,12 +45,12 @@ public class UserService implements UserDetailsService {
         return optionalUser.map(userMapper::toDto).orElse(null);
     }
 
-    @Transactional
-    public User save(User user) {
+//    @Transactional
+//    public User save(User user) {
 //        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setCreateDate(LocalDate.from(LocalDateTime.now()));
-        return userRepository.save(user);
-    }
+//        user.setCreateDate(LocalDate.from(LocalDateTime.now()));
+//        return userRepository.save(user);
+//    }
 
     @Transactional
     public UserDto saveDto(UserDto userDto) {
@@ -96,56 +87,6 @@ public class UserService implements UserDetailsService {
         if (user.getLastName() != null) {
             savedUser.setLastName(user.getLastName());
         }
-        if (user.getBirthDate() != null) {
-            savedUser.setBirthDate(user.getBirthDate());
-        }
-        if (user.getGender() != null) {
-            savedUser.setGender(user.getGender());
-        }
-        if (user.getPhoneNumber() != null) {
-            savedUser.setPhoneNumber(user.getPhoneNumber());
-        }
-
-        if (user.getPassport() != null) {
-            var newPassport = user.getPassport();
-            var savePassport = savedUser.getPassport();
-            if (savePassport != null) {
-                newPassport.setId(savedUser.getPassport().getId());
-            }
-            savedUser.setPassport(newPassport);
-        }
-
-        if (user.getShippingAddressSet() != null) {
-            Set<ShippingAddress> newShippAddr = new HashSet<>();
-            Set<ShippingAddress> savedShippAddr = savedUser.getShippingAddressSet();
-            if (savedShippAddr != null) {
-                for (ShippingAddress address : user.getShippingAddressSet()) {
-                    for (ShippingAddress addressId : savedShippAddr) {
-                        Long shippAddress = addressId.getId();
-                        address.setId(shippAddress);
-                        address.setAddress(address.getAddress());
-                        address.setDirections(address.getDirections());
-                    }
-                    newShippAddr.add(address);
-                }
-            }
-            savedUser.setShippingAddressSet(newShippAddr);
-        }
-
-        if (user.getBankCardsSet() != null) {
-            Set<BankCard> newCard = new HashSet<>();
-            Set<BankCard> savedCard = savedUser.getBankCardsSet();
-            if (savedCard != null) {
-                for (BankCard bankCard : user.getBankCardsSet()) {
-                    for (BankCard cardId : savedCard) {
-                        Long bankCardId = cardId.getId();
-                        bankCard.setId(bankCardId);
-                    }
-                    newCard.add(bankCard);
-                }
-            }
-            savedUser.setBankCardsSet(newCard);
-        }
 
         if (user.getRolesSet() != null) {
             savedUser.setRolesSet(user.getRolesSet());
@@ -172,7 +113,7 @@ public class UserService implements UserDetailsService {
         }
         User savedUser = optionalSavedUser.get();
 
-        savedUser = updateUserFields(savedUser, userDto, bankCardMapper);
+        savedUser = updateUserFields(savedUser, userDto);
         User updatedUser = userRepository.save(savedUser);
         return userMapper.toDto(updatedUser);
     }
@@ -187,29 +128,13 @@ public class UserService implements UserDetailsService {
         return userMapper.toDto(optionalUser.get());
     }
 
-    private User updateUserFields(User user, UserDto userDto, BankCardMapper bankCardMapper) {
+    private User updateUserFields(User user, UserDto userDto) {
         user.setEmail(userDto.getEmail());
         user.setPassword(userDto.getPassword());
         user.setSecurityQuestion(userDto.getSecurityQuestion());
         user.setAnswerQuestion(userDto.getAnswerQuestion());
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
-        user.setBirthDate(userDto.getBirthDate());
-        user.setGender(userDto.getGender());
-        user.setPhoneNumber(userDto.getPhoneNumber());
-
-        Set<ShippingAddress> shippingAddresses = userMapper.mapShippingAddressDtoToShippingAddressSetEntity(userDto.getShippingAddressDtos());
-        user.setShippingAddressSet(shippingAddresses);
-
-        if (bankCardMapper != null) {
-            Set<BankCard> bankCards = userDto.getBankCardDtos().stream().map(bankCardMapper::toEntity).collect(Collectors.toSet());
-
-            user.getBankCardsSet().clear();
-            user.getBankCardsSet().addAll(bankCards);
-        }
-
-        Passport passport = passportMapper.toEntity(userDto.getPassportDto());
-        user.setPassport(passport);
 
         Set<Role> roles = userMapper.mapRoleSetToStringSet(userDto.getRoles());
         user.setRolesSet(roles);

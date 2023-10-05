@@ -1,6 +1,6 @@
 package com.gitlab.controller.api;
 
-import com.gitlab.dto.AuthDto;
+import com.gitlab.dto.AuthRequest;
 import com.gitlab.dto.JwtDto;
 import com.gitlab.dto.UserDto;
 import io.swagger.annotations.Api;
@@ -34,7 +34,7 @@ public interface AuthRestApi {
             @ApiResponse(code = 201, message = "Token generated"),
             @ApiResponse(code = 400, message = "Token not generated")}
     )
-    ResponseEntity<?> createToken(@ApiParam(name = "token", value = "JwtDto") @RequestBody AuthDto authDto);
+    ResponseEntity<?> createToken(@ApiParam(name = "token", value = "JwtDto") @RequestBody AuthRequest authRequest);
 
     @GetMapping("/api/auth/validate")
     @ApiOperation(value = "Validate Token")

@@ -2,7 +2,6 @@ package com.gitlab.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,8 +9,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -20,12 +17,10 @@ import javax.persistence.JoinTable;
 import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Set;
-
 
 @Data
 @NoArgsConstructor
@@ -33,10 +28,7 @@ import java.util.Set;
 @Entity
 @Table(name = "users", schema = "public", catalog = "postgres")
 @NamedEntityGraph(name = "userWithSets",
-        attributeNodes = {
-        @NamedAttributeNode("bankCardsSet"),
-        @NamedAttributeNode("shippingAddressSet"),
-        @NamedAttributeNode("rolesSet")})
+        attributeNodes = {@NamedAttributeNode("rolesSet")})
 public class User implements UserDetails {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -61,28 +53,8 @@ public class User implements UserDetails {
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "birth_date")
-    private LocalDate birthDate;
-
-    @Column(name = "gender")
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
-
-    @Column(name = "phone_number")
-    private String phoneNumber;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id", referencedColumnName = "id")
-    private Passport passport;
-
     @Column(name = "create_date")
     private LocalDate createDate;
-
-    @OneToMany(mappedBy="id", cascade = CascadeType.ALL)
-    private Set<BankCard> bankCardsSet;
-
-    @OneToMany(mappedBy="id",cascade = CascadeType.ALL)
-    private Set<ShippingAddress> shippingAddressSet;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "users_roles",
@@ -123,14 +95,6 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    @AllArgsConstructor
-    @Getter
-    public enum Gender {
-        MALE("МУЖСКОЙ"),FEMALE("ЖЕНСКИЙ"),NOT_SPECIFIED("НЕ УКАЗАН");
-
-        private final String sex;
     }
 
 }

@@ -1,28 +1,18 @@
 package com.gitlab.mapper;
 
-import com.gitlab.dto.PersonalAddressDto;
-import com.gitlab.dto.PickupPointDto;
-import com.gitlab.dto.PostomatDto;
-import com.gitlab.dto.ShippingAddressDto;
 import com.gitlab.dto.UserDto;
-import com.gitlab.model.PersonalAddress;
-import com.gitlab.model.PickupPoint;
-import com.gitlab.model.Postomat;
 import com.gitlab.model.Role;
-import com.gitlab.model.ShippingAddress;
 import com.gitlab.model.User;
 import com.gitlab.service.RoleService;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
-import org.mapstruct.Named;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public abstract class UserMapper {
@@ -30,9 +20,6 @@ public abstract class UserMapper {
     @Autowired
     private RoleService roleService;
 
-    @Mapping(source = "bankCardsSet", target = "bankCardDtos")
-    @Mapping(source = "shippingAddressSet", target = "shippingAddressDtos")
-    @Mapping(source = "passport", target = "passportDto")
     @Mapping(source = "rolesSet", target = "roles")
     public abstract UserDto toDto(User user);
 
@@ -48,9 +35,6 @@ public abstract class UserMapper {
         return stringSet;
     }
 
-    @Mapping(source = "bankCardDtos", target = "bankCardsSet")
-    @Mapping(source = "shippingAddressDtos", target = "shippingAddressSet")
-    @Mapping(source = "passportDto", target = "passport")
     @Mapping(source = "roles", target = "rolesSet")
     public abstract User toEntity(UserDto userDto);
 
@@ -68,60 +52,6 @@ public abstract class UserMapper {
         }
         return roleSet;
     }
-
-
-    @Named("createShippingAddress")
-    public ShippingAddress createShippingAddress(ShippingAddressDto dto) {
-        if (dto.getClass() == PersonalAddressDto.class) {
-            return createPersonalAddressEntity((PersonalAddressDto) dto);
-        } else if (dto.getClass() == PostomatDto.class) {
-            return createPostomatEntity((PostomatDto) dto);
-        } else if (dto.getClass() == PickupPointDto.class) {
-            return createPickupPointEntity((PickupPointDto) dto);
-        } else {
-            throw new IllegalArgumentException("Unknown ShippingAddressDto subtype");
-        }
-    }
-
-    @Named("createShippingAddressDto")
-    public ShippingAddressDto createShippingAddressDto(ShippingAddress shippingAddress) {
-        if (shippingAddress.getClass() == PersonalAddress.class) {
-            return createPersonalAddressDto((PersonalAddress) shippingAddress);
-        } else if (shippingAddress.getClass() == Postomat.class) {
-            return createPostomatDto((Postomat) shippingAddress);
-        } else if (shippingAddress.getClass() == PickupPoint.class) {
-            return createPickupPointDto((PickupPoint) shippingAddress);
-        } else {
-            throw new IllegalArgumentException("Unknown ShippingAddress subtype");
-        }
-    }
-
-    public abstract PersonalAddressDto createPersonalAddressDto(PersonalAddress personalAddress);
-
-    public abstract PostomatDto createPostomatDto(Postomat postomat);
-
-    public abstract  PickupPointDto createPickupPointDto(PickupPoint pickupPoint);
-
-
-    public abstract PersonalAddress createPersonalAddressEntity(PersonalAddressDto personalAddressDto);
-
-    public abstract Postomat createPostomatEntity(PostomatDto postomatDto);
-
-    public abstract  PickupPoint createPickupPointEntity(PickupPointDto pickupPointDto);
-
-
-    public Set<ShippingAddressDto> mapShippingAddressEntityToShippingAddressDto(Set<ShippingAddress> shippingAddress) {
-        return shippingAddress.stream()
-                .map(this::createShippingAddressDto)
-                .collect(Collectors.toSet());
-    }
-
-    public Set<ShippingAddress> mapShippingAddressDtoToShippingAddressSetEntity(Set<ShippingAddressDto> shippingAddressDtoSet) {
-        return shippingAddressDtoSet.stream()
-                .map(this::createShippingAddress)
-                .collect(Collectors.toSet());
-    }
-
 }
 
 

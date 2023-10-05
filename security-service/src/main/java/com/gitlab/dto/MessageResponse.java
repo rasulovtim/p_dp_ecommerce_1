@@ -4,11 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+@AllArgsConstructor
 @Getter
 @Setter
-@AllArgsConstructor
-public class AuthDto {
-
-    private String email;
-    private String password;
+public class MessageResponse {
+    private String message;
 }

@@ -4,6 +4,7 @@ import com.gitlab.controller.api.UserRestApi;
 import com.gitlab.dto.UserDto;
 import com.gitlab.mapper.UserMapper;
 import com.gitlab.model.User;
+import com.gitlab.service.AuthService;
 import com.gitlab.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,8 +23,8 @@ import java.util.Optional;
 public class UserRestController implements UserRestApi {
 
     private final UserMapper userMapper;
-
     private final UserService userService;
+    private final AuthService authService;
 
     @Override
     public ResponseEntity<List<UserDto>> getAll() {
@@ -46,7 +47,7 @@ public class UserRestController implements UserRestApi {
     public ResponseEntity<UserDto> create(UserDto userDto) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(userMapper
-                        .toDto(userService
+                        .toDto(authService
                                 .save(userMapper
                                         .toEntity(userDto))));
     }
