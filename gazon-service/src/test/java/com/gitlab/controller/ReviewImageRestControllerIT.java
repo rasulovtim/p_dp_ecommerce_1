@@ -19,6 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.testcontainers.shaded.org.hamcrest.CoreMatchers.equalTo;
 import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 
+
 class ReviewImageRestControllerIT extends AbstractIntegrationTest {
 
     private static final String REVIEW_IMAGE_URN = "/api/review_images";
@@ -30,9 +31,11 @@ class ReviewImageRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_get_all_reviewImages_ids() throws Exception {
+
         String expected = objectMapper.writeValueAsString(
                 reviewImageService
-                        .findAll().stream()
+                        .findAll()
+                        .stream()
                         .map(ReviewImage::getId)
                         .mapToLong(Long::valueOf).toArray()
         );
@@ -74,7 +77,6 @@ class ReviewImageRestControllerIT extends AbstractIntegrationTest {
 
         ReviewImageDto reviewImageDto = generateReviewDto();
         reviewImageDto.setId(id);
-
         String expected = objectMapper.writeValueAsString(reviewImageDto);
 
         MockMultipartHttpServletRequestBuilder builder =
@@ -121,7 +123,8 @@ class ReviewImageRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_delete_reviewImage_by_id() throws Exception {
-        long id = 2L;
+        ReviewImage reviewImage = reviewImageService.save(reviewImageMapper.toEntity(generateReviewDto()));
+        long id = reviewImageService.findById(reviewImage.getId()).get().getId();
         mockMvc.perform(delete(REVIEW_IMAGE_URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk());
