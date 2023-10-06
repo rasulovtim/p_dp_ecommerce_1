@@ -6,15 +6,9 @@ import com.gitlab.dto.ProductDto;
 import com.gitlab.model.Review;
 import com.gitlab.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
-import org.apache.lucene.search.Query;
-import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
-import org.hibernate.search.jpa.Search;
-import org.hibernate.search.query.dsl.BooleanJunction;
-import org.hibernate.search.query.dsl.QueryBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +19,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ProductService {
 
-    private final EntityManager entityManager;
+    private final FuzzySearchService fuzzySearchService;
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
 
@@ -171,32 +165,9 @@ public class ProductService {
         return productMapper.toDto(savedProduct);
     }
 
-
     public List<ProductDto> findByNameIgnoreCaseContaining(String name) {
-        FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(entityManager);
-        QueryBuilder queryBuilder = fullTextEntityManager.getSearchFactory()
-                .buildQueryBuilder()
-                .forEntity(Product.class)
-                .get();
-        String[] keywords = name.split("\\s+");
 
-        List<Query> queryList = new ArrayList<>();
-        for (String keyword : keywords) {
-            Query query = queryBuilder.keyword()
-                    .fuzzy()
-                    .withEditDistanceUpTo(2)
-                    .onField("name")
-                    .matching(keyword)
-                    .createQuery();
-            queryList.add(query);
-        }
-
-        BooleanJunction<BooleanJunction> finalQuery = queryBuilder.bool();
-        for (Query query : queryList) {
-            finalQuery.must(query);
-        }
-
-        FullTextQuery jpaQuery = fullTextEntityManager.createFullTextQuery(finalQuery.createQuery(), Product.class);
+        FullTextQuery jpaQuery = fuzzySearchService.getFullTextQuery(name);
         List<Product> list = jpaQuery.getResultList();
         return list.stream().map(productMapper::toDto).toList();
     }
