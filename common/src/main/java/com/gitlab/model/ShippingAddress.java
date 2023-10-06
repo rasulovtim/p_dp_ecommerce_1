@@ -12,7 +12,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity(name = "shipping_address")
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class ShippingAddress {
+public  class ShippingAddress {
 
     @Id
     @Column(name = "shipping_address_id")

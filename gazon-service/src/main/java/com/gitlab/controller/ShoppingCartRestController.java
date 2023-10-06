@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 import org.hibernate.Hibernate;
+
 import java.util.stream.Collectors;
 
 
@@ -26,7 +27,6 @@ import javax.persistence.EntityManager;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-
 public class ShoppingCartRestController implements ShoppingCartRestApi {
 
     private final ShoppingCartService shoppingCartService;
