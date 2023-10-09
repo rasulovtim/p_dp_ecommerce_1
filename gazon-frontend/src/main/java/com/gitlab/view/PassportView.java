@@ -303,7 +303,7 @@ public class PassportView extends VerticalLayout {
         TextField passportPassportNumberField = new TextField("Passport Number");
         passportPassportNumberField.setPlaceholder("Number must be in \"1234 567890\" format");
         TextField passportIssuerField = new TextField("Issuer");
-        passportIssuerField.setPlaceholder("10 - 255 characters");
+        passportIssuerField.setPlaceholder("Issuer must be in \"Department police\" format, 10 - 255 characters");
         TextField passportIssuerNumberField = new TextField("Issuer Number");
         passportIssuerNumberField.setPlaceholder("Number must be in \"123-456\" format");
         Button createButton = new Button("Create");
