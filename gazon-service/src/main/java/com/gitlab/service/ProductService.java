@@ -165,7 +165,7 @@ public class ProductService {
         return productMapper.toDto(savedProduct);
     }
 
-    public List<ProductDto> findByNameIgnoreCaseContaining(String name) {
+    public List<ProductDto> findByNameIgnoreCaseContaining(String name) throws InterruptedException {
 
         FullTextQuery jpaQuery = fuzzySearchService.getFullTextQuery(name);
         List<Product> list = jpaQuery.getResultList();

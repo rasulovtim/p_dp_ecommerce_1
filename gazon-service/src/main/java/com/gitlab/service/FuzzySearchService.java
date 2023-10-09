@@ -28,10 +28,11 @@ public class FuzzySearchService {
      * @param name Введенное название продукта в поиске, по которому будет выполняться нечеткий поиск.
      * @return FullTextQuery, представляющий запрос на нечеткий поиск.
      */
-    public FullTextQuery getFullTextQuery(String name){
+    public FullTextQuery getFullTextQuery(String name) throws InterruptedException {
 
         // Получаем FullTextEntityManager для выполнения поиска.
         FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(entityManager);
+        fullTextEntityManager.createIndexer().startAndWait();
 
         // Создаем QueryBuilder для создания запросов.
         QueryBuilder queryBuilder = fullTextEntityManager.getSearchFactory()

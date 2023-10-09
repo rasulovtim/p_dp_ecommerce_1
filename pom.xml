@@ -113,6 +113,11 @@
             <artifactId>hibernate-search-orm</artifactId>
             <version>5.11.8.Final</version> <!-- Версию можно изменить на актуальную -->
         </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.196</version>
+        </dependency>
     </dependencies>
 
     <build>
