@@ -42,5 +42,7 @@ openApi.json
 *.json
 /gazon-service/frontend/
 /gazon-service/node_modules/
+/common/node_modules/
 /gazon-frontend/frontend/
 /gazon-frontend/node_modules/
+/gazon-service/classpath:
