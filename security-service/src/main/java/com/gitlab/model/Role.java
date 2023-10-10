@@ -17,7 +17,7 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "roles")
+@Table(name = "security_roles")
 public class Role implements GrantedAuthority {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)

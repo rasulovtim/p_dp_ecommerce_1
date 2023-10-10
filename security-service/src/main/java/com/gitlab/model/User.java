@@ -26,7 +26,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "users", schema = "public", catalog = "postgres")
+@Table(name = "security_users", schema = "public", catalog = "postgres")
 @NamedEntityGraph(name = "userWithSets",
         attributeNodes = {@NamedAttributeNode("rolesSet")})
 public class User implements UserDetails {
@@ -57,9 +57,9 @@ public class User implements UserDetails {
     private LocalDate createDate;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "users_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @JoinTable(name = "security_users_roles",
+            joinColumns = @JoinColumn(name = "security_user_id"),
+            inverseJoinColumns = @JoinColumn(name = "security_role_id"))
     private Set<Role> rolesSet;
 
     @Override

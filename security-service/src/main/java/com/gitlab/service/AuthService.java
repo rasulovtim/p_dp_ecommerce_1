@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 public class AuthService {
 
     private final JwtUtil jwtUtil;
-    private final UserService userService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
