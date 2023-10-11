@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 @Route(value = "product", layout = MainLayout.class)
 public class ProductView extends VerticalLayout {
 
