@@ -49,6 +49,7 @@ public class MainLayout extends AppLayout {
         tabs.add(createTab(VaadinIcon.CLOSE_CIRCLE_O, "Examples", ExampleView.class));
         tabs.add(createTab(VaadinIcon.GROUP, "Roles", RoleView.class));
         tabs.add(createTab(VaadinIcon.HEART, "Users", UserView.class));
+        tabs.add(createTab(VaadinIcon.SPOON, "Product", ProductView.class));
         tabs.setOrientation(Tabs.Orientation.VERTICAL);
         return tabs;
     }
