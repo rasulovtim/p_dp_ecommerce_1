@@ -11,16 +11,10 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.config.web.server.ServerHttpSecurity;
-import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.server.SecurityWebFilterChain;
-import reactor.core.publisher.Mono;
 
 @Configuration
 @EnableWebSecurity
@@ -29,7 +23,6 @@ import reactor.core.publisher.Mono;
 public class SecurityConfig {
 
     private final UserService userService;
-    private final JWTFilter jwtFilter;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
@@ -53,8 +46,6 @@ public class SecurityConfig {
         http.sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 
@@ -64,37 +55,4 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 }
-//
-//@Configuration
-//@EnableWebFluxSecurity
-//@AllArgsConstructor
-//public class SecurityConfig {
-//
-//    private final UserService userService;
-//
-//    @Bean
-//    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
-//        return http
-//                .authorizeExchange()
-//                .pathMatchers("/auth/register", "/auth/token", "/auth/validate").permitAll()
-//                .anyExchange().authenticated()
-//                .and()
-//                .httpBasic().disable()
-//                .formLogin().disable()
-//                .csrf().disable()
-//                .headers().frameOptions().disable()
-//                .and()
-//                .build();
-//    }
-//
-//    @Bean
-//    public ReactiveUserDetailsService userDetailsService() {
-//        return username -> Mono.just(userService.loadUserByUsername(username));
-//    }
-//
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
-//}
 

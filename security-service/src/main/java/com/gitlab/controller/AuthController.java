@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -48,8 +49,12 @@ public class AuthController {
     }
 
     @GetMapping("/validate")
-    public ResponseEntity<?> validationToken(@RequestBody JwtDto tokenDto) {
-        authService.validateToken(tokenDto.getToken());
-        return ResponseEntity.ok().body(new MessageResponse("Validation success"));
+    public ResponseEntity<?> validationToken(@RequestHeader("Authorization") String token) {
+        try {
+            authService.validateToken(token);
+            return ResponseEntity.ok().body(new MessageResponse("Validation success"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Validation failed"));
+        }
     }
 }

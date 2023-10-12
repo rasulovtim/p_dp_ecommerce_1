@@ -21,7 +21,7 @@ public class JwtUtil {
     private String secret;
 
     public void validateToken(final String token) {
-        Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token);
+        Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token.substring(7));
     }
 
     public String generateToken(String userEmail) {
