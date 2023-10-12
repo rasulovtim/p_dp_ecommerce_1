@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -32,20 +33,16 @@ class UserRestControllerIT extends AbstractIntegrationTest {
 
     private static final String USER_URN = "/api/user";
     private static final String USER_URI = URL + USER_URN;
+
     @Autowired
     private UserService userService;
+
     @Autowired
     private UserMapper userMapper;
 
     @Test
     void should_get_all_users() throws Exception {
-        String expected = objectMapper.writeValueAsString(
-                userService
-                        .findAll()
-                        .stream()
-                        .map(userMapper::toDto)
-                        .collect(Collectors.toList())
-        );
+        String expected = objectMapper.writeValueAsString(getAllUsers());
 
         mockMvc.perform(get(USER_URI))
                 .andDo(print())
@@ -56,12 +53,7 @@ class UserRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_get_user_by_id() throws Exception {
         long id = 1L;
-        String expected = objectMapper.writeValueAsString(
-                userMapper.toDto(
-                        userService
-                                .findById(id)
-                                .orElse(null))
-        );
+        String expected = objectMapper.writeValueAsString(getUserById(id));
 
         mockMvc.perform(get(USER_URI + "/{id}", id))
                 .andDo(print())
@@ -140,6 +132,16 @@ class UserRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(status().isNotFound());
     }
 
+    private List<UserDto> getAllUsers() {
+        return userService.findAll()
+                .stream()
+                .map(userMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    private UserDto getUserById(long id) {
+        return userMapper.toDto(userService.findById(id).orElse(null));
+    }
 
     private UserDto generateUser() {
         Set<String> roleSet = new HashSet<>();
