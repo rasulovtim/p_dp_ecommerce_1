@@ -11,6 +11,7 @@
 - #83 - Generate test data for PostomatRestControllerIT
 - #12 - Order entity
 - #61 - Front CRUD for Passport
+- #92 - Security service
 
 ## [1.1.0] - 8.09.2023
 - #5 - added user entity
