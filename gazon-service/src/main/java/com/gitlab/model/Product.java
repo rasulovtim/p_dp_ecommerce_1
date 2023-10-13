@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.search.annotations.*;
+import org.hibernate.search.annotations.Store;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -17,6 +19,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "product")
+@Indexed
 public class Product {
 
     @Id
@@ -24,7 +27,9 @@ public class Product {
     private Long id;
 
     @Column(name = "name")
+    @Field(termVector = TermVector.YES, store = Store.YES)
     private String name;
+
 
     @Column(name = "stock_count")
     private Integer stockCount;

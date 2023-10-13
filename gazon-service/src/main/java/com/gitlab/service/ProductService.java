@@ -6,18 +6,20 @@ import com.gitlab.dto.ProductDto;
 import com.gitlab.model.Review;
 import com.gitlab.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.search.jpa.FullTextQuery;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class ProductService {
 
+    private final FuzzySearchService fuzzySearchService;
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
 
@@ -27,7 +29,7 @@ public class ProductService {
 
     public List<ProductDto> findAllDto() {
         List<Product> products = findAll();
-        List<ProductDto> allProductDto = new ArrayList();
+        List<ProductDto> allProductDto = new ArrayList<>();
         for (Product product : products) {
             ProductDto productDto = productMapper.toDto(product);
             if (!product.getReview().isEmpty()) {
@@ -163,8 +165,10 @@ public class ProductService {
         return productMapper.toDto(savedProduct);
     }
 
-    public List<ProductDto> findByNameIgnoreCaseContaining(String name) {
-        return productRepository.findByNameIgnoreCaseContaining(name)
-                .stream().map(productMapper::toDto).toList();
+    public List<ProductDto> findByNameIgnoreCaseContaining(String name) throws InterruptedException {
+
+        FullTextQuery jpaQuery = fuzzySearchService.getFullTextQuery(name);
+        List<Product> list = jpaQuery.getResultList();
+        return list.stream().map(productMapper::toDto).toList();
     }
 }

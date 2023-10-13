@@ -31,10 +31,11 @@
             <version>3.1.1</version>
         </dependency>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-search-orm</artifactId>
+            <version>5.11.8.Final</version>
         </dependency>
-     </dependencies>
+    </dependencies>
 
     <build>
         <finalName>gazon-service</finalName>
