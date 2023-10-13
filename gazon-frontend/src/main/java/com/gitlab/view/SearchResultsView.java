@@ -28,11 +28,15 @@ public class SearchResultsView extends CommonView implements HasUrlParameter<Str
     @Override
     public void setParameter(BeforeEvent event, @WildcardParameter String parameter) {
         if (parameter != null && !parameter.isEmpty()) {
-            performSearch(parameter);
+            try {
+                performSearch(parameter);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
-    private void performSearch(String query) {
+    private void performSearch(String query) throws InterruptedException {
         if (!query.isEmpty()) {
             ResponseEntity<List<ProductDto>> response = searchProductClient.search(query);
             HttpStatus statusCode = response.getStatusCode();

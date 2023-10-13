@@ -118,7 +118,7 @@ public class ProductController implements ProductRestApi {
     }
 
     @Override
-    public ResponseEntity<List<ProductDto>> searchProductsByText(String searchText) {
+    public ResponseEntity<List<ProductDto>> searchProductsByText(String searchText) throws InterruptedException {
         List<ProductDto> foundProducts = productService.findByNameIgnoreCaseContaining(searchText);
 
         return foundProducts.isEmpty() ?
