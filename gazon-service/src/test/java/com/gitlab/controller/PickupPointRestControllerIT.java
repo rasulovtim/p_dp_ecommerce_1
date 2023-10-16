@@ -124,7 +124,8 @@ class PickupPointRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_delete_pickupPoint_by_id() throws Exception {
-        long id = 8L;
+        PickupPointDto pickupPointDto = pickupPointService.saveDto(generatePickupPointDto());
+        long id = pickupPointDto.getId();
         mockMvc.perform(delete(URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk());
