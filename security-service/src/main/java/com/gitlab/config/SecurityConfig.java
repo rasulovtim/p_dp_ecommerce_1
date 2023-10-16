@@ -55,7 +55,7 @@ public class SecurityConfig {
                                 .defaultSuccessUrl("http://localhost:8080")
                                 .and()
                                 .logout()
-//                                .deleteCookies("JSESSIONID")
+                                .deleteCookies("JSESSIONID")
                                 .logoutSuccessUrl("/login")
                                 .permitAll();
 

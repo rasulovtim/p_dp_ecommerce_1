@@ -18,7 +18,7 @@ public class SpringCloudConfig {
         return builder.routes()
                 .route(r -> r.path("/")
 
-                        .uri("http://localhost:8083/"))
+                        .uri("http://localhost:8083/login/"))
                 .route("security-service", r -> r.path("/auth/**")
 
                         .uri("http://localhost:8080/"))
