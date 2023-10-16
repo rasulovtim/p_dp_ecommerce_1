@@ -50,6 +50,7 @@ public class MainLayout extends AppLayout {
         tabs.add(createTab(VaadinIcon.GROUP, "Roles", RoleView.class));
         tabs.add(createTab(VaadinIcon.HEART, "Users", UserView.class));
         tabs.add(createTab(VaadinIcon.USER_CARD, "Passport", PassportView.class));
+        tabs.add(createTab(VaadinIcon.CLOCK, "Working Schedule", WorkingScheduleView.class));
         tabs.setOrientation(Tabs.Orientation.VERTICAL);
         return tabs;
     }

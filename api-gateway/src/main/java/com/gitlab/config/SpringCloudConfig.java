@@ -26,6 +26,8 @@ public class SpringCloudConfig {
                         .uri("http://localhost:8080/"))
                 .route(r -> r.path("/api/product/**")
                         .uri("http://localhost:8080/"))
+                .route(r -> r.path("/api/working-schedule/**")
+                        .uri("http://localhost:8080/"))
                 .build();
     }
 }

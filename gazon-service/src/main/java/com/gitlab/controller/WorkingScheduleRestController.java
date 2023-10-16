@@ -1,17 +1,18 @@
 package com.gitlab.controller;
 
-import com.gitlab.controller.api.WorkingScheduleRestApi;
+import com.gitlab.controllers.api.rest.WorkingScheduleRestApi;
 import com.gitlab.dto.WorkingScheduleDto;
 import com.gitlab.model.WorkingSchedule;
 import com.gitlab.service.WorkingScheduleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -21,16 +22,31 @@ import java.util.Optional;
 public class WorkingScheduleRestController implements WorkingScheduleRestApi {
 
     private final WorkingScheduleService workingScheduleService;
-
     @Override
-    public ResponseEntity<List<WorkingScheduleDto>> getAll() {
-        List<WorkingScheduleDto> workingSchedules = workingScheduleService.findAllDto();
-        if (workingSchedules.isEmpty()) {
+    public ResponseEntity<Page<WorkingScheduleDto>> getPage(Integer page, Integer size) {
+        if (page == null || size == null) {
+            return createUnPagedResponse();
+        }
+        if (page < 0 || size < 1) {
+            return ResponseEntity.noContent().build();
+        }
+
+        var workingSchedulePage = workingScheduleService.getPage(page, size);
+        if (workingSchedulePage.getContent().isEmpty()) {
             return ResponseEntity.noContent().build();
         } else {
-            return ResponseEntity.ok(workingSchedules);
+            return createPagedResponse(workingSchedulePage);
         }
     }
+
+    private ResponseEntity<Page<WorkingScheduleDto>> createUnPagedResponse() {
+        var workingScheduleDtos = workingScheduleService.findAllDto();
+        if (workingScheduleDtos.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(new PageImpl<>(workingScheduleDtos));
+    }
+
 
     @Override
     public ResponseEntity<WorkingScheduleDto> get(Long id) {
@@ -61,6 +77,10 @@ public class WorkingScheduleRestController implements WorkingScheduleRestApi {
         return optionalDeletedWorkingSchedule
                 .map(workingSchedule -> ResponseEntity.ok().<Void>build())
                 .orElse(ResponseEntity.notFound().build());
+    }
+    private ResponseEntity<Page<WorkingScheduleDto>> createPagedResponse(Page<WorkingSchedule> workingSchedulePage) {
+        var workingScheduleDtoPage = workingScheduleService.getPageDto(workingSchedulePage.getPageable().getPageNumber(), workingSchedulePage.getPageable().getPageSize());
+        return ResponseEntity.ok(workingScheduleDtoPage);
     }
 
 }

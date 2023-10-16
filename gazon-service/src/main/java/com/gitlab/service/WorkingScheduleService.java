@@ -5,6 +5,8 @@ import com.gitlab.mapper.WorkingScheduleMapper;
 import com.gitlab.model.WorkingSchedule;
 import com.gitlab.repository.WorkingScheduleRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -129,5 +131,16 @@ public class WorkingScheduleService {
             workingScheduleRepository.deleteById(id);
             return Optional.of(workingScheduleDto);
         }
+    }
+
+    public Page<WorkingSchedule> getPage(int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return workingScheduleRepository.findAll(pageRequest);
+    }
+
+    public Page<WorkingScheduleDto> getPageDto(int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<WorkingSchedule> examplePage = workingScheduleRepository.findAll(pageRequest);
+        return examplePage.map(workingScheduleMapper::toDto);
     }
 }
