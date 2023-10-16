@@ -1,5 +1,7 @@
 package com.gitlab.config;
 
+
+
 import com.gitlab.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -39,20 +41,42 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable);
 
         // Set authorization
-        http.authorizeHttpRequests(auth -> auth
-                .antMatchers("/auth/register", "/auth/token", "/auth/validate").permitAll()
-                .anyRequest().authenticated());
+        http.authorizeHttpRequests(auth -> {
+                    try {
+                        auth
+
+                                .antMatchers("/login", "/logout", "/auth/register", "/auth/token", "/auth/validate").permitAll()
+                                .anyRequest().authenticated()
+                                .and()
+                                .oauth2Login()
+                                .defaultSuccessUrl("http://localhost:8080")
+                                .and()
+                                .formLogin()
+                                .defaultSuccessUrl("http://localhost:8080")
+                                .and()
+                                .logout()
+//                                .deleteCookies("JSESSIONID")
+                                .logoutSuccessUrl("/login")
+                                .permitAll();
+
+
+
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+        );
 
         http.sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS));
 
         return http.build();
     }
-
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }
+
 
