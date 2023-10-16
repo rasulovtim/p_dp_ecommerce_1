@@ -35,7 +35,7 @@
             <artifactId>hibernate-search-orm</artifactId>
             <version>5.11.8.Final</version>
         </dependency>
-    </dependencies>
+     </dependencies>
 
     <build>
         <finalName>gazon-service</finalName>
