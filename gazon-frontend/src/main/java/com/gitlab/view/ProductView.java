@@ -19,17 +19,17 @@ import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.ListDataProvider;
+import com.vaadin.flow.data.validator.BigDecimalRangeValidator;
+import com.vaadin.flow.data.validator.IntegerRangeValidator;
+import com.vaadin.flow.data.validator.StringLengthValidator;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-
 
 @Route(value = "product", layout = MainLayout.class)
 public class ProductView extends VerticalLayout {
-
     private final Grid<ProductDto> grid = new Grid<>(ProductDto.class, false);
     private final Editor<ProductDto> editor = grid.getEditor();
     private final ProductClient productClient;
@@ -37,18 +37,16 @@ public class ProductView extends VerticalLayout {
 
     public ProductView(ProductClient productClient) {
         this.productClient = productClient;
-        this.dataSource = productClient.getAll().getBody().stream().collect(Collectors.toList());
+        this.dataSource = productClient.getAll().getBody();
 
         ValidationMessage idValidationMessage = new ValidationMessage();
         ValidationMessage productNameValidationMessage = new ValidationMessage();
         ValidationMessage productDescriptionValidationMessage = new ValidationMessage();
         ValidationMessage productStockCountValidationMessage = new ValidationMessage();
-        ValidationMessage productImagesIdValidationMessage = new ValidationMessage();
         ValidationMessage productIsAdultValidationMessage = new ValidationMessage();
         ValidationMessage productCodeValidationMessage = new ValidationMessage();
         ValidationMessage productWeightValidationMessage = new ValidationMessage();
         ValidationMessage productPriceValidationMessage = new ValidationMessage();
-        ValidationMessage productRatingValidationMessage = new ValidationMessage();
 
         Grid.Column<ProductDto> idColumn = createIdColumn();
         Grid.Column<ProductDto> productNameColumn = createProductNameColumn();
@@ -70,12 +68,10 @@ public class ProductView extends VerticalLayout {
         createProductNameField(binder, productNameValidationMessage, productNameColumn);
         createProductDescriptionField(binder, productDescriptionValidationMessage, productDescriptionColumn);
         createProductStockCountField(binder, productStockCountValidationMessage, productStockCountColumn);
-        createProductImagesIdField(binder, productImagesIdValidationMessage, productImagesIdColumn);
         createProductIsAdultField(binder, productIsAdultValidationMessage, productIsAdultColumn);
         createProductCodeField(binder, productCodeValidationMessage, productCodeColumn);
         createProductWeightField(binder, productWeightValidationMessage, productWeightColumn);
         createProductPriceField(binder, productPriceValidationMessage, productPriceColumn);
-        createProductRatingField(binder, productRatingValidationMessage, productRatingColumn);
 
         Button updateButton = new Button("Update", e -> editor.save());
         Button cancelButton = new Button(VaadinIcon.CLOSE.create(), e -> editor.cancel());
@@ -100,53 +96,51 @@ public class ProductView extends VerticalLayout {
                 productNameValidationMessage,
                 productDescriptionValidationMessage,
                 productStockCountValidationMessage,
-                productImagesIdValidationMessage,
                 productIsAdultValidationMessage,
                 productCodeValidationMessage,
                 productWeightValidationMessage,
-                productPriceValidationMessage,
-                productRatingValidationMessage
+                productPriceValidationMessage
         );
     }
 
     private Grid.Column<ProductDto> createIdColumn() {
-        return grid.addColumn(productDto -> productDto.getId().intValue()).setHeader("Id").setWidth("120px").setFlexGrow(0);
+        return grid.addColumn(productDto -> productDto.getId().intValue())
+                .setHeader("Id").setWidth("50px").setFlexGrow(0);
     }
 
     private Grid.Column<ProductDto> createProductNameColumn() {
-        return grid.addColumn(ProductDto::getName).setHeader("Product name").setWidth("650px");
+        return grid.addColumn(ProductDto::getName).setHeader("Product name").setWidth("250x");
     }
 
     private Grid.Column<ProductDto> createProductDescriptionColumn() {
-        return grid.addColumn(ProductDto::getDescription).setHeader("Product description").setWidth("650px");
+        return grid.addColumn(ProductDto::getDescription).setHeader("Product description").setWidth("300px");
     }
 
     private Grid.Column<ProductDto> createProductStockCountColumn() {
-        return grid.addColumn(ProductDto::getStockCount).setHeader("Product stock count").setWidth("650px");
+        return grid.addColumn(ProductDto::getStockCount).setHeader("Product stock count").setWidth("150px");
     }
 
     private Grid.Column<ProductDto> createProductImagesIdColumn() {
-        return grid.addColumn(ProductDto::getImagesId).setHeader("Product images").setWidth("650px");
+        return grid.addColumn(productDto -> Arrays.toString(productDto.getImagesId())).setHeader("Product image Id").setWidth("150px");
     }
-
     private Grid.Column<ProductDto> createProductIsAdultColumn() {
-        return grid.addColumn(ProductDto::getIsAdult).setHeader("Product adult").setWidth("650px");
+        return grid.addColumn(ProductDto::getIsAdult).setHeader("Product adult").setWidth("150px");
     }
 
     private Grid.Column<ProductDto> createProductCodeColumn() {
-        return grid.addColumn(ProductDto::getCode).setHeader("Product code").setWidth("650px");
+        return grid.addColumn(ProductDto::getCode).setHeader("Product code").setWidth("150px");
     }
 
     private Grid.Column<ProductDto> createProductWeightColumn() {
-        return grid.addColumn(ProductDto::getWeight).setHeader("Product weight").setWidth("650px");
+        return grid.addColumn(ProductDto::getWeight).setHeader("Product weight").setWidth("150px");
     }
 
     private Grid.Column<ProductDto> createProductPriceColumn() {
-        return grid.addColumn(ProductDto::getPrice).setHeader("Product price").setWidth("650px");
+        return grid.addColumn(ProductDto::getPrice).setHeader("Product price").setWidth("150px");
     }
 
     private Grid.Column<ProductDto> createProductRatingColumn() {
-        return grid.addColumn(ProductDto::getRating).setHeader("Product rating").setWidth("650px");
+        return grid.addColumn(ProductDto::getRating).setHeader("Product rating").setWidth("100px");
     }
 
     private Grid.Column<ProductDto> createEditColumn() {
@@ -158,7 +152,7 @@ public class ProductView extends VerticalLayout {
                 grid.getEditor().editItem(product);
             });
             return updateButton;
-        });
+        }).setWidth("150px").setFlexGrow(0);
     }
 
     private Grid.Column<ProductDto> createDeleteColumn() {
@@ -203,7 +197,10 @@ public class ProductView extends VerticalLayout {
                                         Grid.Column<ProductDto> productNameColumn) {
         TextField productNameField = new TextField();
         productNameField.setWidthFull();
-        binder.forField(productNameField).asRequired("Product name must not be empty")
+        binder.forField(productNameField).withValidator(new StringLengthValidator(
+                        "Length of Product's name should be between 3 and 256 characters",
+                        3, 256))
+                .asRequired("Product name must not be empty")
                 .withStatusLabel(productNameValidationMessage)
                 .bind(ProductDto::getName, ProductDto::setName);
         productNameColumn.setEditorComponent(productNameField);
@@ -214,45 +211,52 @@ public class ProductView extends VerticalLayout {
                                                Grid.Column<ProductDto> productDescriptionColumn) {
         TextField productDescriptionField = new TextField();
         productDescriptionField.setWidthFull();
-        binder.forField(productDescriptionField).asRequired("Product description must not be empty")
+        binder.forField(productDescriptionField).withValidator(new StringLengthValidator(
+                        "Length of Product's description should be between 3 and 1000 characters",
+                        3, 1000))
+                .asRequired("Product description must not be empty")
                 .withStatusLabel(productDescriptionValidationMessage)
                 .bind(ProductDto::getDescription, ProductDto::setDescription);
         productDescriptionColumn.setEditorComponent(productDescriptionField);
     }
-
 
     private void createProductStockCountField(Binder<ProductDto> binder,
                                               ValidationMessage producStockCountValidationMessage,
                                               Grid.Column<ProductDto> productStockCountColumn) {
         IntegerField productStockCountField = new IntegerField();
         productStockCountField.setWidthFull();
-        binder.forField(productStockCountField).asRequired("Product stock count must not be empty")
+        binder.forField(productStockCountField).withValidator(new IntegerRangeValidator(
+                        "Product's stockCount should be between 1 and 2147483333",
+                        1, 2147483333))
+                .asRequired("Product stock count must not be empty")
                 .withStatusLabel(producStockCountValidationMessage)
                 .bind(ProductDto::getStockCount, ProductDto::setStockCount);
         productStockCountColumn.setEditorComponent(productStockCountField);
     }
 
-        private void createProductImagesIdField(Binder<ProductDto> binder,
-                                        ValidationMessage productImagesIdValidationMessage,
-                                        Grid.Column<ProductDto> productImagesIdColumn) {
-            TextField productImagesIdField = new TextField();
+    private void createProductImagesIdField(Binder<ProductDto> binder,
+                                            Grid.Column<ProductDto> productImagesIdColumn) {
+        TextField productImagesIdField = new TextField();
         productImagesIdField.setWidthFull();
-        binder.forField(productImagesIdField).asRequired("Product images id must not be empty")
-                .withStatusLabel(productImagesIdValidationMessage)
+        binder.forField(productImagesIdField)
                 .bind(productDto -> Arrays.toString(productDto.getImagesId()),
                         (productDto1, imagesId) -> productDto1.setImagesId(new Long[]{Long.valueOf(imagesId)}));
         productImagesIdColumn.setEditorComponent(productImagesIdField);
     }
 
-        private void createProductIsAdultField(Binder<ProductDto> binder,
-                                        ValidationMessage productIsAdultValidationMessage,
-                                        Grid.Column<ProductDto> productIsAdultColumn) {
+    private void createProductIsAdultField(Binder<ProductDto> binder,
+                                           ValidationMessage productIsAdultValidationMessage,
+                                           Grid.Column<ProductDto> productIsAdultColumn) {
         Select<String> productIsAdultField = new Select<>();
         productIsAdultField.setWidthFull();
         productIsAdultField.setEmptySelectionAllowed(true);
-        productIsAdultField.setLabel("ProductIsAdult");
+        productIsAdultField.setLabel("Select true/false");
         productIsAdultField.setItems("true", "false");
-        productIsAdultField.setPlaceholder("Select");
+        productIsAdultField.setPlaceholder("Select true/false");
+        binder.forField(productIsAdultField).asRequired("Field must not be empty")
+                .withStatusLabel(productIsAdultValidationMessage)
+                .bind(productDto -> String.valueOf(productDto.getIsAdult()),
+                        (productDto1, isAdult) -> productDto1.setIsAdult(Boolean.valueOf(isAdult)));
         productIsAdultColumn.setEditorComponent(productIsAdultField);
     }
 
@@ -261,47 +265,58 @@ public class ProductView extends VerticalLayout {
                                         Grid.Column<ProductDto> productCodeColumn) {
         TextField productCodeField = new TextField();
         productCodeField.setWidthFull();
-        binder.forField(productCodeField).asRequired("Product code must not be empty")
+        binder.forField(productCodeField).withValidator(new StringLengthValidator(
+                        "Length of Product's code should be between 2 and 256 any characters",
+                        2, 256))
+                .asRequired("Product code must not be empty")
                 .withStatusLabel(productCodeValidationMessage)
                 .bind(ProductDto::getCode, ProductDto::setCode);
         productCodeColumn.setEditorComponent(productCodeField);
     }
 
     private void createProductWeightField(Binder<ProductDto> binder,
-                                        ValidationMessage productWeightValidationMessage,
-                                        Grid.Column<ProductDto> productWeightColumn) {
-        TextField productWeightField = new TextField();
+                                          ValidationMessage productWeightValidationMessage,
+                                          Grid.Column<ProductDto> productWeightColumn) {
+        IntegerField productWeightField = new IntegerField();
         productWeightField.setWidthFull();
-        binder.forField(productWeightField).asRequired("Product weight must not be empty")
+        binder.forField(productWeightField).withValidator(new IntegerRangeValidator(
+                        "Product's weight in kilograms should be between 1 and 2147483333",
+                        1, 2147483333))
+                .asRequired("Product weight must not be empty")
                 .withStatusLabel(productWeightValidationMessage)
-                .bind(productDto -> String.valueOf(productDto.getWeight()),
-                        (productDto1, weight) -> productDto1.setWeight(Long.valueOf(weight)));
+                .bind(productDto -> productDto.getWeight().intValue(),
+                        (productDto, weight) -> productDto.setWeight(weight.longValue()));
         productWeightColumn.setEditorComponent(productWeightField);
     }
 
     private void createProductPriceField(Binder<ProductDto> binder,
-                                        ValidationMessage productPriceValidationMessage,
-                                        Grid.Column<ProductDto> productPriceColumn) {
+                                         ValidationMessage productPriceValidationMessage,
+                                         Grid.Column<ProductDto> productPriceColumn) {
         BigDecimalField productPriceField = new  BigDecimalField();
         productPriceField.setWidthFull();
-        binder.forField(productPriceField).asRequired("Product price must not be empty")
+        binder.forField(productPriceField).withValidator(new BigDecimalRangeValidator(
+                        "Product's price in Rubles should be between 0.1 and 2147483333",
+                        BigDecimal.valueOf(0.1), BigDecimal.valueOf(2147483333)))
+                .asRequired("Product price must not be empty")
                 .withStatusLabel(productPriceValidationMessage)
                 .bind(productDto1 -> productDto1.getPrice(), (productDto, price) -> productDto.setPrice(price));
         productPriceColumn.setEditorComponent(productPriceField);
     }
 
     private void createProductRatingField(Binder<ProductDto> binder,
-                                         ValidationMessage productRatingValidationMessage,
-                                         Grid.Column<ProductDto> productRatingColumn) {
-        TextField productRatingField = new TextField();
+                                          ValidationMessage productRatingValidationMessage,
+                                          Grid.Column<ProductDto> productRatingColumn) {
+        TextField productRatingField = new TextField ();
         productRatingField.setWidthFull();
-        binder.forField(productRatingField).asRequired("Product rating must not be empty")
+        binder.forField(productRatingField).withValidator(new StringLengthValidator(
+                        "Numbers of Product's Rating should be between 0 and 127",
+                        1, 127))
+                .asRequired("Product rating must not be empty")
                 .withStatusLabel(productRatingValidationMessage)
                 .bind(productDto -> String.valueOf(productDto.getRating()),
-                        (productDto1, rating) -> productDto1. setRating(Byte.valueOf(rating)));
+                        (productDto1, rating) -> productDto1.setRating(Byte.valueOf(rating)));
         productRatingColumn.setEditorComponent(productRatingField);
     }
-
 
     private void addEditorListeners() {
         editor.addSaveListener(e -> {
@@ -343,30 +358,40 @@ public class ProductView extends VerticalLayout {
     private Tab createCreateTab(FormLayout formLayout) {
         Tab createTab = new Tab("Create product");
 
-        VerticalLayout verticalLayoutMain = new VerticalLayout();
-        verticalLayoutMain.addClassName(LumoUtility.Gap.XSMALL);
-        HorizontalLayout horizontalLayoutMain = new HorizontalLayout();
-        horizontalLayoutMain.addClassName(LumoUtility.Gap.XSMALL);
-
         TextField productNameField = new TextField("Product Name");
+        productNameField.setPlaceholder("Enter Product Name");
+
         TextField productDescriptionField = new TextField("Product Description");
+        productDescriptionField.setPlaceholder("Enter Product Description");
+
         IntegerField productStockCountField = new IntegerField("Product StockCount");
-        TextField productImagesIdField = new TextField("Product Images");
+        productStockCountField.setPlaceholder("Enter Stock Count");
+
+        TextField productImagesIdField = new TextField("Products Images ID");
+        productImagesIdField.setReadOnly(true);
 
         Select<String> productIsAdultField = new Select<>();
         productIsAdultField.setWidthFull();
         productIsAdultField.setEmptySelectionAllowed(true);
         productIsAdultField.setLabel("Product Is Adult");
         productIsAdultField.setItems("true", "false");
-        productIsAdultField.setPlaceholder("Select");
-        add(productIsAdultField);
+        productIsAdultField.setPlaceholder("Select true / false");
 
         TextField productCodeField = new TextField("Product Code");
-        TextField productWeightField = new TextField("Product Weight");
-        BigDecimalField productPriceField = new BigDecimalField("ProductPrice");
+        productCodeField.setPlaceholder("Product's code should be between 2 and 256 characters");
+
+        IntegerField productWeightField = new IntegerField("Product Weight");
+        productWeightField.setPlaceholder("Product's weight should be between 1 and 2147483333");
+
+        BigDecimalField productPriceField = new BigDecimalField("Product Price");
+        productPriceField.setPlaceholder("Product's price should be between 0.1 and 2147483333");
+
         IntegerField productRatingField = new IntegerField("Product Rating");
+        productRatingField.setPlaceholder("Product's rating should be between 0 and 127");
+        productRatingField.setReadOnly(true);
 
         Button createButton = new Button("Create");
+
         formLayout.add(
                 productNameField,
                 productDescriptionField,
@@ -378,17 +403,16 @@ public class ProductView extends VerticalLayout {
                 productPriceField,
                 productRatingField,
                 createButton);
+
         createButton.addClickListener(event -> {
             ProductDto productDto = new ProductDto();
             productDto.setName(productNameField.getValue());
             productDto.setDescription(productDescriptionField.getValue());
             productDto.setStockCount(productStockCountField.getValue());
-            productDto.setImagesId(new Long[]{Long.valueOf(productImagesIdField.getValue())});
             productDto.setIsAdult(Boolean.valueOf(productIsAdultField.getValue()));
             productDto.setCode(productCodeField.getValue());
             productDto.setWeight(Long.valueOf(productWeightField.getValue()));
             productDto.setPrice(productPriceField.getValue());
-            productDto.setRating(Byte.valueOf(String.valueOf(productRatingField.getValue())));
 
             ProductDto savedProduct = productClient.create(productDto).getBody();
 
@@ -397,12 +421,10 @@ public class ProductView extends VerticalLayout {
             productNameField.clear();
             productDescriptionField.clear();
             productStockCountField.clear();
-            productImagesIdField.clear();
             productIsAdultField.clear();
             productCodeField.clear();
             productWeightField.clear();
             productPriceField.clear();
-            productRatingField.clear();
 
             grid.getDataProvider().refreshAll();
         });
