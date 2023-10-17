@@ -1,7 +1,9 @@
 package com.gitlab.model;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,7 +21,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "security_users", schema = "public", catalog = "postgres")
+@Table(name = "users", schema = "public", catalog = "postgres")
 @NamedEntityGraph(name = "userWithSets",
         attributeNodes = {@NamedAttributeNode("rolesSet")})
 public class User implements UserDetails, OidcUser {
@@ -48,6 +50,16 @@ public class User implements UserDetails, OidcUser {
 
     @Column(name = "create_date")
     private LocalDate createDate;
+
+    @Column(name = "birth_date")
+    private LocalDate birthDate;
+
+    @Column(name = "gender")
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
+    @Column(name = "phone_number")
+    private String phoneNumber;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "security_users_roles",
@@ -117,5 +129,18 @@ public class User implements UserDetails, OidcUser {
     @Transient
     public String getName() {
         return null;
+    }
+
+    public String getGender() {
+            return gender.toString();
+    }
+
+    @AllArgsConstructor
+    @Getter
+    public enum Gender {
+        MALE("МУЖСКОЙ"),FEMALE("ЖЕНСКИЙ"),NOT_SPECIFIED("НЕ УКАЗАН");
+
+        private final String sex;
+
     }
 }

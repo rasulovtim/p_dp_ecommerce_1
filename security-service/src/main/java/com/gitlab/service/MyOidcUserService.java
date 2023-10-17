@@ -1,5 +1,6 @@
 package com.gitlab.service;
 
+
 import com.gitlab.model.User;
 import com.gitlab.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +28,22 @@ public class MyOidcUserService extends OidcUserService {
     }
     private OidcUser processOidcUser(OidcUserRequest userRequest, OidcUser oidcUser) {
 
-        System.out.println(oidcUser.toString());
+        
         User user = new User();
         user.setFirstName(oidcUser.getGivenName());
         user.setEmail(oidcUser.getEmail());
-        user.setLastName(oidcUser.getFamilyName());
+        if(oidcUser.getFamilyName() == null){
+            user.setLastName("No Last Name");
+        }else {
+            user.setLastName(oidcUser.getFamilyName());
+        }
         user.setCreateDate(LocalDate.now());
+        user.setPassword("11111");
+        user.setSecurityQuestion("sevQ");
+        user.setAnswerQuestion("ansQ");
+        user.setBirthDate(LocalDate.now());
+        user.setPhoneNumber("12345");
+        user.setGender(User.Gender.MALE);
 
             userRepository.save(user);
 
