@@ -11,6 +11,11 @@ spring:
               - email
               - profile
               - openid
+#          github:
+#            client-id: e9cbafc30010d601c003
+#            client-secret: ba235b1499c346ea497075011777097bd080d667
+#            client-name: github
+
 
   application:
     name: security-service

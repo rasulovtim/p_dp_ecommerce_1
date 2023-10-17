@@ -17,10 +17,8 @@ public class SpringCloudConfig {
     public RouteLocator gatewayRoutes(RouteLocatorBuilder builder) {
         return builder.routes()
                 .route(r -> r.path("/")
-
                         .uri("http://localhost:8083/login/"))
                 .route("security-service", r -> r.path("/auth/**")
-
                         .uri("http://localhost:8080/"))
                 .route("gazon-service", r -> r.path("/api/**")
                         .filters(f -> f.filter(filter))
