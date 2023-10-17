@@ -1,8 +1,6 @@
 package com.gitlab.config;
 
 
-
-
 import com.gitlab.service.MyOidcUserService;
 import com.gitlab.service.UserService;
 import lombok.AllArgsConstructor;
