@@ -5,21 +5,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.NamedAttributeNode;
-import javax.persistence.NamedEntityGraph;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
 @Data
@@ -29,7 +22,7 @@ import java.util.Set;
 @Table(name = "security_users", schema = "public", catalog = "postgres")
 @NamedEntityGraph(name = "userWithSets",
         attributeNodes = {@NamedAttributeNode("rolesSet")})
-public class User implements UserDetails {
+public class User implements UserDetails, OidcUser {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -61,6 +54,11 @@ public class User implements UserDetails {
             joinColumns = @JoinColumn(name = "security_user_id"),
             inverseJoinColumns = @JoinColumn(name = "security_role_id"))
     private Set<Role> rolesSet;
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return null;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -97,4 +95,27 @@ public class User implements UserDetails {
         return true;
     }
 
+    @Override
+    @Transient
+    public Map<String, Object> getClaims() {
+        return null;
+    }
+
+    @Override
+    @Transient
+    public OidcUserInfo getUserInfo() {
+        return null;
+    }
+
+    @Override
+    @Transient
+    public OidcIdToken getIdToken() {
+        return null;
+    }
+
+    @Override
+    @Transient
+    public String getName() {
+        return null;
+    }
 }

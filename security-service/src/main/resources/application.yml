@@ -7,10 +7,10 @@ spring:
             client-id: 563006777026-9l2ulo7t8m7tt4sooaod4bbftdr4urdb.apps.googleusercontent.com
             client-secret: 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
             client-name: google
-          github:
-            client-id: e9cbafc30010d601c003
-            client-secret: ba235b1499c346ea497075011777097bd080d667
-            client-name: github
+            scope:
+              - email
+              - profile
+              - openid
 
   application:
     name: security-service

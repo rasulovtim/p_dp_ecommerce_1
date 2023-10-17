@@ -2,6 +2,8 @@ package com.gitlab.config;
 
 
 
+
+import com.gitlab.service.MyOidcUserService;
 import com.gitlab.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -25,6 +27,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final UserService userService;
+    private final MyOidcUserService myOidcUserService;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
@@ -49,6 +52,8 @@ public class SecurityConfig {
                                 .anyRequest().authenticated()
                                 .and()
                                 .oauth2Login()
+                                .userInfoEndpoint().oidcUserService(myOidcUserService)
+                                .and()
                                 .defaultSuccessUrl("http://localhost:8080")
                                 .and()
                                 .formLogin()
@@ -72,6 +77,8 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {
