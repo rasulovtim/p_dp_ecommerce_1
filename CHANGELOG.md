@@ -10,7 +10,9 @@
 - #84 - Generate test data for ProductTestControllerIT
 - #83 - Generate test data for PostomatRestControllerIT
 - #12 - Order entity
-- #66 - Front CRUD for Product
+- #61 - Front CRUD for Passport
+- #92 - Security service
+- #101 - Add fuzzy search for product
 
 ## [1.1.0] - 8.09.2023
 - #5 - added user entity

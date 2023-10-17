@@ -6,6 +6,7 @@ import org.springframework.cache.annotation.EnableCaching;
 
 @EnableCaching
 @SpringBootApplication
+
 public class GazonMain {
     public static void main(String[] args) {
         SpringApplication.run(GazonMain.class, args);

@@ -72,11 +72,7 @@ class PickupPointRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_create_pickupPoint() throws Exception {
-        PickupPointDto pickupPointDto = new PickupPointDto();
-        pickupPointDto.setAddress("TestAddress");
-        pickupPointDto.setDirections("TestDirections");
-        pickupPointDto.setShelfLifeDays((byte) 10);
-        pickupPointDto.setPickupPointFeatures(Set.of(PickupPoint.PickupPointFeatures.values()));
+        PickupPointDto pickupPointDto = generatePickupPointDto();
 
         String jsonPickupPointDto = objectMapper.writeValueAsString(pickupPointDto);
 
@@ -93,11 +89,7 @@ class PickupPointRestControllerIT extends AbstractIntegrationTest {
         long id = 7L;
         int numberOfEntitiesExpected = pickupPointService.findAll().size();
 
-        PickupPointDto pickupPointDto = new PickupPointDto();
-        pickupPointDto.setAddress("New Address");
-        pickupPointDto.setDirections("New Directions");
-        pickupPointDto.setShelfLifeDays((byte) 16);
-        pickupPointDto.setPickupPointFeatures(Set.of(PickupPoint.PickupPointFeatures.DELIVERY_FOR_BUSINESSES));
+        PickupPointDto pickupPointDto = generatePickupPointDto();
 
         String jsonPickupPointDto = objectMapper.writeValueAsString(pickupPointDto);
 
@@ -118,11 +110,7 @@ class PickupPointRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_return_not_found_when_update_pickupPoint_by_non_existent_id() throws Exception {
         long id = 10L;
-        PickupPointDto pickupPointDto = new PickupPointDto();
-        pickupPointDto.setAddress("New Address");
-        pickupPointDto.setDirections("New Directions");
-        pickupPointDto.setShelfLifeDays((byte) 16);
-        pickupPointDto.setPickupPointFeatures(Set.of(PickupPoint.PickupPointFeatures.DELIVERY_FOR_BUSINESSES));
+        PickupPointDto pickupPointDto = generatePickupPointDto();
 
         String jsonPickupPointDto = objectMapper.writeValueAsString(pickupPointDto);
 
@@ -136,12 +124,24 @@ class PickupPointRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_delete_pickupPoint_by_id() throws Exception {
-        long id = 8L;
+        PickupPointDto pickupPointDto = pickupPointService.saveDto(generatePickupPointDto());
+        long id = pickupPointDto.getId();
         mockMvc.perform(delete(URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk());
         mockMvc.perform(get(URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isNotFound());
+    }
+
+    private PickupPointDto generatePickupPointDto() {
+        PickupPointDto pickupPointDto = new PickupPointDto();
+
+        pickupPointDto.setAddress("TestAddress");
+        pickupPointDto.setDirections("TestDirections");
+        pickupPointDto.setShelfLifeDays((byte) 16);
+        pickupPointDto.setPickupPointFeatures(Set.of(PickupPoint.PickupPointFeatures.values()));
+
+        return pickupPointDto;
     }
 }

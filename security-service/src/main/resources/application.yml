@@ -1,19 +1,11 @@
-server:
-  port: 8080
-  servlet:
-    session:
-      timeout: -1
-
 spring:
+
   application:
-    name: gazon-service
-  profiles:
-    active: dev
-  cache:
-    type: SIMPLE
+    name: security-service
 
   liquibase:
-    change-log: classpath:db/changelog/db.changelog-master.xml
+    enabled: false
+
 
   datasource:
     driver-class-name: org.postgresql.Driver
@@ -27,7 +19,7 @@ spring:
   jpa:
     show-sql: false
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -37,15 +29,24 @@ spring:
         jdbc:
           time_zone: Europe/Moscow
 
-  mvc:
-    pathmatch:
-      matching-strategy: ant_path_matcher
+jwt_secret: d935b276bd281799fd1fcb79a12c6633b1a3688871c493190b29b6cd53c57971
 
-vaadin:
-  excludeUrls: /swagger-ui/**
+server:
+  port: 8083
+  servlet:
+    session:
+      timeout: -1
 
-logging:
-  level:
-    org:
-      hibernate:
-        search=DEBUG:
+#app:
+#  feign:
+#    config:
+#      name: api-gateway
+#      url: http://localhost:8081
+#
+#feign:
+#  okhttp:
+#    enabled: true
+
+springfox:
+  documentation:
+    auto-startup: false
