@@ -109,7 +109,7 @@ public class ProductView extends VerticalLayout {
     }
 
     private Grid.Column<ProductDto> createProductNameColumn() {
-        return grid.addColumn(ProductDto::getName).setHeader("Product name").setWidth("250x");
+        return grid.addColumn(ProductDto::getName).setHeader("Product name").setWidth("200px");
     }
 
     private Grid.Column<ProductDto> createProductDescriptionColumn() {
