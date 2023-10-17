@@ -4,6 +4,7 @@ package com.gitlab.service;
 import com.gitlab.model.User;
 import com.gitlab.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -38,7 +39,7 @@ public class MyOidcUserService extends OidcUserService {
             user.setLastName(oidcUser.getFamilyName());
         }
         user.setCreateDate(LocalDate.now());
-        user.setPassword("11111");
+        user.setPassword(new BCryptPasswordEncoder().encode("11111"));
         user.setSecurityQuestion("sevQ");
         user.setAnswerQuestion("ansQ");
         user.setBirthDate(LocalDate.now());

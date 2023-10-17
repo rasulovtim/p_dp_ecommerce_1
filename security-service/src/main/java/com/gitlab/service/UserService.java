@@ -3,13 +3,13 @@ package com.gitlab.service;
 import com.gitlab.dto.UserDto;
 import com.gitlab.mapper.UserMapper;
 import com.gitlab.model.Role;
+
 import com.gitlab.model.User;
 import com.gitlab.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
