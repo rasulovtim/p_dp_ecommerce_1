@@ -18,6 +18,7 @@ import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.ValidationStatusChangeListener;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import com.vaadin.flow.router.Route;
@@ -258,6 +259,14 @@ public class PickupPointView extends VerticalLayout {
         Tab createTab = new Tab("Create pickup point");
         TextField pickupPointAddressField = new TextField("Address");
         pickupPointAddressField.setPlaceholder("Address can contain only letters");
+        createBinder().
+                forField(pickupPointAddressField)
+                .withValidator(new StringLengthValidator(
+                        "Pickup Point's address should have the name of the city, street and house number",
+                        10, 150))
+                .asRequired("Pickup Point's address shouldn't be empty")
+                .withStatusLabel(new ValidationMessage())
+                .bind(PickupPointDto::getAddress, PickupPointDto::setAddress);
         TextField pickupPointDescriptionsField = new TextField("Descriptions");
         pickupPointDescriptionsField.setPlaceholder("Description can contain only letters");
         IntegerField pickupPointShelfLifeDaysField = new IntegerField("Shelf Life Days");
