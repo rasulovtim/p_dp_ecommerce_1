@@ -4,18 +4,13 @@ spring:
       client:
         registration:
           google:
-            client-id: 563006777026-9l2ulo7t8m7tt4sooaod4bbftdr4urdb.apps.googleusercontent.com
-            client-secret: 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
+            client-id: 702969673021-q07ji2ire5vp62a05j00bbousf9i8n84.apps.googleusercontent.com
+            client-secret: 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
             client-name: google
             scope:
               - email
               - profile
               - openid
-#          github:
-#            client-id: e9cbafc30010d601c003
-#            client-secret: ba235b1499c346ea497075011777097bd080d667
-#            client-name: github
-
 
   application:
     name: security-service
