@@ -4,6 +4,7 @@ import com.gitlab.dto.ExampleDto;
 import com.gitlab.mapper.ExampleMapper;
 import com.gitlab.model.Example;
 import com.gitlab.repository.ExampleRepository;
+import com.gitlab.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PaymentService {
 
-    private final ExampleRepository exampleRepository;
+    private final PaymentRepository paymentRepository;
 
     private final ExampleMapper exampleMapper;
 

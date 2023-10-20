@@ -20,8 +20,9 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy="id", cascade = CascadeType.ALL)
-    private Set<BankCard> bankCardsSet;
+    @OneToOne
+    @JoinColumn(name = "bank_card_id", referencedColumnName = "id")
+    private BankCard bankCard;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "order_status")
