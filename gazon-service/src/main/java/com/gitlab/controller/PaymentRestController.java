@@ -35,7 +35,7 @@ public class PaymentRestController implements PaymentRestApi {
     @Override
     public ResponseEntity<PaymentDto> get(Long id) {
         return paymentService.findByIdDto(id)
-                .map(value -> ResponseEntity.ok(value))
+                .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
@@ -50,7 +50,7 @@ public class PaymentRestController implements PaymentRestApi {
     public ResponseEntity<PaymentDto> update(Long id, PaymentDto paymentDto) {
         Optional<PaymentDto> updatePaymentDto = paymentService.updateDto(id, paymentDto);
         return updatePaymentDto
-                .map(dto -> ResponseEntity.ok(dto))
+                .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
