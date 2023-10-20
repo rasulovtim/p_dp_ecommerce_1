@@ -1,9 +1,12 @@
 package com.gitlab.controller;
 
+import com.gitlab.controller.api.PaymentRestApi;
 import com.gitlab.controllers.api.rest.ExampleRestApi;
 import com.gitlab.dto.ExampleDto;
+import com.gitlab.dto.PaymentDto;
 import com.gitlab.model.Example;
-import com.gitlab.service.ExampleService;
+import com.gitlab.model.Payment;
+import com.gitlab.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -19,12 +22,12 @@ import java.util.Optional;
 @Validated
 @RestController
 @RequiredArgsConstructor
-public class PaymentRestController implements ExampleRestApi {
+public class PaymentRestController implements PaymentRestApi {
 
-    private final ExampleService exampleService;
+    private final PaymentService paymentService;
 
     @Override
-    public ResponseEntity<Page<ExampleDto>> getPage(Integer page, Integer size) {
+    public ResponseEntity<Page<PaymentDto>> getPage(Integer page, Integer size) {
         if (page == null || size == null) {
             return createUnPagedResponse();
         }
@@ -32,11 +35,11 @@ public class PaymentRestController implements ExampleRestApi {
             return ResponseEntity.noContent().build();
         }
 
-        var examplePage = exampleService.getPage(page, size);
-        if (examplePage.getContent().isEmpty()) {
+        var paymentPage = paymentService.getPage(page, size);
+        if (paymentPage.getContent().isEmpty()) {
             return ResponseEntity.noContent().build();
         } else {
-            return createPagedResponse(examplePage);
+            return createPagedResponse(paymentPage);
         }
     }
 
@@ -48,7 +51,7 @@ public class PaymentRestController implements ExampleRestApi {
         return ResponseEntity.ok(new PageImpl<>(exampleDtos));
     }
 
-    private ResponseEntity<Page<ExampleDto>> createPagedResponse(Page<Example> examplePage) {
+    private ResponseEntity<Page<ExampleDto>> createPagedResponse(Page<Payment> examplePage) {
         var exampleDtoPage = exampleService.getPageDto(examplePage.getPageable().getPageNumber(), examplePage.getPageable().getPageSize());
         return ResponseEntity.ok(exampleDtoPage);
     }
