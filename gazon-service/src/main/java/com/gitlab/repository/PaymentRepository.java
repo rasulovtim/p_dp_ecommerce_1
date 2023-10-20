@@ -1,9 +1,9 @@
 package com.gitlab.repository;
 
-import com.gitlab.model.Example;
+import com.gitlab.model.Payment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PaymentRepository extends JpaRepository<Example, Long> {
+public interface PaymentRepository extends JpaRepository<Payment, Long> {
 }

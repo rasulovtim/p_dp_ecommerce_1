@@ -1,23 +1,19 @@
 package com.gitlab.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gitlab.model.BankCard;
-import com.gitlab.model.Order;
 import com.gitlab.model.Payment;
-import com.gitlab.model.User;
 import lombok.Data;
+import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
-import org.springframework.data.annotation.ReadOnlyProperty;
 
-import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Set;
 
 @Data
 @Setter
+@Getter
 public class PaymentDto {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
