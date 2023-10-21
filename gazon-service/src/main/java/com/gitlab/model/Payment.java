@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(exclude = {"order", "user"})
-@Table(name = "payments")
+@Table(name = "payment")
 public class Payment {
 
     @Id
@@ -20,26 +20,26 @@ public class Payment {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "id", referencedColumnName = "id")
+    @JoinColumn(name = "bank_card_id", referencedColumnName = "id")
     private BankCard bankCard;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "order_status")
+    @Column(name = "payment_status")
     private PaymentStatus paymentStatus;
 
     @Column(name = "create_date_time")
     private LocalDateTime createDateTime;
 
     @OneToOne
-    @JoinColumn(name = "id", referencedColumnName = "id")
+    @JoinColumn(name = "order_id", referencedColumnName = "id")
     private Order order;
 
     @Column(name = "sum")
     private BigDecimal sum;
 
     @OneToOne
-    @JoinColumn(name = "id", referencedColumnName = "id")
-    private User user;
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    User user;
 
     @AllArgsConstructor
     @Getter
