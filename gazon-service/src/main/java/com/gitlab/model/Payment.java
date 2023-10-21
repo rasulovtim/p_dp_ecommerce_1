@@ -20,7 +20,7 @@ public class Payment {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "bank_card_id", referencedColumnName = "id")
+    @JoinColumn(name = "id", referencedColumnName = "id")
     private BankCard bankCard;
 
     @Enumerated(EnumType.STRING)
@@ -31,14 +31,14 @@ public class Payment {
     private LocalDateTime createDateTime;
 
     @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JoinColumn(name = "id", referencedColumnName = "id")
     private Order order;
 
     @Column(name = "sum")
     private BigDecimal sum;
 
     @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JoinColumn(name = "id", referencedColumnName = "id")
     private User user;
 
     @AllArgsConstructor
