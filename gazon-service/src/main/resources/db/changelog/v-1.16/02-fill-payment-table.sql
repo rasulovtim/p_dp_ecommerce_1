@@ -6,8 +6,7 @@ INSERT INTO payment (bank_card_id, payment_status, create_date_time, order_id, s
 VALUES (3, 'OVERDUE', '2023-03-23 13:03', 3, 3500, 3);
 INSERT INTO payment (bank_card_id, payment_status, create_date_time, order_id, sum, user_id)
 VALUES (4, 'CANCELED', '2023-04-24 14:04', 4, 4500, 4);
-INSERT INTO payment (bank_card_id, payment_status, create_date_time, order_id, sum, user_id)
-VALUES (5, 'PAID', '2023-05-25 15:05', 5, 5500, 5);
+
 
 
 
