@@ -1,9 +1,7 @@
 package com.gitlab.mapper;
 
-import com.gitlab.dto.BankCardDto;
-import com.gitlab.dto.ExampleDto;
-import com.gitlab.dto.PaymentDto;
-import com.gitlab.dto.ShippingAddressDto;
+import com.gitlab.controller.AbstractIntegrationTest;
+import com.gitlab.dto.*;
 import com.gitlab.model.*;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
@@ -12,16 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class PaymentMapperTest {
+public class PaymentMapperTest extends AbstractIntegrationTest {
 
     @Autowired
     private PaymentMapper mapper;
-
 
     @Autowired
     private  BankCardMapper bankCardMapper;
@@ -40,37 +36,41 @@ public class PaymentMapperTest {
         payment.setPaymentStatus(Payment.PaymentStatus.PAID);
         payment.setCreateDateTime(LocalDateTime.now());
         payment.setSum(new BigDecimal(500));
-        payment.setUserId(1L);
+        payment.setUser(new User());
 
         PaymentDto actualResult = mapper.toDto(payment);
 
         assertNotNull(actualResult);
-        assertEquals(payment.getBankCard(), actualResult.getBankCard());
-        assertEquals(payment.getShippingAddress(), shippingAddressMapper.toEntity(actualResult.getShippingAddressDto()));
-        assertEquals(payment.getShippingDate(), actualResult.getShippingDate());
+        assertEquals(payment.getBankCard(), bankCardMapper.toEntity(actualResult.getBankCardDto()));
+        assertEquals(payment.getPaymentStatus(), actualResult.getPaymentStatus());
         assertEquals(payment.getCreateDateTime(), actualResult.getCreateDateTime());
         assertEquals(payment.getSum(), actualResult.getSum());
-        assertEquals(payment.getDiscount(), actualResult.getDiscount());
-        assertEquals(payment.getBagCounter(), actualResult.getBagCounter());
         assertEquals(payment.getUser().getId(), actualResult.getUserId());
-        assertEquals(payment.getOrderStatus(), actualResult.getOrderStatus());
     }
 
-
-
-
-
-
     @Test
-    void should_map_exampleDto_to_Entity() {
-        ExampleDto exampleDto = new ExampleDto();
-        exampleDto.setId(1L);
-        exampleDto.setExampleText("text");
+    void should_map_paymentDto_to_Entity() {
+        PaymentDto paymentDto = new PaymentDto();
 
-        Example actualResult = mapper.toEntity(exampleDto);
+        BankCardDto bankCardDto = new BankCardDto();
+        bankCardDto.setId(1L);
+        bankCardDto.setCardNumber("4828078439696627");
+        bankCardDto.setDueDate(LocalDate.parse("2029-09-22"));
+        bankCardDto.setSecurityCode(354);
+
+        paymentDto.setBankCardDto(bankCardDto);
+        paymentDto.setPaymentStatus(Payment.PaymentStatus.PAID);
+        paymentDto.setCreateDateTime(LocalDateTime.now());
+        paymentDto.setSum(new BigDecimal(500));
+        paymentDto.setUserId(1L);
+
+        Payment actualResult = mapper.toEntity(paymentDto);
 
         assertNotNull(actualResult);
-        assertEquals(exampleDto.getId(), actualResult.getId());
-        assertEquals(exampleDto.getExampleText(), actualResult.getExampleText());
+        assertEquals(paymentDto.getBankCardDto(), actualResult.getBankCard());
+        assertEquals(paymentDto.getPaymentStatus(), actualResult.getPaymentStatus());
+        assertEquals(paymentDto.getCreateDateTime(), actualResult.getCreateDateTime());
+        assertEquals(paymentDto.getSum(), actualResult.getSum());
+        assertEquals(paymentDto.getUserId(), 1L);
     }
 }
