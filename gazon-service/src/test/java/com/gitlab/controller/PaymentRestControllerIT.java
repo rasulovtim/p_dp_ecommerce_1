@@ -34,18 +34,6 @@ class PaymentRestControllerIT extends AbstractIntegrationTest {
     @Autowired
     private PaymentMapper paymentMapper;
 
-//    @Test
-//    void should_get_all_payments() throws Exception {
-//        List<PaymentDto> payments = paymentService.findAllDto();
-//
-//        String expected = objectMapper.writeValueAsString(payments);
-//
-//        mockMvc.perform(get(PAYMENT_URI))
-//                .andDo(print())
-//                .andExpect(status().isOk())
-//                .andExpect(content().json(expected));
-//    }
-
     @Test
     void should_get_all_payments() throws Exception {
 
@@ -62,27 +50,6 @@ class PaymentRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
     }
-
-//    @Test
-//    void should_get_page() throws Exception {
-//        int page = 0;
-//        int size = 2;
-//        String parameters = "?page=" + page + "&size=" + size;
-//
-//        var response = paymentService.getPage(page, size);
-//        assertFalse(response.getContent().isEmpty());
-//
-//        var expected = objectMapper.writeValueAsString(new PageImpl<>(
-//                response.getContent().stream().map(paymentMapper::toDto).toList(),
-//                response.getPageable(),
-//                response.getTotalElements()
-//        ));
-//
-//        mockMvc.perform(get(PAYMENT_URI + parameters))
-//                .andDo(print())
-//                .andExpect(status().isOk())
-//                .andExpect(content().json(expected));
-//    }
 
     @Test
     void should_get_payment_by_id() throws Exception {
@@ -109,6 +76,20 @@ class PaymentRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(status().isNotFound());
     }
 
+//    @Test
+//    void should_create_payment() throws Exception {
+//        PaymentDto paymentDto = generatePaymentDto();
+//
+//        String jsonPaymentDto = objectMapper.writeValueAsString(paymentDto);
+//
+//        mockMvc.perform(post(PAYMENT_URI)
+//                        .content(jsonPaymentDto)
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .accept(MediaType.APPLICATION_JSON))
+//                .andDo(print())
+//                .andExpect(status().isCreated());
+//    }
+
     @Test
     void should_create_payment() throws Exception {
         PaymentDto paymentDto = generatePaymentDto();
@@ -123,9 +104,32 @@ class PaymentRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(status().isCreated());
     }
 
+
+//    @Test
+//    void should_update_payments_by_id() throws Exception {
+//        long id = 2L;
+//        int numberOfEntitiesExpected = paymentService.findAll().size();
+//
+//        PaymentDto paymentDto = generatePaymentDto();
+//
+//        String jsonPaymentDto = objectMapper.writeValueAsString(paymentDto);
+//        paymentDto.setId(id);
+//        String expected = objectMapper.writeValueAsString(paymentDto);
+//
+//        mockMvc.perform(patch(PAYMENT_URI + "/{id}", id)
+//                        .content(jsonPaymentDto)
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .accept(MediaType.APPLICATION_JSON))
+//                .andDo(print())
+//                .andExpect(status().isOk())
+//                .andExpect(content().json(expected))
+//                .andExpect(result -> assertThat(paymentService.findAll().size(),
+//                        equalTo(numberOfEntitiesExpected)));
+//    }
+
     @Test
     void should_update_payment_by_id() throws Exception {
-        long id = 1L;
+        long id = 2L;
         int numberOfEntitiesExpected = paymentService.findAll().size();
 
         PaymentDto paymentDto = generatePaymentDto();
@@ -172,11 +176,14 @@ class PaymentRestControllerIT extends AbstractIntegrationTest {
     }
     private PaymentDto generatePaymentDto() {
         PaymentDto paymentDto = new PaymentDto();
+        paymentDto.setId(1L);
+
         BankCardDto bankCardDto = new BankCardDto();
         bankCardDto.setId(1L);
         bankCardDto.setCardNumber("4828078439696627");
         bankCardDto.setDueDate(LocalDate.parse("2029-09-22"));
         bankCardDto.setSecurityCode(354);
+
         paymentDto.setBankCardDto(bankCardDto);
         paymentDto.setPaymentStatus(Payment.PaymentStatus.PAID);
         paymentDto.setCreateDateTime(LocalDateTime.now());
