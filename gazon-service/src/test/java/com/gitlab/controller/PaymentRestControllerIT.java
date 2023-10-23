@@ -51,10 +51,10 @@ class PaymentRestControllerIT extends AbstractIntegrationTest {
 
         String expected = objectMapper.writeValueAsString(
                 paymentService
-                .findAll()
-                .stream()
-                .map(paymentMapper::toDto)
-                .collect(Collectors.toList())
+                        .findAll()
+                        .stream()
+                        .map(paymentMapper::toDto)
+                        .collect(Collectors.toList())
         );
 
         mockMvc.perform(get(PAYMENT_URI))
@@ -111,7 +111,7 @@ class PaymentRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_create_payment() throws Exception {
-        PaymentDto paymentDto = new PaymentDto();
+        PaymentDto paymentDto = generatePaymentDto();
 
         String jsonPaymentDto = objectMapper.writeValueAsString(paymentDto);
 
