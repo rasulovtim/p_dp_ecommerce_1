@@ -51,6 +51,7 @@ public class MainLayout extends AppLayout {
         tabs.add(createTab(VaadinIcon.HEART, "Users", UserView.class));
         tabs.add(createTab(VaadinIcon.USER_CARD, "Passport", PassportView.class));
         tabs.add(createTab(VaadinIcon.GLOBE, "Pickup Point", PickupPointView.class));
+        tabs.add(createTab(VaadinIcon.SPOON, "Product", ProductView.class));
         tabs.setOrientation(Tabs.Orientation.VERTICAL);
         return tabs;
     }

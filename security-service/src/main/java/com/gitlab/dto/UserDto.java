@@ -1,5 +1,6 @@
 package com.gitlab.dto;
 
+import com.gitlab.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,6 +10,7 @@ import org.springframework.data.annotation.ReadOnlyProperty;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
 import java.util.Set;
 
 @Data
@@ -46,4 +48,10 @@ public class UserDto {
 
     @NotNull(message = "User roles cannot be null")
     private Set<String> roles;
+
+    private LocalDate birthDate;
+
+    private User.Gender gender;
+
+    private String phoneNumber;
 }

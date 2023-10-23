@@ -15,6 +15,8 @@
 - #101 - Add fuzzy search for product
 - #82 - Generate test data for PickupPointRestController
 - #63 - Front CRUD for PickupPoint
+- #77 - oauth через гугл
+- #66 - Front CRUD for Product
 
 ## [1.1.0] - 8.09.2023
 - #5 - added user entity

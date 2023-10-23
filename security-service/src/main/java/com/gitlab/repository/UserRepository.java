@@ -25,4 +25,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @EntityGraph(value = "userWithSets", type = EntityGraph.EntityGraphType.LOAD)
     User findByEmail(String email);
 
+
+    User findByFirstName(String name);
+
+
+
 }
