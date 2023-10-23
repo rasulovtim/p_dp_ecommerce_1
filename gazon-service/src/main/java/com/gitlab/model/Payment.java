@@ -1,6 +1,8 @@
 package com.gitlab.model;
 
 import lombok.*;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -32,6 +34,7 @@ public class Payment {
 
     @OneToOne
     @JoinColumn(name = "order_id", referencedColumnName = "id")
+    @NotFound(action = NotFoundAction.IGNORE)
     private Order order;
 
     @Column(name = "sum")
