@@ -1,49 +1,21 @@
 package com.gitlab.mapper;
 
-import com.gitlab.dto.OrderDto;
 import com.gitlab.dto.PaymentDto;
 import com.gitlab.model.*;
-import com.gitlab.repository.PaymentRepository;
+import com.gitlab.service.OrderService;
 import com.gitlab.service.UserService;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
+
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public abstract class PaymentMapper {
-
-//    private PaymentRepository paymentRepository;
-//
-//    @Mapping(source = "somePayment", target = "paymentId")
-//    public abstract PaymentDto toDto(Payment payment);
-//
-//    public Long mapPaymentToPaymentId(Payment payment) {
-//        if (payment == null) {
-//            return null;
-//        }
-//        return payment.getId();
-//    }
-//
-//    @Mapping(source = "paymentId", target = "somePayment")
-//    public abstract Payment toEntity(PaymentDto paymentDto);
-//
-//    public Payment mapPaymentIdToPayment(Long paymentId) {
-//        if (paymentId == null) {
-//            return null;
-//        }
-//        return paymentRepository.findById(paymentId).orElse(null);
-//    }
-//        @Autowired
-//        protected BankCard bankCard;
-
-        @Autowired
-        protected UserService userService;
-
+    protected UserService userService;
+    protected OrderService orderService;
         @Mapping(source = "user.id", target = "userId")
         @Mapping(source = "bankCard", target = "bankCardDto")
+        @Mapping(source = "order", target = "orderId")
         public abstract PaymentDto toDto(Payment payment);
 
         public User mapUserIdToUser(Long userId) {
@@ -54,8 +26,17 @@ public abstract class PaymentMapper {
                     .orElseThrow(() -> new RuntimeException("User wasn't found"));
         }
 
+        public Order mapOrderIdToUser(Long orderId) {
+        if (orderId == null) {
+            return null;
+        }
+        return orderService.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order wasn't found"));
+    }
         @Mapping(source = "userId", target = "user.id")
-        @Mapping(source = "BankCardDto", target = "bankCard")
-        public abstract BankCard toEntity(PaymentDto paymentDto);
+        @Mapping(source = "bankCardDto", target = "bankCard")
+        @Mapping(source = "orderId", target = "order.id")
+        public abstract Payment toEntity(PaymentDto paymentDto);
 }
+
 

@@ -36,18 +36,12 @@ public class PaymentService {
         return paymentRepository.findAll();
     }
 
-//    public List<PaymentDto> findAllDto() {
-//        List<Payment> payments = paymentRepository.findAll();
-//        return payments.stream()
-//                .map(paymentMapper::toDto)
-//                .collect(Collectors.toList());
-//    }
     public List<PaymentDto> findAllDto() {
         List<Payment> payments = paymentRepository.findAll();
         return payments.stream()
-            .map(paymentMapper::toDto)
-            .toList();
-}
+                .map(paymentMapper::toDto)
+                .collect(Collectors.toList());
+    }
 
     public Page<Payment> getPage(int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
