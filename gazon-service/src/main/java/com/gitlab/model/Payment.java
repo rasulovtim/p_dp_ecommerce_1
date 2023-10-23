@@ -42,7 +42,7 @@ public class Payment {
 
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    User user;
+    private User user;
 
     @AllArgsConstructor
     @Getter
