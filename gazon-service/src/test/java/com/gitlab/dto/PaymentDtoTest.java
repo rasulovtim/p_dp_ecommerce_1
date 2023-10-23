@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PaymentDtoTest extends AbstractDtoTest {
+class PaymentDtoTest extends AbstractDtoTest {
 
     @Test
     void test_valid_payment() {
@@ -70,9 +70,6 @@ public class PaymentDtoTest extends AbstractDtoTest {
         PaymentDto paymentDto = new PaymentDto();
         BankCardDto bankCardDto = new BankCardDto();
         bankCardDto.setId(1L);
-//        bankCardDto.setCardNumber("4828078439696627");
-//        bankCardDto.setDueDate(LocalDate.parse("2029-09-22"));
-//        bankCardDto.setSecurityCode(354);
 
         paymentDto.setBankCardDto(bankCardDto);
         paymentDto.setPaymentStatus(Payment.PaymentStatus.PAID);

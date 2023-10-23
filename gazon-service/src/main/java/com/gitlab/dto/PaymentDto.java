@@ -22,7 +22,7 @@ public class PaymentDto {
     @NotNull(message = "Bank card should not be null. Please provide a valid bank card")
     private BankCardDto bankCardDto;
 
-    @NotEmpty(message = "Payment status should not be null. Please provide a valid payment status")
+    @NotNull(message = "Payment status should not be null. Please provide a valid payment status")
     private Payment.PaymentStatus paymentStatus;
 
     @NotNull(message = "Local date time of creation should not be null. Please provide a valid local date time")

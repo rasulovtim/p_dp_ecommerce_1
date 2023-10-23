@@ -17,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class OrderMapperTest extends AbstractIntegrationTest {
 
-
     @Autowired
     private OrderMapper mapper;
 
