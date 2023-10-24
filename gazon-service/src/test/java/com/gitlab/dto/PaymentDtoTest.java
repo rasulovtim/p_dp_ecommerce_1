@@ -57,7 +57,6 @@ class PaymentDtoTest extends AbstractDtoTest {
         assertFalse(validator.validate(paymentDto).isEmpty());
     }
 
-
     @Test
     void test_invalid_userId(){
         var paymentDto = generatePaymentDto();
@@ -80,5 +79,4 @@ class PaymentDtoTest extends AbstractDtoTest {
         paymentDto.setUserId(1L);
         return paymentDto;
     }
-
 }
