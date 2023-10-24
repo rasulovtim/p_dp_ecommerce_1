@@ -106,11 +106,13 @@ public class PaymentService {
 
     public Optional<PaymentDto> updateDto(Long id, PaymentDto paymentDto) {
         Optional<Payment> optionalSavedPayment = findById(id);
+        Payment savedPayment;
 
         if (optionalSavedPayment.isEmpty()) {
             return Optional.empty();
+        } else {
+            savedPayment = optionalSavedPayment.get();
         }
-        Payment savedPayment = optionalSavedPayment.get();
         if (paymentDto.getBankCardDto() != null) {
             savedPayment.setBankCard(bankCardMapper.toEntity(paymentDto.getBankCardDto()));
         }

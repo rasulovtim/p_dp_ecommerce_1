@@ -34,6 +34,7 @@ class PaymentMapperTest extends AbstractIntegrationTest {
         payment.setBankCard(bankCard);
         payment.setPaymentStatus(Payment.PaymentStatus.PAID);
         payment.setCreateDateTime(LocalDateTime.now());
+        payment.setOrder(new Order());
         payment.setSum(new BigDecimal(500));
         payment.setUser(new User());
 
@@ -60,6 +61,7 @@ class PaymentMapperTest extends AbstractIntegrationTest {
         paymentDto.setBankCardDto(bankCardDto);
         paymentDto.setPaymentStatus(Payment.PaymentStatus.PAID);
         paymentDto.setCreateDateTime(LocalDateTime.now());
+        paymentDto.setOrderId(1L);
         paymentDto.setSum(new BigDecimal(500));
         paymentDto.setUserId(1L);
 

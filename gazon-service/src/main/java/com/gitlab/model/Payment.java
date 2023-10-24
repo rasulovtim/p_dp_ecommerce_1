@@ -21,10 +21,10 @@ public class Payment {
         this.id = id;
     }
 
-    public Payment(long id, BigDecimal sum) {
-        this.id = id;
-        this.sum = sum;
-    }
+//    public Payment(long id, BigDecimal sum) {
+//        this.id = id;
+//        this.sum = sum;
+//    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

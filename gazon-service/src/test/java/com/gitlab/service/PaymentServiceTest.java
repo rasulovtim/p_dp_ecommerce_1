@@ -61,8 +61,13 @@ class PaymentServiceTest {
         Payment paymentToUpdate = generatePayment();
         paymentToUpdate.setSum(BigDecimal.valueOf(1000));
 
-        Payment  paymentBeforeUpdate = new Payment(id, BigDecimal.valueOf(500));
-        Payment updatedPayment = new Payment(id, BigDecimal.valueOf(1500));
+        Payment paymentBeforeUpdate = new Payment();
+        paymentBeforeUpdate.setId(id);
+        paymentBeforeUpdate.setSum(BigDecimal.valueOf(500));
+
+        Payment updatedPayment = new Payment();
+        updatedPayment.setId(id);
+        updatedPayment.setSum(BigDecimal.valueOf(1500));
 
         when(paymentRepository.findById(id)).thenReturn(Optional.of(paymentBeforeUpdate));
         when(paymentRepository.save(updatedPayment)).thenReturn(updatedPayment);
