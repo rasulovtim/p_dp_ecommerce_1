@@ -1,4 +1,16 @@
 spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 702969673021-q07ji2ire5vp62a05j00bbousf9i8n84.apps.googleusercontent.com
+            client-secret: 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
+            client-name: google
+            scope:
+              - email
+              - profile
+              - openid
 
   application:
     name: security-service
