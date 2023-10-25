@@ -1,5 +1,7 @@
 package com.gitlab.config;
 
+
+import com.gitlab.service.MyOidcUserService;
 import com.gitlab.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +25,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final UserService userService;
+    private final MyOidcUserService myOidcUserService;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
@@ -39,15 +42,41 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable);
 
         // Set authorization
-        http.authorizeHttpRequests(auth -> auth
-                .antMatchers("/auth/register", "/auth/token", "/auth/validate").permitAll()
-                .anyRequest().authenticated());
+        http.authorizeHttpRequests(auth -> {
+                    try {
+                        auth
+
+                                .antMatchers("/login", "/logout", "/auth/register", "/auth/token", "/auth/validate").permitAll()
+                                .anyRequest().authenticated()
+                                .and()
+                                .formLogin()
+                                .defaultSuccessUrl("http://localhost:8080")
+                                .and()
+                                .oauth2Login()
+                                .userInfoEndpoint()
+                                .oidcUserService(myOidcUserService)
+                                .and()
+                                .defaultSuccessUrl("http://localhost:8080")
+                                .and()
+                                .logout()
+                                .deleteCookies("JSESSIONID")
+                                .logoutSuccessUrl("/login")
+                                .permitAll();
+
+
+
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+        );
 
         http.sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS));
 
         return http.build();
     }
+
 
 
     @Bean
@@ -55,4 +84,5 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 }
+
 

@@ -23,6 +23,9 @@ public class AuthService {
     public User save(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setCreateDate(LocalDate.from(LocalDateTime.now()));
+        user.setBirthDate(LocalDate.now());
+        user.setGender(User.Gender.MALE);
+        user.setPhoneNumber("12345");
         return userRepository.save(user);
     }
 
