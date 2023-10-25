@@ -142,9 +142,6 @@ class PaymentRestControllerIT extends AbstractIntegrationTest {
         paymentDto.setPaymentStatus(Payment.PaymentStatus.PAID);
         paymentDto.setCreateDateTime(LocalDateTime.now());
 
-        OrderDto orderDto = new OrderDto();
-        orderDto.setId(1L);
-
         paymentDto.setOrderId(1L);
         paymentDto.setSum(new BigDecimal(500));
         paymentDto.setUserId(1L);
