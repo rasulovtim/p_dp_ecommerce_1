@@ -70,6 +70,10 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> rolesSet;
 
+    @Column(name = "entity_status")
+    @Enumerated(EnumType.STRING)
+    private EntityStatus entityStatus;
+
 
     @AllArgsConstructor
     @Getter
@@ -80,4 +84,11 @@ public class User {
 
     }
 
+    @AllArgsConstructor
+    @Getter
+    public enum EntityStatus {
+        ACTIVE("Активный"), DELETED("Удалённый");
+
+        private final String status;
+    }
 }

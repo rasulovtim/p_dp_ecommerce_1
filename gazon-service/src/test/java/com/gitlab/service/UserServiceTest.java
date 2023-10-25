@@ -301,11 +301,14 @@ class UserServiceTest {
     @Test
     void should_delete_user() {
         long id = 1L;
+        User deletedUser = generateUser(id);
+        deletedUser.setEntityStatus(User.EntityStatus.DELETED);
+
         when(userRepository.findById(id)).thenReturn(Optional.of(generateUser()));
 
         userService.delete(id);
-
-        verify(userRepository).deleteById(id);
+        
+        verify(userRepository).save(deletedUser);
     }
 
     @Test
@@ -375,7 +378,8 @@ class UserServiceTest {
                 LocalDate.now(),
                 bankCardSet,
                 personalAddresses,
-                roleSet);
+                roleSet,
+                User.EntityStatus.ACTIVE);
     }
 
     private User generateUserBefore() {
@@ -430,7 +434,8 @@ class UserServiceTest {
                 LocalDate.now(),
                 bankCardSet,
                 personalAddresses,
-                roleSet);
+                roleSet,
+                User.EntityStatus.ACTIVE);
     }
 
 

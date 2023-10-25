@@ -30,7 +30,9 @@ public class UserService {
     private final PassportMapper passportMapper;
 
     public List<User> findAll() {
-        return userRepository.findAll();
+        return userRepository.findAll()
+                .stream().filter(user -> user.getEntityStatus().equals(User.EntityStatus.ACTIVE))
+                .collect(Collectors.toList());
     }
 
     public List<UserDto> findAllDto() {
@@ -39,7 +41,12 @@ public class UserService {
     }
 
     public Optional<User> findById(Long id) {
-        return userRepository.findById(id);
+        Optional<User> findOptionalUser = userRepository.findById(id);
+        if(findOptionalUser.isPresent() && findOptionalUser.get().getEntityStatus().equals(User.EntityStatus.ACTIVE)) {
+            return findOptionalUser;
+        } else {
+            return Optional.empty();
+        }
     }
 
     public UserDto findByIdDto(Long id) {
@@ -50,6 +57,7 @@ public class UserService {
     @Transactional
     public User save(User user) {
         user.setCreateDate(LocalDate.from(LocalDateTime.now()));
+        user.setEntityStatus(User.EntityStatus.ACTIVE);
         return userRepository.save(user);
     }
 
@@ -142,18 +150,21 @@ public class UserService {
         if (user.getRolesSet() != null) {
             savedUser.setRolesSet(user.getRolesSet());
         }
+
+        savedUser.setEntityStatus(User.EntityStatus.ACTIVE);
+
         return Optional.of(userRepository.save(savedUser));
     }
 
     @Transactional
     public Optional<User> delete(Long id) {
-        Optional<User> optionalSavedExample = findById(id);
-        if (optionalSavedExample.isEmpty()) {
-            return optionalSavedExample;
-        } else {
-            userRepository.deleteById(id);
-            return optionalSavedExample;
+        Optional<User> optionalDeletedUser = findById(id);
+        if (optionalDeletedUser.isPresent()) {
+            User deletedUser = optionalDeletedUser.get();
+            deletedUser.setEntityStatus(User.EntityStatus.DELETED);
+            userRepository.save(deletedUser);
         }
+        return optionalDeletedUser;
     }
 
     @Transactional
