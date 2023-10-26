@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(exclude = {"order", "user"})
-@Table(name = "payment")
+@Table(name = "payments")
 public class Payment {
 
     public Payment(long id) {
