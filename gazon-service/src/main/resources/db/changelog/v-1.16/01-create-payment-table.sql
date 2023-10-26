@@ -1,4 +1,4 @@
-CREATE TABLE payment (
+CREATE TABLE IF NOT EXISTS payment (
     id BIGSERIAL PRIMARY KEY,
     bank_card_id BIGINT REFERENCES bank_card (id) ON DELETE CASCADE NOT NULL,
     payment_status VARCHAR(255) NOT NULL,
