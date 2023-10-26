@@ -88,16 +88,17 @@ class PassportRestControllerTest extends AbstractIntegrationTest {
 
     @Test
     void should_update_passport_by_id() throws Exception {
-        Long id = 1L;
+        should_create_passport();
         int numberOfEntitiesExpected = passportService.findAll().size();
+
         PassportDto passportDto = generatePassportDto();
+        passportDto.setId(passportDto.getId() + 1L);
 
         String jsonPassportDto = objectMapper.writeValueAsString(passportDto);
 
-        passportDto.setId(id);
         String expected = objectMapper.writeValueAsString(passportDto);
 
-        mockMvc.perform(patch(PASSPORT_URI + "/{id}", id)
+        mockMvc.perform(patch(PASSPORT_URI + "/{id}", passportDto.getId())
                         .content(jsonPassportDto)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -110,9 +111,9 @@ class PassportRestControllerTest extends AbstractIntegrationTest {
 
     @Test
     void should_return_not_found_when_update_passport_by_non_existent_id() throws Exception {
-        long id = 10L;
-        PassportDto passportDto = generatePassportDto();
+        long id = 1000000L;
 
+        PassportDto passportDto = generatePassportDto();
 
         String jsonPassportDto = objectMapper.writeValueAsString(passportDto);
 
@@ -126,17 +127,18 @@ class PassportRestControllerTest extends AbstractIntegrationTest {
 
     @Test
     void should_delete_passport_by_id() throws Exception {
-        long id = 5L;
-        mockMvc.perform(delete(PASSPORT_URI + "/{id}", id))
+        PassportDto passportDto = generatePassportDto();
+        mockMvc.perform(delete(PASSPORT_URI + "/{id}", passportDto.getId()))
                 .andDo(print())
                 .andExpect(status().isOk());
-        mockMvc.perform(get(PASSPORT_URI + "/{id}", id))
+        mockMvc.perform(get(PASSPORT_URI + "/{id}", passportDto.getId()))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
 
     private PassportDto generatePassportDto() {
         PassportDto passportDto = new PassportDto();
+        passportDto.setId(5L);
         passportDto.setCitizenship(Passport.Citizenship.RUSSIA);
         passportDto.setFirstName("Ivan");
         passportDto.setLastName("Petrov");
