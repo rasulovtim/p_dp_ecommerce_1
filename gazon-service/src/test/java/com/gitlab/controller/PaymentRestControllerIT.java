@@ -2,6 +2,7 @@ package com.gitlab.controller;
 
 import com.gitlab.dto.*;
 import com.gitlab.mapper.PaymentMapper;
+import com.gitlab.model.Order;
 import com.gitlab.model.Payment;
 import com.gitlab.service.PaymentService;
 import org.junit.jupiter.api.Test;
@@ -132,17 +133,28 @@ class PaymentRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(status().isNotFound());
     }
     private PaymentDto generatePaymentDto() {
+        Payment payment = new Payment();
+        Order order = new Order();
+
+        payment.setOrder(order);
+
         PaymentDto paymentDto = new PaymentDto();
         paymentDto.setId(1L);
 
         BankCardDto bankCardDto = new BankCardDto();
         bankCardDto.setId(1L);
+        bankCardDto.setCardNumber("4828078439696627");
+        bankCardDto.setDueDate(LocalDate.parse("2029-09-22"));
+        bankCardDto.setSecurityCode(354);
 
         paymentDto.setBankCardDto(bankCardDto);
         paymentDto.setPaymentStatus(Payment.PaymentStatus.PAID);
         paymentDto.setCreateDateTime(LocalDateTime.now());
 
-        paymentDto.setOrderId(1L);
+        OrderDto orderDto = new OrderDto();
+        orderDto.setId(2L);
+
+        paymentDto.setOrderId(orderDto.getId());
         paymentDto.setSum(new BigDecimal(500));
         paymentDto.setUserId(1L);
         return paymentDto;
