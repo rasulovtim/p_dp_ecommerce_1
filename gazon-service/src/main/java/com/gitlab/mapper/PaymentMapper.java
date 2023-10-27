@@ -13,8 +13,10 @@ import org.mapstruct.MappingConstants;
 public abstract class PaymentMapper {
     protected UserService userService;
     protected OrderService orderService;
-        @Mapping(source = "user.id", target = "userId")
+
         @Mapping(source = "bankCard", target = "bankCardDto")
+        @Mapping(source = "order.id", target = "orderId")
+        @Mapping(source = "user.id", target = "userId")
         public abstract PaymentDto toDto(Payment payment);
 
         public User mapUserIdToUser(Long userId) {
@@ -25,8 +27,9 @@ public abstract class PaymentMapper {
                     .orElseThrow(() -> new RuntimeException("User wasn't found"));
         }
 
-        @Mapping(source = "userId", target = "user.id")
         @Mapping(source = "bankCardDto", target = "bankCard")
+        @Mapping(source = "orderId", target = "order.id")
+        @Mapping(source = "userId", target = "user.id")
         public abstract Payment toEntity(PaymentDto paymentDto);
 }
 

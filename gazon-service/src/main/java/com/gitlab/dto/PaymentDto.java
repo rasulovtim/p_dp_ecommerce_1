@@ -1,11 +1,9 @@
 package com.gitlab.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gitlab.model.Payment;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.validator.constraints.Range;
+import org.springframework.data.annotation.ReadOnlyProperty;
 
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
@@ -14,9 +12,11 @@ import java.time.LocalDateTime;
 @Data
 @Setter
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class PaymentDto {
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @ReadOnlyProperty
     private Long id;
 
     @NotNull(message = "Bank card should not be null. Please provide a valid bank card")

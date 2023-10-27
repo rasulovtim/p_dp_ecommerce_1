@@ -2,7 +2,6 @@ package com.gitlab.controller;
 
 import com.gitlab.dto.*;
 import com.gitlab.mapper.PaymentMapper;
-import com.gitlab.model.Order;
 import com.gitlab.model.Payment;
 import com.gitlab.service.PaymentService;
 import org.junit.jupiter.api.Test;
@@ -49,6 +48,7 @@ class PaymentRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_get_payment_by_id() throws Exception {
         long id = 1L;
+        PaymentDto paymentDto = generatePaymentDto();
 
         String expected = objectMapper.writeValueAsString(
                 paymentMapper.toDto(
@@ -87,13 +87,13 @@ class PaymentRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_update_payment_by_id() throws Exception {
-        long id = 2L;
+        long id = 1L;
         int numberOfEntitiesExpected = paymentService.findAll().size();
 
         PaymentDto paymentDto = generatePaymentDto();
 
         String jsonPaymentDto = objectMapper.writeValueAsString(paymentDto);
-        paymentDto.setId(id);
+        paymentDto.setId(1L);
         String expected = objectMapper.writeValueAsString(paymentDto);
 
         mockMvc.perform(patch(PAYMENT_URI + "/{id}", id)
@@ -109,7 +109,7 @@ class PaymentRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_return_not_found_when_update_payment_by_non_existent_id() throws Exception {
-        long id = 1L;
+        long id = 9L;
         PaymentDto paymentDto = generatePaymentDto();
 
         String jsonPaymentDto = objectMapper.writeValueAsString(paymentDto);
@@ -125,6 +125,7 @@ class PaymentRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_delete_payment_by_id() throws Exception {
         long id = 1L;
+        PaymentDto paymentDto = generatePaymentDto();
         mockMvc.perform(delete(PAYMENT_URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -132,14 +133,10 @@ class PaymentRestControllerIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
-    private PaymentDto generatePaymentDto() {
-        Payment payment = new Payment();
-        Order order = new Order();
 
-        payment.setOrder(order);
+    private PaymentDto generatePaymentDto() {
 
         PaymentDto paymentDto = new PaymentDto();
-        paymentDto.setId(1L);
 
         BankCardDto bankCardDto = new BankCardDto();
         bankCardDto.setId(1L);
@@ -151,10 +148,7 @@ class PaymentRestControllerIT extends AbstractIntegrationTest {
         paymentDto.setPaymentStatus(Payment.PaymentStatus.PAID);
         paymentDto.setCreateDateTime(LocalDateTime.now());
 
-        OrderDto orderDto = new OrderDto();
-        orderDto.setId(2L);
-
-        paymentDto.setOrderId(orderDto.getId());
+        paymentDto.setOrderId(1L);
         paymentDto.setSum(new BigDecimal(500));
         paymentDto.setUserId(1L);
         return paymentDto;

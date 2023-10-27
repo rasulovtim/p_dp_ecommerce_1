@@ -44,6 +44,7 @@ class PaymentMapperTest extends AbstractIntegrationTest {
         assertEquals(payment.getBankCard(), bankCardMapper.toEntity(actualResult.getBankCardDto()));
         assertEquals(payment.getPaymentStatus(), actualResult.getPaymentStatus());
         assertEquals(payment.getCreateDateTime(), actualResult.getCreateDateTime());
+        assertEquals(payment.getOrder().getId(), actualResult.getOrderId());
         assertEquals(payment.getSum(), actualResult.getSum());
         assertEquals(payment.getUser().getId(), actualResult.getUserId());
     }
@@ -70,6 +71,7 @@ class PaymentMapperTest extends AbstractIntegrationTest {
         assertNotNull(actualResult);
         assertEquals(paymentDto.getPaymentStatus(), actualResult.getPaymentStatus());
         assertEquals(paymentDto.getCreateDateTime(), actualResult.getCreateDateTime());
+        assertEquals(paymentDto.getOrderId(), 1L);
         assertEquals(paymentDto.getSum(), actualResult.getSum());
         assertEquals(paymentDto.getUserId(), 1L);
     }

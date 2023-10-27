@@ -28,7 +28,7 @@ public interface PaymentRestApi {
     ResponseEntity<PaymentDto> create(@ApiParam(name = "paymentDto", value = "Payment details") @RequestBody PaymentDto paymentDto);
 
     @ApiOperation(value = "Update payment by Id")
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     ResponseEntity<PaymentDto> update(@ApiParam(name = "id", value = "Payment Id") @PathVariable Long id, @ApiParam(name = "PaymentDto", value = "Update Payment details") @RequestBody PaymentDto paymentDto);
 
     @ApiOperation(value = "Delete payment by ID")

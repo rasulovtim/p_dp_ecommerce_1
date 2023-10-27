@@ -1,8 +1,6 @@
 package com.gitlab.model;
 
 import lombok.*;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -26,7 +24,7 @@ public class Payment {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "bank_card_id", referencedColumnName = "id")
+    @JoinColumn(name = "bank_card_id")
     private BankCard bankCard;
 
     @Enumerated(EnumType.STRING)
@@ -37,15 +35,14 @@ public class Payment {
     private LocalDateTime createDateTime;
 
     @OneToOne
-    @JoinColumn(name = "order_id", referencedColumnName = "id")
-    @NotFound(action = NotFoundAction.IGNORE)
+    @JoinColumn(name = "order_id")
     private Order order;
 
     @Column(name = "sum")
     private BigDecimal sum;
 
     @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @AllArgsConstructor
