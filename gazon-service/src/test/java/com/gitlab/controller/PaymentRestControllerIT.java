@@ -48,8 +48,6 @@ class PaymentRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_get_payment_by_id() throws Exception {
         long id = 1L;
-        PaymentDto paymentDto = generatePaymentDto();
-
         String expected = objectMapper.writeValueAsString(
                 paymentMapper.toDto(
                         paymentService
@@ -109,7 +107,7 @@ class PaymentRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_return_not_found_when_update_payment_by_non_existent_id() throws Exception {
-        long id = 9L;
+        long id = 9000L;
         PaymentDto paymentDto = generatePaymentDto();
 
         String jsonPaymentDto = objectMapper.writeValueAsString(paymentDto);
@@ -137,20 +135,19 @@ class PaymentRestControllerIT extends AbstractIntegrationTest {
     private PaymentDto generatePaymentDto() {
 
         PaymentDto paymentDto = new PaymentDto();
-
+        paymentDto.setId(1L);
         BankCardDto bankCardDto = new BankCardDto();
         bankCardDto.setId(1L);
         bankCardDto.setCardNumber("4828078439696627");
         bankCardDto.setDueDate(LocalDate.parse("2029-09-22"));
         bankCardDto.setSecurityCode(354);
-
         paymentDto.setBankCardDto(bankCardDto);
         paymentDto.setPaymentStatus(Payment.PaymentStatus.PAID);
         paymentDto.setCreateDateTime(LocalDateTime.now());
-
         paymentDto.setOrderId(1L);
         paymentDto.setSum(new BigDecimal(500));
         paymentDto.setUserId(1L);
+
         return paymentDto;
     }
 }
