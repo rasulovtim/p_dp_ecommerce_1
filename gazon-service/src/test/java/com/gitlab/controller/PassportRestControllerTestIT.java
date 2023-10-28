@@ -74,17 +74,7 @@ class PassportRestControllerTestIT extends AbstractIntegrationTest {
 
     @Test
     void should_create_passport() throws Exception {
-        PassportDto passportDto = new PassportDto();
-
-        passportDto.setCitizenship(Passport.Citizenship.RUSSIA);
-        passportDto.setFirstName("testFirstName");
-        passportDto.setLastName("testLastName");
-        passportDto.setPatronym("testPatronym");
-        passportDto.setBirthDate(LocalDate.of(2000, 1, 1));
-        passportDto.setIssueDate(LocalDate.of(2014, 1, 1));
-        passportDto.setPassportNumber("1111 111111");
-        passportDto.setIssuer("Test Otdel Police #1");
-        passportDto.setIssuerNumber("111-111");
+        PassportDto passportDto = generatePassportDto();
 
         String jsonPassportDto = objectMapper.writeValueAsString(passportDto);
 
@@ -98,27 +88,17 @@ class PassportRestControllerTestIT extends AbstractIntegrationTest {
 
     @Test
     void should_update_passport_by_id() throws Exception {
-        Long id = 1L;
+        should_create_passport();
         int numberOfEntitiesExpected = passportService.findAll().size();
-        PassportDto passportDto = new PassportDto();
 
-        passportDto.setFirstName("updFirstName");
-
-        passportDto.setCitizenship(Passport.Citizenship.RUSSIA);
-        passportDto.setLastName("testLastName");
-        passportDto.setPatronym("testPatronym");
-        passportDto.setBirthDate(LocalDate.of(1990, 1, 1));
-        passportDto.setIssueDate(LocalDate.of(2020, 1, 1));
-        passportDto.setPassportNumber("1234 567890");
-        passportDto.setIssuer("Test Otedel police №1");
-        passportDto.setIssuerNumber("111-111");
+        PassportDto passportDto = generatePassportDto();
+        passportDto.setId(passportDto.getId() + 1L);
 
         String jsonPassportDto = objectMapper.writeValueAsString(passportDto);
 
-        passportDto.setId(id);
         String expected = objectMapper.writeValueAsString(passportDto);
 
-        mockMvc.perform(patch(PASSPORT_URI + "/{id}", id)
+        mockMvc.perform(patch(PASSPORT_URI + "/{id}", passportDto.getId())
                         .content(jsonPassportDto)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -131,20 +111,9 @@ class PassportRestControllerTestIT extends AbstractIntegrationTest {
 
     @Test
     void should_return_not_found_when_update_passport_by_non_existent_id() throws Exception {
-        long id = 10L;
-        PassportDto passportDto = new PassportDto();
+        long id = 1000000L;
 
-        passportDto.setFirstName("updFirstName");
-
-        passportDto.setCitizenship(Passport.Citizenship.RUSSIA);
-        passportDto.setLastName("testLastName");
-        passportDto.setPatronym("updatedPatronym");
-        passportDto.setBirthDate(LocalDate.of(2000, 1, 1));
-        passportDto.setIssueDate(LocalDate.of(2014, 1, 1));
-        passportDto.setPassportNumber("1111 111111");
-        passportDto.setIssuer("Test Otdel Police #1");
-        passportDto.setIssuerNumber("111-111");
-
+        PassportDto passportDto = generatePassportDto();
 
         String jsonPassportDto = objectMapper.writeValueAsString(passportDto);
 
@@ -158,12 +127,28 @@ class PassportRestControllerTestIT extends AbstractIntegrationTest {
 
     @Test
     void should_delete_passport_by_id() throws Exception {
-        long id = 5L;
-        mockMvc.perform(delete(PASSPORT_URI + "/{id}", id))
+        PassportDto passportDto = generatePassportDto();
+        mockMvc.perform(delete(PASSPORT_URI + "/{id}", passportDto.getId()))
                 .andDo(print())
                 .andExpect(status().isOk());
-        mockMvc.perform(get(PASSPORT_URI + "/{id}", id))
+        mockMvc.perform(get(PASSPORT_URI + "/{id}", passportDto.getId()))
                 .andDo(print())
                 .andExpect(status().isNotFound());
+    }
+
+    private PassportDto generatePassportDto() {
+        PassportDto passportDto = new PassportDto();
+        passportDto.setId(5L);
+        passportDto.setCitizenship(Passport.Citizenship.RUSSIA);
+        passportDto.setFirstName("Ivan");
+        passportDto.setLastName("Petrov");
+        passportDto.setPatronym("Aleksandrovich");
+        passportDto.setBirthDate(LocalDate.of(2000, 5, 20));
+        passportDto.setIssueDate(LocalDate.of(2014, 6, 10));
+        passportDto.setPassportNumber("1100 123456");
+        passportDto.setIssuer("MVD RUSSIA №10 in Moscow");
+        passportDto.setIssuerNumber("123-456");
+
+        return passportDto;
     }
 }
