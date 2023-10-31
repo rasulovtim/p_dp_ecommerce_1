@@ -1,6 +1,6 @@
 package com.gitlab.controller;
 
-import com.gitlab.controller.api.StoreRestApi;
+import com.gitlab.controllers.api.rest.StoreRestApi;
 import com.gitlab.dto.StoreDto;
 import com.gitlab.mapper.StoreMapper;
 import com.gitlab.model.Store;

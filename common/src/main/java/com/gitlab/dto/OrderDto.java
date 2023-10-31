@@ -1,9 +1,11 @@
 package com.gitlab.dto;
 
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gitlab.model.Order;
+import com.gitlab.enums.OrderStatus;
 import lombok.Data;
+import lombok.Setter;
+import org.springframework.data.annotation.ReadOnlyProperty;
+
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -13,9 +15,10 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
+@Setter
 public class OrderDto {
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @ReadOnlyProperty
     private Long id;
 
     @NotNull(message = "Shipping address should not be null. Please provide a valid shipping address")
@@ -45,7 +48,7 @@ public class OrderDto {
 
     private Set<SelectedProductDto> selectedProducts;
 
-    private Order.OrderStatus orderStatus;
+    private OrderStatus orderStatus;
 
 
 }

@@ -1,6 +1,6 @@
 package com.gitlab.controller;
 
-import com.gitlab.controller.api.PostomatRestApi;
+import com.gitlab.controllers.api.rest.PostomatRestApi;
 import com.gitlab.dto.PostomatDto;
 import com.gitlab.service.PostomatService;
 import lombok.RequiredArgsConstructor;
