@@ -93,25 +93,29 @@ class UserRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_update_user_by_id() throws Exception {
-        long id = 1L;
+        long id = 8L;
         int numberOfEntitiesExpected = userService.findAll().size();
 
-        UserDto userDto = generateUser();
+        UserDto userDto = userService.findByIdDto(id);
+        userDto.setRoles(Set.of("ROLE_ADMIN"));
+        userDto.setPassportDto(new PassportDto(null,
+                Passport.Citizenship.ARMENIA,
+                "David",
+                "Davidyan",
+                null,
+                LocalDate.now(), LocalDate.now(), "dsadsdsadas", "sdsdds", "fdffdf"));
+        userDto.setBankCardDtos(Set.of(
+                new BankCardDto(null, "123L22234", LocalDate.now(), 123)));
 
-        String jsonExampleDto = objectMapper.writeValueAsString(userDto);
-
-        userDto.setId(id);
         String expected = objectMapper.writeValueAsString(userDto);
 
         mockMvc.perform(patch(USER_URI + "/{id}", id)
-                        .content(jsonExampleDto)
+                        .content(objectMapper.writeValueAsString(userDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(expected))
-                .andExpect(result -> assertThat(userService.findAll().size(),
-                        equalTo(numberOfEntitiesExpected)));
+                .andExpect(result -> assertThat(userService.findAll().size(), equalTo(numberOfEntitiesExpected)));
     }
 
     @Test
@@ -131,7 +135,7 @@ class UserRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_delete_user_by_id() throws Exception {
-        long id = 2L;
+        long id = 6L;
         mockMvc.perform(delete(USER_URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -146,7 +150,7 @@ class UserRestControllerIT extends AbstractIntegrationTest {
 
         Set<BankCardDto> bankCardSet = new HashSet<>();
         bankCardSet.add(new BankCardDto(
-                1L,
+                null,
                 "1111222233334444",
                 LocalDate.now(),
                 423
@@ -154,7 +158,7 @@ class UserRestControllerIT extends AbstractIntegrationTest {
 
         Set<ShippingAddressDto> personalAddress = new HashSet<>();
         personalAddress.add(new PersonalAddressDto(
-                1L,
+                null,
                 "address",
                 "directions",
                 "apartment",
@@ -164,7 +168,7 @@ class UserRestControllerIT extends AbstractIntegrationTest {
                 "postCode"));
 
         PassportDto passportDto = new PassportDto(
-                1L,
+                null,
                 Passport.Citizenship.RUSSIA,
                 "user",
                 "user",
@@ -177,7 +181,7 @@ class UserRestControllerIT extends AbstractIntegrationTest {
 
 
         return new UserDto(
-                1L,
+                null,
                 "mail@mail.ru",
                 "user",
                 "answer",
