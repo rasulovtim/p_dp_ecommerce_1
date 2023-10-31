@@ -2,7 +2,10 @@ package com.gitlab.controller;
 
 import com.gitlab.dto.*;
 import com.gitlab.mapper.PaymentMapper;
+import com.gitlab.model.BankCard;
+import com.gitlab.model.Order;
 import com.gitlab.model.Payment;
+import com.gitlab.model.User;
 import com.gitlab.service.PaymentService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +50,28 @@ class PaymentRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_get_payment_by_id() throws Exception {
+
+
         long id = 1L;
+
+//        Payment payment = new Payment();
+//        BankCard bankCard = new BankCard();
+//        bankCard.setId(1L);
+//        User user = new User();
+//        user.setId(1L);
+//        Order order = new Order();
+//        order.setId(1L);
+//        payment.setId(1L);
+//        payment.setOrder(new Order(1L));
+//        payment.setBankCard(bankCard);
+//        payment.setPaymentStatus(Payment.PaymentStatus.PAID);
+//        payment.setCreateDateTime(LocalDateTime.now());
+//        payment.setOrder(order);
+//        payment.setSum(new BigDecimal(200));
+//        payment.setUser(user);
+//        paymentService.save(payment);
+
+
         String expected = objectMapper.writeValueAsString(
                 paymentMapper.toDto(
                         paymentService
@@ -57,6 +81,7 @@ class PaymentRestControllerIT extends AbstractIntegrationTest {
 
         mockMvc.perform(get(PAYMENT_URI + "/{id}", id))
                 .andDo(print())
+//                .andExpect(status().isPartialContent())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
     }
@@ -121,7 +146,7 @@ class PaymentRestControllerIT extends AbstractIntegrationTest {
     }
 
     @Test
-    void should_delete_payment_by_id() throws Exception {
+    void should_remove_payment_by_id() throws Exception {
         long id = 1L;
         PaymentDto paymentDto = generatePaymentDto();
         mockMvc.perform(delete(PAYMENT_URI + "/{id}", id))
