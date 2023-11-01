@@ -1,19 +1,26 @@
 package com.gitlab.controller;
 
-import com.gitlab.dto.*;
+import com.gitlab.dto.OrderDto;
+import com.gitlab.dto.SelectedProductDto;
+import com.gitlab.dto.ShippingAddressDto;
+import com.gitlab.enums.OrderStatus;
 import com.gitlab.mapper.OrderMapper;
-import com.gitlab.model.Order;
 import com.gitlab.service.OrderService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -141,7 +148,7 @@ public class OrderRestControllerIT extends AbstractIntegrationTest {
         orderDto.setSum(new BigDecimal(5));
         orderDto.setDiscount(new BigDecimal(6));
         orderDto.setBagCounter((byte)5);
-        orderDto.setOrderStatus(Order.OrderStatus.DONE);
+        orderDto.setOrderStatus(OrderStatus.DONE);
         return orderDto;
     }
 

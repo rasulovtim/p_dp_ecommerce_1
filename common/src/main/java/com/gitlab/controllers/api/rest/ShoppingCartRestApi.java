@@ -1,21 +1,29 @@
-package com.gitlab.controller.api;
+package com.gitlab.controllers.api.rest;
 
 
 import com.gitlab.dto.ShoppingCartDto;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @Api(tags = "ShoppingCart REST")
 @Tag(name = "ShoppingCart REST", description = "ShoppingCart API description")
-@RequestMapping("/api/shopping_cart")
 public interface ShoppingCartRestApi {
 
-    @GetMapping
+    @GetMapping("/api/shopping_cart")
     @ApiOperation(value = "Get all ShoppingCarts")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "ShoppingCarts found"),
@@ -23,15 +31,15 @@ public interface ShoppingCartRestApi {
     )
     ResponseEntity<List<ShoppingCartDto>> getAll();
 
-    @GetMapping("/{id}")
+    @GetMapping("/api/shopping_cart/{id}")
     @ApiOperation(value = "Get ShoppingCart by id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "ShoppingCart found"),
             @ApiResponse(code = 404, message = "ShoppingCart not found")}
     )
-    ResponseEntity<ShoppingCartDto> get(@ApiParam(name = "id", value = "ShoppingCart.id") @PathVariable Long id);
+    ResponseEntity<ShoppingCartDto> get(@ApiParam(name = "id", value = "ShoppingCart.id") @PathVariable(value = "id") Long id);
 
-    @PostMapping
+    @PostMapping("/api/shopping_cart")
     @ApiOperation(value = "Create ShoppingCart")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "ShoppingCart created"),
@@ -40,23 +48,23 @@ public interface ShoppingCartRestApi {
     ResponseEntity<ShoppingCartDto> create(@ApiParam(name = "ShoppingCart", value = "ShoppingCartDto")
                                            @Valid @RequestBody ShoppingCartDto shoppingCartDto);
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/api/shopping_cart/{id}")
     @ApiOperation(value = "Update ShoppingCart")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "ShoppingCart updated"),
             @ApiResponse(code = 404, message = "Previous ShoppingCart not found"),
             @ApiResponse(code = 400, message = "ShoppingCart not updated")}
     )
-    ResponseEntity<ShoppingCartDto> update(@ApiParam(name = "id", value = "ShoppingCart.id") @PathVariable Long id,
+    ResponseEntity<ShoppingCartDto> update(@ApiParam(name = "id", value = "ShoppingCart.id") @PathVariable(value = "id") Long id,
                                            @ApiParam(name = "ShoppingCart", value = "ShoppingCartDto")
                                            @Valid @RequestBody ShoppingCartDto shoppingCartDto);
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/api/shopping_cart/{id}")
     @ApiOperation(value = "Delete ShoppingCart by id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "ShoppingCart deleted"),
             @ApiResponse(code = 404, message = "ShoppingCart not found")}
     )
-    ResponseEntity<Void> delete(@ApiParam(name = "id", value = "ShoppingCart.id") @PathVariable Long id);
+    ResponseEntity<Void> delete(@ApiParam(name = "id", value = "ShoppingCart.id") @PathVariable(value = "id") Long id);
 
 }

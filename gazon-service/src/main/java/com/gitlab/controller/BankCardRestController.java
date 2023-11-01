@@ -1,6 +1,6 @@
 package com.gitlab.controller;
 
-import com.gitlab.controller.api.BankCardRestApi;
+import com.gitlab.controllers.api.rest.BankCardRestApi;
 import com.gitlab.dto.BankCardDto;
 import com.gitlab.service.BankCardService;
 import lombok.RequiredArgsConstructor;

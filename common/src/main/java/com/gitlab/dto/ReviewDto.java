@@ -2,7 +2,9 @@ package com.gitlab.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
+import org.springframework.data.annotation.ReadOnlyProperty;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -10,9 +12,10 @@ import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 @Data
+@Setter
 public class ReviewDto {
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @ReadOnlyProperty
     private Long id;
 
     @NotNull(message = "Review's productId should not be empty")

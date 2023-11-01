@@ -1,6 +1,6 @@
 package com.gitlab.dto;
 
-import com.gitlab.model.Order;
+import com.gitlab.enums.OrderStatus;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -96,7 +96,7 @@ public class OrderDtoTest extends AbstractDtoTest {
         orderDto.setSum(new BigDecimal(5));
         orderDto.setDiscount(new BigDecimal(6));
         orderDto.setBagCounter((byte) 5);
-        orderDto.setOrderStatus(Order.OrderStatus.ARRIVED);
+        orderDto.setOrderStatus(OrderStatus.ARRIVED);
         return orderDto;
     }
 
