@@ -1,16 +1,18 @@
 package com.gitlab.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.Setter;
+import org.springframework.data.annotation.ReadOnlyProperty;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Data
+@Setter
 public class ReviewImageDto {
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @ReadOnlyProperty
     private Long id;
 
     @NotNull(message = "ReviewImage's reviewId should not be empty")
