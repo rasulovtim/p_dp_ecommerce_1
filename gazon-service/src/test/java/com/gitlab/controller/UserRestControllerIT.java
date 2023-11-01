@@ -5,9 +5,9 @@ import com.gitlab.dto.PassportDto;
 import com.gitlab.dto.PersonalAddressDto;
 import com.gitlab.dto.ShippingAddressDto;
 import com.gitlab.dto.UserDto;
+import com.gitlab.enums.Gender;
 import com.gitlab.mapper.UserMapper;
 import com.gitlab.model.Passport;
-import com.gitlab.model.User;
 import com.gitlab.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -185,7 +185,7 @@ class UserRestControllerIT extends AbstractIntegrationTest {
                 "user",
                 "user",
                 LocalDate.now(),
-                User.Gender.MALE,
+                Gender.MALE,
                 "89007777777",
                 passportDto,
                 personalAddress,

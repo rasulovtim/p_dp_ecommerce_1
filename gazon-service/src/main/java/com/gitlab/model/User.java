@@ -1,5 +1,6 @@
 package com.gitlab.model;
 
+import com.gitlab.enums.Gender;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -73,16 +74,6 @@ public class User {
     @Column(name = "entity_status")
     @Enumerated(EnumType.STRING)
     private EntityStatus entityStatus;
-
-
-    @AllArgsConstructor
-    @Getter
-    public enum Gender {
-        MALE("МУЖСКОЙ"),FEMALE("ЖЕНСКИЙ"),NOT_SPECIFIED("НЕ УКАЗАН");
-
-        private final String sex;
-
-    }
 
     @AllArgsConstructor
     @Getter

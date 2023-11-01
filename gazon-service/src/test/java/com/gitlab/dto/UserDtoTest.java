@@ -1,5 +1,6 @@
 package com.gitlab.dto;
 
+import com.gitlab.enums.Gender;
 import com.gitlab.model.*;
 import org.junit.jupiter.api.Test;
 
@@ -413,7 +414,7 @@ class UserDtoTest extends AbstractDtoTest {
                 "user",
                 "user",
                 LocalDate.of(1900, 1, 1),
-                User.Gender.MALE,
+                Gender.MALE,
                 "89007777777",
                 passport,
                 personalAddress,

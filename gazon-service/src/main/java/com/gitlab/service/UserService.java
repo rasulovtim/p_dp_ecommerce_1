@@ -24,9 +24,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-
     private final BankCardMapper bankCardMapper;
-
     private final PassportMapper passportMapper;
 
     public List<User> findAll() {
@@ -42,7 +40,7 @@ public class UserService {
 
     public Optional<User> findById(Long id) {
         Optional<User> findOptionalUser = userRepository.findById(id);
-        if(findOptionalUser.isPresent() && findOptionalUser.get().getEntityStatus().equals(User.EntityStatus.ACTIVE)) {
+        if (findOptionalUser.isPresent() && findOptionalUser.get().getEntityStatus().equals(User.EntityStatus.ACTIVE)) {
             return findOptionalUser;
         } else {
             return Optional.empty();

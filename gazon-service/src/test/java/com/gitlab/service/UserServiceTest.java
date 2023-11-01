@@ -1,5 +1,6 @@
 package com.gitlab.service;
 
+import com.gitlab.enums.Gender;
 import com.gitlab.model.*;
 import com.gitlab.repository.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -372,7 +373,7 @@ class UserServiceTest {
                 "user",
                 "user",
                 LocalDate.of(1900, 1, 1),
-                User.Gender.MALE,
+                Gender.MALE,
                 "890077777",
                 passport,
                 LocalDate.now(),
@@ -428,7 +429,7 @@ class UserServiceTest {
                 "userBef",
                 "userBef",
                 LocalDate.of(2010, 4, 4),
-                User.Gender.MALE,
+                Gender.MALE,
                 "89007777",
                 passport,
                 LocalDate.now(),
