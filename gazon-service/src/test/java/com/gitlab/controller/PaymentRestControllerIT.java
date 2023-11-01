@@ -146,9 +146,9 @@ class PaymentRestControllerIT extends AbstractIntegrationTest {
     }
 
     @Test
-    void should_remove_payment_by_id() throws Exception {
-        long id = 1L;
-        PaymentDto paymentDto = generatePaymentDto();
+    void should_delete_payment_by_id() throws Exception {
+        long id = 2L;
+
         mockMvc.perform(delete(PAYMENT_URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -171,7 +171,7 @@ class PaymentRestControllerIT extends AbstractIntegrationTest {
         paymentDto.setCreateDateTime(LocalDateTime.now());
         paymentDto.setOrderId(1L);
         paymentDto.setSum(new BigDecimal(500));
-        paymentDto.setUserId(1L);
+        paymentDto.setUserId(2L);
 
         return paymentDto;
     }
