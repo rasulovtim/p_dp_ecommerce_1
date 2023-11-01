@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -41,8 +42,7 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_create_shoppingCart() throws Exception {
-        ShoppingCartDto shoppingCartDto = new ShoppingCartDto();
-        shoppingCartDto.setUserId(1L);
+        ShoppingCartDto shoppingCartDto = generateShoppingCartDto();
         String jsonShoppingCartDto = objectMapper.writeValueAsString(shoppingCartDto);
 
         mockMvc.perform(post(SHOPPING_CART_URI)
@@ -58,8 +58,7 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
     void should_update_shoppingCart_by_id() throws Exception {
         long id = 1L;
         int numberOfEntitiesExpected = shoppingCartService.findAll().size();
-        ShoppingCartDto shoppingCartDto = new ShoppingCartDto();
-        shoppingCartDto.setUserId(2L);
+        ShoppingCartDto shoppingCartDto = generateShoppingCartDto();
         String jsonShoppingCartDto = objectMapper.writeValueAsString(shoppingCartDto);
 
         shoppingCartDto.setId(id);
@@ -80,8 +79,7 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_return_not_found_when_update_shoppingCart_by_non_existent_id() throws Exception {
         long id = 10L;
-        ShoppingCartDto shoppingCartDto = new ShoppingCartDto();
-        shoppingCartDto.setUserId(3L);
+        ShoppingCartDto shoppingCartDto = generateShoppingCartDto();
         String jsonShoppingCartDto = objectMapper.writeValueAsString(shoppingCartDto);
 
         mockMvc.perform(patch(SHOPPING_CART_URI + "/{id}", id)
@@ -127,5 +125,14 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
         mockMvc.perform(get(SHOPPING_CART_URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isNotFound());
+    }
+
+    private ShoppingCartDto generateShoppingCartDto(){
+        ShoppingCartDto shoppingCartDto = new ShoppingCartDto();
+        shoppingCartDto.setUserId(1L);
+        shoppingCartDto.setSum(BigDecimal.valueOf(100));
+        shoppingCartDto.setTotalWeight(500L);
+
+        return  shoppingCartDto;
     }
 }
