@@ -1,7 +1,6 @@
 package com.gitlab.dto;
 
 import com.gitlab.enums.PickupPointFeatures;
-import com.gitlab.model.PickupPoint;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

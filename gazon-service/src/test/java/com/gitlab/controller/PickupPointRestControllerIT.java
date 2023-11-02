@@ -1,6 +1,7 @@
 package com.gitlab.controller;
 
 import com.gitlab.dto.PickupPointDto;
+import com.gitlab.enums.PickupPointFeatures;
 import com.gitlab.mapper.PickupPointMapper;
 import com.gitlab.model.PickupPoint;
 import com.gitlab.service.PickupPointService;
@@ -140,7 +141,7 @@ class PickupPointRestControllerIT extends AbstractIntegrationTest {
         pickupPointDto.setAddress("TestAddress");
         pickupPointDto.setDirections("TestDirections");
         pickupPointDto.setShelfLifeDays((byte) 16);
-        pickupPointDto.setPickupPointFeatures(Set.of(PickupPoint.PickupPointFeatures.values()));
+        pickupPointDto.setPickupPointFeatures(Set.of(PickupPointFeatures.values()));
 
         return pickupPointDto;
     }
