@@ -1,5 +1,6 @@
 package com.gitlab.dto;
 
+import com.gitlab.enums.Gender;
 import com.gitlab.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -50,7 +51,7 @@ public class UserDto {
     private LocalDate birthDate;
 
     @NotNull(message = "User gender cannot be null")
-    private User.Gender gender;
+    private Gender gender;
 
     @Size(min = 1, max = 16, message = "Length of User's phoneNumber should be between 1 and 255 characters")
     @NotEmpty(message = "User's phoneNumber should have at least one character")
