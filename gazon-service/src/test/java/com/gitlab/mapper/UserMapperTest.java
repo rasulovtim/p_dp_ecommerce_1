@@ -2,6 +2,7 @@ package com.gitlab.mapper;
 
 import com.gitlab.controller.AbstractIntegrationTest;
 import com.gitlab.dto.*;
+import com.gitlab.enums.EntityStatus;
 import com.gitlab.enums.Gender;
 import com.gitlab.model.*;
 import org.junit.jupiter.api.Test;
@@ -63,7 +64,7 @@ class UserMapperTest extends AbstractIntegrationTest {
                 bankCardSet,
                 personalAddresses,
                 roleSet,
-                User.EntityStatus.ACTIVE);
+                EntityStatus.ACTIVE);
 
         UserDto actualResult = mapper.toDto(user);
 

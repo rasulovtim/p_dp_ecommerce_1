@@ -1,6 +1,7 @@
 package com.gitlab.service;
 
 import com.gitlab.dto.UserDto;
+import com.gitlab.enums.EntityStatus;
 import com.gitlab.mapper.BankCardMapper;
 import com.gitlab.mapper.PassportMapper;
 import com.gitlab.mapper.UserMapper;
@@ -29,7 +30,7 @@ public class UserService {
 
     public List<User> findAll() {
         return userRepository.findAll()
-                .stream().filter(user -> user.getEntityStatus().equals(User.EntityStatus.ACTIVE))
+                .stream().filter(user -> user.getEntityStatus().equals(EntityStatus.ACTIVE))
                 .collect(Collectors.toList());
     }
 
@@ -40,7 +41,7 @@ public class UserService {
 
     public Optional<User> findById(Long id) {
         Optional<User> findOptionalUser = userRepository.findById(id);
-        if (findOptionalUser.isPresent() && findOptionalUser.get().getEntityStatus().equals(User.EntityStatus.ACTIVE)) {
+        if (findOptionalUser.isPresent() && findOptionalUser.get().getEntityStatus().equals(EntityStatus.ACTIVE)) {
             return findOptionalUser;
         } else {
             return Optional.empty();
@@ -55,7 +56,7 @@ public class UserService {
     @Transactional
     public User save(User user) {
         user.setCreateDate(LocalDate.from(LocalDateTime.now()));
-        user.setEntityStatus(User.EntityStatus.ACTIVE);
+        user.setEntityStatus(EntityStatus.ACTIVE);
         return userRepository.save(user);
     }
 
@@ -149,7 +150,7 @@ public class UserService {
             savedUser.setRolesSet(user.getRolesSet());
         }
 
-        savedUser.setEntityStatus(User.EntityStatus.ACTIVE);
+        savedUser.setEntityStatus(EntityStatus.ACTIVE);
 
         return Optional.of(userRepository.save(savedUser));
     }
@@ -159,7 +160,7 @@ public class UserService {
         Optional<User> optionalDeletedUser = findById(id);
         if (optionalDeletedUser.isPresent()) {
             User deletedUser = optionalDeletedUser.get();
-            deletedUser.setEntityStatus(User.EntityStatus.DELETED);
+            deletedUser.setEntityStatus(EntityStatus.DELETED);
             userRepository.save(deletedUser);
         }
         return optionalDeletedUser;

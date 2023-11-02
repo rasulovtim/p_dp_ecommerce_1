@@ -1,5 +1,6 @@
 package com.gitlab.service;
 
+import com.gitlab.enums.EntityStatus;
 import com.gitlab.enums.Gender;
 import com.gitlab.model.*;
 import com.gitlab.repository.UserRepository;
@@ -303,7 +304,7 @@ class UserServiceTest {
     void should_delete_user() {
         long id = 1L;
         User deletedUser = generateUser(id);
-        deletedUser.setEntityStatus(User.EntityStatus.DELETED);
+        deletedUser.setEntityStatus(EntityStatus.DELETED);
 
         when(userRepository.findById(id)).thenReturn(Optional.of(generateUser()));
 
@@ -380,7 +381,7 @@ class UserServiceTest {
                 bankCardSet,
                 personalAddresses,
                 roleSet,
-                User.EntityStatus.ACTIVE);
+                EntityStatus.ACTIVE);
     }
 
     private User generateUserBefore() {
@@ -436,7 +437,7 @@ class UserServiceTest {
                 bankCardSet,
                 personalAddresses,
                 roleSet,
-                User.EntityStatus.ACTIVE);
+                EntityStatus.ACTIVE);
     }
 
 
