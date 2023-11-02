@@ -2,7 +2,7 @@ package com.gitlab.view;
 
 import com.gitlab.clients.PickupPointClient;
 import com.gitlab.dto.PickupPointDto;
-import com.gitlab.model.PickupPoint;
+import com.gitlab.enums.PickupPointFeatures;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
@@ -18,7 +18,6 @@ import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.binder.ValidationStatusChangeListener;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import com.vaadin.flow.router.Route;
@@ -107,9 +106,9 @@ public class PickupPointView extends VerticalLayout {
 
     private Grid.Column<PickupPointDto> createPickupPointFeaturesColumn() {
         return grid.addColumn(dto -> {
-            Set<PickupPoint.PickupPointFeatures> features = dto.getPickupPointFeatures();
+            Set<PickupPointFeatures> features = dto.getPickupPointFeatures();
             return features.stream()
-                    .map(PickupPoint.PickupPointFeatures::getPickupPointFeatureInRussian)
+                    .map(PickupPointFeatures::getPickupPointFeatureRussianTranslation)
                     .collect(Collectors.joining(", "));
         }).setHeader("Pickup Point Features").setWidth("110px");
     }
@@ -206,9 +205,9 @@ public class PickupPointView extends VerticalLayout {
     private void createPickupPointFeaturesField(Binder<PickupPointDto> binder,
                                         ValidationMessage pickupPointFeaturesValidationMessage,
                                         Grid.Column<PickupPointDto> passportCitizenshipColumn) {
-        MultiSelectComboBox<PickupPoint.PickupPointFeatures> pickupPointFeaturesSelect = new MultiSelectComboBox<>();
-        pickupPointFeaturesSelect.setItems(Arrays.asList(PickupPoint.PickupPointFeatures.values()));
-        pickupPointFeaturesSelect.setItemLabelGenerator(PickupPoint.PickupPointFeatures::getPickupPointFeatureInRussian);
+        MultiSelectComboBox<PickupPointFeatures> pickupPointFeaturesSelect = new MultiSelectComboBox<>();
+        pickupPointFeaturesSelect.setItems(Arrays.asList(PickupPointFeatures.values()));
+        pickupPointFeaturesSelect.setItemLabelGenerator(PickupPointFeatures::getPickupPointFeatureRussianTranslation);
         pickupPointFeaturesSelect.setWidthFull();
         binder.forField(pickupPointFeaturesSelect)
                 .asRequired("Pickup Point's features shouldn't be empty")
@@ -272,9 +271,9 @@ public class PickupPointView extends VerticalLayout {
         IntegerField pickupPointShelfLifeDaysField = new IntegerField("Shelf Life Days");
         pickupPointShelfLifeDaysField.setPlaceholder("Shelf Life Days can contain only integers");
 
-        MultiSelectComboBox<PickupPoint.PickupPointFeatures> pickupPointFeaturesSelect = new MultiSelectComboBox<>("Pickup Point Features");
-        pickupPointFeaturesSelect.setItems(Arrays.asList(PickupPoint.PickupPointFeatures.values()));
-        pickupPointFeaturesSelect.setItemLabelGenerator(PickupPoint.PickupPointFeatures::getPickupPointFeatureInRussian);
+        MultiSelectComboBox<PickupPointFeatures> pickupPointFeaturesSelect = new MultiSelectComboBox<>("Pickup Point Features");
+        pickupPointFeaturesSelect.setItems(Arrays.asList(PickupPointFeatures.values()));
+        pickupPointFeaturesSelect.setItemLabelGenerator(PickupPointFeatures::getPickupPointFeatureRussianTranslation);
         Button createButton = new Button("Create");
         formLayout.add(pickupPointAddressField, pickupPointDescriptionsField,
                 pickupPointShelfLifeDaysField, pickupPointFeaturesSelect, createButton);
