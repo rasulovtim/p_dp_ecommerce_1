@@ -5,6 +5,7 @@ import com.gitlab.dto.PassportDto;
 import com.gitlab.dto.PersonalAddressDto;
 import com.gitlab.dto.ShippingAddressDto;
 import com.gitlab.dto.UserDto;
+import com.gitlab.enums.Citizenship;
 import com.gitlab.mapper.UserMapper;
 import com.gitlab.model.Passport;
 import com.gitlab.model.User;
@@ -165,7 +166,7 @@ class UserRestControllerIT extends AbstractIntegrationTest {
 
         PassportDto passportDto = new PassportDto(
                 1L,
-                Passport.Citizenship.RUSSIA,
+                Citizenship.RUSSIA,
                 "user",
                 "user",
                 "patronym",

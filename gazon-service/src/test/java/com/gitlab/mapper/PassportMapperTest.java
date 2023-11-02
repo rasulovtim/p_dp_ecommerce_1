@@ -1,6 +1,7 @@
 package com.gitlab.mapper;
 
 import com.gitlab.dto.PassportDto;
+import com.gitlab.enums.Citizenship;
 import com.gitlab.model.Passport;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
@@ -17,7 +18,7 @@ class PassportMapperTest {
         Passport passport = new Passport();
 
         passport.setId(1L);
-        passport.setCitizenship(Passport.Citizenship.RUSSIA);
+        passport.setCitizenship(Citizenship.RUSSIA);
         passport.setFirstName("testFirstName");
         passport.setLastName("testLastName");
         passport.setPatronym("testPatronym");
@@ -48,7 +49,7 @@ class PassportMapperTest {
         PassportDto passportDto = new PassportDto();
 
         passportDto.setId(1L);
-        passportDto.setCitizenship(Passport.Citizenship.RUSSIA);
+        passportDto.setCitizenship(Citizenship.RUSSIA);
         passportDto.setFirstName("testFirstName");
         passportDto.setLastName("testLastName");
         passportDto.setPatronym("testPatronym");

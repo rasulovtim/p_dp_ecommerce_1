@@ -1,5 +1,6 @@
 package com.gitlab.dto;
 
+import com.gitlab.enums.Citizenship;
 import com.gitlab.model.Passport;
 import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
@@ -11,7 +12,7 @@ class PassportDtoTest extends AbstractDtoTest {
 
     {
         validPassportDto.setId(1L);
-        validPassportDto.setCitizenship(Passport.Citizenship.RUSSIA);
+        validPassportDto.setCitizenship(Citizenship.RUSSIA);
         validPassportDto.setFirstName("firstName");
         validPassportDto.setLastName("lastName");
         validPassportDto.setPatronym("patronym");
