@@ -1,5 +1,6 @@
 package com.gitlab.model;
 
+import com.gitlab.enums.PickupPointFeatures;
 import lombok.*;
 
 import javax.persistence.*;
@@ -25,17 +26,4 @@ public class PickupPoint extends ShippingAddress {
     @Column(name = "pickup_point_feature")
     @Enumerated(EnumType.STRING)
     private Set<PickupPointFeatures> pickupPointFeatures;
-
-
-    @AllArgsConstructor
-    @Getter
-    public enum PickupPointFeatures {
-        TRY_ON_CLOTHES("Примерка одежды"),
-        TRY_ON_SHOES("Примерка обуви"),
-        DELIVERY_FOR_BUSINESSES("Доставка для юридических лиц"),
-        PARTIAL_ORDER_REDEMPTION("Частичный выкуп заказа"),
-        PRODUCT_RETURNS("Возврат товаров");
-
-        private final String pickupPointFeatureInRussian;
-    }
 }

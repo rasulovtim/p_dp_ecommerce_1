@@ -31,19 +31,4 @@ public abstract class OrderMapper {
     @Mapping(source = "userId", target = "user.id")
     @Mapping(source = "shippingAddressDto", target = "shippingAddress")
     public abstract Order toEntity(OrderDto orderDto);
-
-
-//    protected Set<SelectedProduct> selectedProductDtoSetToSelectedProductSet(Set<SelectedProductDto> set) {
-//        if (set == null) {
-//            return null;
-//        }
-//
-//        Set<SelectedProduct> set1 = new LinkedHashSet<SelectedProduct>(Math.max((int) (set.size() / .75f) + 1, 16));
-//        for (SelectedProductDto selectedProductDto : set) {
-//            set1.add(selectedProductMapper.toEntity(selectedProductDto));
-//        }
-//
-//        return set1;
-//    }
-
 }

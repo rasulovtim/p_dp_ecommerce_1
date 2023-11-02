@@ -1,5 +1,8 @@
 package com.gitlab.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum OrderStatus {
 
         NOT_PAID,
@@ -7,5 +10,4 @@ public enum OrderStatus {
         IN_PROGRESS,
         ARRIVED,
         DONE
-
-    }
+}
