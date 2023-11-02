@@ -1,4 +1,4 @@
-package com.gitlab.controller.api;
+package com.gitlab.controllers.api.rest;
 
 import com.gitlab.dto.*;
 import io.swagger.annotations.*;
