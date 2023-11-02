@@ -1,5 +1,6 @@
 package com.gitlab.model;
 
+import com.gitlab.enums.EntityStatus;
 import com.gitlab.enums.Gender;
 import lombok.*;
 
@@ -75,11 +76,4 @@ public class User {
     @Enumerated(EnumType.STRING)
     private EntityStatus entityStatus;
 
-    @AllArgsConstructor
-    @Getter
-    public enum EntityStatus {
-        ACTIVE("Активный"), DELETED("Удалённый");
-
-        private final String status;
-    }
 }
