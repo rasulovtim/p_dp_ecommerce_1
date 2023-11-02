@@ -2,15 +2,14 @@ package com.gitlab.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
 @AllArgsConstructor
 @Getter
 public enum Gender {
+
     MALE("МУЖСКОЙ"),
     FEMALE("ЖЕНСКИЙ"),
     NOT_SPECIFIED("НЕ УКАЗАН");
 
-    private final String sex;
-
+    private final String sexRussianTranslation;
 }

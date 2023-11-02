@@ -2,7 +2,6 @@ package com.gitlab.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
 @AllArgsConstructor
 @Getter
 public enum PickupPointFeatures {
@@ -13,5 +12,5 @@ public enum PickupPointFeatures {
     PARTIAL_ORDER_REDEMPTION("Частичный выкуп заказа"),
     PRODUCT_RETURNS("Возврат товаров");
 
-    private final String pickupPointFeatureInRussian;
+    private final String pickupPointFeatureRussianTranslation;
 }

@@ -19,5 +19,5 @@ public enum Citizenship {
     UZBEKISTAN("Узбекистан"),
     KYRGYZSTAN("Кыргызстан");
 
-    private final String citizenshipInRussia;
+    private final String citizenshipRussianTranslation;
 }

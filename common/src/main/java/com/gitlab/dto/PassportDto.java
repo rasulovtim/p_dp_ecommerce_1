@@ -1,7 +1,6 @@
 package com.gitlab.dto;
 
 import com.gitlab.enums.Citizenship;
-import com.gitlab.model.Passport;
 import lombok.*;
 import org.springframework.data.annotation.ReadOnlyProperty;
 

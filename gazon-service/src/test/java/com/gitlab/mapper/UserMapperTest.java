@@ -151,7 +151,7 @@ class UserMapperTest extends AbstractIntegrationTest {
                 "user",
                 "user",
                 LocalDate.now(),
-                User.Gender.MALE,
+                Gender.MALE,
                 "89007777777",
                 passport,
                 personalAddress,
