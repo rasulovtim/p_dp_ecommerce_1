@@ -1,7 +1,6 @@
 package com.gitlab.dto;
 
 import com.gitlab.enums.Citizenship;
-import com.gitlab.model.Passport;
 import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;

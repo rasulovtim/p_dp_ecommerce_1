@@ -8,8 +8,6 @@ import com.gitlab.dto.UserDto;
 import com.gitlab.enums.Citizenship;
 import com.gitlab.enums.Gender;
 import com.gitlab.mapper.UserMapper;
-import com.gitlab.model.Passport;
-import com.gitlab.model.User;
 import com.gitlab.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

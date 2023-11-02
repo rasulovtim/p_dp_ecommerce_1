@@ -3,7 +3,6 @@ package com.gitlab.controller;
 import com.gitlab.dto.PickupPointDto;
 import com.gitlab.enums.PickupPointFeatures;
 import com.gitlab.mapper.PickupPointMapper;
-import com.gitlab.model.PickupPoint;
 import com.gitlab.service.PickupPointService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
