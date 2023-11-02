@@ -1,7 +1,6 @@
 package com.gitlab.dto;
 
 import com.gitlab.enums.Gender;
-import com.gitlab.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
