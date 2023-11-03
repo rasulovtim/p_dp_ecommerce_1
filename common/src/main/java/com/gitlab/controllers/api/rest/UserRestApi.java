@@ -1,6 +1,6 @@
 package com.gitlab.controllers.api.rest;
 
-import com.gitlab.dto.UserDto;
+import com.gitlab.dto.*;
 import io.swagger.annotations.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;

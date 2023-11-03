@@ -1,6 +1,6 @@
 package com.gitlab.dto;
 
-import com.gitlab.model.User;
+import com.nimbusds.openid.connect.sdk.claims.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -51,7 +51,7 @@ public class UserDto {
 
     private LocalDate birthDate;
 
-    private User.Gender gender;
+    private Gender gender;
 
     private String phoneNumber;
 }

@@ -2,6 +2,8 @@ package com.gitlab.mapper;
 
 import com.gitlab.controller.AbstractIntegrationTest;
 import com.gitlab.dto.*;
+import com.gitlab.enums.EntityStatus;
+import com.gitlab.enums.Gender;
 import com.gitlab.model.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,13 +57,14 @@ class UserMapperTest extends AbstractIntegrationTest {
                 "user",
                 "user",
                 LocalDate.now(),
-                User.Gender.MALE,
+                Gender.MALE,
                 "89007777777",
                 passport,
                 LocalDate.now(),
                 bankCardSet,
                 personalAddresses,
-                roleSet);
+                roleSet,
+                EntityStatus.ACTIVE);
 
         UserDto actualResult = mapper.toDto(user);
 
@@ -149,7 +152,7 @@ class UserMapperTest extends AbstractIntegrationTest {
                 "user",
                 "user",
                 LocalDate.now(),
-                User.Gender.MALE,
+                Gender.MALE,
                 "89007777777",
                 passport,
                 personalAddress,
