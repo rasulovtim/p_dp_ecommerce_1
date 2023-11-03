@@ -30,17 +30,25 @@ public class UserService {
 
     public List<User> findAll() {
         return userRepository.findAll()
-                .stream().filter(user -> user.getEntityStatus().equals(EntityStatus.ACTIVE))
+                .stream()
+                .filter(user -> user.getEntityStatus().equals(EntityStatus.ACTIVE))
                 .collect(Collectors.toList());
     }
 
     public List<UserDto> findAllDto() {
         List<User> users = userRepository.findAll();
-        return users.stream().map(userMapper::toDto).collect(Collectors.toList());
+        return users
+                .stream()
+                .filter(user -> user.getEntityStatus().equals(EntityStatus.ACTIVE))
+                .map(userMapper::toDto)
+                .collect(Collectors.toList());
     }
 
-    public Optional<UserDto> findByIdDto(Long id) {
+    public Optional<UserDto> findById(Long id) {
         Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent() && optionalUser.get().getEntityStatus().equals(EntityStatus.DELETED)) {
+            return Optional.empty();
+        }
         return optionalUser.map(userMapper::toDto);
     }
 
@@ -63,8 +71,8 @@ public class UserService {
     public Optional<User> update(Long id, User user) {
         Optional<User> optionalSavedUser = userRepository.findById(id);
         User savedUser;
-        if (optionalSavedUser.isEmpty()) {
-            return optionalSavedUser;
+        if (optionalSavedUser.isEmpty() || optionalSavedUser.get().getEntityStatus().equals(EntityStatus.DELETED)) {
+            return Optional.empty();
         } else {
             savedUser = optionalSavedUser.get();
         }
@@ -148,18 +156,21 @@ public class UserService {
     @Transactional
     public Optional<User> delete(Long id) {
         Optional<User> optionalDeletedUser = userRepository.findById(id);
-        if (optionalDeletedUser.isPresent()) {
-            User deletedUser = optionalDeletedUser.get();
-            deletedUser.setEntityStatus(EntityStatus.DELETED);
-            userRepository.save(deletedUser);
+        if (optionalDeletedUser.isEmpty() || optionalDeletedUser.get().getEntityStatus().equals(EntityStatus.DELETED)) {
+            return Optional.empty();
         }
+
+        User deletedUser = optionalDeletedUser.get();
+        deletedUser.setEntityStatus(EntityStatus.DELETED);
+        userRepository.save(deletedUser);
+
         return optionalDeletedUser;
     }
 
     @Transactional
     public UserDto updateDto(Long id, UserDto userDto) {
         Optional<User> optionalSavedUser = userRepository.findById(id);
-        if (optionalSavedUser.isEmpty()) {
+        if (optionalSavedUser.isEmpty() || optionalSavedUser.get().getEntityStatus().equals(EntityStatus.DELETED)) {
             return null;
         }
         User savedUser = optionalSavedUser.get();
@@ -172,10 +183,14 @@ public class UserService {
     @Transactional
     public UserDto deleteDto(Long id) {
         Optional<User> optionalUser = userRepository.findById(id);
-        if (optionalUser.isEmpty()) {
+        if (optionalUser.isEmpty() || optionalUser.get().getEntityStatus().equals(EntityStatus.DELETED)) {
             return null;
         }
-        userRepository.deleteById(id);
+
+        User deletedUser = optionalUser.get();
+        deletedUser.setEntityStatus(EntityStatus.DELETED);
+        userRepository.save(deletedUser);
+
         return userMapper.toDto(optionalUser.get());
     }
 

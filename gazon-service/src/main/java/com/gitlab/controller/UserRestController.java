@@ -38,7 +38,7 @@ public class UserRestController implements UserRestApi {
 
     @Override
     public ResponseEntity<UserDto> get(Long id) {
-        return userService.findByIdDto(id)
+        return userService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
