@@ -39,18 +39,9 @@ public class UserService {
         return users.stream().map(userMapper::toDto).collect(Collectors.toList());
     }
 
-    public Optional<User> findById(Long id) {
-        Optional<User> findOptionalUser = userRepository.findById(id);
-        if (findOptionalUser.isPresent() && findOptionalUser.get().getEntityStatus().equals(EntityStatus.ACTIVE)) {
-            return findOptionalUser;
-        } else {
-            return Optional.empty();
-        }
-    }
-
-    public UserDto findByIdDto(Long id) {
+    public Optional<UserDto> findByIdDto(Long id) {
         Optional<User> optionalUser = userRepository.findById(id);
-        return optionalUser.map(userMapper::toDto).orElse(null);
+        return optionalUser.map(userMapper::toDto);
     }
 
     @Transactional
@@ -70,7 +61,7 @@ public class UserService {
 
     @Transactional
     public Optional<User> update(Long id, User user) {
-        Optional<User> optionalSavedUser = findById(id);
+        Optional<User> optionalSavedUser = userRepository.findById(id);
         User savedUser;
         if (optionalSavedUser.isEmpty()) {
             return optionalSavedUser;
@@ -145,7 +136,6 @@ public class UserService {
             }
             savedUser.setBankCardsSet(newCard);
         }
-
         if (user.getRolesSet() != null) {
             savedUser.setRolesSet(user.getRolesSet());
         }
@@ -157,7 +147,7 @@ public class UserService {
 
     @Transactional
     public Optional<User> delete(Long id) {
-        Optional<User> optionalDeletedUser = findById(id);
+        Optional<User> optionalDeletedUser = userRepository.findById(id);
         if (optionalDeletedUser.isPresent()) {
             User deletedUser = optionalDeletedUser.get();
             deletedUser.setEntityStatus(EntityStatus.DELETED);
@@ -174,7 +164,7 @@ public class UserService {
         }
         User savedUser = optionalSavedUser.get();
 
-        savedUser = updateUserFields(savedUser, userDto, bankCardMapper);
+        updateUserFields(savedUser, userDto, bankCardMapper);
         User updatedUser = userRepository.save(savedUser);
         return userMapper.toDto(updatedUser);
     }
