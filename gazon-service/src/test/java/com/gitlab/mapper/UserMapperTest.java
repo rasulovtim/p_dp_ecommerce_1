@@ -63,7 +63,8 @@ class UserMapperTest extends AbstractIntegrationTest {
                 LocalDate.now(),
                 bankCardSet,
                 personalAddresses,
-                roleSet);
+                roleSet,
+                EntityStatus.ACTIVE);
 
         UserDto actualResult = mapper.toDto(user);
 
