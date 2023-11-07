@@ -23,6 +23,7 @@
         <module>security-service</module>
         <module>api-gateway</module>
         <module>gazon-frontend</module>
+        <module>data-generator</module>
     </modules>
 
     <properties>
