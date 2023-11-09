@@ -2,8 +2,8 @@ package com.gitlab.view;
 
 import com.gitlab.clients.UserClient;
 import com.gitlab.dto.*;
+import com.gitlab.enums.Citizenship;
 import com.gitlab.enums.Gender;
-import com.gitlab.model.Passport;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -241,10 +241,10 @@ public class UserView extends VerticalLayout {
 
 
         // Passport DTO layer
-        Select<Passport.Citizenship> passportCitizenshipField = new Select<>();
+        Select<Citizenship> passportCitizenshipField = new Select<>();
         passportCitizenshipField.setLabel("Citizenship");
-        passportCitizenshipField.setItems(Arrays.asList(Passport.Citizenship.values()));
-        passportCitizenshipField.setItemLabelGenerator(Passport.Citizenship::getCitizenshipInRussia);
+        passportCitizenshipField.setItems(Arrays.asList(Citizenship.values()));
+        passportCitizenshipField.setItemLabelGenerator(Citizenship::getCitizenshipRussianTranslation);
         TextField passportPatronymField = new TextField("Your patronym");
         DatePicker passportIssueDateField = new DatePicker("Issue date");
         TextField passportNumberField = new TextField("Passport number");

@@ -1,6 +1,7 @@
 package com.gitlab.service;
 
 import com.gitlab.dto.*;
+import com.gitlab.enums.Citizenship;
 import com.gitlab.enums.EntityStatus;
 import com.gitlab.enums.Gender;
 import com.gitlab.mapper.UserMapper;
@@ -364,7 +365,7 @@ class UserServiceTest {
 
         Passport passport = new Passport(
                 1L,
-                Passport.Citizenship.RUSSIA,
+                Citizenship.RUSSIA,
                 "user",
                 "user",
                 "paonym",
@@ -420,7 +421,7 @@ class UserServiceTest {
 
         Passport passport = new Passport(
                 1L,
-                Passport.Citizenship.RUSSIA,
+                Citizenship.RUSSIA,
                 "userBef",
                 "userBef",
                 "patroBef",
@@ -467,7 +468,7 @@ class UserServiceTest {
 
         PassportDto passportDto = new PassportDto(
                 1L,
-                Passport.Citizenship.RUSSIA,
+                Citizenship.RUSSIA,
                 "user",
                 "user",
                 "paonym",

@@ -5,9 +5,9 @@ import com.gitlab.dto.PassportDto;
 import com.gitlab.dto.PersonalAddressDto;
 import com.gitlab.dto.ShippingAddressDto;
 import com.gitlab.dto.UserDto;
+import com.gitlab.enums.Citizenship;
 import com.gitlab.enums.Gender;
 import com.gitlab.mapper.UserMapper;
-import com.gitlab.model.Passport;
 import com.gitlab.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,6 @@ import org.springframework.http.MediaType;
 
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -58,9 +57,9 @@ class UserRestControllerIT extends AbstractIntegrationTest {
     void should_get_user_by_id() throws Exception {
         long id = 1L;
         String expected = objectMapper.writeValueAsString(
-                userService
-                        .findById(id)
-                        .orElse(null)
+                        userService
+                                .findById(id)
+                                .orElse(null)
         );
 
         mockMvc.perform(get(USER_URI + "/{id}", id))
@@ -99,7 +98,7 @@ class UserRestControllerIT extends AbstractIntegrationTest {
         UserDto userDto = userService.findById(id).get();
         userDto.setRoles(Set.of("ROLE_ADMIN"));
         userDto.setPassportDto(new PassportDto(null,
-                Passport.Citizenship.ARMENIA,
+                Citizenship.ARMENIA,
                 "David",
                 "Davidyan",
                 null,
@@ -150,7 +149,7 @@ class UserRestControllerIT extends AbstractIntegrationTest {
 
         Set<BankCardDto> bankCardSet = new HashSet<>();
         bankCardSet.add(new BankCardDto(
-                null,
+                1L,
                 "1111222233334444",
                 LocalDate.now(),
                 423
@@ -158,7 +157,7 @@ class UserRestControllerIT extends AbstractIntegrationTest {
 
         Set<ShippingAddressDto> personalAddress = new HashSet<>();
         personalAddress.add(new PersonalAddressDto(
-                null,
+                1L,
                 "address",
                 "directions",
                 "apartment",
@@ -168,8 +167,8 @@ class UserRestControllerIT extends AbstractIntegrationTest {
                 "postCode"));
 
         PassportDto passportDto = new PassportDto(
-                null,
-                Passport.Citizenship.RUSSIA,
+                1L,
+                Citizenship.RUSSIA,
                 "user",
                 "user",
                 "patronym",
@@ -181,7 +180,7 @@ class UserRestControllerIT extends AbstractIntegrationTest {
 
 
         return new UserDto(
-                null,
+                1L,
                 "mail@mail.ru",
                 "user",
                 "answer",
