@@ -20,5 +20,5 @@ public interface UserDtoGeneratorRestApi {
             @ApiResponse(code = 400, message = "UserDto not generated")}
     )
     ResponseEntity<List<UserDto>> generateUserDto(@ApiParam(name = "count", value = "The count of UserDto to create")
-                                            @RequestParam int count);
+                                            @RequestParam(name = "count") int count);
 }

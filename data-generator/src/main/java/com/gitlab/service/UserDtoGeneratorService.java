@@ -19,50 +19,61 @@ public class UserDtoGeneratorService {
     private final UserDtoGeneratorClient userDtoGeneratorClient;
 
     public UserDto generateUserDto() {
-        Set<Role> roleSet = new HashSet<>();
-        roleSet.add(new Role(1L, "ROLE_ADMIN"));
-
-        Set<BankCardDto> bankCardSet = new HashSet<>();
-        bankCardSet.add(new BankCardDto(1L, "0000000000000", LocalDate.of(1900, 1, 1), 777));
-
-        Set<ShippingAddressDto> personalAddresses = new HashSet<>();
-        personalAddresses.add(new PersonalAddressDto(1L,
-                "address",
-                "direction",
-                "apartment",
-                "floor",
-                "entance",
-                "doorode",
-                "postode"));
-
-        PassportDto passportDto = new PassportDto(
-                1L,
-                Passport.Citizenship.RUSSIA,
-                "user",
-                "user",
-                "paonym",
-                LocalDate.of(2000, 5, 15),
-                LocalDate.of(2000, 5, 15),
-                "09865",
-                "isuer",
-                "issurN");
-
-         UserDto userDto = new UserDto(1L,
-                "user",
-                "user",
-                "anwer",
-                "queion",
-                "user",
-                "user",
-                LocalDate.of(1900, 1, 1),
-                Gender.MALE,
-                "890077777",
-                passportDto,
-                personalAddresses,
-                bankCardSet,
-                roleSet.stream().map(Role::toString).collect(Collectors.toSet()));
+         UserDto userDto = createData();
 
          userDtoGeneratorClient.create(userDto);
          return userDto;
+    }
+
+    public UserDto createData() {
+        //TODO добавить рандомные значения к полям
+        Set<Role> roleSet = new HashSet<>();
+        roleSet.add(new Role(1L, "ROLE_USER_JUNIOR")); //TODO проверить, что за id в ROLE
+
+        Set<BankCardDto> bankCardSet = new HashSet<>();
+        BankCardDto bankCardDto = new BankCardDto();
+        bankCardDto.setCardNumber("0000000000000");
+        bankCardDto.setDueDate(LocalDate.of(1900, 1, 1));
+        bankCardDto.setSecurityCode(777);
+        bankCardSet.add(bankCardDto);
+
+        Set<ShippingAddressDto> personalAddresses = new HashSet<>();
+        PersonalAddressDto personalAddressDto = new PersonalAddressDto();
+        personalAddressDto.setAddress("address");
+        personalAddressDto.setDirections("direction");
+        personalAddressDto.setApartment("apartment");
+        personalAddressDto.setFloor("floor");
+        personalAddressDto.setEntrance("entance");
+        personalAddressDto.setDoorCode("doorode");
+        personalAddressDto.setPostCode("postode");
+        personalAddresses.add(personalAddressDto);
+
+        PassportDto passportDto = new PassportDto();
+        passportDto.setCitizenship(Passport.Citizenship.RUSSIA);
+        passportDto.setFirstName("user");
+        passportDto.setLastName("user");
+        passportDto.setBirthDate(LocalDate.of(2000, 5, 15));
+        passportDto.setIssueDate(LocalDate.of(2000, 5, 15));
+        passportDto.setPassportNumber("09865");
+        passportDto.setIssuer("isuer");
+        passportDto.setIssuerNumber("issurN");
+
+        UserDto userDto = new UserDto();
+        userDto.setEmail("user");
+        userDto.setPassword("user");
+        userDto.setSecurityQuestion("answer");
+        userDto.setSecurityQuestion("queion");
+        userDto.setFirstName("user");
+        userDto.setLastName("user");
+        userDto.setBirthDate(LocalDate.of(1900, 1, 1));
+        userDto.setGender(Gender.MALE);
+        userDto.setPhoneNumber("890077777");
+        userDto.setPassportDto(passportDto);
+        userDto.setShippingAddressDtos(personalAddresses);
+        userDto.setBankCardDtos(bankCardSet);
+        userDto.setRoles(roleSet.stream().map(Role::toString).collect(Collectors.toSet()));
+
+
+        return userDto;
     }
 }
