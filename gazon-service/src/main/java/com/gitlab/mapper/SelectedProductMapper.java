@@ -22,6 +22,9 @@ public abstract class SelectedProductMapper {
     @Autowired
     protected UserService userService;
 
+    @Autowired
+    protected UserMapper userMapper;
+
     @Mapping(source = "product.id", target = "productId")
     @Mapping(source = "user.id", target = "userId")
     public abstract SelectedProductDto toDto(SelectedProduct selectedProduct);
@@ -49,6 +52,7 @@ public abstract class SelectedProductMapper {
             return null;
         }
         return userService.findById(userId)
+                .map(userMapper::toEntity)
                 .orElseThrow(() -> new RuntimeException("User wasn't found"));
     }
 }

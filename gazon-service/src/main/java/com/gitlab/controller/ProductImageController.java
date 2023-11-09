@@ -1,6 +1,6 @@
 package com.gitlab.controller;
 
-import com.gitlab.controller.api.ProductImageRestApi;
+import com.gitlab.controllers.api.rest.ProductImageRestApi;
 import com.gitlab.dto.ProductImageDto;
 import com.gitlab.mapper.ProductImageMapper;
 import com.gitlab.model.ProductImage;

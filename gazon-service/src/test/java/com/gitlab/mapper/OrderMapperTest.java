@@ -1,18 +1,22 @@
 package com.gitlab.mapper;
+
 import com.gitlab.controller.AbstractIntegrationTest;
-import org.junit.jupiter.api.Test;
 import com.gitlab.dto.OrderDto;
 import com.gitlab.dto.SelectedProductDto;
+import com.gitlab.enums.OrderStatus;
 import com.gitlab.model.Order;
 import com.gitlab.model.ShippingAddress;
 import com.gitlab.model.User;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 public class OrderMapperTest extends AbstractIntegrationTest {
@@ -40,7 +44,7 @@ public class OrderMapperTest extends AbstractIntegrationTest {
         order.setBagCounter((byte)5);
         order.setUser(new User());
         order.setSelectedProducts(Set.of());
-        order.setOrderStatus(Order.OrderStatus.IN_PROGRESS);
+        order.setOrderStatus(OrderStatus.IN_PROGRESS);
 
         OrderDto actualResult = mapper.toDto(order);
 
@@ -71,7 +75,7 @@ public class OrderMapperTest extends AbstractIntegrationTest {
         orderDto.setSum(new BigDecimal(5));
         orderDto.setDiscount(new BigDecimal(6));
         orderDto.setBagCounter((byte) 5);
-        orderDto.setOrderStatus(Order.OrderStatus.ARRIVED);
+        orderDto.setOrderStatus(OrderStatus.ARRIVED);
 
         Order actualResult = mapper.toEntity(orderDto);
 

@@ -1,6 +1,6 @@
 package com.gitlab.controller;
 
-import com.gitlab.controller.api.SelectedProductRestAPI;
+import com.gitlab.controllers.api.rest.SelectedProductRestAPI;
 import com.gitlab.dto.SelectedProductDto;
 import com.gitlab.model.SelectedProduct;
 import com.gitlab.service.SelectedProductService;

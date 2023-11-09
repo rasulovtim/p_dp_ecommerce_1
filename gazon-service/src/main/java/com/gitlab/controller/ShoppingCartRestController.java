@@ -1,27 +1,22 @@
 package com.gitlab.controller;
 
 
-import com.gitlab.controller.api.ShoppingCartRestApi;
+import com.gitlab.controllers.api.rest.ShoppingCartRestApi;
 import com.gitlab.dto.ShoppingCartDto;
 import com.gitlab.mapper.ShoppingCartMapper;
 import com.gitlab.model.ShoppingCart;
 import com.gitlab.service.ShoppingCartService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Hibernate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
-import org.hibernate.Hibernate;
-
-import java.util.stream.Collectors;
-
-
-import java.util.List;
-import java.util.Optional;
-
-import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.EntityManager;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @RestController

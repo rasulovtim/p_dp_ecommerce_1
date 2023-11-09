@@ -16,6 +16,9 @@ public abstract class OrderMapper {
     @Autowired
     protected UserService userService;
 
+    @Autowired
+    protected UserMapper userMapper;
+
     @Mapping(source = "user.id", target = "userId")
     @Mapping(source = "shippingAddress", target = "shippingAddressDto")
     public abstract OrderDto toDto(Order order);
@@ -25,6 +28,7 @@ public abstract class OrderMapper {
             return null;
         }
         return userService.findById(userId)
+                .map(userMapper::toEntity)
                 .orElseThrow(() -> new RuntimeException("User wasn't found"));
     }
 

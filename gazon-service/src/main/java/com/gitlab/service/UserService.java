@@ -1,6 +1,7 @@
 package com.gitlab.service;
 
 import com.gitlab.dto.UserDto;
+import com.gitlab.enums.EntityStatus;
 import com.gitlab.mapper.BankCardMapper;
 import com.gitlab.mapper.PassportMapper;
 import com.gitlab.mapper.UserMapper;
@@ -25,32 +26,37 @@ public class UserService {
     private final UserRepository userRepository;
 
     private final UserMapper userMapper;
-
     private final BankCardMapper bankCardMapper;
-
     private final PassportMapper passportMapper;
 
     public List<User> findAll() {
-        return userRepository.findAll();
+        return userRepository.findAll()
+                .stream()
+                .filter(user -> user.getEntityStatus().equals(EntityStatus.ACTIVE))
+                .collect(Collectors.toList());
     }
 
     public List<UserDto> findAllDto() {
         List<User> users = userRepository.findAll();
-        return users.stream().map(userMapper::toDto).collect(Collectors.toList());
+        return users
+                .stream()
+                .filter(user -> user.getEntityStatus().equals(EntityStatus.ACTIVE))
+                .map(userMapper::toDto)
+                .collect(Collectors.toList());
     }
 
-    public Optional<User> findById(Long id) {
-        return userRepository.findById(id);
-    }
-
-    public UserDto findByIdDto(Long id) {
+    public Optional<UserDto> findById(Long id) {
         Optional<User> optionalUser = userRepository.findById(id);
-        return optionalUser.map(userMapper::toDto).orElse(null);
+        if (optionalUser.isPresent() && optionalUser.get().getEntityStatus().equals(EntityStatus.DELETED)) {
+            return Optional.empty();
+        }
+        return optionalUser.map(userMapper::toDto);
     }
 
     @Transactional
     public User save(User user) {
         user.setCreateDate(LocalDate.from(LocalDateTime.now()));
+        user.setEntityStatus(EntityStatus.ACTIVE);
         return userRepository.save(user);
     }
 
@@ -64,10 +70,10 @@ public class UserService {
 
     @Transactional
     public Optional<User> update(Long id, User user) {
-        Optional<User> optionalSavedUser = findById(id);
+        Optional<User> optionalSavedUser = userRepository.findById(id);
         User savedUser;
-        if (optionalSavedUser.isEmpty()) {
-            return optionalSavedUser;
+        if (optionalSavedUser.isEmpty() || optionalSavedUser.get().getEntityStatus().equals(EntityStatus.DELETED)) {
+            return Optional.empty();
         } else {
             savedUser = optionalSavedUser.get();
         }
@@ -139,33 +145,38 @@ public class UserService {
             }
             savedUser.setBankCardsSet(newCard);
         }
-
         if (user.getRolesSet() != null) {
             savedUser.setRolesSet(user.getRolesSet());
         }
+
+        savedUser.setEntityStatus(EntityStatus.ACTIVE);
+
         return Optional.of(userRepository.save(savedUser));
     }
 
     @Transactional
     public Optional<User> delete(Long id) {
-        Optional<User> optionalSavedExample = findById(id);
-        if (optionalSavedExample.isEmpty()) {
-            return optionalSavedExample;
-        } else {
-            userRepository.deleteById(id);
-            return optionalSavedExample;
+        Optional<User> optionalDeletedUser = userRepository.findById(id);
+        if (optionalDeletedUser.isEmpty() || optionalDeletedUser.get().getEntityStatus().equals(EntityStatus.DELETED)) {
+            return Optional.empty();
         }
+
+        User deletedUser = optionalDeletedUser.get();
+        deletedUser.setEntityStatus(EntityStatus.DELETED);
+        userRepository.save(deletedUser);
+
+        return optionalDeletedUser;
     }
 
     @Transactional
     public UserDto updateDto(Long id, UserDto userDto) {
         Optional<User> optionalSavedUser = userRepository.findById(id);
-        if (optionalSavedUser.isEmpty()) {
+        if (optionalSavedUser.isEmpty() || optionalSavedUser.get().getEntityStatus().equals(EntityStatus.DELETED)) {
             return null;
         }
         User savedUser = optionalSavedUser.get();
 
-        savedUser = updateUserFields(savedUser, userDto, bankCardMapper);
+        updateUserFields(savedUser, userDto, bankCardMapper);
         User updatedUser = userRepository.save(savedUser);
         return userMapper.toDto(updatedUser);
     }
@@ -173,10 +184,14 @@ public class UserService {
     @Transactional
     public UserDto deleteDto(Long id) {
         Optional<User> optionalUser = userRepository.findById(id);
-        if (optionalUser.isEmpty()) {
+        if (optionalUser.isEmpty() || optionalUser.get().getEntityStatus().equals(EntityStatus.DELETED)) {
             return null;
         }
-        userRepository.deleteById(id);
+
+        User deletedUser = optionalUser.get();
+        deletedUser.setEntityStatus(EntityStatus.DELETED);
+        userRepository.save(deletedUser);
+
         return userMapper.toDto(optionalUser.get());
     }
 

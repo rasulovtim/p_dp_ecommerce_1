@@ -3,6 +3,7 @@ package com.gitlab.service;
 
 import com.gitlab.model.User;
 import com.gitlab.repository.UserRepository;
+import com.nimbusds.openid.connect.sdk.claims.Gender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
@@ -44,7 +45,7 @@ public class MyOidcUserService extends OidcUserService {
         user.setAnswerQuestion("ansQ");
         user.setBirthDate(LocalDate.now());
         user.setPhoneNumber("12345");
-        user.setGender(User.Gender.MALE);
+        user.setGender(Gender.MALE);
 
             userRepository.save(user);
 

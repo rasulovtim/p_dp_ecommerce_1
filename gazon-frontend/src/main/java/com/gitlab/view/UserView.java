@@ -2,8 +2,8 @@ package com.gitlab.view;
 
 import com.gitlab.clients.UserClient;
 import com.gitlab.dto.*;
+import com.gitlab.enums.Gender;
 import com.gitlab.model.Passport;
-import com.gitlab.model.User;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -232,10 +232,10 @@ public class UserView extends VerticalLayout {
         PasswordField userPasswordField = new PasswordField("Password");
         TextField userSecurityQuestionField = new TextField("Security question");
         TextField userAnswerQuestionField = new TextField("Answer question");
-        Select<User.Gender> userGenders = new Select<>();
+        Select<Gender> userGenders = new Select<>();
         userGenders.setLabel("Gender");
-        userGenders.setItems(Arrays.asList(User.Gender.values()));
-        userGenders.setItemLabelGenerator(User.Gender::getSex);
+        userGenders.setItems(Arrays.asList(Gender.values()));
+        userGenders.setItemLabelGenerator(Gender::getSex);
         TextField userPhoneNumberField = new TextField("Phone number");
         TextField userRoleField = new TextField("User role");
 

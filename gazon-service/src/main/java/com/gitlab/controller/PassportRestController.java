@@ -1,6 +1,6 @@
 package com.gitlab.controller;
 
-import com.gitlab.controller.api.PassportRestApi;
+import com.gitlab.controllers.api.rest.PassportRestApi;
 import com.gitlab.dto.PassportDto;
 import com.gitlab.service.PassportService;
 import lombok.RequiredArgsConstructor;

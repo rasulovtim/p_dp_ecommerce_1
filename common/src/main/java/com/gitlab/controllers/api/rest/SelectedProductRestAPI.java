@@ -1,21 +1,29 @@
-package com.gitlab.controller.api;
+package com.gitlab.controllers.api.rest;
 
 import com.gitlab.dto.SelectedProductDto;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @Api(tags = "SelectedProduct REST")
 @Tag(name = "SelectedProduct REST", description = "SelectedProduct API description")
-@RequestMapping("/api/selected_product")
 public interface SelectedProductRestAPI {
 
 
-    @GetMapping
+    @GetMapping("/api/selected_product")
     @ApiOperation(value = "Get all SelectedProduct")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "SelectedProduct found"),
@@ -23,40 +31,41 @@ public interface SelectedProductRestAPI {
     )
     ResponseEntity<List<SelectedProductDto>> getAll();
 
-    @GetMapping("/{id}")
+    @GetMapping("/api/selected_product/{id}")
     @ApiOperation(value = "Get SelectedProduct by id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "SelectedProduct found"),
             @ApiResponse(code = 404, message = "SelectedProduct not found")}
     )
-    ResponseEntity<SelectedProductDto> get(@ApiParam(name = "id", value = "SelectedProduct.id") @PathVariable Long id);
+    ResponseEntity<SelectedProductDto> get(@ApiParam(name = "id", value = "SelectedProduct.id") @PathVariable(value = "id") Long id);
 
-    @PostMapping
+    @PostMapping("/api/selected_product")
     @ApiOperation(value = "Create SelectedProduct")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "SelectedProduct created"),
             @ApiResponse(code = 400, message = "SelectedProduct not created")}
     )
     ResponseEntity<SelectedProductDto> create(@ApiParam(name = "SelectedProduct", value = "SelectedProductDto")
-                                      @Valid @RequestBody SelectedProductDto selectedProductDto);
+                                              @Valid @RequestBody SelectedProductDto selectedProductDto);
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/api/selected_product/{id}")
     @ApiOperation(value = "Update SelectedProduct")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "SelectedProduct updated"),
             @ApiResponse(code = 404, message = "Previous SelectedProduct not found"),
             @ApiResponse(code = 400, message = "SelectedProduct not updated")}
     )
-    ResponseEntity<SelectedProductDto> update(@ApiParam(name = "id", value = "SelectedProduct.id") @PathVariable Long id,
-                                      @ApiParam(name = "SelectedProduct", value = "SelectedProductDto")
-                                      @Valid @RequestBody SelectedProductDto selectedProductDto);
+    ResponseEntity<SelectedProductDto> update(@ApiParam(name = "id", value = "SelectedProduct.id") @PathVariable(value = "id") Long id,
+                                              @ApiParam(name = "SelectedProduct", value = "SelectedProductDto")
+                                              @Valid @RequestBody SelectedProductDto selectedProductDto);
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/api/selected_product/{id}")
     @ApiOperation(value = "Delete SelectedProduct by id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "SelectedProduct deleted"),
             @ApiResponse(code = 404, message = "SelectedProduct not found")}
     )
-    ResponseEntity<Void> delete(@ApiParam(name = "id", value = "SelectedProduct.id") @PathVariable Long id);
+    ResponseEntity<Void> delete(@ApiParam(name = "id", value = "SelectedProduct.id") @PathVariable(value = "id") Long id);
+
 
 }

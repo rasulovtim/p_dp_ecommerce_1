@@ -4,9 +4,11 @@ import com.gitlab.dto.UserDto;
 import com.gitlab.model.Role;
 import com.gitlab.model.User;
 import com.gitlab.service.RoleService;
+import com.nimbusds.openid.connect.sdk.claims.Gender;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
+import org.mapstruct.Named;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collections;
@@ -21,7 +23,19 @@ public abstract class UserMapper {
     private RoleService roleService;
 
     @Mapping(source = "rolesSet", target = "roles")
+    @Mapping(source = "gender", target = "gender", qualifiedByName = "mapGender")
     public abstract UserDto toDto(User user);
+
+    @Named("mapGender")
+    static Gender mapGender(String value) {
+        if (Gender.MALE.getValue().equals(value)) {
+            return Gender.MALE;
+        } else if (Gender.FEMALE.getValue().equals(value)) {
+            return Gender.FEMALE;
+        } else {
+            throw new RuntimeException("mapGender: Gender mapping exception");
+        }
+    }
 
     public Set<String> mapStringSetToRoleSet(Set<Role> roleSet) {
         Set<String> stringSet = new HashSet<>();
