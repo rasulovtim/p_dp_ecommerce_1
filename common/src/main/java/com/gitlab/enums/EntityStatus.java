@@ -7,7 +7,10 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum EntityStatus {
-    ACTIVE("Активный"), DELETED("Удалённый");
+
+    ACTIVE("Активный"),
+
+    DELETED("Удалённый");
 
     private final String status;
 }

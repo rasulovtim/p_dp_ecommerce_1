@@ -1,5 +1,6 @@
 package com.gitlab.model;
 
+import com.gitlab.enums.Citizenship;
 import lombok.*;
 
 import javax.persistence.*;
@@ -43,15 +44,4 @@ public class Passport {
 
     @Column(name = "issuer_number")
     private String issuerNumber;
-
-    @AllArgsConstructor
-    @Getter
-    public enum Citizenship {
-        UKRAINE("Украина"), BELARUS("Беларусь"), RUSSIA("Россия"), KAZAKHSTAN("Казахстан"), AZERBAIJAN("Азербайджан"),
-        ARMENIA("Армения"), GEORGIA("Грузия"), MOLDOVA("Молдова"), TAJIKISTAN("Таджикистан"),
-        TURKMENISTAN("Туркменистан"), UZBEKISTAN("Узбекистан"), KYRGYZSTAN("Кыргызстан");
-
-        private final String citizenshipInRussia;
-
-    }
 }

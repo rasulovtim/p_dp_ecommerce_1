@@ -2,7 +2,7 @@ package com.gitlab.view;
 
 import com.gitlab.clients.PassportClient;
 import com.gitlab.dto.PassportDto;
-import com.gitlab.model.Passport;
+import com.gitlab.enums.Citizenship;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -193,9 +193,9 @@ public class PassportView extends VerticalLayout {
     private void createCitizenshipField(Binder<PassportDto> binder,
                                         ValidationMessage passportCitizenshipValidationMessage,
                                         Grid.Column<PassportDto> passportCitizenshipColumn) {
-        Select<Passport.Citizenship> passportTextField = new Select<>();
-        passportTextField.setItems(Arrays.asList(Passport.Citizenship.values()));
-        passportTextField.setItemLabelGenerator(Passport.Citizenship::getCitizenshipInRussia);
+        Select<Citizenship> passportTextField = new Select<>();
+        passportTextField.setItems(Arrays.asList(Citizenship.values()));
+        passportTextField.setItemLabelGenerator(Citizenship::getCitizenshipRussianTranslation);
         passportTextField.setWidthFull();
         binder.forField(passportTextField)
                 .asRequired("Passport's firstname shouldn't be empty")
@@ -292,10 +292,10 @@ public class PassportView extends VerticalLayout {
         passportFirstNameField.setPlaceholder("First name can contain only letters");
         TextField passportPatronymField = new TextField("Patronym");
         passportPatronymField.setPlaceholder("Patronym can contain only letters");
-        Select<Passport.Citizenship> passportCitizenshipField = new Select<>();
+        Select<Citizenship> passportCitizenshipField = new Select<>();
         passportCitizenshipField.setLabel("Citizenship");
-        passportCitizenshipField.setItems(Arrays.asList(Passport.Citizenship.values()));
-        passportCitizenshipField.setItemLabelGenerator(Passport.Citizenship::getCitizenshipInRussia);
+        passportCitizenshipField.setItems(Arrays.asList(Citizenship.values()));
+        passportCitizenshipField.setItemLabelGenerator(Citizenship::getCitizenshipRussianTranslation);
         DatePicker passportIssueDateField = new DatePicker("Issue date");
         passportIssueDateField.setPlaceholder("dd.mm.yyyy");
         DatePicker passportBirthDateField = new DatePicker("Birth date");

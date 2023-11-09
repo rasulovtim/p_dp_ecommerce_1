@@ -2,6 +2,7 @@ package com.gitlab.mapper;
 
 import com.gitlab.controller.AbstractIntegrationTest;
 import com.gitlab.dto.*;
+import com.gitlab.enums.Citizenship;
 import com.gitlab.enums.EntityStatus;
 import com.gitlab.enums.Gender;
 import com.gitlab.model.*;
@@ -39,7 +40,7 @@ class UserMapperTest extends AbstractIntegrationTest {
 
         Passport passport = new Passport(
                 1L,
-                Passport.Citizenship.RUSSIA,
+                Citizenship.RUSSIA,
                 "user",
                 "user",
                 "patronym",
@@ -133,7 +134,7 @@ class UserMapperTest extends AbstractIntegrationTest {
 
         PassportDto passport = new PassportDto(
                 1L,
-                Passport.Citizenship.RUSSIA,
+                Citizenship.RUSSIA,
                 "user",
                 "user",
                 "patronym",

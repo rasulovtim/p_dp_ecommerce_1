@@ -1,6 +1,6 @@
 package com.gitlab.dto;
 
-import com.gitlab.model.PickupPoint;
+import com.gitlab.enums.PickupPointFeatures;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
@@ -26,7 +26,7 @@ class PickupPointDtoTest extends AbstractDtoTest {
     @Test
     void test_valid_PickupPointDto_with_features() {
         PickupPointDto pickupPointDto = getValidPickupPointDto();
-        pickupPointDto.setPickupPointFeatures(Set.of(PickupPoint.PickupPointFeatures.values()));
+        pickupPointDto.setPickupPointFeatures(Set.of(PickupPointFeatures.values()));
         assertTrue(validator.validate(pickupPointDto).isEmpty());
     }
 
