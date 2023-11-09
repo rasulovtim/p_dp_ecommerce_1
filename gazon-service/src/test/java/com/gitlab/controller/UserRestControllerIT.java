@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -95,7 +96,7 @@ class UserRestControllerIT extends AbstractIntegrationTest {
         long id = 8L;
         int numberOfEntitiesExpected = userService.findAll().size();
 
-        UserDto userDto = userService.findByIdDto(id);
+        UserDto userDto = userService.findById(id).get();
         userDto.setRoles(Set.of("ROLE_ADMIN"));
         userDto.setPassportDto(new PassportDto(null,
                 Passport.Citizenship.ARMENIA,

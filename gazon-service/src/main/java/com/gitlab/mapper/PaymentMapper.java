@@ -23,7 +23,7 @@ public abstract class PaymentMapper {
             if (userId == null) {
                 return null;
             }
-            return userService.findById(userId)
+            return userService.findUserById(userId)
                     .orElseThrow(() -> new RuntimeException("User wasn't found"));
         }
 
