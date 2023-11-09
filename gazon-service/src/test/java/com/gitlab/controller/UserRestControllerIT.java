@@ -57,10 +57,9 @@ class UserRestControllerIT extends AbstractIntegrationTest {
     void should_get_user_by_id() throws Exception {
         long id = 1L;
         String expected = objectMapper.writeValueAsString(
-                userMapper.toDto(
                         userService
                                 .findById(id)
-                                .orElse(null))
+                                .orElse(null)
         );
 
         mockMvc.perform(get(USER_URI + "/{id}", id))
