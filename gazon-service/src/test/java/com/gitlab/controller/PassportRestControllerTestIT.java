@@ -3,7 +3,6 @@ package com.gitlab.controller;
 import com.gitlab.dto.PassportDto;
 import com.gitlab.enums.Citizenship;
 import com.gitlab.mapper.PassportMapper;
-import com.gitlab.model.Passport;
 import com.gitlab.service.PassportService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

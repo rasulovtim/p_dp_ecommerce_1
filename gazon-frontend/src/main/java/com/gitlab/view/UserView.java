@@ -235,7 +235,7 @@ public class UserView extends VerticalLayout {
         Select<Gender> userGenders = new Select<>();
         userGenders.setLabel("Gender");
         userGenders.setItems(Arrays.asList(Gender.values()));
-        userGenders.setItemLabelGenerator(Gender::getSex);
+        userGenders.setItemLabelGenerator(Gender::getSexRussianTranslation);
         TextField userPhoneNumberField = new TextField("Phone number");
         TextField userRoleField = new TextField("User role");
 
