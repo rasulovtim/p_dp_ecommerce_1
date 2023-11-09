@@ -1,6 +1,7 @@
 package com.gitlab.controller;
 
 import com.gitlab.dto.*;
+import com.gitlab.enums.PaymentStatus;
 import com.gitlab.mapper.PaymentMapper;
 import com.gitlab.model.Payment;
 import com.gitlab.service.PaymentService;
@@ -141,7 +142,7 @@ class PaymentRestControllerIT extends AbstractIntegrationTest {
         bankCardDto.setDueDate(LocalDate.parse("2029-09-22"));
         bankCardDto.setSecurityCode(354);
         paymentDto.setBankCardDto(bankCardDto);
-        paymentDto.setPaymentStatus(Payment.PaymentStatus.PAID);
+        paymentDto.setPaymentStatus(PaymentStatus.PAID);
         paymentDto.setCreateDateTime(LocalDateTime.now());
         paymentDto.setOrderId(1L);
         paymentDto.setSum(new BigDecimal(500));

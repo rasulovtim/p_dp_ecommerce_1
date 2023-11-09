@@ -1,7 +1,6 @@
 package com.gitlab.service;
 
-import com.gitlab.dto.BankCardDto;
-import com.gitlab.dto.PaymentDto;
+import com.gitlab.enums.PaymentStatus;
 import com.gitlab.model.*;
 import com.gitlab.repository.PaymentRepository;
 import org.junit.jupiter.api.Test;
@@ -11,14 +10,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
-import static com.gitlab.model.Payment.PaymentStatus.CANCELED;
-import static com.gitlab.model.Payment.PaymentStatus.PAID;
-import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.*;
@@ -106,7 +100,7 @@ class PaymentServiceTest {
         paymentToUpdate.setPaymentStatus(null);
 
         Payment paymentBeforeUpdate = new Payment();
-        paymentBeforeUpdate.setPaymentStatus(PAID);
+        paymentBeforeUpdate.setPaymentStatus(PaymentStatus.PAID);
 
         when(paymentRepository.findById(id)).thenReturn(Optional.of(paymentBeforeUpdate));
         when(paymentRepository.save(paymentBeforeUpdate)).thenReturn(paymentBeforeUpdate);
@@ -115,7 +109,7 @@ class PaymentServiceTest {
 
         verify(paymentRepository).save(paymentBeforeUpdate);
         assertEquals(paymentBeforeUpdate, actualResult.orElse(null));
-        assertEquals(PAID, paymentBeforeUpdate.getPaymentStatus());
+        assertEquals(PaymentStatus.PAID, paymentBeforeUpdate.getPaymentStatus());
     }
 
     @Test

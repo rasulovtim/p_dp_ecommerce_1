@@ -1,5 +1,7 @@
 package com.gitlab.model;
 
+import com.gitlab.dto.UserDto;
+import com.gitlab.enums.PaymentStatus;
 import lombok.*;
 
 import javax.persistence.*;
@@ -10,6 +12,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@Getter
+@Setter
 @ToString(callSuper = true)
 @EqualsAndHashCode(exclude = {"order", "user"})
 @Table(name = "payments")
@@ -46,14 +50,5 @@ public class Payment {
     private User user;
 
     public Payment(long id, PaymentStatus paymentStatus) {
-    }
-
-    @AllArgsConstructor
-    @Getter
-    public enum PaymentStatus {
-        NOT_PAID,
-        PAID,
-        OVERDUE,
-        CANCELED
     }
 }

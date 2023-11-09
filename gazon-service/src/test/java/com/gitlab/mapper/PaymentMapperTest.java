@@ -2,6 +2,7 @@ package com.gitlab.mapper;
 
 import com.gitlab.controller.AbstractIntegrationTest;
 import com.gitlab.dto.*;
+import com.gitlab.enums.PaymentStatus;
 import com.gitlab.model.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ class PaymentMapperTest extends AbstractIntegrationTest {
         bankCard.setSecurityCode(354);
 
         payment.setBankCard(bankCard);
-        payment.setPaymentStatus(Payment.PaymentStatus.PAID);
+        payment.setPaymentStatus(PaymentStatus.PAID);
         payment.setCreateDateTime(LocalDateTime.now());
         payment.setOrder(new Order());
         payment.setSum(new BigDecimal(500));
@@ -60,7 +61,7 @@ class PaymentMapperTest extends AbstractIntegrationTest {
         bankCardDto.setSecurityCode(354);
 
         paymentDto.setBankCardDto(bankCardDto);
-        paymentDto.setPaymentStatus(Payment.PaymentStatus.PAID);
+        paymentDto.setPaymentStatus(PaymentStatus.PAID);
         paymentDto.setCreateDateTime(LocalDateTime.now());
         paymentDto.setOrderId(1L);
         paymentDto.setSum(new BigDecimal(500));

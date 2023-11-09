@@ -129,7 +129,7 @@ public class PaymentService {
             savedPayment.setSum(paymentDto.getSum());
         }
         if (paymentDto.getUserId() != null) {
-            savedPayment.setUser(userService.findById(paymentDto.getUserId()).get());
+            savedPayment.setUser(userService.findById(paymentDto.getUserId()));
         }
 
         savedPayment = paymentRepository.save(savedPayment);

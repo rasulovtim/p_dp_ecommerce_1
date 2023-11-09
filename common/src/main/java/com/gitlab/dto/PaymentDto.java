@@ -1,6 +1,6 @@
 package com.gitlab.dto;
 
-import com.gitlab.model.Payment;
+import com.gitlab.enums.PaymentStatus;
 import lombok.*;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.data.annotation.ReadOnlyProperty;
@@ -23,7 +23,7 @@ public class PaymentDto {
     private BankCardDto bankCardDto;
 
     @NotNull(message = "Payment status should not be null. Please provide a valid payment status")
-    private Payment.PaymentStatus paymentStatus;
+    private PaymentStatus paymentStatus;
 
     @NotNull(message = "Local date time of creation should not be null. Please provide a valid local date time")
     private LocalDateTime createDateTime;
