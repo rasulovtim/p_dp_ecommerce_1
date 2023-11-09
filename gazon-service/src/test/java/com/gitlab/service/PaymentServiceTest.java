@@ -1,5 +1,7 @@
 package com.gitlab.service;
 
+import com.gitlab.dto.BankCardDto;
+import com.gitlab.dto.PaymentDto;
 import com.gitlab.model.*;
 import com.gitlab.repository.PaymentRepository;
 import org.junit.jupiter.api.Test;
@@ -9,9 +11,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
+import static com.gitlab.model.Payment.PaymentStatus.CANCELED;
+import static com.gitlab.model.Payment.PaymentStatus.PAID;
+import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.*;
@@ -72,7 +79,8 @@ class PaymentServiceTest {
         when(paymentRepository.findById(id)).thenReturn(Optional.of(paymentBeforeUpdate));
         when(paymentRepository.save(updatedPayment)).thenReturn(updatedPayment);
 
-        Optional<Payment> actualResult = paymentService.update(id, paymentToUpdate);
+        Optional<Payment> actualResult;
+        actualResult = paymentService.update(id, paymentToUpdate);
 
         assertEquals(updatedPayment, actualResult.orElse(null));
     }
@@ -89,6 +97,25 @@ class PaymentServiceTest {
 
         verify(paymentRepository, never()).save(any());
         assertNull(actualResult.orElse(null));
+    }
+
+    @Test
+    void should_not_updated_paymentStatus_field_if_null() {
+        long id = 1L;
+        Payment paymentToUpdate = new Payment();
+        paymentToUpdate.setPaymentStatus(null);
+
+        Payment paymentBeforeUpdate = new Payment();
+        paymentBeforeUpdate.setPaymentStatus(PAID);
+
+        when(paymentRepository.findById(id)).thenReturn(Optional.of(paymentBeforeUpdate));
+        when(paymentRepository.save(paymentBeforeUpdate)).thenReturn(paymentBeforeUpdate);
+
+        Optional<Payment> actualResult = paymentService.update(id, paymentToUpdate);
+
+        verify(paymentRepository).save(paymentBeforeUpdate);
+        assertEquals(paymentBeforeUpdate, actualResult.orElse(null));
+        assertEquals(PAID, paymentBeforeUpdate.getPaymentStatus());
     }
 
     @Test
@@ -125,6 +152,4 @@ class PaymentServiceTest {
     private Payment generatePayment() {
         return new Payment(1L);
     }
-
-
 }

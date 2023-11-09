@@ -45,6 +45,9 @@ public class Payment {
     @JoinColumn(name = "user_id")
     private User user;
 
+    public Payment(long id, PaymentStatus paymentStatus) {
+    }
+
     @AllArgsConstructor
     @Getter
     public enum PaymentStatus {
