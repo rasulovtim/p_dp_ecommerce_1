@@ -1,5 +1,6 @@
 package com.gitlab.model;
 
+import com.gitlab.enums.EntityStatus;
 import com.gitlab.enums.Gender;
 import lombok.*;
 
@@ -70,4 +71,8 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> rolesSet;
+
+    @Column(name = "entity_status")
+    @Enumerated(EnumType.STRING)
+    private EntityStatus entityStatus;
 }
