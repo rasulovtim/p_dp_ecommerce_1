@@ -2,7 +2,7 @@ package com.gitlab.service;
 
 import com.gitlab.client.PassportDtoGeneratorClient;
 import com.gitlab.dto.PassportDto;
-import com.gitlab.model.Passport;
+import com.gitlab.enums.Citizenship;
 import com.gitlab.util.DataGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ public class PassportDtoGeneratorService {
 
     public PassportDto generatePassportDtoData(String additionalData) {
         PassportDto passportDto = new PassportDto();
-        passportDto.setCitizenship(Passport.Citizenship.RUSSIA);
+        passportDto.setCitizenship(Citizenship.RUSSIA);
         passportDto.setFirstName("user" + additionalData);
         passportDto.setLastName("user" + additionalData);
         passportDto.setBirthDate(LocalDate.of(2000, 5, 15));
