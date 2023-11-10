@@ -1,5 +1,6 @@
 package com.gitlab.service;
 
+import com.gitlab.enums.PickupPointFeatures;
 import com.gitlab.model.PickupPoint;
 import com.gitlab.repository.PickupPointRepository;
 import org.junit.jupiter.api.Test;
@@ -208,7 +209,7 @@ class PickupPointServiceTest {
         pickupPoint.setAddress("Test Address");
         pickupPoint.setDirections("Test Directions");
         pickupPoint.setShelfLifeDays((byte) 5);
-        pickupPoint.setPickupPointFeatures(Set.of(PickupPoint.PickupPointFeatures.values()));
+        pickupPoint.setPickupPointFeatures(Set.of(PickupPointFeatures.values()));
         return pickupPoint;
     }
 }

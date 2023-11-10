@@ -1,6 +1,6 @@
 package com.gitlab.dto;
 
-import com.gitlab.model.Passport;
+import com.gitlab.enums.Citizenship;
 import lombok.*;
 import org.springframework.data.annotation.ReadOnlyProperty;
 
@@ -24,7 +24,7 @@ public class PassportDto {
 
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Passport's citizenship shouldn't be empty")
-    private Passport.Citizenship citizenship;
+    private Citizenship citizenship;
 
     @NotEmpty(message = "Passport's first name shouldn't be empty")
     @Size(min = 2, max = 15, message = "Passport's first name should have at least two characters and not exceed 15")

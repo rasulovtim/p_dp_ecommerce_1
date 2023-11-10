@@ -1,8 +1,8 @@
 package com.gitlab.controller;
 
 import com.gitlab.dto.PassportDto;
+import com.gitlab.enums.Citizenship;
 import com.gitlab.mapper.PassportMapper;
-import com.gitlab.model.Passport;
 import com.gitlab.service.PassportService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -139,7 +139,7 @@ class PassportRestControllerTest extends AbstractIntegrationTest {
     private PassportDto generatePassportDto() {
         PassportDto passportDto = new PassportDto();
         passportDto.setId(5L);
-        passportDto.setCitizenship(Passport.Citizenship.RUSSIA);
+        passportDto.setCitizenship(Citizenship.RUSSIA);
         passportDto.setFirstName("Ivan");
         passportDto.setLastName("Petrov");
         passportDto.setPatronym("Aleksandrovich");

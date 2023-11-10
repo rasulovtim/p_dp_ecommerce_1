@@ -1,5 +1,6 @@
 package com.gitlab.service;
 
+import com.gitlab.enums.Citizenship;
 import com.gitlab.model.Passport;
 import com.gitlab.repository.PassportRepository;
 import org.junit.jupiter.api.Test;
@@ -62,7 +63,7 @@ class PassportServiceTest {
 
         passportToUpdate.setFirstName("modFirstName"); //modified
         passportToUpdate.setId(id);
-        passportToUpdate.setCitizenship(Passport.Citizenship.RUSSIA);
+        passportToUpdate.setCitizenship(Citizenship.RUSSIA);
         passportToUpdate.setLastName("testLastName");
         passportToUpdate.setPatronym("testPatronym");
         passportToUpdate.setBirthDate(LocalDate.of(1990, 1, 1));
@@ -75,7 +76,7 @@ class PassportServiceTest {
 
         passportBeforeUpdate.setFirstName("unModFirstName"); //unmodified
         passportBeforeUpdate.setId(id);
-        passportBeforeUpdate.setCitizenship(Passport.Citizenship.KAZAKHSTAN);
+        passportBeforeUpdate.setCitizenship(Citizenship.KAZAKHSTAN);
         passportBeforeUpdate.setLastName("testLastName");
         passportBeforeUpdate.setPatronym("testPatronym");
         passportBeforeUpdate.setBirthDate(LocalDate.of(1990, 1, 1));
@@ -88,7 +89,7 @@ class PassportServiceTest {
 
         updatedPassport.setFirstName("modFirstName"); //modified
         updatedPassport.setId(id);
-        updatedPassport.setCitizenship(Passport.Citizenship.RUSSIA);
+        updatedPassport.setCitizenship(Citizenship.RUSSIA);
         updatedPassport.setLastName("testLastName");
         updatedPassport.setPatronym("testPatronym");
         updatedPassport.setBirthDate(LocalDate.of(1990, 1, 1));
@@ -133,7 +134,7 @@ class PassportServiceTest {
 
         verify(passportRepository).save(passportBeforeUpdate);
         assertEquals(passportBeforeUpdate, actualResult.orElse(null));
-        assertEquals(Passport.Citizenship.RUSSIA, passportBeforeUpdate.getCitizenship());
+        assertEquals(Citizenship.RUSSIA, passportBeforeUpdate.getCitizenship());
     }
 
     @Test
@@ -326,7 +327,7 @@ class PassportServiceTest {
     }
 
     private Passport generatePassport() {
-        return new Passport(1L, Passport.Citizenship.RUSSIA, "firstName", "lastName", "patronym",
+        return new Passport(1L, Citizenship.RUSSIA, "firstName", "lastName", "patronym",
                 LocalDate.of(2000, 1, 1), LocalDate.of(2015,1,1),
                 "1111 111111", "Otdel police #1", "111-111");
     }
