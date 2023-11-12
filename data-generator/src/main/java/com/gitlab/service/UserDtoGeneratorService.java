@@ -18,7 +18,7 @@ public class UserDtoGeneratorService {
     private final UserDtoGeneratorClient userDtoGeneratorClient;
     private final PassportDtoGeneratorService passportDtoGeneratorService;
     private final BankCardDtoGeneratorService bankCardDtoGeneratorService;
-    private PersonalAddressDtoGeneratorService personalAddressDtoGeneratorService;
+    private final PersonalAddressDtoGeneratorService personalAddressDtoGeneratorService;
 
     public UserDto generateUserDto() {
         Set<RoleDto> roleSet = new HashSet<>();
