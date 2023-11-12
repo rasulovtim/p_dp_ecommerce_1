@@ -19,14 +19,6 @@ public abstract class PaymentMapper {
         @Mapping(source = "user.id", target = "userId")
         public abstract PaymentDto toDto(Payment payment);
 
-        public User mapUserIdToUser(Long userId) {
-            if (userId == null) {
-                return null;
-            }
-            return userService.findUserById(userId)
-                    .orElseThrow(() -> new RuntimeException("User wasn't found"));
-        }
-
         @Mapping(source = "bankCardDto", target = "bankCard")
         @Mapping(source = "orderId", target = "order.id")
         @Mapping(source = "userId", target = "user.id")

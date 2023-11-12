@@ -1,6 +1,5 @@
 package com.gitlab.model;
 
-import com.gitlab.dto.UserDto;
 import com.gitlab.enums.PaymentStatus;
 import lombok.*;
 
@@ -21,6 +20,9 @@ public class Payment {
 
     public Payment(long id) {
         this.id = id;
+    }
+
+    public Payment(long id, PaymentStatus paymentStatus) {
     }
 
     @Id
@@ -49,6 +51,4 @@ public class Payment {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public Payment(long id, PaymentStatus paymentStatus) {
-    }
 }

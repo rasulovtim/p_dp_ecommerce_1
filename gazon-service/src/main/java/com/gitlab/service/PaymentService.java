@@ -7,8 +7,6 @@ import com.gitlab.model.Payment;
 import com.gitlab.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,17 +39,6 @@ public class PaymentService {
         return payments.stream()
                 .map(paymentMapper::toDto)
                 .collect(Collectors.toList());
-    }
-
-    public Page<Payment> getPage(int page, int size) {
-        PageRequest pageRequest = PageRequest.of(page, size);
-        return paymentRepository.findAll(pageRequest);
-    }
-
-    public Page<PaymentDto> getPageDto(int page, int size) {
-        PageRequest pageRequest = PageRequest.of(page, size);
-        Page<Payment> paymentPage = paymentRepository.findAll(pageRequest);
-        return paymentPage.map(paymentMapper::toDto);
     }
 
     public Optional<Payment> findById(Long id) {

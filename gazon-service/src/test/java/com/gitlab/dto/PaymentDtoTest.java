@@ -1,7 +1,6 @@
 package com.gitlab.dto;
 
 import com.gitlab.enums.PaymentStatus;
-import com.gitlab.model.Payment;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
