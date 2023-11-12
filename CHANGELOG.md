@@ -20,6 +20,7 @@
 - #72 - Front Crud for WorkingSchedule
 - #105 - Status model for User
 - #107 - Search correction
+- #100 - The data-generator application has been developed
 
 ## [1.1.0] - 8.09.2023
 - #5 - added user entity
