@@ -75,5 +75,4 @@ public class User {
     @Column(name = "entity_status")
     @Enumerated(EnumType.STRING)
     private EntityStatus entityStatus;
-
 }

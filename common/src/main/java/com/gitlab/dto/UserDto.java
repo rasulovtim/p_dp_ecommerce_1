@@ -1,5 +1,6 @@
 package com.gitlab.dto;
 
+import com.gitlab.enums.EntityStatus;
 import com.gitlab.enums.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Data;
