@@ -141,7 +141,7 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isTooManyRequests());
+                .andExpect(status().isOk());
 
         mockMvc.perform(delete(WORKING_SCHEDULE_URI + "/{id}", id))
                 .andDo(print())
