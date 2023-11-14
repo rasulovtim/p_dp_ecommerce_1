@@ -58,7 +58,7 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
     void should_update_shoppingCart_by_id() throws Exception {
         long id = 1L;
         int numberOfEntitiesExpected = shoppingCartService.findAll().size();
-        ShoppingCartDto shoppingCartDto = generateShoppingCartDto();
+        ShoppingCartDto shoppingCartDto = generateShoppingCartDto(2L);
         String jsonShoppingCartDto = objectMapper.writeValueAsString(shoppingCartDto);
 
         shoppingCartDto.setId(id);
@@ -89,6 +89,7 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
+
 
     @Test
     void should_get_all_shoppingCarts() throws Exception {
@@ -125,6 +126,13 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
         mockMvc.perform(get(SHOPPING_CART_URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isNotFound());
+    }
+
+    private ShoppingCartDto generateShoppingCartDto(Long id){
+        ShoppingCartDto shoppingCartDto = new ShoppingCartDto();
+        shoppingCartDto.setUserId(id);
+
+        return shoppingCartDto;
     }
 
     private ShoppingCartDto generateShoppingCartDto(){
