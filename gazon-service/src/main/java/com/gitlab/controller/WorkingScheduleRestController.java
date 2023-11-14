@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -58,6 +59,17 @@ public class WorkingScheduleRestController implements WorkingScheduleRestApi {
 
     @Override
     public ResponseEntity<WorkingScheduleDto> create(WorkingScheduleDto workingScheduleDto) {
+        List<WorkingScheduleDto> workingScheduleDtoList = workingScheduleService.findAllDto();
+        for (WorkingScheduleDto dto : workingScheduleDtoList) {
+            if (workingScheduleDto.getId().equals(dto.getId()) &&
+                workingScheduleDto.getDayOfWeek().equals(dto.getDayOfWeek()) &&
+                workingScheduleDto.getFrom().equals(dto.getFrom()) &&
+                workingScheduleDto.getTo().equals(dto.getTo())) {
+                Optional<WorkingScheduleDto> oldWorkingScheduleDto = workingScheduleService.findByIdDto(dto.getId());
+                return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                        .body(oldWorkingScheduleDto.get());
+            }
+        }
         WorkingScheduleDto savedWorkingScheduleDto = workingScheduleService.saveDto(workingScheduleDto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(savedWorkingScheduleDto);
@@ -67,7 +79,7 @@ public class WorkingScheduleRestController implements WorkingScheduleRestApi {
     public ResponseEntity<WorkingScheduleDto> update(Long id, WorkingScheduleDto workingScheduleDto) {
         Optional<WorkingScheduleDto> optionalUpdatedWorkingScheduleDto = workingScheduleService.updateDto(id, workingScheduleDto);
         return optionalUpdatedWorkingScheduleDto
-                .map(updatedWorkingScheduleDto -> ResponseEntity.ok(updatedWorkingScheduleDto))
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
