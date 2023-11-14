@@ -5,9 +5,9 @@ import com.gitlab.dto.PassportDto;
 import com.gitlab.dto.PersonalAddressDto;
 import com.gitlab.dto.ShippingAddressDto;
 import com.gitlab.dto.UserDto;
+import com.gitlab.enums.Citizenship;
+import com.gitlab.enums.Gender;
 import com.gitlab.mapper.UserMapper;
-import com.gitlab.model.Passport;
-import com.gitlab.model.User;
 import com.gitlab.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,10 +57,9 @@ class UserRestControllerIT extends AbstractIntegrationTest {
     void should_get_user_by_id() throws Exception {
         long id = 1L;
         String expected = objectMapper.writeValueAsString(
-                userMapper.toDto(
                         userService
                                 .findById(id)
-                                .orElse(null))
+                                .orElse(null)
         );
 
         mockMvc.perform(get(USER_URI + "/{id}", id))
@@ -165,7 +164,7 @@ class UserRestControllerIT extends AbstractIntegrationTest {
 
         PassportDto passportDto = new PassportDto(
                 1L,
-                Passport.Citizenship.RUSSIA,
+                Citizenship.RUSSIA,
                 "user",
                 "user",
                 "patronym",
@@ -185,7 +184,7 @@ class UserRestControllerIT extends AbstractIntegrationTest {
                 "user",
                 "user",
                 LocalDate.now(),
-                User.Gender.MALE,
+                Gender.MALE,
                 "89007777777",
                 passportDto,
                 personalAddress,

@@ -1,8 +1,7 @@
 package com.gitlab.controller;
 
-import com.gitlab.controller.api.OrderRestApi;
+import com.gitlab.controllers.api.rest.OrderRestApi;
 import com.gitlab.dto.OrderDto;
-import com.gitlab.mapper.OrderMapper;
 import com.gitlab.model.Order;
 import com.gitlab.service.OrderService;
 import lombok.RequiredArgsConstructor;

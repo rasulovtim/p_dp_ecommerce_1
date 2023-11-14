@@ -1,6 +1,6 @@
 package com.gitlab.controller;
 
-import com.gitlab.controller.api.PickupPointRestApi;
+import com.gitlab.controllers.api.rest.PickupPointRestApi;
 import com.gitlab.dto.PickupPointDto;
 import com.gitlab.service.PickupPointService;
 import lombok.RequiredArgsConstructor;

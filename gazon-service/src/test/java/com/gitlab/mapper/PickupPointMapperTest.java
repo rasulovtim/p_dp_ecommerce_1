@@ -1,6 +1,7 @@
 package com.gitlab.mapper;
 
 import com.gitlab.dto.PickupPointDto;
+import com.gitlab.enums.PickupPointFeatures;
 import com.gitlab.model.PickupPoint;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
@@ -20,7 +21,7 @@ class PickupPointMapperTest {
         pickupPoint.setAddress("Moscow,Russia");
         pickupPoint.setDirections("Some directions");
         pickupPoint.setShelfLifeDays((byte) 5);
-        pickupPoint.setPickupPointFeatures(Set.of(PickupPoint.PickupPointFeatures.values()));
+        pickupPoint.setPickupPointFeatures(Set.of(PickupPointFeatures.values()));
 
         PickupPointDto actualResult = mapper.toDto(pickupPoint);
 
@@ -40,7 +41,7 @@ class PickupPointMapperTest {
         pickupPointDto.setAddress("Moscow,Russia");
         pickupPointDto.setDirections("Some directions");
         pickupPointDto.setShelfLifeDays((byte) 5);
-        pickupPointDto.setPickupPointFeatures(Set.of(PickupPoint.PickupPointFeatures.values()));
+        pickupPointDto.setPickupPointFeatures(Set.of(PickupPointFeatures.values()));
 
         PickupPoint actualResult = mapper.toEntity(pickupPointDto);
 

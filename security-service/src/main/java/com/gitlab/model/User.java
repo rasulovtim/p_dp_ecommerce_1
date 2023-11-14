@@ -1,9 +1,9 @@
 package com.gitlab.model;
 
 
+import com.nimbusds.openid.connect.sdk.claims.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -132,15 +132,6 @@ public class User implements UserDetails, OidcUser {
     }
 
     public String getGender() {
-            return gender.toString();
-    }
-
-    @AllArgsConstructor
-    @Getter
-    public enum Gender {
-        MALE("МУЖСКОЙ"),FEMALE("ЖЕНСКИЙ"),NOT_SPECIFIED("НЕ УКАЗАН");
-
-        private final String sex;
-
+        return gender.toString();
     }
 }

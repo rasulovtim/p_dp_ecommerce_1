@@ -4,6 +4,7 @@ import com.gitlab.dto.OrderDto;
 import com.gitlab.mapper.OrderMapper;
 import com.gitlab.mapper.SelectedProductMapper;
 import com.gitlab.mapper.ShippingAddressMapper;
+import com.gitlab.mapper.UserMapper;
 import com.gitlab.model.Order;
 import com.gitlab.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ public class OrderService {
     private final OrderMapper orderMapper;
     private final ShippingAddressMapper shippingAddressMapper;
     private final SelectedProductMapper selectedProductMapper;
+    private final UserMapper userMapper;
 
 
     public List<Order> findAll() {
@@ -138,7 +140,7 @@ public class OrderService {
             savedOrder.setBagCounter(orderDto.getBagCounter());
         }
         if (orderDto.getUserId() != null) {
-            savedOrder.setUser(userService.findById(orderDto.getUserId()).get());
+            savedOrder.setUser(userMapper.toEntity(userService.findById(orderDto.getUserId()).get()));
         }
         if (orderDto.getSelectedProducts() != null) {
             savedOrder.setSelectedProducts(orderDto.getSelectedProducts().stream().map(selectedProductMapper::toEntity).collect(Collectors.toSet()));

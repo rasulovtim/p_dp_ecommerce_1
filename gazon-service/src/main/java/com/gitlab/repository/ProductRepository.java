@@ -23,5 +23,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @EntityGraph(value = "Product.productImages")
     List<Product> findAll();
 
-    List<Product> findByNameIgnoreCaseContaining(String name);
+    Iterable<Product> findByNameContainingIgnoreCase(String name);
 }

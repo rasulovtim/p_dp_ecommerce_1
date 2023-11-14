@@ -1,5 +1,7 @@
 package com.gitlab.model;
 
+import com.gitlab.enums.EntityStatus;
+import com.gitlab.enums.Gender;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -70,14 +72,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> rolesSet;
 
-
-    @AllArgsConstructor
-    @Getter
-    public enum Gender {
-        MALE("МУЖСКОЙ"),FEMALE("ЖЕНСКИЙ"),NOT_SPECIFIED("НЕ УКАЗАН");
-
-        private final String sex;
-
-    }
-
+    @Column(name = "entity_status")
+    @Enumerated(EnumType.STRING)
+    private EntityStatus entityStatus;
 }

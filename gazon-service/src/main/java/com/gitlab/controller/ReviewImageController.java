@@ -1,6 +1,6 @@
 package com.gitlab.controller;
 
-import com.gitlab.controller.api.ReviewImageRestApi;
+import com.gitlab.controllers.api.rest.ReviewImageRestApi;
 import com.gitlab.dto.ReviewImageDto;
 import com.gitlab.model.ReviewImage;
 import com.gitlab.service.ReviewImageService;

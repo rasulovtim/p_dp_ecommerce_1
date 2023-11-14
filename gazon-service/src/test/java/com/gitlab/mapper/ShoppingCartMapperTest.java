@@ -2,6 +2,8 @@ package com.gitlab.mapper;
 
 import com.gitlab.controller.AbstractIntegrationTest;
 import com.gitlab.dto.*;
+import com.gitlab.enums.Citizenship;
+import com.gitlab.enums.Gender;
 import com.gitlab.model.*;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -125,7 +127,7 @@ public class ShoppingCartMapperTest extends AbstractIntegrationTest {
 
         PassportDto passportDto = new PassportDto(
                 1L,
-                Passport.Citizenship.RUSSIA,
+                Citizenship.RUSSIA,
                 "user",
                 "user",
                 "patronym",
@@ -145,7 +147,7 @@ public class ShoppingCartMapperTest extends AbstractIntegrationTest {
                 "user",
                 "user",
                 LocalDate.now(),
-                User.Gender.MALE,
+                Gender.MALE,
                 "89007777777",
                 passportDto,
                 personalAddress,

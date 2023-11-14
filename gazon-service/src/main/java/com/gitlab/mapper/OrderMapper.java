@@ -16,6 +16,9 @@ public abstract class OrderMapper {
     @Autowired
     protected UserService userService;
 
+    @Autowired
+    protected UserMapper userMapper;
+
     @Mapping(source = "user.id", target = "userId")
     @Mapping(source = "shippingAddress", target = "shippingAddressDto")
     public abstract OrderDto toDto(Order order);
@@ -25,25 +28,11 @@ public abstract class OrderMapper {
             return null;
         }
         return userService.findById(userId)
+                .map(userMapper::toEntity)
                 .orElseThrow(() -> new RuntimeException("User wasn't found"));
     }
 
     @Mapping(source = "userId", target = "user.id")
     @Mapping(source = "shippingAddressDto", target = "shippingAddress")
     public abstract Order toEntity(OrderDto orderDto);
-
-
-//    protected Set<SelectedProduct> selectedProductDtoSetToSelectedProductSet(Set<SelectedProductDto> set) {
-//        if (set == null) {
-//            return null;
-//        }
-//
-//        Set<SelectedProduct> set1 = new LinkedHashSet<SelectedProduct>(Math.max((int) (set.size() / .75f) + 1, 16));
-//        for (SelectedProductDto selectedProductDto : set) {
-//            set1.add(selectedProductMapper.toEntity(selectedProductDto));
-//        }
-//
-//        return set1;
-//    }
-
 }
