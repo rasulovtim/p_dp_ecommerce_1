@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
+
     private final UserMapper userMapper;
     private final BankCardMapper bankCardMapper;
     private final PassportMapper passportMapper;
@@ -42,6 +43,10 @@ public class UserService {
                 .filter(user -> user.getEntityStatus().equals(EntityStatus.ACTIVE))
                 .map(userMapper::toDto)
                 .collect(Collectors.toList());
+    }
+
+    public Optional<User> findUserById(Long id) {
+        return userRepository.findById(id);
     }
 
     public Optional<UserDto> findById(Long id) {

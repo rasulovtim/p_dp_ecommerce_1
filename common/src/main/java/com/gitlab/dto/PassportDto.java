@@ -59,5 +59,4 @@ public class PassportDto {
     @NotEmpty(message = "Passport's issuer number shouldn't be empty")
     @Size(min = 7, max = 7, message = "Passport number must consist of 7 characters")
     private String issuerNumber;
-
 }

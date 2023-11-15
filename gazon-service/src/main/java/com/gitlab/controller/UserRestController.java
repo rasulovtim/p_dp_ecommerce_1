@@ -1,6 +1,5 @@
 package com.gitlab.controller;
 
-
 import com.gitlab.controllers.api.rest.UserRestApi;
 import com.gitlab.dto.UserDto;
 import com.gitlab.mapper.UserMapper;
