@@ -16,7 +16,7 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 public class StoreRestController implements StoreRestApi {
-    
+
     private final StoreService storeService;
     private final StoreMapper storeMapper;
 
@@ -33,11 +33,9 @@ public class StoreRestController implements StoreRestApi {
 
     @Override
     public ResponseEntity<StoreDto> get(Long id) {
-        Optional<Store> productOptional = storeService.findById(id);
-
-        return productOptional.map(storeMapper::toDto)
-                .map(productDto -> ResponseEntity.status(HttpStatus.OK).body(productDto))
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+        return storeService.findById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @Override

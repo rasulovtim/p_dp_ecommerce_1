@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
+import java.util.stream.Collectors;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -23,16 +26,30 @@ public class StoreRestControllerIT extends AbstractIntegrationTest {
     @Autowired
     private StoreMapper storeMapper;
 
+
+    @Test
+    void should_get_all_store() throws Exception {
+        String expected = objectMapper.writeValueAsString(
+                storeService
+                        .findAll()
+                        .stream()
+                        .map(storeMapper::toDto)
+                        .collect(Collectors.toList())
+        );
+
+        mockMvc.perform(get(STORE_URI))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(expected));
+    }
     @Test
     @Transactional
     void should_get_store_by_id() throws Exception {
         long id = 1L;
         String expected = objectMapper.writeValueAsString(
-                storeMapper.toDto(
-                        storeService
-                                .findById(id)
-                                .orElse(null))
-        );
+                storeService
+                        .findById(id)
+                        .orElse(null));
 
         mockMvc.perform(get(STORE_URI + "/{id}", id))
                 .andDo(print())
@@ -50,9 +67,8 @@ public class StoreRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_create_store() throws Exception {
-        StoreDto storeDto = new StoreDto();
-        storeDto.setId(1L);
-        storeDto.setOwnerId(1L);
+        StoreDto storeDto = generateStore();
+        long id = storeDto.getId();
 
         String jsonProductDto = objectMapper.writeValueAsString(storeDto);
 
@@ -62,14 +78,53 @@ public class StoreRestControllerIT extends AbstractIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isCreated());
+
+        mockMvc.perform(delete(STORE_URI + "/{id}", id))
+                .andDo(print())
+                .andExpect(status().isOk());
+        mockMvc.perform(get(STORE_URI + "/{id}", id))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void should_update_store_by_id() throws Exception {
+        StoreDto storeDto = generateStore();
+        String jsonProductDto = objectMapper.writeValueAsString(storeDto);
+
+        mockMvc.perform(post(STORE_URI)
+                        .content(jsonProductDto)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isCreated());
+
+        storeDto.setOwnerId(2L);
+        long id = storeDto.getId() - 1;
+        storeDto.setId(id);
+        String expected = objectMapper.writeValueAsString(storeDto);
+
+
+        mockMvc.perform(patch(STORE_URI + "/{id}", id)
+                        .content(expected)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(expected));
+
+        mockMvc.perform(delete(STORE_URI + "/{id}", id))
+                .andDo(print())
+                .andExpect(status().isOk());
+        mockMvc.perform(get(STORE_URI + "/{id}", id))
+                .andDo(print())
+                .andExpect(status().isNotFound());
     }
 
     @Test
     void should_return_not_found_when_update_store_by_non_existent_id() throws Exception {
-        long id = -10L;
-        StoreDto storeDto = new StoreDto();
-        storeDto.setId(1L);
-        storeDto.setOwnerId(1L);
+        long id = 100000L;
+        StoreDto storeDto = generateStore();
 
         String jsonProductDto = objectMapper.writeValueAsString(storeDto);
 
@@ -81,5 +136,35 @@ public class StoreRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    void should_delete_store_by_id() throws Exception {
+        StoreDto storeDto = generateStore();
+        String jsonProductDto = objectMapper.writeValueAsString(storeDto);
 
+        mockMvc.perform(post(STORE_URI)
+                        .content(jsonProductDto)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isCreated());
+
+        long id = storeDto.getId() - 2;
+
+        mockMvc.perform(delete(STORE_URI + "/{id}", id))
+                .andDo(print())
+                .andExpect(status().isOk());
+        mockMvc.perform(get(STORE_URI + "/{id}", id))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+
+    }
+
+    private StoreDto generateStore() {
+        StoreDto storeDto = new StoreDto();
+        storeDto.setId(5L);
+        storeDto.setOwnerId(1L);
+        storeDto.setManagersId(new HashSet<>());
+
+        return storeDto;
+    }
 }
