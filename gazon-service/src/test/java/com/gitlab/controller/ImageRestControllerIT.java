@@ -130,7 +130,6 @@ class ImageRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(status().isNotFound());
     }
 
-
     @Test
     void should_delete_productImage_by_id() throws Exception {
         ProductImageDto productImageDto = productImageService.saveDto(generateProductImageDto());

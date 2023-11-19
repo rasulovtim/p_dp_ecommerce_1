@@ -5,9 +5,9 @@ import com.gitlab.dto.PassportDto;
 import com.gitlab.dto.PersonalAddressDto;
 import com.gitlab.dto.ShippingAddressDto;
 import com.gitlab.dto.UserDto;
+import com.gitlab.enums.Citizenship;
+import com.gitlab.enums.Gender;
 import com.gitlab.mapper.UserMapper;
-import com.gitlab.model.Passport;
-import com.gitlab.model.User;
 import com.gitlab.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,25 +85,29 @@ class UserRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_update_user_by_id() throws Exception {
-        long id = 1L;
+        long id = 8L;
         int numberOfEntitiesExpected = userService.findAll().size();
 
-        UserDto userDto = generateUser();
+        UserDto userDto = userService.findById(id).get();
+        userDto.setRoles(Set.of("ROLE_ADMIN"));
+        userDto.setPassportDto(new PassportDto(null,
+                Citizenship.ARMENIA,
+                "David",
+                "Davidyan",
+                null,
+                LocalDate.now(), LocalDate.now(), "dsadsdsadas", "sdsdds", "fdffdf"));
+        userDto.setBankCardDtos(Set.of(
+                new BankCardDto(null, "123L22234", LocalDate.now(), 123)));
 
-        String jsonExampleDto = objectMapper.writeValueAsString(userDto);
-
-        userDto.setId(id);
         String expected = objectMapper.writeValueAsString(userDto);
 
         mockMvc.perform(patch(USER_URI + "/{id}", id)
-                        .content(jsonExampleDto)
+                        .content(objectMapper.writeValueAsString(userDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(expected))
-                .andExpect(result -> assertThat(userService.findAll().size(),
-                        equalTo(numberOfEntitiesExpected)));
+                .andExpect(result -> assertThat(userService.findAll().size(), equalTo(numberOfEntitiesExpected)));
     }
 
     @Test
@@ -123,7 +127,7 @@ class UserRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_delete_user_by_id() throws Exception {
-        long id = 2L;
+        long id = 6L;
         mockMvc.perform(delete(USER_URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -168,7 +172,7 @@ class UserRestControllerIT extends AbstractIntegrationTest {
 
         PassportDto passportDto = new PassportDto(
                 1L,
-                Passport.Citizenship.RUSSIA,
+                Citizenship.RUSSIA,
                 "user",
                 "user",
                 "patronym",
@@ -188,7 +192,7 @@ class UserRestControllerIT extends AbstractIntegrationTest {
                 "user",
                 "user",
                 LocalDate.now(),
-                User.Gender.MALE,
+                Gender.MALE,
                 "89007777777",
                 passportDto,
                 personalAddress,

@@ -5,16 +5,18 @@ import com.gitlab.mapper.WorkingScheduleMapper;
 import com.gitlab.service.WorkingScheduleService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -35,14 +37,35 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_get_all_working_schedules() throws Exception {
         String expected = objectMapper.writeValueAsString(
-                workingScheduleService
+                new PageImpl<>(workingScheduleService
                         .findAll()
                         .stream()
                         .map(workingScheduleMapper::toDto)
                         .collect(Collectors.toList())
-        );
+        ));
 
         mockMvc.perform(get(WORKING_SCHEDULE_URI))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(expected));
+
+    }
+    @Test
+    void should_get_page() throws Exception {
+        int page = 0;
+        int size = 2;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        var response = workingScheduleService.getPage(page, size);
+        assertFalse(response.getContent().isEmpty());
+
+        var expected = objectMapper.writeValueAsString(new PageImpl<>(
+                response.getContent().stream().map(workingScheduleMapper::toDto).toList(),
+                response.getPageable(),
+                response.getTotalElements()
+        ));
+
+        mockMvc.perform(get(WORKING_SCHEDULE_URI + parameters))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
@@ -62,6 +85,7 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
+
     }
 
     @Test
@@ -70,6 +94,7 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
         mockMvc.perform(get(WORKING_SCHEDULE_URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isNotFound());
+
     }
 
     @Test
@@ -83,6 +108,7 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isCreated());
+
     }
 
     @Test
@@ -96,7 +122,7 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
         workingScheduleDto.setId(id);
         String expected = objectMapper.writeValueAsString(workingScheduleDto);
 
-        mockMvc.perform(put(WORKING_SCHEDULE_URI + "/{id}", id)  // Заменяем patch на put
+        mockMvc.perform(patch(WORKING_SCHEDULE_URI + "/{id}", id)
                         .content(jsonWorkingScheduleDto)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -105,6 +131,8 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(content().json(expected))
                 .andExpect(result -> assertThat(workingScheduleService.findAll().size(),
                         equalTo(numberOfEntitiesExpected)));
+
+
     }
 
 
@@ -114,12 +142,13 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
         WorkingScheduleDto workingScheduleDto = generateWorkingScheduleDto();
         String jsonWorkingScheduleDto = objectMapper.writeValueAsString(workingScheduleDto);
 
-        mockMvc.perform(put(WORKING_SCHEDULE_URI + "/{id}", id)  // Заменяем patch на put
+        mockMvc.perform(patch(WORKING_SCHEDULE_URI + "/{id}", id)
                         .content(jsonWorkingScheduleDto)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isNotFound());  // Ожидаем статус 404 Not Found
+                .andExpect(status().isNotFound());
+
     }
 
     @Test

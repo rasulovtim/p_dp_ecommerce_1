@@ -79,5 +79,29 @@
         <tagDatabase tag="v-1.13"/>
     </changeSet>
 
+    <include file="v-1.14/db.changelog-v-1.14.xml" relativeToChangelogFile="true"/>
+    <changeSet id="1.14" author="timur_sologov">
+        <tagDatabase tag="v-1.14"/>
+    </changeSet>
+
+    <include file="v-1.15/db.changelog-v-1.15.xml" relativeToChangelogFile="true"/>
+    <changeSet id="1.15" author="timur_sologov">
+        <tagDatabase tag="v-1.15"/>
+    </changeSet>
+
+    <include file="v-1.16/db.changelog-v-1.16.xml" relativeToChangelogFile="true"/>
+    <changeSet id="1.16" author="daniil_venikov">
+        <tagDatabase tag="v-1.16"/>
+    </changeSet>
+
+    <include file="v-1.17/db.changelog-v-1.17.xml" relativeToChangelogFile="true"/>
+    <changeSet id="1.17" author="dmitrii_kulakov">
+        <tagDatabase tag="v-1.17"/>
+    </changeSet>
+
+    <include file="v-1.18/db.changelog-v-1.18.xml" relativeToChangelogFile="true"/>
+    <changeSet id="1.18" author="denis_pronin">
+        <tagDatabase tag="v-1.18"/>
+    </changeSet>
 
 </databaseChangeLog>

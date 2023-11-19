@@ -22,5 +22,5 @@ public interface SearchProductRestApi {
             @ApiResponse(code = 200, message = "Products found"),
             @ApiResponse(code = 204, message = "Products not present")}
     )
-    ResponseEntity<List<ProductDto>> search(@RequestParam("name") String name);
+    ResponseEntity<List<ProductDto>> search(@RequestParam("name") String name) throws InterruptedException;
 }

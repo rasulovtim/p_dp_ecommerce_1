@@ -1,6 +1,6 @@
 package com.gitlab.dto;
 
-import com.gitlab.model.PickupPoint;
+import com.gitlab.enums.PickupPointFeatures;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -34,5 +34,5 @@ public class PickupPointDto extends ShippingAddressDto {
     @Schema(name = "shelf_life_days", example = "7", required = true)
     private Byte shelfLifeDays;
 
-    private Set<PickupPoint.PickupPointFeatures> pickupPointFeatures;
+    private Set<PickupPointFeatures> pickupPointFeatures;
 }

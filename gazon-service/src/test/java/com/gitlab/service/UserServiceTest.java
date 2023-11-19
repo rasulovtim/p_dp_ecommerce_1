@@ -1,5 +1,10 @@
 package com.gitlab.service;
 
+import com.gitlab.dto.*;
+import com.gitlab.enums.Citizenship;
+import com.gitlab.enums.EntityStatus;
+import com.gitlab.enums.Gender;
+import com.gitlab.mapper.UserMapper;
 import com.gitlab.model.*;
 import com.gitlab.repository.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -13,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -22,6 +28,8 @@ import static org.mockito.Mockito.*;
 class UserServiceTest {
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private UserMapper userMapper;
     @InjectMocks
     private UserService userService;
 
@@ -38,10 +46,13 @@ class UserServiceTest {
     @Test
     void should_find_user_by_id() {
         long id = 1L;
-        User expectedResult = generateUser(id);
-        when(userRepository.findById(id)).thenReturn(Optional.of(expectedResult));
+        UserDto expectedResult = generateUserDto();
+        User generateUser = generateUser(id);
 
-        Optional<User> actualResult = userService.findById(id);
+        when(userRepository.findById(id)).thenReturn(Optional.of(generateUser));
+        when(userMapper.toDto(generateUser)).thenReturn(generateUserDto());
+
+        Optional<UserDto> actualResult = userService.findById(id);
 
         assertEquals(expectedResult, actualResult.orElse(null));
     }
@@ -301,11 +312,14 @@ class UserServiceTest {
     @Test
     void should_delete_user() {
         long id = 1L;
+        User deletedUser = generateUser(id);
+        deletedUser.setEntityStatus(EntityStatus.DELETED);
+
         when(userRepository.findById(id)).thenReturn(Optional.of(generateUser()));
 
         userService.delete(id);
-
-        verify(userRepository).deleteById(id);
+        
+        verify(userRepository).save(deletedUser);
     }
 
     @Test
@@ -351,7 +365,7 @@ class UserServiceTest {
 
         Passport passport = new Passport(
                 1L,
-                Passport.Citizenship.RUSSIA,
+                Citizenship.RUSSIA,
                 "user",
                 "user",
                 "paonym",
@@ -369,13 +383,14 @@ class UserServiceTest {
                 "user",
                 "user",
                 LocalDate.of(1900, 1, 1),
-                User.Gender.MALE,
+                Gender.MALE,
                 "890077777",
                 passport,
                 LocalDate.now(),
                 bankCardSet,
                 personalAddresses,
-                roleSet);
+                roleSet,
+                EntityStatus.ACTIVE);
     }
 
     private User generateUserBefore() {
@@ -406,7 +421,7 @@ class UserServiceTest {
 
         Passport passport = new Passport(
                 1L,
-                Passport.Citizenship.RUSSIA,
+                Citizenship.RUSSIA,
                 "userBef",
                 "userBef",
                 "patroBef",
@@ -424,15 +439,59 @@ class UserServiceTest {
                 "userBef",
                 "userBef",
                 LocalDate.of(2010, 4, 4),
-                User.Gender.MALE,
+                Gender.MALE,
                 "89007777",
                 passport,
                 LocalDate.now(),
                 bankCardSet,
                 personalAddresses,
-                roleSet);
+                roleSet,
+                EntityStatus.ACTIVE);
     }
 
+    private UserDto generateUserDto() {
+        Set<Role> roleSet = new HashSet<>();
+        roleSet.add(new Role(1L, "ROLE_ADMIN"));
 
+        Set<BankCardDto> bankCardSet = new HashSet<>();
+        bankCardSet.add(new BankCardDto(1L, "0000000000000", LocalDate.of(1900, 1, 1), 777));
+
+        Set<ShippingAddressDto> personalAddresses = new HashSet<>();
+        personalAddresses.add(new PersonalAddressDto(1L,
+                "address",
+                "direction",
+                "apartment",
+                "floor",
+                "entance",
+                "doorode",
+                "postode"));
+
+        PassportDto passportDto = new PassportDto(
+                1L,
+                Citizenship.RUSSIA,
+                "user",
+                "user",
+                "paonym",
+                LocalDate.of(2000, 5, 15),
+                LocalDate.of(2000, 5, 15),
+                "09865",
+                "isuer",
+                "issurN");
+
+        return new UserDto(1L,
+                "user",
+                "user",
+                "anwer",
+                "queion",
+                "user",
+                "user",
+                LocalDate.of(1900, 1, 1),
+                Gender.MALE,
+                "890077777",
+                passportDto,
+                personalAddresses,
+                bankCardSet,
+                roleSet.stream().map(Role::toString).collect(Collectors.toSet()));
+    }
 }
 

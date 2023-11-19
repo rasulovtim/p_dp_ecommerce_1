@@ -1,6 +1,6 @@
 package com.gitlab.controller;
 
-import com.gitlab.controller.api.PersonalAddressRestApi;
+import com.gitlab.controllers.api.rest.PersonalAddressRestApi;
 import com.gitlab.dto.PersonalAddressDto;
 import com.gitlab.service.PersonalAddressService;
 import lombok.RequiredArgsConstructor;

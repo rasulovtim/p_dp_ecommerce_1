@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 - #task_number - short task description
+- #13 - [After Order and BankCard] Make Payment entity
 - #73 - added User field to SelectedProduct
 - #88 - Front CRUD for Role
 - #90 - added front for improvement
@@ -9,6 +10,17 @@
 - #71 - Front CRUD for User
 - #84 - Generate test data for ProductTestControllerIT
 - #83 - Generate test data for PostomatRestControllerIT
+- #12 - Order entity
+- #61 - Front CRUD for Passport
+- #92 - Security service
+- #101 - Add fuzzy search for product
+- #82 - Generate test data for PickupPointRestController
+- #63 - Front CRUD for PickupPoint
+- #77 - oauth через гугл
+- #66 - Front CRUD for Product
+- #72 - Front Crud for WorkingSchedule
+- #105 - Status model for User
+- #107 - Search correction
 
 ## [1.1.0] - 8.09.2023
 - #5 - added user entity

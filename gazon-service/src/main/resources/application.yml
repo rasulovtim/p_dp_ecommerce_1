@@ -43,3 +43,9 @@ spring:
 
 vaadin:
   excludeUrls: /swagger-ui/**
+
+logging:
+  level:
+    org:
+      hibernate:
+        search=DEBUG:

@@ -13,3 +13,22 @@ spring:
     web-application-type: reactive
   liquibase:
     enabled: false
+
+#  cloud:
+#    gateway:
+#      routes:
+#        - id: gazon
+#          uri:
+#            lb://gazon-service
+#          predicates:
+#            - Path=/api/**
+#          filters:
+#            - AuthenticationFilter
+#
+#        - id: security
+#          uri:
+#            lb://security-service
+#          predicates:
+#            - Path=/auth/**
+
+jwt_secret: d935b276bd281799fd1fcb79a12c6633b1a3688871c493190b29b6cd53c57971

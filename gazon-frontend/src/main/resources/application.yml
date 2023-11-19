@@ -13,3 +13,5 @@ app:
 feign:
   okhttp:
     enabled: true
+
+

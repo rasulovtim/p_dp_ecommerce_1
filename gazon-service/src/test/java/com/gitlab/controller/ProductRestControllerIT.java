@@ -6,6 +6,8 @@ import com.gitlab.model.Product;
 import com.gitlab.model.ProductImage;
 import com.gitlab.service.ProductService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -42,6 +44,28 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"Фильтр-кабшин", "Защитное стек", "Коляска прог", "Каляска прагулачная", "Смартфон HU", "Смартфон"})
+    void should_get_product_by_name(String name) throws Exception {
+        String expected = objectMapper.writeValueAsString(
+                productService.findByNameIgnoreCaseContaining(name)
+        );
+
+        mockMvc.perform(get(PRODUCT_URI + "/search?text=" + name))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(expected));
+    }
+
+    @Test
+    void should_return_no_content_when_get_product_by_name_non_existent() throws Exception {
+        String name = "Non existent name product";
+
+        mockMvc.perform(get(PRODUCT_URI + "/search?text=" + name))
+                .andDo(print())
+                .andExpect(status().isNoContent());
     }
 
     @Test

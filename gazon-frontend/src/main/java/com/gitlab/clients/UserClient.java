@@ -1,5 +1,6 @@
 package com.gitlab.clients;
 
+
 import com.gitlab.controllers.api.rest.UserRestApi;
 import org.springframework.cloud.openfeign.FeignClient;
 
