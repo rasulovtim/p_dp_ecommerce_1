@@ -1,8 +1,8 @@
 package com.gitlab.controller;
 
 import com.gitlab.dto.PassportDto;
+import com.gitlab.enums.Citizenship;
 import com.gitlab.mapper.PassportMapper;
-import com.gitlab.model.Passport;
 import com.gitlab.service.PassportService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.testcontainers.shaded.org.hamcrest.CoreMatchers.equalTo;
 import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 
-class PassportRestControllerTest extends AbstractIntegrationTest {
+class PassportRestControllerTestIT extends AbstractIntegrationTest {
 
     private static final String PASSPORT_URN = "/api/passport";
     private static final String PASSPORT_URI = URL + PASSPORT_URN;
@@ -139,7 +139,7 @@ class PassportRestControllerTest extends AbstractIntegrationTest {
     private PassportDto generatePassportDto() {
         PassportDto passportDto = new PassportDto();
         passportDto.setId(5L);
-        passportDto.setCitizenship(Passport.Citizenship.RUSSIA);
+        passportDto.setCitizenship(Citizenship.RUSSIA);
         passportDto.setFirstName("Ivan");
         passportDto.setLastName("Petrov");
         passportDto.setPatronym("Aleksandrovich");

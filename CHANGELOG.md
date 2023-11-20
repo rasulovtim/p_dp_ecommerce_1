@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 - #task_number - short task description
+- #13 - [After Order and BankCard] Make Payment entity
 - #73 - added User field to SelectedProduct
 - #88 - Front CRUD for Role
 - #90 - added front for improvement
