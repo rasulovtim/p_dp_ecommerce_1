@@ -8,6 +8,7 @@ import java.util.Collections;
 import com.gitlab.service.RoleService;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 import java.util.Optional;

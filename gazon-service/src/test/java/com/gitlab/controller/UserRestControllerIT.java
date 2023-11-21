@@ -8,6 +8,7 @@ import com.gitlab.dto.UserDto;
 import com.gitlab.enums.Citizenship;
 import com.gitlab.enums.Gender;
 import com.gitlab.mapper.UserMapper;
+import com.gitlab.model.User;
 import com.gitlab.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.http.MediaType;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -32,8 +34,10 @@ class UserRestControllerIT extends AbstractIntegrationTest {
 
     private static final String USER_URN = "/api/user";
     private static final String USER_URI = URL + USER_URN;
+
     @Autowired
     private UserService userService;
+
     @Autowired
     private UserMapper userMapper;
 
@@ -43,7 +47,7 @@ class UserRestControllerIT extends AbstractIntegrationTest {
                 userService
                         .findAll()
                         .stream()
-                        .map(userMapper::toDto)
+                        .map((User user) -> userMapper.toDto(user))
                         .collect(Collectors.toList())
         );
 
@@ -53,13 +57,15 @@ class UserRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(content().json(expected));
     }
 
+
+
     @Test
     void should_get_user_by_id() throws Exception {
         long id = 1L;
         String expected = objectMapper.writeValueAsString(
-                        userService
-                                .findById(id)
-                                .orElse(null)
+                userService
+                        .findById(id)
+                        .orElse(null)
         );
 
         mockMvc.perform(get(USER_URI + "/{id}", id))
@@ -67,6 +73,8 @@ class UserRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
     }
+
+
 
     @Test
     void should_return_not_found_when_get_user_by_non_existent_id() throws Exception {
@@ -117,15 +125,16 @@ class UserRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(result -> assertThat(userService.findAll().size(), equalTo(numberOfEntitiesExpected)));
     }
 
+
     @Test
     void should_return_not_found_when_update_user_by_non_existent_id() throws Exception {
         long id = 10L;
         UserDto userDto = generateUser();
 
-        String jsonExampleDto = objectMapper.writeValueAsString(userDto);
+        String jsonUserDto = objectMapper.writeValueAsString(userDto);
 
         mockMvc.perform(patch(USER_URI + "/{id}", id)
-                        .content(jsonExampleDto)
+                        .content(jsonUserDto)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -134,11 +143,11 @@ class UserRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_delete_user_by_id() throws Exception {
-        long id = 6L;
-        mockMvc.perform(delete(USER_URI + "/{id}", id))
+        UserDto userDto = generateUser();
+        mockMvc.perform(delete(USER_URI + "/{id}", userDto.getId()))
                 .andDo(print())
                 .andExpect(status().isOk());
-        mockMvc.perform(get(USER_URI + "/{id}", id))
+        mockMvc.perform(get(USER_URI + "/{id}", userDto.getId()))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
