@@ -15,15 +15,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Component
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public abstract class UserMapper {
 
-    private final RoleService roleService;
+    @Autowired
+    private RoleService roleService;
 
-    public UserMapper(RoleService roleService) {
-        this.roleService = roleService;
-    }
     @Mapping(source = "bankCardsSet", target = "bankCardDtos")
     @Mapping(source = "shippingAddressSet", target = "shippingAddressDtos")
     @Mapping(source = "passport", target = "passportDto")
