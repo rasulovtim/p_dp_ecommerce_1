@@ -8,18 +8,22 @@ import java.util.Collections;
 import com.gitlab.service.RoleService;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Component
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public abstract class UserMapper {
 
-    @Autowired
-    private RoleService roleService;
+    private final RoleService roleService;
 
+    public UserMapper(RoleService roleService) {
+        this.roleService = roleService;
+    }
     @Mapping(source = "bankCardsSet", target = "bankCardDtos")
     @Mapping(source = "shippingAddressSet", target = "shippingAddressDtos")
     @Mapping(source = "passport", target = "passportDto")
