@@ -1,15 +1,14 @@
 package com.gitlab.controller;
 
 import com.gitlab.dto.StoreDto;
-import com.gitlab.mapper.StoreMapper;
 import com.gitlab.service.StoreService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.stream.Collectors;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -23,18 +22,12 @@ public class StoreRestControllerIT extends AbstractIntegrationTest {
 
     @Autowired
     private StoreService storeService;
-    @Autowired
-    private StoreMapper storeMapper;
-
 
     @Test
     void should_get_all_store() throws Exception {
         String expected = objectMapper.writeValueAsString(
-                storeService
-                        .findAll()
-                        .stream()
-                        .map(storeMapper::toDto)
-                        .collect(Collectors.toList())
+                new ArrayList<>(storeService
+                        .findAll())
         );
 
         mockMvc.perform(get(STORE_URI))
@@ -99,9 +92,9 @@ public class StoreRestControllerIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isCreated());
 
-        storeDto.setOwnerId(2L);
         long id = storeDto.getId() - 1;
         storeDto.setId(id);
+        storeDto.setOwnerId(2L);
         String expected = objectMapper.writeValueAsString(storeDto);
 
 
