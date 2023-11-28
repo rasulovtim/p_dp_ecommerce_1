@@ -1,0 +1,2 @@
+ALTER TABLE store
+    ADD entity_status VARCHAR(25) DEFAULT 'ACTIVE' NOT NULL;
