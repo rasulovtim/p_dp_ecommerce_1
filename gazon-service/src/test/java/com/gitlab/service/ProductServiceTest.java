@@ -1,5 +1,6 @@
 package com.gitlab.service;
 
+import com.gitlab.enums.EntityStatus;
 import com.gitlab.model.Product;
 import com.gitlab.repository.ProductRepository;
 import org.junit.jupiter.api.Test;
@@ -65,6 +66,7 @@ class ProductServiceTest {
         productBeforeUpdate.setId(id);
         productBeforeUpdate.setName("old name");
         productBeforeUpdate.setDescription("old");
+        productBeforeUpdate.setEntityStatus(EntityStatus.ACTIVE);
 
         Product productFromFuture = generateProduct();
         productFromFuture.setId(id);
@@ -187,6 +189,7 @@ class ProductServiceTest {
         product.setCode("name");
         product.setWeight(2L);
         product.setPrice(BigDecimal.ONE);
+        product.setEntityStatus(EntityStatus.ACTIVE);
         return product;
     }
 
