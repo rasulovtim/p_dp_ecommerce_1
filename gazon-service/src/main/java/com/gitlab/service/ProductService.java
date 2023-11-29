@@ -167,7 +167,7 @@ public class ProductService {
         Optional<Product> foundProduct = productRepository.findById(id);
         if (foundProduct.isPresent()) {
             foundProduct.get().setEntityStatus(EntityStatus.DELETED);
-            productRepository.deleteById(id);
+            productRepository.save(foundProduct.get());
         }
         return foundProduct;
     }
@@ -176,7 +176,7 @@ public class ProductService {
         Optional<Product> foundProduct = findById(id);
         if (foundProduct.isPresent()) {
             foundProduct.get().setEntityStatus(EntityStatus.DELETED);
-            productRepository.deleteById(id);
+            productRepository.save(foundProduct.get());
         }
         return foundProduct.map(productMapper::toDto);
     }

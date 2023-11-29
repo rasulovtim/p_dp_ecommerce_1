@@ -96,11 +96,15 @@ class ProductServiceTest {
     @Test
     void should_delete_product() {
         long id = 1L;
+        Product deletedProduct = generateProduct(id);
+
+        deletedProduct.setEntityStatus(EntityStatus.DELETED);
+
         when(productRepository.findById(id)).thenReturn(Optional.of(generateProduct()));
 
         productService.delete(id);
 
-        verify(productRepository).deleteById(id);
+        verify(productRepository).save(deletedProduct);
     }
 
     @Test
