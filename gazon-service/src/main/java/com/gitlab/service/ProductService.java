@@ -11,12 +11,9 @@ import org.hibernate.search.jpa.FullTextQuery;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -32,7 +29,7 @@ public class ProductService {
         return productRepository.findAll()
                 .stream()
                 .filter(product -> product.getEntityStatus().equals(EntityStatus.ACTIVE))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<ProductDto> findAllDto() {
