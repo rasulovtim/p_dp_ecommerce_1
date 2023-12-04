@@ -11,5 +11,4 @@ public class DataGeneratorApplication {
     public static void main(String[] args) {
         SpringApplication.run(DataGeneratorApplication.class, args);
     }
-
 }

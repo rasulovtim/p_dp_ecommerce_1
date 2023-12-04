@@ -1,8 +1,8 @@
 package com.gitlab.controller;
 
-import com.gitlab.controllers.api.rest.PassportDtoGeneratorRestApi;
-import com.gitlab.dto.PassportDto;
-import com.gitlab.service.PassportDtoGeneratorService;
+import com.gitlab.controller.api.UserGeneratorRestApi;
+import com.gitlab.dto.UserDto;
+import com.gitlab.service.UserGeneratorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -17,18 +17,16 @@ import java.util.List;
 @Validated
 @RestController
 @RequiredArgsConstructor
-public class PassportDtoGeneratorController implements PassportDtoGeneratorRestApi {
+public class UserGeneratorController implements UserGeneratorRestApi {
 
-    private final PassportDtoGeneratorService passportDtoGeneratorService;
+    private final UserGeneratorService userGeneratorService;
 
     @Override
-    public ResponseEntity<List<PassportDto>> generateUserDto(int count) {
-        List<PassportDto> result = new ArrayList<>();
-
+    public ResponseEntity<List<UserDto>> generateUser(int count) {
+        List<UserDto> result = new ArrayList<>();
         for (int i = 0; i < count; i++) {
-            result.add(passportDtoGeneratorService.generatePassportDto());
+            result.add(userGeneratorService.generateUser());
         }
-
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 }

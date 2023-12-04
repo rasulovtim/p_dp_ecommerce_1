@@ -9,8 +9,9 @@ import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
-public class BankCardDtoGeneratorService {
-    public BankCardDto generateBankCardDto() {
+public class BankCardGeneratorService {
+
+    public BankCardDto generateBankCard() {
         BankCardDto bankCardDto = new BankCardDto();
 
         String cardNumber = DataGenerator.generateRandomString(8);

@@ -1,6 +1,6 @@
 package com.gitlab.service;
 
-import com.gitlab.client.UserDtoGeneratorClient;
+import com.gitlab.client.UserGeneratorClient;
 import com.gitlab.dto.*;
 import com.gitlab.enums.Gender;
 import com.gitlab.util.DataGenerator;
@@ -14,37 +14,41 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class UserDtoGeneratorService {
-    private final UserDtoGeneratorClient userDtoGeneratorClient;
-    private final PassportDtoGeneratorService passportDtoGeneratorService;
-    private final BankCardDtoGeneratorService bankCardDtoGeneratorService;
-    private final PersonalAddressDtoGeneratorService personalAddressDtoGeneratorService;
+public class UserGeneratorService {
 
-    public UserDto generateUserDto() {
+    private final UserGeneratorClient userGeneratorClient;
+    private final PassportGeneratorService passportGeneratorService;
+    private final BankCardGeneratorService bankCardGeneratorService;
+    private final PersonalAddressGeneratorService personalAddressGeneratorService;
+
+    public UserDto generateUser() {
         Set<RoleDto> roleSet = new HashSet<>();
         RoleDto roleDto = new RoleDto();
         roleDto.setRoleName("ROLE_USER_JUNIOR");
         roleSet.add(roleDto);
 
         Set<BankCardDto> bankCardSet = new HashSet<>();
-        bankCardSet.add(bankCardDtoGeneratorService.generateBankCardDto());
+        bankCardSet.add(bankCardGeneratorService.generateBankCard());
 
         String additionalData = DataGenerator.generateRandomString(3);
 
         Set<ShippingAddressDto> personalAddresses = new HashSet<>();
-        PersonalAddressDto personalAddressDto = personalAddressDtoGeneratorService.generatePersonalAddressDto(additionalData);
+        PersonalAddressDto personalAddressDto = personalAddressGeneratorService.generatePersonalAddressDto(additionalData);
         personalAddresses.add(personalAddressDto);
 
-        PassportDto passportDto = passportDtoGeneratorService.generatePassportDtoData(additionalData);
+        PassportDto passportDto = passportGeneratorService.generatePassportData(additionalData);
 
-        UserDto userDto = generateUserDtoData(additionalData, passportDto, personalAddresses, bankCardSet, roleSet);;
+        UserDto userDto = generateUserData(additionalData, passportDto, personalAddresses, bankCardSet, roleSet);
 
-        userDtoGeneratorClient.create(userDto);
+        userGeneratorClient.create(userDto);
         return userDto;
     }
 
-    public UserDto generateUserDtoData(String additionalData, PassportDto passportDto, Set<ShippingAddressDto> personalAddresses,
-                                              Set<BankCardDto> bankCardSet, Set<RoleDto> roleSet) {
+    public UserDto generateUserData(String additionalData,
+                                    PassportDto passportDto,
+                                    Set<ShippingAddressDto> personalAddresses,
+                                    Set<BankCardDto> bankCardSet,
+                                    Set<RoleDto> roleSet) {
         UserDto userDto = new UserDto();
         userDto.setEmail("user" + additionalData);
         userDto.setPassword("user" + additionalData);
@@ -62,5 +66,4 @@ public class UserDtoGeneratorService {
 
         return userDto;
     }
-
 }

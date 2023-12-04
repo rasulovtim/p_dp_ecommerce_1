@@ -1,6 +1,6 @@
 package com.gitlab.service;
 
-import com.gitlab.client.PassportDtoGeneratorClient;
+import com.gitlab.client.PassportGeneratorClient;
 import com.gitlab.dto.PassportDto;
 import com.gitlab.enums.Citizenship;
 import com.gitlab.util.DataGenerator;
@@ -11,18 +11,19 @@ import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
-public class PassportDtoGeneratorService {
-    private final PassportDtoGeneratorClient passportDtoGeneratorClient;
+public class PassportGeneratorService {
 
-    public PassportDto generatePassportDto() {
+    private final PassportGeneratorClient passportGeneratorClient;
+
+    public PassportDto generatePassport() {
         String additionalData = DataGenerator.generateRandomString(3);
-        PassportDto passportDto = generatePassportDtoData(additionalData);
+        PassportDto passportDto = generatePassportData(additionalData);
 
-        passportDtoGeneratorClient.create(passportDto);
+        passportGeneratorClient.create(passportDto);
         return passportDto;
     }
 
-    public PassportDto generatePassportDtoData(String additionalData) {
+    public PassportDto generatePassportData(String additionalData) {
         PassportDto passportDto = new PassportDto();
         passportDto.setCitizenship(Citizenship.RUSSIA);
         passportDto.setFirstName("user" + additionalData);
@@ -38,5 +39,4 @@ public class PassportDtoGeneratorService {
 
         return passportDto;
     }
-
 }
