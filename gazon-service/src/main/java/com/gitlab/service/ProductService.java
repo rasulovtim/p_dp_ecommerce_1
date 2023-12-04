@@ -1,5 +1,6 @@
 package com.gitlab.service;
 
+import com.gitlab.enums.EntityStatus;
 import com.gitlab.mapper.ProductMapper;
 import com.gitlab.model.Product;
 import com.gitlab.dto.ProductDto;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -24,21 +26,27 @@ public class ProductService {
     private final ProductMapper productMapper;
 
     public List<Product> findAll() {
-        return productRepository.findAll();
+        return productRepository.findAll()
+                .stream()
+                .filter(product -> product.getEntityStatus().equals(EntityStatus.ACTIVE))
+                .toList();
     }
 
     public List<ProductDto> findAllDto() {
         List<Product> products = findAll();
         List<ProductDto> allProductDto = new ArrayList<>();
         for (Product product : products) {
-            ProductDto productDto = productMapper.toDto(product);
-            if (!product.getReview().isEmpty()) {
-                long rating = Math.round(product.getReview().stream()
-                        .map(Review::getRating).mapToInt(a -> a)
-                        .average().getAsDouble());
-                productDto.setRating((byte) rating);
+            ProductDto productDto;
+            if (product.getEntityStatus().equals(EntityStatus.ACTIVE)) {
+                productDto = productMapper.toDto(product);
+                if (!product.getReview().isEmpty()) {
+                    long rating = Math.round(product.getReview().stream()
+                            .map(Review::getRating).mapToInt(a -> a)
+                            .average().getAsDouble());
+                    productDto.setRating((byte) rating);
+                }
+                allProductDto.add(productDto);
             }
-            allProductDto.add(productDto);
         }
         return allProductDto;
     }
@@ -57,16 +65,21 @@ public class ProductService {
                         .map(Review::getRating).mapToInt(a -> a).average().getAsDouble());
                 currentOptionalProductDto.get().setRating((byte) rating);
             }
+            if (currentProduct.getEntityStatus().equals(EntityStatus.DELETED)) {
+                return Optional.empty();
+            }
         }
         return currentOptionalProductDto;
     }
 
     public Product save(Product product) {
+        product.setEntityStatus(EntityStatus.ACTIVE);
         return productRepository.save(product);
     }
 
     public ProductDto saveDto(ProductDto productDto) {
         Product product = productMapper.toEntity(productDto);
+        product.setEntityStatus(EntityStatus.ACTIVE);
         Product savedProduct = productRepository.save(product);
         return productMapper.toDto(savedProduct);
     }
@@ -74,7 +87,7 @@ public class ProductService {
     public Optional<Product> update(Long id, Product product) {
         Optional<Product> currentOptionalProduct = findById(id);
         Product currentProduct;
-        if (currentOptionalProduct.isEmpty()) {
+        if (currentOptionalProduct.isEmpty() || currentOptionalProduct.get().getEntityStatus().equals(EntityStatus.DELETED)) {
             return currentOptionalProduct;
         } else {
             currentProduct = currentOptionalProduct.get();
@@ -103,13 +116,16 @@ public class ProductService {
         if (product.getPrice() != null) {
             currentProduct.setPrice(product.getPrice());
         }
+
+        currentProduct.setEntityStatus(EntityStatus.ACTIVE);
+
         return Optional.of(productRepository.save(currentProduct));
     }
 
     public Optional<ProductDto> updateDto(Long id, ProductDto productDto) {
         Optional<Product> currentOptionalProduct = findById(id);
 
-        if (currentOptionalProduct.isEmpty()) {
+        if (currentOptionalProduct.isEmpty() || currentOptionalProduct.get().getEntityStatus().equals(EntityStatus.DELETED)) {
             return Optional.empty();
         }
 
@@ -138,6 +154,7 @@ public class ProductService {
             currentProduct.setPrice(productDto.getPrice());
         }
 
+
         productRepository.save(currentProduct);
 
         return findByIdDto(currentProduct.getId());
@@ -146,7 +163,8 @@ public class ProductService {
     public Optional<Product> delete(Long id) {
         Optional<Product> foundProduct = productRepository.findById(id);
         if (foundProduct.isPresent()) {
-            productRepository.deleteById(id);
+            foundProduct.get().setEntityStatus(EntityStatus.DELETED);
+            productRepository.save(foundProduct.get());
         }
         return foundProduct;
     }
@@ -154,13 +172,15 @@ public class ProductService {
     public Optional<ProductDto> deleteDto(Long id) {
         Optional<Product> foundProduct = findById(id);
         if (foundProduct.isPresent()) {
-            productRepository.deleteById(id);
+            foundProduct.get().setEntityStatus(EntityStatus.DELETED);
+            productRepository.save(foundProduct.get());
         }
         return foundProduct.map(productMapper::toDto);
     }
 
     public ProductDto createDto(ProductDto productDto) {
         Product productEntity = productMapper.toEntity(productDto);
+        productEntity.setEntityStatus(EntityStatus.ACTIVE);
         Product savedProduct = productRepository.save(productEntity);
         return productMapper.toDto(savedProduct);
     }
@@ -176,6 +196,6 @@ public class ProductService {
         mergedList.removeAll(secondList);
         mergedList.addAll(secondList);
 
-        return mergedList.stream().map(productMapper::toDto).toList();
+        return mergedList.stream().filter(mergedList1 -> mergedList1.getEntityStatus().equals(EntityStatus.ACTIVE)).map(productMapper::toDto).toList();
     }
 }

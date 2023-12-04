@@ -1,5 +1,6 @@
 package com.gitlab.model;
 
+import com.gitlab.enums.EntityStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -55,4 +56,7 @@ public class Product {
     @Column(name = "price")
     private BigDecimal price;
 
+    @Column(name = "entity_status")
+    @Enumerated(EnumType.STRING)
+    private EntityStatus entityStatus;
 }

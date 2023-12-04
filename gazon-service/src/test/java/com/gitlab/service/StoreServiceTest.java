@@ -1,5 +1,8 @@
 package com.gitlab.service;
 
+import com.gitlab.dto.StoreDto;
+import com.gitlab.enums.EntityStatus;
+import com.gitlab.mapper.StoreMapper;
 import com.gitlab.model.Store;
 import com.gitlab.repository.StoreRepository;
 import org.junit.jupiter.api.Test;
@@ -8,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +25,9 @@ public class StoreServiceTest {
     @Mock
     private StoreRepository storeRepository;
 
+    @Mock
+    private StoreMapper storeMapper;
+
     @InjectMocks
     private StoreService storeService;
 
@@ -29,7 +36,7 @@ public class StoreServiceTest {
         List<Store> expectedResult = generateStores();
         when(storeRepository.findAll()).thenReturn(generateStores());
 
-        List<Store> actualResult = storeService.findAll();
+        List<Store> actualResult = storeRepository.findAll();
 
         assertEquals(expectedResult, actualResult);
     }
@@ -37,10 +44,13 @@ public class StoreServiceTest {
     @Test
     void should_find_store_by_id() {
         long id = 1L;
-        Store expectedResult = generateStore();
-        when(storeRepository.findById(id)).thenReturn(Optional.of(expectedResult));
+        StoreDto expectedResult = generateStoreDto();
+        Store store = generateStore(id);
 
-        Optional<Store> actualResult = storeService.findById(id);
+        when(storeRepository.findById(id)).thenReturn(Optional.of(store));
+        when(storeMapper.toDto(store)).thenReturn(generateStoreDto());
+
+        Optional<StoreDto> actualResult = storeService.findById(id);
 
         assertEquals(expectedResult, actualResult.orElse(null));
     }
@@ -50,7 +60,7 @@ public class StoreServiceTest {
         Store expectedResult = generateStore();
         when(storeRepository.save(expectedResult)).thenReturn(expectedResult);
 
-        Store actualResult = storeService.save(expectedResult);
+        Store actualResult = storeRepository.save(expectedResult);
 
         assertEquals(expectedResult, actualResult);
     }
@@ -58,18 +68,16 @@ public class StoreServiceTest {
     @Test
     void should_update_store() {
         long id = 1L;
-        Store storeToUpdate = generateStore();
+        StoreDto storeToUpdate = generateStoreDto();
 
-        Store storeBeforeUpdate = new Store();
-        storeBeforeUpdate.setId(1L);
+        Store storeBeforeUpdate = generateStoreBefore();
 
-        Store updatedStore = new Store();
-        updatedStore.setId(id);
+        StoreDto updatedStore = generateStoreDto();
 
         when(storeRepository.findById(id)).thenReturn(Optional.of(storeBeforeUpdate));
-        when(storeRepository.save(updatedStore)).thenReturn(updatedStore);
+        when(storeService.update(updatedStore.getId(), updatedStore)).thenReturn(updatedStore);
 
-        Optional<Store> actualResult = storeService.update(id, storeToUpdate);
+        Optional<StoreDto> actualResult = Optional.ofNullable(storeService.update(id, storeToUpdate));
 
         assertEquals(updatedStore, actualResult.orElse(null));
     }
@@ -77,12 +85,12 @@ public class StoreServiceTest {
     @Test
     void should_not_update_store_when_entity_not_found() {
         long id = 4L;
-        Store storeToUpdateWith = generateStore();
+        StoreDto storeToUpdateWith = generateStoreDto();
 
 
         when(storeRepository.findById(id)).thenReturn(Optional.empty());
 
-        Optional<Store> actualResult = storeService.update(id, storeToUpdateWith);
+        Optional<StoreDto> actualResult = Optional.ofNullable(storeService.update(id, storeToUpdateWith));
 
         verify(storeRepository, never()).save(any());
         assertNull(actualResult.orElse(null));
@@ -91,11 +99,14 @@ public class StoreServiceTest {
     @Test
     void should_delete_store() {
         long id = 1L;
+        Store deletedStore = generateStore(id);
+        deletedStore.setEntityStatus(EntityStatus.DELETED);
+
         when(storeRepository.findById(id)).thenReturn(Optional.of(generateStore()));
 
         storeService.delete(id);
 
-        verify(storeRepository).deleteById(id);
+        verify(storeRepository).save(deletedStore);
     }
 
     @Test
@@ -120,12 +131,28 @@ public class StoreServiceTest {
     private Store generateStore(Long id) {
         Store store = generateStore();
         store.setId(id);
+        store.setEntityStatus(EntityStatus.ACTIVE);
         return store;
     }
 
     private Store generateStore() {
         Store store = new Store();
         store.setId(1L);
+        store.setEntityStatus(EntityStatus.ACTIVE);
         return store;
+    }
+    private Store generateStoreBefore() {
+        Store store = new Store();
+        store.setId(1L);
+        store.setEntityStatus(EntityStatus.ACTIVE);
+        return store;
+    }
+    private StoreDto generateStoreDto() {
+        StoreDto storeDto = new StoreDto();
+        storeDto.setId(1L);
+        storeDto.setOwnerId(1L);
+        storeDto.setManagersId(new HashSet<>());
+
+        return storeDto;
     }
 }

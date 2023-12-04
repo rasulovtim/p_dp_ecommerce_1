@@ -65,7 +65,7 @@
     </changeSet>
 
     <include file="v-1.11-shoppingCart/db.changelog-v1.11.xml" relativeToChangelogFile="true"/>
-    <changeSet id="1.11" author="aleksandr_shibaev" >
+    <changeSet id="1.11" author="aleksandr_shibaev">
         <tagDatabase tag="v-1.11"/>
     </changeSet>
 
@@ -92,6 +92,26 @@
     <include file="v-1.16/db.changelog-v-1.16.xml" relativeToChangelogFile="true"/>
     <changeSet id="1.16" author="daniil_venikov">
         <tagDatabase tag="v-1.16"/>
+    </changeSet>
+
+    <include file="v-1.17/db.changelog-v-1.17.xml" relativeToChangelogFile="true"/>
+    <changeSet id="1.17" author="dmitrii_kulakov">
+        <tagDatabase tag="v-1.17"/>
+    </changeSet>
+
+    <include file="v-1.18/db.changelog-v-1.18.xml" relativeToChangelogFile="true"/>
+    <changeSet id="1.18" author="denis_pronin">
+        <tagDatabase tag="v-1.18"/>
+    </changeSet>
+
+    <include file="v-1.19/db.changelog-v-1.19.xml" relativeToChangelogFile="true"/>
+    <changeSet id="1.19" author="anton_chumakov">
+        <tagDatabase tag="v-1.19"/>
+    </changeSet>
+
+    <include file="v-1.20-product/db.changelog-v-1.20.xml" relativeToChangelogFile="true"/>
+    <changeSet id="1.20" author="gzolbolotova">
+        <tagDatabase tag="v-1.20"/>
     </changeSet>
 
 </databaseChangeLog>

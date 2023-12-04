@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.testcontainers.shaded.org.hamcrest.CoreMatchers.equalTo;
 import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 
-class PassportRestControllerTest extends AbstractIntegrationTest {
+class PassportRestControllerTestIT extends AbstractIntegrationTest {
 
     private static final String PASSPORT_URN = "/api/passport";
     private static final String PASSPORT_URI = URL + PASSPORT_URN;

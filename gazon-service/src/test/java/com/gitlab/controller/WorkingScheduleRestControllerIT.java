@@ -20,8 +20,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.testcontainers.shaded.org.hamcrest.CoreMatchers.equalTo;
-import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 
 class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
 
@@ -73,13 +71,17 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_get_working_schedule_by_id() throws Exception {
-        long id = 1L;
-        String expected = objectMapper.writeValueAsString(
-                workingScheduleMapper.toDto(
-                        workingScheduleService
-                                .findById(id)
-                                .orElse(null))
-        );
+        WorkingScheduleDto workingScheduleDto = generateWorkingScheduleDto();
+        Long id = workingScheduleDto.getId() + 3;
+        workingScheduleDto.setId(id);
+        String expected = objectMapper.writeValueAsString(workingScheduleDto);
+
+        mockMvc.perform(post(WORKING_SCHEDULE_URI)
+                        .content(expected)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isCreated());
 
         mockMvc.perform(get(WORKING_SCHEDULE_URI + "/{id}", id))
                 .andDo(print())
@@ -90,7 +92,7 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_return_not_found_when_get_working_schedule_by_non_existent_id() throws Exception {
-        long id = 10L;
+        long id = 10000L;
         mockMvc.perform(get(WORKING_SCHEDULE_URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isNotFound());
@@ -100,6 +102,8 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_create_working_schedule() throws Exception {
         WorkingScheduleDto workingScheduleDto = generateWorkingScheduleDto();
+        Long id = workingScheduleDto.getId() + 2;
+        workingScheduleDto.setId(id);
         String jsonWorkingScheduleDto = objectMapper.writeValueAsString(workingScheduleDto);
 
         mockMvc.perform(post(WORKING_SCHEDULE_URI)
@@ -109,18 +113,65 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isCreated());
 
+        mockMvc.perform(delete(WORKING_SCHEDULE_URI + "/{id}", id))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get(WORKING_SCHEDULE_URI + "/{id}", id))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void should_not_created_working_schedule_when_in_DB_exists_working_schedule_with_same_fields() throws Exception {
+        WorkingScheduleDto workingScheduleDto = generateWorkingScheduleDto();
+        Long id = workingScheduleDto.getId() + 1;
+        workingScheduleDto.setId(id);
+        String jsonWorkingScheduleDto = objectMapper.writeValueAsString(workingScheduleDto);
+
+        mockMvc.perform(post(WORKING_SCHEDULE_URI)
+                        .content(jsonWorkingScheduleDto)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(post(WORKING_SCHEDULE_URI)
+                        .content(jsonWorkingScheduleDto)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        mockMvc.perform(delete(WORKING_SCHEDULE_URI + "/{id}", id))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get(WORKING_SCHEDULE_URI + "/{id}", id))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+
     }
 
     @Test
     void should_update_working_schedule_by_id() throws Exception {
-        long id = 1L;
-        int numberOfEntitiesExpected = workingScheduleService.findAll().size();
 
         WorkingScheduleDto workingScheduleDto = generateWorkingScheduleDto();
+        Long id = workingScheduleDto.getId();
         String jsonWorkingScheduleDto = objectMapper.writeValueAsString(workingScheduleDto);
 
-        workingScheduleDto.setId(id);
-        String expected = objectMapper.writeValueAsString(workingScheduleDto);
+
+        mockMvc.perform(post(WORKING_SCHEDULE_URI)
+                        .content(jsonWorkingScheduleDto)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isCreated());
+
+        workingScheduleDto.setDayOfWeek(DayOfWeek.THURSDAY);
+        workingScheduleDto.setFrom(LocalTime.parse("05:05"));
+        workingScheduleDto.setTo(LocalTime.parse("06:06"));
+        jsonWorkingScheduleDto = objectMapper.writeValueAsString(workingScheduleDto);
 
         mockMvc.perform(patch(WORKING_SCHEDULE_URI + "/{id}", id)
                         .content(jsonWorkingScheduleDto)
@@ -128,17 +179,21 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(expected))
-                .andExpect(result -> assertThat(workingScheduleService.findAll().size(),
-                        equalTo(numberOfEntitiesExpected)));
+                .andExpect(content().json(jsonWorkingScheduleDto));
 
+        mockMvc.perform(delete(WORKING_SCHEDULE_URI + "/{id}", id))
+                .andDo(print())
+                .andExpect(status().isOk());
 
+        mockMvc.perform(get(WORKING_SCHEDULE_URI + "/{id}", id))
+                .andDo(print())
+                .andExpect(status().isNotFound());
     }
 
 
     @Test
     void should_return_not_found_when_update_working_schedule_by_non_existent_id() throws Exception {
-        long id = 10L;
+        long id = 10000L;
         WorkingScheduleDto workingScheduleDto = generateWorkingScheduleDto();
         String jsonWorkingScheduleDto = objectMapper.writeValueAsString(workingScheduleDto);
 
@@ -153,12 +208,22 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_delete_working_schedule_by_id() throws Exception {
-        WorkingScheduleDto workingScheduleDto= workingScheduleService.saveDto(generateWorkingScheduleDto());
+        WorkingScheduleDto workingScheduleDto = generateWorkingScheduleDto();
+        Long id = workingScheduleDto.getId() + 4;
+        workingScheduleDto.setId(id);
+        String jsonWorkingScheduleDto = objectMapper.writeValueAsString(workingScheduleDto);
 
-        long id = workingScheduleDto.getId();
+        mockMvc.perform(post(WORKING_SCHEDULE_URI)
+                        .content(jsonWorkingScheduleDto)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isCreated());
+
         mockMvc.perform(delete(WORKING_SCHEDULE_URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk());
+
         mockMvc.perform(get(WORKING_SCHEDULE_URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isNotFound());
@@ -166,7 +231,7 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
 
     private WorkingScheduleDto generateWorkingScheduleDto() {
         WorkingScheduleDto workingScheduleDto = new WorkingScheduleDto();
-        workingScheduleDto.setId(1L);
+        workingScheduleDto.setId(4L);
         workingScheduleDto.setFrom(LocalTime.of(10, 0));
         workingScheduleDto.setTo(LocalTime.of(18, 0));
         workingScheduleDto.setDayOfWeek(DayOfWeek.WEDNESDAY);

@@ -1,6 +1,5 @@
 package com.gitlab.controller;
 
-
 import com.gitlab.controllers.api.rest.UserRestApi;
 import com.gitlab.dto.UserDto;
 import com.gitlab.mapper.UserMapper;
@@ -38,7 +37,9 @@ public class UserRestController implements UserRestApi {
 
     @Override
     public ResponseEntity<UserDto> get(Long id) {
-        return userService.findById(id)
+        Optional<UserDto> optionalUser = userService.findById(id);
+
+        return optionalUser
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -54,10 +55,13 @@ public class UserRestController implements UserRestApi {
 
     @Override
     public ResponseEntity<UserDto> update(Long id, UserDto userDto) {
-        return userService.update(id, userMapper.toEntity(userDto))
-                .map(example -> ResponseEntity.ok(userMapper.toDto(example)))
+        Optional<User> updatedUser = userService.update(id, userMapper.toEntity(userDto));
+
+        return updatedUser
+                .map(user -> ResponseEntity.ok(userMapper.toDto(user)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
 
     @Override
     public ResponseEntity<Void> delete(Long id) {

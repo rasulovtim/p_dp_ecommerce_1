@@ -1,6 +1,7 @@
 package com.gitlab.mapper;
 
 import com.gitlab.dto.ProductDto;
+import com.gitlab.enums.EntityStatus;
 import com.gitlab.model.Product;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
@@ -25,6 +26,7 @@ class ProductMapperTest {
         product.setCode("product1");
         product.setWeight(1L);
         product.setPrice(BigDecimal.ONE);
+        product.setEntityStatus(EntityStatus.ACTIVE);
 
         ProductDto dtoTwin = mapper.toDto(product);
 

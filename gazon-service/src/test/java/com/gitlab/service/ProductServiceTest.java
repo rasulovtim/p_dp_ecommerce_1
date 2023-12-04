@@ -1,5 +1,6 @@
 package com.gitlab.service;
 
+import com.gitlab.enums.EntityStatus;
 import com.gitlab.model.Product;
 import com.gitlab.repository.ProductRepository;
 import org.junit.jupiter.api.Test;
@@ -65,6 +66,7 @@ class ProductServiceTest {
         productBeforeUpdate.setId(id);
         productBeforeUpdate.setName("old name");
         productBeforeUpdate.setDescription("old");
+        productBeforeUpdate.setEntityStatus(EntityStatus.ACTIVE);
 
         Product productFromFuture = generateProduct();
         productFromFuture.setId(id);
@@ -94,11 +96,15 @@ class ProductServiceTest {
     @Test
     void should_delete_product() {
         long id = 1L;
+        Product deletedProduct = generateProduct(id);
+
+        deletedProduct.setEntityStatus(EntityStatus.DELETED);
+
         when(productRepository.findById(id)).thenReturn(Optional.of(generateProduct()));
 
         productService.delete(id);
 
-        verify(productRepository).deleteById(id);
+        verify(productRepository).save(deletedProduct);
     }
 
     @Test
@@ -187,6 +193,7 @@ class ProductServiceTest {
         product.setCode("name");
         product.setWeight(2L);
         product.setPrice(BigDecimal.ONE);
+        product.setEntityStatus(EntityStatus.ACTIVE);
         return product;
     }
 
