@@ -44,4 +44,5 @@ public class Passport {
 
     @Column(name = "issuer_number")
     private String issuerNumber;
+
 }
