@@ -4,6 +4,9 @@ import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -11,7 +14,12 @@ import javax.persistence.Entity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "personal_address")
-public class PersonalAddress extends ShippingAddress {
+public class  PersonalAddress extends ShippingAddress {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "shipping_address_id")
+    private Long id;
 
     @Column(name = "apartment")
     private String apartment;

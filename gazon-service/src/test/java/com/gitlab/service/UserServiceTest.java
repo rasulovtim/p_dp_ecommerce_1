@@ -332,6 +332,25 @@ class UserServiceTest {
         verify(userRepository, never()).deleteById(anyLong());
     }
 
+    @Test
+    void should_be_connected_with_tables_bank_card_shipping_address_passport(){
+        long id = 1L;
+
+        User user = generateUser();
+
+        when(userRepository.save(user)).thenReturn(user);
+
+        userService.save(user);
+
+        verify(userRepository).save(user);
+
+        assertNotNull(user.getBankCardsSet().stream().findAny().get().getId());
+        assertNotNull(user.getShippingAddressSet().stream().findAny().get().getId());
+        assertNotNull(user.getPassport().getId());
+
+    }
+
+
     private List<User> generateUsers() {
 
         return List.of(
@@ -356,7 +375,9 @@ class UserServiceTest {
         bankCardSet.add(new BankCard(1L, "0000000000000", LocalDate.of(1900, 1, 1), 777));
 
         Set<ShippingAddress> personalAddresses = new HashSet<>();
+
         personalAddresses.add(new PersonalAddress(
+                1L,
                 "apartment",
                 "floor",
                 "entance",
@@ -413,6 +434,7 @@ class UserServiceTest {
         }
 
         personalAddresses.add(new PersonalAddress(
+                1L,
                 "apmentBef",
                 "floBef",
                 "enanceBef",
