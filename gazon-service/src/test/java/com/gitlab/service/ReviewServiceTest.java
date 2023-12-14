@@ -1,6 +1,8 @@
 package com.gitlab.service;
 
+import com.gitlab.enums.EntityStatus;
 import com.gitlab.model.Review;
+import com.gitlab.model.User;
 import com.gitlab.repository.ReviewRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -202,11 +204,12 @@ public class ReviewServiceTest {
     @Test
     void should_delete_review() {
         long id = 1L;
-        when(reviewRepository.findById(id)).thenReturn(Optional.of(generateReview()));
+        Review deletedReview = generateReview(id);
+        when(reviewRepository.findById(id)).thenReturn(Optional.of(deletedReview));
 
         reviewService.delete(id);
 
-        verify(reviewRepository).deleteById(id);
+        verify(reviewRepository).save(deletedReview);
     }
 
     @Test
@@ -244,6 +247,7 @@ public class ReviewServiceTest {
         review.setRating((byte) 6);
         review.setHelpfulCounter(7);
         review.setNotHelpfulCounter(1);
+        review.setEntityStatus(EntityStatus.ACTIVE);
         return review;
     }
 }

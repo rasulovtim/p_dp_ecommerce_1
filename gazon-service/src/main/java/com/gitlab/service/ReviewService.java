@@ -1,6 +1,7 @@
 package com.gitlab.service;
 
 import com.gitlab.dto.ReviewDto;
+import com.gitlab.enums.EntityStatus;
 import com.gitlab.mapper.ReviewMapper;
 import com.gitlab.model.Review;
 import com.gitlab.repository.ReviewRepository;
@@ -26,23 +27,31 @@ public class ReviewService {
     }
 
     public List<ReviewDto> findAllDto() {
-        List<Review> reviews = reviewRepository.findAll();
+        List<Review> reviews = findAll();
         return reviews.stream()
                 .map(reviewMapper::toDto)
                 .collect(Collectors.toList());
     }
 
     public Optional<Review> findById(Long id) {
-        return reviewRepository.findById(id);
+        Optional<Review> reviewOptional = reviewRepository.findById(id);
+        if (reviewOptional.isPresent() && reviewOptional.get().getEntityStatus().equals(EntityStatus.ACTIVE)) {
+            return reviewRepository.findById(id);
+        }
+        return Optional.empty();
     }
 
     public Optional<ReviewDto> findByIdDto(Long id) {
-        return reviewRepository.findById(id)
-                .map(reviewMapper::toDto);
+        Optional<Review> reviewOptional = reviewRepository.findById(id);
+        if (reviewOptional.isPresent() && reviewOptional.get().getEntityStatus().equals(EntityStatus.ACTIVE)) {
+            return reviewOptional.map(reviewMapper::toDto);
+        }
+        return Optional.empty();
     }
 
     @Transactional
     public Review save(Review review) {
+        review.setEntityStatus(EntityStatus.ACTIVE);
         return reviewRepository.save(review);
     }
 
@@ -55,12 +64,13 @@ public class ReviewService {
 
     @Transactional
     public Optional<Review> update(Long id, Review review) {
-        Optional<Review> reviewOptional = findById(id);
+        Optional<Review> reviewOptional = reviewRepository.findById(id);
         Review currentReview;
-        if (reviewOptional.isEmpty()) {
+        if (reviewOptional.isEmpty() ) {
             return reviewOptional;
         } else {
             currentReview = reviewOptional.get();
+            currentReview.setEntityStatus(EntityStatus.ACTIVE);
         }
         if (review.getPros() != null) {
             currentReview.setPros(review.getPros());
@@ -116,10 +126,13 @@ public class ReviewService {
 
     @Transactional
     public Optional<Review> delete(Long id) {
-        Optional<Review> reviewOptional = findById(id);
-        if (reviewOptional.isPresent()) {
-            reviewRepository.deleteById(id);
+        Optional<Review> optionalDeletedReview = reviewRepository.findById(id);
+        if (optionalDeletedReview.isEmpty() || optionalDeletedReview.get().getEntityStatus().equals(EntityStatus.DELETED)) {
+            return Optional.empty();
         }
-        return reviewOptional;
+        Review deletedReview = optionalDeletedReview.get();
+        deletedReview.setEntityStatus(EntityStatus.DELETED);
+        reviewRepository.save(deletedReview);
+        return optionalDeletedReview;
     }
 }

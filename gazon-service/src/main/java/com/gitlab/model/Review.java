@@ -1,5 +1,6 @@
 package com.gitlab.model;
 
+import com.gitlab.enums.EntityStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -48,4 +49,8 @@ public class Review {
 
     @Column(name = "not_helpful_counter")
     private Integer notHelpfulCounter;
+
+    @Column(name = "entity_status")
+    @Enumerated(EnumType.STRING)
+    private EntityStatus entityStatus;
 }
