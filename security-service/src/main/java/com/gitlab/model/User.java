@@ -76,6 +76,10 @@ public class User implements UserDetails, OidcUser {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return rolesSet;
     }
+    @Override
+    public String getGender() {
+        return gender.getValue();
+    }
 
     @Override
     public String getUsername() {
@@ -131,7 +135,5 @@ public class User implements UserDetails, OidcUser {
         return null;
     }
 
-    public String getGender() {
-        return gender.toString();
-    }
+
 }
