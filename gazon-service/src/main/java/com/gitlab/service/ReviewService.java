@@ -27,8 +27,8 @@ public class ReviewService {
     }
 
     public List<ReviewDto> findAllDto() {
-        List<Review> reviews = findAll();
-        return reviews.stream()
+        return findAll()
+                .stream()
                 .map(reviewMapper::toDto)
                 .collect(Collectors.toList());
     }
