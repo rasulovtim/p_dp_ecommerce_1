@@ -36,7 +36,7 @@ class UserServiceTest {
     @Test
     void should_find_all_users() {
         List<User> expectedResult = generateUsers();
-        when(userRepository.findByOrderByIdAsc()).thenReturn(generateUsers());
+        when(userRepository.findAll()).thenReturn(generateUsers());
 
         List<User> actualResult = userService.findAll();
 

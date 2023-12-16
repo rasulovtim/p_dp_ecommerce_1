@@ -30,14 +30,14 @@ public class UserService {
     private final PassportMapper passportMapper;
 
     public List<User> findAll() {
-        return userRepository.findByOrderByIdAsc()
+        return userRepository.findAll()
                 .stream()
                 .filter(user -> user.getEntityStatus().equals(EntityStatus.ACTIVE))
                 .collect(Collectors.toList());
     }
 
     public List<UserDto> findAllDto() {
-        List<User> users = userRepository.findByOrderByIdAsc();
+        List<User> users = userRepository.findAll();
         return users
                 .stream()
                 .filter(user -> user.getEntityStatus().equals(EntityStatus.ACTIVE))
