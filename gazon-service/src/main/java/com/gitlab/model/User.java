@@ -13,12 +13,14 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@EqualsAndHashCode(exclude = {"passport", "bankCardsSet", "shippingAddressSet"})
+@ToString
 @Table(name = "users", schema = "public", catalog = "postgres")
 @NamedEntityGraph(name = "userWithSets",
         attributeNodes = {
-        @NamedAttributeNode("bankCardsSet"),
-        @NamedAttributeNode("shippingAddressSet"),
-        @NamedAttributeNode("rolesSet")})
+                @NamedAttributeNode("bankCardsSet"),
+                @NamedAttributeNode("shippingAddressSet"),
+                @NamedAttributeNode("rolesSet")})
 public class User {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,16 +56,22 @@ public class User {
     private String phoneNumber;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id", referencedColumnName = "id")
+    @JoinColumn(name = "passport_id", referencedColumnName = "id")
     private Passport passport;
 
     @Column(name = "create_date")
     private LocalDate createDate;
 
-    @OneToMany(mappedBy="id", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "users_bank_cards",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "bank_card_id"))
     private Set<BankCard> bankCardsSet;
 
-    @OneToMany(mappedBy="id",cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "users_shipping_address",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_shipping_address_id"))
     private Set<ShippingAddress> shippingAddressSet;
 
     @OneToMany(cascade = CascadeType.ALL)

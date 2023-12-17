@@ -3,6 +3,7 @@ package com.gitlab.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 
@@ -25,4 +26,5 @@ public class BankCard {
 
     @Column(name = "security_code")
     private Integer securityCode;
+
 }
