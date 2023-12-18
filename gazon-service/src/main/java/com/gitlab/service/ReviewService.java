@@ -1,8 +1,10 @@
 package com.gitlab.service;
 
+import com.gitlab.dto.ProductDto;
 import com.gitlab.dto.ReviewDto;
 import com.gitlab.enums.EntityStatus;
 import com.gitlab.mapper.ReviewMapper;
+import com.gitlab.model.Product;
 import com.gitlab.model.Review;
 import com.gitlab.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
@@ -58,6 +60,7 @@ public class ReviewService {
     @Transactional
     public ReviewDto saveDto(ReviewDto reviewDto) {
         Review review = reviewMapper.toEntity(reviewDto);
+        review.setEntityStatus(EntityStatus.ACTIVE);
         Review savedReview = reviewRepository.save(review);
         return reviewMapper.toDto(savedReview);
     }
