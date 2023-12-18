@@ -16,26 +16,24 @@ public class PassportGeneratorService {
     private final PassportGeneratorClient passportGeneratorClient;
 
     public PassportDto generatePassport() {
-        String additionalData = DataGenerator.generateRandomString(3);
-        PassportDto passportDto = generatePassportData(additionalData);
-
+        PassportDto passportDto = generatePassportData();
         passportGeneratorClient.create(passportDto);
+
         return passportDto;
     }
 
-    public PassportDto generatePassportData(String additionalData) {
+    public PassportDto generatePassportData() {
         PassportDto passportDto = new PassportDto();
+
         passportDto.setCitizenship(Citizenship.RUSSIA);
-        passportDto.setFirstName("user" + additionalData);
-        passportDto.setLastName("user" + additionalData);
+        passportDto.setFirstName("user" + DataGenerator.generateRandomString(3));
+        passportDto.setLastName("user" + DataGenerator.generateRandomString(3));
+        passportDto.setPatronym("patronym" + DataGenerator.generateRandomString(3));
         passportDto.setBirthDate(LocalDate.of(2000, 5, 15));
         passportDto.setIssueDate(LocalDate.of(2000, 5, 15));
-
-        String passportNumber = DataGenerator.generateRandomString(5);
-        passportDto.setPassportNumber(passportNumber);
-
-        passportDto.setIssuer("isuer" + additionalData);
-        passportDto.setIssuerNumber("issurN" + additionalData);
+        passportDto.setPassportNumber(DataGenerator.generatePassportNumber());
+        passportDto.setIssuer(DataGenerator.generateRandomString(10));
+        passportDto.setIssuerNumber(DataGenerator.generatePassportIssuerNumber());
 
         return passportDto;
     }

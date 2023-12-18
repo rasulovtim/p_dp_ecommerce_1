@@ -1,6 +1,7 @@
 package com.gitlab.service;
 
 import com.gitlab.model.BankCard;
+import com.gitlab.model.User;
 import com.gitlab.repository.BankCardRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -109,6 +111,7 @@ class BankCardServiceTest {
 
         verify(bankCardRepository, never()).deleteById(anyLong());
     }
+
 
     private List<BankCard> generateBankCards() {
         return List.of(

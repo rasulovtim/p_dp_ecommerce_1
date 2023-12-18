@@ -19,7 +19,7 @@ public class BankCardDto {
     @ReadOnlyProperty
     private Long id;
 
-    @Pattern(regexp="^[1-9][0-9]*$", message = "cardNumber must contain only positive digits")
+    @Pattern(regexp = "^[1-9][0-9]*$", message = "cardNumber must contain only positive digits")
     @Size(min = 8, max = 19, message = "Length of BankCard's cardNumber should be between 8 and 19 positive digits")
     @NotEmpty(message = "BankCard's cardNumber should have at least eight characters")
     private String cardNumber;
@@ -30,4 +30,5 @@ public class BankCardDto {
     @Range(min = 100, max = 9999, message = "Length of BankCard's securityCode should be between 3 and 4 positive digits")
     @NotNull(message = "BankCard's securityCode should not be empty")
     private Integer securityCode;
+
 }

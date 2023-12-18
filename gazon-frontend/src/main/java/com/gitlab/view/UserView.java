@@ -24,6 +24,7 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.LumoUtility.Gap;
+
 import java.util.*;
 
 @Route(value = "users", layout = MainLayout.class)
@@ -355,16 +356,19 @@ public class UserView extends VerticalLayout {
             passportDto.setIssuer(passportIssuerField.getValue());
             passportDto.setIssuerNumber(passportIssuerNumberField.getValue());
 
+
             // Fill shipping address DTO
             personalAddressDto.setAddress(shippingAddressField.getValue());
             personalAddressDto.setApartment(shippingAddressApartmentField.getValue());
             personalAddressDto.setFloor(shippingAddressFloorField.getValue());
             personalAddressDto.setEntrance(shippingAddressEntranceField.getValue());
 
+
             // Fill bank card DTO
             bankCardDto.setCardNumber(bankCardNumberField.getValue());
             bankCardDto.setDueDate(bankCardDueDateField.getValue());
             bankCardDto.setSecurityCode(bankCardSecurityCodeField.getValue());
+
 
             // Fill USER DTO
             userDto.setEmail(userEmailField.getValue());

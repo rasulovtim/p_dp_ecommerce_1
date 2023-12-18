@@ -14,12 +14,12 @@ public class BankCardGeneratorService {
     public BankCardDto generateBankCard() {
         BankCardDto bankCardDto = new BankCardDto();
 
-        String cardNumber = DataGenerator.generateRandomString(8);
+        String cardNumber = DataGenerator.generateRandomNumericString(8);
         bankCardDto.setCardNumber(cardNumber);
 
         bankCardDto.setDueDate(LocalDate.of(1900, 1, 1));
 
-        int securityCode = Integer.parseInt(DataGenerator.generateRandomString(3));
+        int securityCode = Integer.parseInt(DataGenerator.generateRandomNumericString(3));
         bankCardDto.setSecurityCode(securityCode);
 
         return bankCardDto;

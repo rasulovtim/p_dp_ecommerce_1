@@ -32,6 +32,7 @@ class UserMapperTest extends AbstractIntegrationTest {
 
         Set<ShippingAddress> personalAddresses = new HashSet<>();
         personalAddresses.add(new PersonalAddress(
+                1L,
                 "apartment",
                 "floor",
                 "entrance",

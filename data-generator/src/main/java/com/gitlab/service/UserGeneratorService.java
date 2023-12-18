@@ -30,13 +30,13 @@ public class UserGeneratorService {
         Set<BankCardDto> bankCardSet = new HashSet<>();
         bankCardSet.add(bankCardGeneratorService.generateBankCard());
 
-        String additionalData = DataGenerator.generateRandomString(3);
+        String additionalData = DataGenerator.generateRandomNumericString(3);
 
         Set<ShippingAddressDto> personalAddresses = new HashSet<>();
         PersonalAddressDto personalAddressDto = personalAddressGeneratorService.generatePersonalAddressDto(additionalData);
         personalAddresses.add(personalAddressDto);
 
-        PassportDto passportDto = passportGeneratorService.generatePassportData(additionalData);
+        PassportDto passportDto = passportGeneratorService.generatePassportData();
 
         UserDto userDto = generateUserData(additionalData, passportDto, personalAddresses, bankCardSet, roleSet);
 
@@ -52,8 +52,8 @@ public class UserGeneratorService {
         UserDto userDto = new UserDto();
         userDto.setEmail("user" + additionalData);
         userDto.setPassword("user" + additionalData);
-        userDto.setSecurityQuestion("answer" + additionalData);
-        userDto.setSecurityQuestion("queion" + additionalData);
+        userDto.setSecurityQuestion("question" + additionalData);
+        userDto.setAnswerQuestion("answer" + additionalData);
         userDto.setFirstName("user" + additionalData);
         userDto.setLastName("user" + additionalData);
         userDto.setBirthDate(LocalDate.of(1900, 1, 1));

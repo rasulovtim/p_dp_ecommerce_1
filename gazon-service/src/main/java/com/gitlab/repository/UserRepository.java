@@ -15,7 +15,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Override
     @NonNull
     @EntityGraph(value = "userWithSets", type = EntityGraph.EntityGraphType.LOAD)
-    @Query("SELECT u FROM User u WHERE u.entityStatus = 'ACTIVE'")
+    @Query("SELECT u FROM User u WHERE u.entityStatus = 'ACTIVE' order by u.id asc")
     List<User> findAll();
 
     @Override
