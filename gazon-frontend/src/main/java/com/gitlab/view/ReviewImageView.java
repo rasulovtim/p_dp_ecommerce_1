@@ -2,6 +2,7 @@ package com.gitlab.view;
 
 import com.gitlab.clients.ReviewClient;
 import com.gitlab.clients.ReviewImageClient;
+import com.gitlab.dto.ReviewDto;
 import com.gitlab.dto.ReviewImageDto;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -24,16 +25,15 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
+import org.jetbrains.annotations.NotNull;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -45,13 +45,15 @@ public class ReviewImageView extends VerticalLayout {
     private final Grid<ReviewImageDto> grid = new Grid<>(ReviewImageDto.class, false);
     private final Editor<ReviewImageDto> editor = grid.getEditor();
     private final ReviewImageClient reviewImageClient;
+    private final ReviewClient reviewClient;
     private final List<ReviewImageDto> dataSource;
 
     private byte[] reviewImage;
 
 
-    public ReviewImageView(ReviewImageClient reviewImageClient) {
+    public ReviewImageView(ReviewImageClient reviewImageClient, ReviewClient reviewClient) {
         this.reviewImageClient = reviewImageClient;
+        this.reviewClient = reviewClient;
         int page = 0;
         int size = 100;
         this.dataSource = Objects.requireNonNull(reviewImageClient.getPage(page, size).getBody()).stream().collect(Collectors.toList());
@@ -224,6 +226,34 @@ public class ReviewImageView extends VerticalLayout {
     private Tab createCreateTab(FormLayout formLayout) {
         Tab createTab = new Tab("Create Review image");
         TextField nameField = new TextField("Review image name");
+        Select<Long> reviewField = new Select<>();
+        reviewField.setLabel("Review id");
+        reviewField.setItems(reviewClient.getAll().getBody()
+                .stream()
+                .map(ReviewDto::getId)
+                .collect(Collectors.toList()));
+
+        Upload dataField = createUpload();
+
+        Button createButton = new Button("Create");
+        formLayout.add(nameField, reviewField, dataField, createButton);
+        createButton.addClickListener(event -> {
+            ReviewImageDto reviewImageDto = new ReviewImageDto();
+            reviewImageDto.setName(nameField.getValue());
+            reviewImageDto.setData(reviewImage);
+            reviewImageDto.setReviewId(reviewField.getValue());
+            ReviewImageDto savedReviewImage = reviewImageClient.create(reviewImageDto).getBody();
+            dataSource.add(savedReviewImage);
+            nameField.clear();
+            reviewField.clear();
+            dataField.clearFileList();
+            grid.getDataProvider().refreshAll();
+        });
+        return createTab;
+    }
+
+    @NotNull
+    private Upload createUpload() {
         MemoryBuffer buffer = new MemoryBuffer();
         Upload dataField = new Upload(buffer);
         dataField.setAcceptedFileTypes("image/jpeg", "image/png");
@@ -244,20 +274,7 @@ public class ReviewImageView extends VerticalLayout {
                 e.printStackTrace();
             }
         });
-        Button createButton = new Button("Create");
-        formLayout.add(nameField, dataField, createButton);
-        createButton.addClickListener(event -> {
-            ReviewImageDto reviewImageDto = new ReviewImageDto();
-            reviewImageDto.setName(nameField.getValue());
-            reviewImageDto.setData(reviewImage);
-            reviewImageDto.setReviewId(1L);
-            ReviewImageDto savedReviewImage = reviewImageClient.create(reviewImageDto).getBody();
-            dataSource.add(savedReviewImage);
-            nameField.clear();
-            dataField.clearFileList();
-            grid.getDataProvider().refreshAll();
-        });
-        return createTab;
+        return dataField;
     }
 
 }

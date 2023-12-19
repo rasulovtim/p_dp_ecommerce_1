@@ -5,6 +5,8 @@ import com.gitlab.mapper.ReviewImageMapper;
 import com.gitlab.model.ReviewImage;
 import com.gitlab.repository.ReviewImageRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +42,17 @@ public class ReviewImageService {
     public Optional<ReviewImageDto> findByIdDto(Long id) {
         Optional<ReviewImage> reviewImageOptional = reviewImageRepository.findById(id);
         return reviewImageOptional.map(reviewImageMapper::toDto);
+    }
+
+    public Page<ReviewImage> getPage(int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return reviewImageRepository.findAll(pageRequest);
+    }
+
+    public Page<ReviewImageDto> getPageDto(int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<ReviewImage> reviewImagePage = reviewImageRepository.findAll(pageRequest);
+        return reviewImagePage.map(reviewImageMapper::toDto);
     }
 
     @Transactional
