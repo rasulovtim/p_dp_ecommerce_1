@@ -22,6 +22,7 @@
 - #105 - Status model for User
 - #107 - Search correction
 - #100 - The data-generator application has been developed
+- #108 - Status model for Review
 - #119 - Fixed data-generator and User gender field problem
 
 ## [1.1.0] - 8.09.2023

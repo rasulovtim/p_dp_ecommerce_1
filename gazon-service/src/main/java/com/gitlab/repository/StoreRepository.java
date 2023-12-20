@@ -4,6 +4,7 @@ import com.gitlab.model.Store;
 import lombok.NonNull;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -19,5 +20,6 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     @Override
     @NonNull
     @EntityGraph(value = "store")
+    @Query("SELECT s FROM Store s WHERE s.entityStatus = 'ACTIVE'")
     List<Store> findAll();
 }

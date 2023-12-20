@@ -26,10 +26,7 @@ public class ProductService {
     private final ProductMapper productMapper;
 
     public List<Product> findAll() {
-        return productRepository.findAll()
-                .stream()
-                .filter(product -> product.getEntityStatus().equals(EntityStatus.ACTIVE))
-                .toList();
+        return productRepository.findAll();
     }
 
     public List<ProductDto> findAllDto() {
