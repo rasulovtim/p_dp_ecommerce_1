@@ -27,7 +27,7 @@ public class StoreRestControllerIT extends AbstractIntegrationTest {
     void should_get_all_store() throws Exception {
         String expected = objectMapper.writeValueAsString(
                 new ArrayList<>(storeService
-                        .findAll())
+                        .findAllDto())
         );
 
         mockMvc.perform(get(STORE_URI))

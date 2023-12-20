@@ -19,7 +19,7 @@ public class StoreRestController implements StoreRestApi {
 
     @Override
     public ResponseEntity<List<StoreDto>> getAll() {
-        var store = storeService.findAll();
+        var store = storeService.findAllDto();
 
         if(store.isEmpty()){
             return ResponseEntity.noContent().build();

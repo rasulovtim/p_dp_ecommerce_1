@@ -1,5 +1,6 @@
 package com.gitlab.service;
 
+import com.gitlab.enums.EntityStatus;
 import com.gitlab.model.Review;
 import com.gitlab.repository.ReviewRepository;
 import org.junit.jupiter.api.Test;
@@ -11,12 +12,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ReviewServiceTest {
@@ -202,11 +205,12 @@ public class ReviewServiceTest {
     @Test
     void should_delete_review() {
         long id = 1L;
-        when(reviewRepository.findById(id)).thenReturn(Optional.of(generateReview()));
+        Review deletedReview = generateReview(id);
+        when(reviewRepository.findById(id)).thenReturn(Optional.of(deletedReview));
 
         reviewService.delete(id);
 
-        verify(reviewRepository).deleteById(id);
+        verify(reviewRepository).save(deletedReview);
     }
 
     @Test
@@ -244,6 +248,7 @@ public class ReviewServiceTest {
         review.setRating((byte) 6);
         review.setHelpfulCounter(7);
         review.setNotHelpfulCounter(1);
+        review.setEntityStatus(EntityStatus.ACTIVE);
         return review;
     }
 }

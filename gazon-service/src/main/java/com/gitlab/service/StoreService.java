@@ -21,11 +21,13 @@ public class StoreService {
     private final StoreRepository storeRepository;
     private final StoreMapper storeMapper;
 
-    public @NonNull List<StoreDto> findAll() {
-        List<Store> storeList = storeRepository.findAll();
-        return storeList
+    public List<Store> findAll() {
+        return storeRepository.findAll();
+    }
+
+    public @NonNull List<StoreDto> findAllDto() {
+        return findAll()
                 .stream()
-                .filter(user -> user.getEntityStatus().equals(EntityStatus.ACTIVE))
                 .map(storeMapper::toDto)
                 .collect(Collectors.toList());
     }
