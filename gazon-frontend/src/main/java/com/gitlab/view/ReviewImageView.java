@@ -17,7 +17,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
-import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
@@ -28,16 +27,16 @@ import com.vaadin.flow.server.StreamResource;
 import org.jetbrains.annotations.NotNull;
 
 import javax.imageio.ImageIO;
-
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Route(value = "review_image", layout = MainLayout.class)
 public class ReviewImageView extends VerticalLayout {
@@ -48,7 +47,9 @@ public class ReviewImageView extends VerticalLayout {
     private final ReviewClient reviewClient;
     private final List<ReviewImageDto> dataSource;
 
-    private byte[] reviewImage;
+    private final List<Byte> listBytesImage = new ArrayList<>();
+    private final int imageHeight = 800;
+    private final int imageWidth = 600;
 
 
     public ReviewImageView(ReviewImageClient reviewImageClient, ReviewClient reviewClient) {
@@ -61,7 +62,7 @@ public class ReviewImageView extends VerticalLayout {
         ValidationMessage nameValidationMessage = new ValidationMessage();
         ValidationMessage dataValidationMessage = new ValidationMessage();
 
-        Grid.Column<ReviewImageDto> idColumn = createIdColumn();
+        createIdColumn();
         Grid.Column<ReviewImageDto> nameColumn = createNameColumn();
         Grid.Column<ReviewImageDto> dataColumn = createDataColumn();
         Grid.Column<ReviewImageDto> updateColumn = createEditColumn();
@@ -69,9 +70,8 @@ public class ReviewImageView extends VerticalLayout {
 
         Binder<ReviewImageDto> binder = createBinder();
 
-        createIdField(binder, idValidationMessage, idColumn);
         createNameField(binder, nameValidationMessage, nameColumn);
-        createDataField(binder, dataValidationMessage, dataColumn);
+        createDataField(dataColumn);
 
         Button updateButton = new Button("Update", e -> editor.save());
         Button cancelButton = new Button(VaadinIcon.CLOSE.create(), e -> editor.cancel());
@@ -92,12 +92,12 @@ public class ReviewImageView extends VerticalLayout {
         add(tabs, contentContainer, idValidationMessage, nameValidationMessage, dataValidationMessage);
     }
 
-    private Grid.Column<ReviewImageDto> createIdColumn() {
-        return grid.addColumn(reviewImageDto -> reviewImageDto.getId().intValue()).setHeader("Id").setWidth("120px").setFlexGrow(0);
+    private void createIdColumn() {
+        grid.addColumn(reviewImageDto -> reviewImageDto.getId().intValue()).setHeader("Id").setWidth("120px").setFlexGrow(0);
     }
 
     private Grid.Column<ReviewImageDto> createNameColumn() {
-        return grid.addColumn(ReviewImageDto::getName).setHeader("Name text").setWidth("650px");
+        return grid.addColumn(ReviewImageDto::getName).setHeader("Name text").setWidth("550px");
     }
 
     private Grid.Column<ReviewImageDto> createDataColumn() {
@@ -125,8 +125,8 @@ public class ReviewImageView extends VerticalLayout {
         });
     }
 
-    private Grid.Column<ReviewImageDto> createDeleteColumn() {
-        return grid.addComponentColumn(reviewImage -> {
+    private void createDeleteColumn() {
+        grid.addComponentColumn(reviewImage -> {
             Button deleteButton = new Button("Delete");
             deleteButton.addClickListener(e -> {
                 if (editor.isOpen())
@@ -149,18 +149,6 @@ public class ReviewImageView extends VerticalLayout {
         return binder;
     }
 
-    private void createIdField(Binder<ReviewImageDto> binder,
-                               ValidationMessage idValidationMessage,
-                               Grid.Column<ReviewImageDto> idColumn) {
-        IntegerField idField = new IntegerField();
-        idField.setWidthFull();
-        binder.forField(idField)
-                .asRequired("Id must not be empty")
-                .withStatusLabel(idValidationMessage)
-                .bind(reviewImageDto -> reviewImageDto.getId().intValue(),
-                        (reviewImageDto, integer) -> reviewImageDto.setId(integer.longValue()));
-        idColumn.setEditorComponent(idField);
-    }
 
     private void createNameField(Binder<ReviewImageDto> binder,
                                  ValidationMessage nameValidationMessage,
@@ -174,21 +162,25 @@ public class ReviewImageView extends VerticalLayout {
 
     }
 
-    private void createDataField(Binder<ReviewImageDto> binder,
-                                 ValidationMessage dataValidationMessage,
-                                 Grid.Column<ReviewImageDto> dataColumn) {
-        TextField dataField = new TextField();
+    private void createDataField(Grid.Column<ReviewImageDto> dataColumn) {
+        Upload dataField = createUpload();
         dataField.setWidthFull();
-        binder.forField(dataField).asRequired("Review image data must not be empty")
-                .withStatusLabel(dataValidationMessage)
-                .bind(reviewImageDto -> Arrays.toString(reviewImageDto.getData()),
-                        (reviewImageDto, data) -> reviewImageDto.setData(data.getBytes()));
         dataColumn.setEditorComponent(dataField);
     }
 
     private void addEditorListeners() {
         editor.addSaveListener(e -> {
-            reviewImageClient.update(e.getItem().getId(), e.getItem());
+            if (!listBytesImage.isEmpty()) {
+                ReviewImageDto reviewImageDto = e.getItem();
+                reviewImageDto.setData(list2Array());
+                ReviewImageDto updatedReviewImageDto = reviewImageClient.update(e.getItem().getId(), reviewImageDto).getBody();
+                dataSource.stream().filter(data -> Objects.equals(data.getId(), updatedReviewImageDto.getId())).findFirst().get().setData(list2Array());
+                listBytesImage.clear();
+                grid.setItems(dataSource);
+            }
+            else {
+                reviewImageClient.update(e.getItem().getId(), e.getItem());
+            }
             grid.getDataProvider().refreshAll();
         });
     }
@@ -228,7 +220,7 @@ public class ReviewImageView extends VerticalLayout {
         TextField nameField = new TextField("Review image name");
         Select<Long> reviewField = new Select<>();
         reviewField.setLabel("Review id");
-        reviewField.setItems(reviewClient.getAll().getBody()
+        reviewField.setItems(Objects.requireNonNull(reviewClient.getAll().getBody())
                 .stream()
                 .map(ReviewDto::getId)
                 .collect(Collectors.toList()));
@@ -240,10 +232,11 @@ public class ReviewImageView extends VerticalLayout {
         createButton.addClickListener(event -> {
             ReviewImageDto reviewImageDto = new ReviewImageDto();
             reviewImageDto.setName(nameField.getValue());
-            reviewImageDto.setData(reviewImage);
+            reviewImageDto.setData(list2Array());
             reviewImageDto.setReviewId(reviewField.getValue());
             ReviewImageDto savedReviewImage = reviewImageClient.create(reviewImageDto).getBody();
             dataSource.add(savedReviewImage);
+            listBytesImage.clear();
             nameField.clear();
             reviewField.clear();
             dataField.clearFileList();
@@ -262,14 +255,14 @@ public class ReviewImageView extends VerticalLayout {
                 BufferedImage inputImage = ImageIO.read(buffer.getInputStream());
                 ByteArrayOutputStream pngContent = new ByteArrayOutputStream();
 
-//                java.awt.Image scaledImage = inputImage.getScaledInstance(250, 300, java.awt.Image.SCALE_DEFAULT);
-//                BufferedImage bufferedScaledImage = new BufferedImage(250, 300, BufferedImage.TYPE_INT_ARGB);
-//                Graphics2D g2d = bufferedScaledImage.createGraphics();
-//                g2d.drawImage(scaledImage, 0, 0, null);
-//                g2d.dispose();
+                    java.awt.Image scaledImage = inputImage.getScaledInstance(imageWidth, imageHeight, java.awt.Image.SCALE_DEFAULT);
+                    BufferedImage bufferedScaledImage = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_ARGB);
+                    Graphics2D g2d = bufferedScaledImage.createGraphics();
+                    g2d.drawImage(scaledImage, 0, 0, null);
+                    g2d.dispose();
 
                 ImageIO.write(inputImage, "png", pngContent);
-                reviewImage = pngContent.toByteArray();
+                array2List(pngContent.toByteArray());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -277,4 +270,15 @@ public class ReviewImageView extends VerticalLayout {
         return dataField;
     }
 
+    private byte[] list2Array() {
+        byte[] arr = new byte[listBytesImage.size()];
+        IntStream.range(0, listBytesImage.size()).forEach(i -> arr[i] = listBytesImage.get(i));
+        return arr;
+    }
+
+    private void array2List(byte[] arr) {
+        for (byte byt : arr) {
+            listBytesImage.add(byt);
+        }
+    }
 }
