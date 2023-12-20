@@ -6,13 +6,13 @@ import com.gitlab.model.ReviewImage;
 import com.gitlab.service.ReviewImageService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -33,14 +33,35 @@ class ReviewImageRestControllerIT extends AbstractIntegrationTest {
     void should_get_all_reviewImages_ids() throws Exception {
 
         String expected = objectMapper.writeValueAsString(
-                reviewImageService
+                new PageImpl<>(reviewImageService
                         .findAll()
                         .stream()
-                        .map(ReviewImage::getId)
-                        .mapToLong(Long::valueOf).toArray()
+                        .map(reviewImageMapper::toDto)
+                        .collect(Collectors.toList()))
         );
 
         mockMvc.perform(get(REVIEW_IMAGE_URI))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(expected));
+    }
+
+    @Test
+    void should_get_page() throws Exception {
+        int page = 0;
+        int size = 2;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        var response = reviewImageService.getPage(page, size);
+        assertFalse(response.getContent().isEmpty());
+
+        var expected = objectMapper.writeValueAsString(new PageImpl<>(
+                response.getContent().stream().map(reviewImageMapper::toDto).toList(),
+                response.getPageable(),
+                response.getTotalElements()
+        ));
+
+        mockMvc.perform(get(REVIEW_IMAGE_URI + parameters))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
@@ -58,7 +79,7 @@ class ReviewImageRestControllerIT extends AbstractIntegrationTest {
 
         mockMvc.perform(get(REVIEW_IMAGE_URI + "/{id}", id))
                 .andDo(print())
-                .andExpect(status().isPartialContent())
+                .andExpect(status().isOk())
                 .andExpect(content().json(expected));
     }
 
@@ -71,25 +92,33 @@ class ReviewImageRestControllerIT extends AbstractIntegrationTest {
     }
 
     @Test
+    void should_create_reviewImage() throws Exception {
+        ReviewImageDto reviewImageDto = generateReviewDto();
+
+        String jsonReviewImageDto = objectMapper.writeValueAsString(reviewImageDto);
+
+        mockMvc.perform(post(REVIEW_IMAGE_URI)
+                        .content(jsonReviewImageDto)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isCreated());
+    }
+
+    @Test
     void should_update_reviewImage_by_id() throws Exception {
         long id = 1L;
         int numberOfEntitiesExpected = reviewImageService.findAll().size();
 
         ReviewImageDto reviewImageDto = generateReviewDto();
         reviewImageDto.setId(id);
+        reviewImageDto.setName("updatedName");
+        String jsonReviewImageDto = objectMapper.writeValueAsString(reviewImageDto);
         String expected = objectMapper.writeValueAsString(reviewImageDto);
 
-        MockMultipartHttpServletRequestBuilder builder =
-                MockMvcRequestBuilders.multipart(REVIEW_IMAGE_URI + "/{id}", id);
-        builder.with(request -> {
-            request.setMethod("PATCH");
-            return request;
-        });
-
-        mockMvc.perform(builder
-                        .file(new MockMultipartFile("file",
-                                reviewImageDto.getName(),
-                                MediaType.TEXT_PLAIN_VALUE, reviewImageDto.getData()))
+        mockMvc.perform(patch(REVIEW_IMAGE_URI + "/{id}", id)
+                        .content(jsonReviewImageDto)
+                        .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -104,18 +133,12 @@ class ReviewImageRestControllerIT extends AbstractIntegrationTest {
 
         ReviewImageDto reviewImageDto = generateReviewDto();
         reviewImageDto.setId(id);
+        reviewImageDto.setName("updatedName");
+        String jsonReviewImageDto = objectMapper.writeValueAsString(reviewImageDto);
 
-        MockMultipartHttpServletRequestBuilder builder =
-                MockMvcRequestBuilders.multipart(REVIEW_IMAGE_URI + "/{id}", id);
-        builder.with(request -> {
-            request.setMethod("PATCH");
-            return request;
-        });
-
-        mockMvc.perform(builder
-                        .file(new MockMultipartFile("file",
-                                reviewImageDto.getName(),
-                                MediaType.TEXT_PLAIN_VALUE, reviewImageDto.getData()))
+        mockMvc.perform(patch(REVIEW_IMAGE_URI + "/{id}", id)
+                        .content(jsonReviewImageDto)
+                        .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound());
