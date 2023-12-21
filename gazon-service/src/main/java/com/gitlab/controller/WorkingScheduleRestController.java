@@ -66,7 +66,7 @@ public class WorkingScheduleRestController implements WorkingScheduleRestApi {
                 workingScheduleDto.getFrom().equals(dto.getFrom()) &&
                 workingScheduleDto.getTo().equals(dto.getTo())) {
                 Optional<WorkingScheduleDto> oldWorkingScheduleDto = workingScheduleService.findByIdDto(dto.getId());
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                return ResponseEntity.status(HttpStatus.OK)
                         .body(oldWorkingScheduleDto.get());
             }
         }
