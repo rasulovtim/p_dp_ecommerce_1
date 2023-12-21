@@ -61,26 +61,34 @@ public class WorkingScheduleRestController implements WorkingScheduleRestApi {
     public ResponseEntity<WorkingScheduleDto> create(WorkingScheduleDto workingScheduleDto) {
         List<WorkingScheduleDto> workingScheduleDtoList = workingScheduleService.findAllDto();
         for (WorkingScheduleDto dto : workingScheduleDtoList) {
-            if (workingScheduleDto.getId().equals(dto.getId()) &&
+            if ( /* workingScheduleDto.getId().equals(dto.getId()) && */ // Избыточная проверка, с ним не работало добавление нового расписания
                 workingScheduleDto.getDayOfWeek().equals(dto.getDayOfWeek()) &&
                 workingScheduleDto.getFrom().equals(dto.getFrom()) &&
                 workingScheduleDto.getTo().equals(dto.getTo())) {
                 Optional<WorkingScheduleDto> oldWorkingScheduleDto = workingScheduleService.findByIdDto(dto.getId());
-                return ResponseEntity.status(HttpStatus.OK)
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(oldWorkingScheduleDto.get());
             }
         }
-        WorkingScheduleDto savedWorkingScheduleDto = workingScheduleService.saveDto(workingScheduleDto);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(savedWorkingScheduleDto);
+        if (workingScheduleDto.getFrom().isAfter(workingScheduleDto.getTo())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(workingScheduleDto);
+        } else {
+            WorkingScheduleDto savedWorkingScheduleDto = workingScheduleService.saveDto(workingScheduleDto);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(savedWorkingScheduleDto);
+        }
     }
 
     @Override
     public ResponseEntity<WorkingScheduleDto> update(Long id, WorkingScheduleDto workingScheduleDto) {
-        Optional<WorkingScheduleDto> optionalUpdatedWorkingScheduleDto = workingScheduleService.updateDto(id, workingScheduleDto);
-        return optionalUpdatedWorkingScheduleDto
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        if (workingScheduleDto.getFrom().isAfter(workingScheduleDto.getTo())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(workingScheduleDto);
+        } else {
+            Optional<WorkingScheduleDto> optionalUpdatedWorkingScheduleDto = workingScheduleService.updateDto(id, workingScheduleDto);
+            return optionalUpdatedWorkingScheduleDto
+                    .map(ResponseEntity::ok)
+                    .orElse(ResponseEntity.notFound().build());
+        }
     }
 
     @Override
