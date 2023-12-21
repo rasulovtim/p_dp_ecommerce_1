@@ -193,8 +193,11 @@ public class BankCardView extends VerticalLayout {
         Tab createTab = new Tab("Create bank card");
 
         TextField bankCardNumberField = new TextField("Card number");
+        bankCardNumberField.setPlaceholder("Length of BankCard's cardNumber should be between 8 and 19 positive digits");
         DatePicker bankCardDueDateField = new DatePicker("Due date");
+        bankCardDueDateField.setPlaceholder("dd.mm.yyyy");
         IntegerField bankCardSecurityCodeField = new IntegerField("Security code");
+        bankCardSecurityCodeField.setPlaceholder("Length of BankCard's securityCode should be between 3 and 4 positive digits");
 
         Button createButton = new Button("Create");
         formLayout.add(bankCardNumberField, bankCardDueDateField, bankCardSecurityCodeField, createButton);
@@ -216,6 +219,7 @@ public class BankCardView extends VerticalLayout {
     private Grid.Column<BankCardDto> createEditColumn() {
         return grid.addComponentColumn(bankCard -> {
             Button updateButton = new Button("Update");
+            updateButton.setText("ewfwefwef");
             updateButton.addClickListener(e -> {
                 if (editor.isOpen())
                     editor.cancel();
