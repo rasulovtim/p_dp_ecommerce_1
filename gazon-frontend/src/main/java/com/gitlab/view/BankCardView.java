@@ -17,6 +17,7 @@ import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
 import java.util.List;
 
@@ -42,8 +43,8 @@ public class BankCardView extends VerticalLayout {
         Grid.Column<BankCardDto> dueDateColumn = createDueDateColumn();
         Grid.Column<BankCardDto> securityCodeColumn = createSecurityCodeColumn();
 
-//        Grid.Column<BankCardDto> updateColumn = createEditColumn();
-//        createDeleteColumn();
+        Grid.Column<BankCardDto> updateColumn = createEditColumn();
+        createDeleteColumn();
 
         Binder<BankCardDto> binder = createBinder();
 
@@ -54,10 +55,11 @@ public class BankCardView extends VerticalLayout {
 
         Button updateButton = new Button("Update", e -> editor.save());
         Button cancelButton = new Button(VaadinIcon.CLOSE.create(), e -> editor.cancel());
+
         cancelButton.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_ERROR);
         HorizontalLayout actions = new HorizontalLayout(updateButton, cancelButton);
         actions.setPadding(false);
-//        updateColumn.setEditorComponent(actions);
+        updateColumn.setEditorComponent(actions);
 
         addEditorListeners();
         grid.setItems(dataSource);
@@ -165,7 +167,7 @@ public class BankCardView extends VerticalLayout {
     private Tabs createTabs(Div contentContainer) {
         Tabs tabs = new Tabs();
 
-        Tab tableTab = new Tab("Users table");
+        Tab tableTab = new Tab("Bank Card table");
         FormLayout createCardLayout = new FormLayout();
         Tab createTab = createCreateTab(createCardLayout);
 
@@ -189,14 +191,13 @@ public class BankCardView extends VerticalLayout {
 
     private Tab createCreateTab(FormLayout formLayout) {
         Tab createTab = new Tab("Create bank card");
-        TextField exampleTextField = new TextField("Example Text");
 
         TextField bankCardNumberField = new TextField("Card number");
         DatePicker bankCardDueDateField = new DatePicker("Due date");
         IntegerField bankCardSecurityCodeField = new IntegerField("Security code");
 
         Button createButton = new Button("Create");
-        formLayout.add(exampleTextField, createButton);
+        formLayout.add(bankCardNumberField, bankCardDueDateField, bankCardSecurityCodeField, createButton);
         createButton.addClickListener(event -> {
             BankCardDto bankCardDto = new BankCardDto();
             bankCardDto.setCardNumber(bankCardNumberField.getValue());
@@ -204,9 +205,41 @@ public class BankCardView extends VerticalLayout {
             bankCardDto.setSecurityCode(bankCardSecurityCodeField.getValue());
             BankCardDto savedBankCard = bankCardClient.create(bankCardDto).getBody();
             dataSource.add(savedBankCard);
-            exampleTextField.clear();
+            bankCardNumberField.clear();
+            bankCardDueDateField.clear();
+            bankCardSecurityCodeField.clear();
             grid.getDataProvider().refreshAll();
         });
         return createTab;
     }
+
+    private Grid.Column<BankCardDto> createEditColumn() {
+        return grid.addComponentColumn(bankCard -> {
+            Button updateButton = new Button("Update");
+            updateButton.addClickListener(e -> {
+                if (editor.isOpen())
+                    editor.cancel();
+                grid.getEditor().editItem(bankCard);
+            });
+            return updateButton;
+        });
+    }
+
+    private Grid.Column<BankCardDto> createDeleteColumn() {
+        return grid.addComponentColumn(bankCardDto -> {
+            Button deleteButton = new Button("Delete");
+            deleteButton.addClickListener(e -> {
+                if (editor.isOpen())
+                    editor.cancel();
+                if (grid.getDataProvider().isInMemory() && grid.getDataProvider().getClass() == ListDataProvider.class) {
+                    ListDataProvider<BankCardDto> dataProvider = (ListDataProvider<BankCardDto>) grid.getDataProvider();
+                    bankCardClient.delete(bankCardDto.getId());
+                    dataProvider.getItems().remove(bankCardDto);
+                }
+                grid.getDataProvider().refreshAll();
+            });
+            return deleteButton;
+        }).setWidth("150px").setFlexGrow(0);
+    }
+
 }
