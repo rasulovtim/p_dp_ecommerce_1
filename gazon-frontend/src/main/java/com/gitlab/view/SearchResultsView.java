@@ -33,7 +33,7 @@ public class SearchResultsView extends CommonView implements HasUrlParameter<Str
         this.productImageClient = productImageClient;
 
         contentContainer = new FlexLayout();
-        contentContainer.setWidth("1000px");
+        contentContainer.setWidth("1100px");
         contentContainer.setFlexDirection(FlexDirection.ROW);
         contentContainer.setFlexWrap(FlexWrap.WRAP);
         add(contentContainer);
@@ -87,7 +87,7 @@ public class SearchResultsView extends CommonView implements HasUrlParameter<Str
     }
 
     private Image getImages(ProductDto productDto) {
-        List<ProductImageDto> productImageDtos = productImageClient.getAllByProduct(productDto.getId()).getBody();
+        List<ProductImageDto> productImageDtos = productImageClient.getAllByProductId(productDto.getId()).getBody();
         Image resImage;
         if (productImageDtos != null && !productImageDtos.isEmpty()) {
             StreamResource sr = new StreamResource("image", () -> new ByteArrayInputStream(productImageDtos.get(0).getData()));
@@ -97,8 +97,8 @@ public class SearchResultsView extends CommonView implements HasUrlParameter<Str
         } else {
             resImage = new Image("https://cdn-icons-png.flaticon.com/512/4054/4054617.png", "no image");
         }
-        resImage.setWidth("250px");
-        resImage.setHeight("300px");
+        resImage.setWidth("222px");
+        resImage.setHeight("267px");
         return resImage;
     }
 
@@ -135,8 +135,8 @@ public class SearchResultsView extends CommonView implements HasUrlParameter<Str
             });
 
             getContent().add(productImage, productPrice, productName);
-            getContent().setHeight("450px");
-            getContent().setWidth("300px");
+            getContent().setHeight("400px");
+            getContent().setWidth("267px");
 
         }
     }

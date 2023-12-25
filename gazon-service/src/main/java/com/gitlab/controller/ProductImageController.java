@@ -76,7 +76,7 @@ public class ProductImageController implements ProductImageRestApi {
     }
 
     @Override
-    public ResponseEntity<List<ProductImageDto>> getAllByProduct(Long id) {
+    public ResponseEntity<List<ProductImageDto>> getAllByProductId(Long id) {
         List<ProductImageDto> productImageDtos = productImageService.findAllByProductIdDto(id);
         return productImageDtos.isEmpty() ?
                 ResponseEntity.noContent().build() :

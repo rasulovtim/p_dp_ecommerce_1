@@ -51,7 +51,7 @@ public interface ProductImageRestApi {
             @ApiResponse(code = 206, message = "ProductImage found, but as json not jpg"),
             @ApiResponse(code = 404, message = "ProductImage by product id not found")}
     )
-    ResponseEntity<List<ProductImageDto>> getAllByProduct(@PathVariable(value = "id") Long id);
+    ResponseEntity<List<ProductImageDto>> getAllByProductId(@PathVariable(value = "id") Long id);
 
 
     @ApiOperation(value = "Create a new ProductImage")
