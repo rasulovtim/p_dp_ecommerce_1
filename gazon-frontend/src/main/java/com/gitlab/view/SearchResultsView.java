@@ -1,7 +1,7 @@
 package com.gitlab.view;
 
 import com.gitlab.clients.ProductImageClient;
-import com.gitlab.clients.SearchProductClient;
+import com.gitlab.clients.ProductSearchClient;
 import com.gitlab.dto.ProductDto;
 import com.gitlab.dto.ProductImageDto;
 import com.vaadin.flow.component.Composite;
@@ -24,12 +24,12 @@ import java.util.List;
 
 @Route("search")
 public class SearchResultsView extends CommonView implements HasUrlParameter<String> {
-    private final SearchProductClient searchProductClient;
+    private final ProductSearchClient productSearchClient;
     private final ProductImageClient productImageClient;
     private final FlexLayout contentContainer;
 
-    public SearchResultsView(SearchProductClient searchProductClient, ProductImageClient productImageClient) {
-        this.searchProductClient = searchProductClient;
+    public SearchResultsView(ProductSearchClient productSearchClient, ProductImageClient productImageClient) {
+        this.productSearchClient = productSearchClient;
         this.productImageClient = productImageClient;
 
         contentContainer = new FlexLayout();
@@ -52,7 +52,7 @@ public class SearchResultsView extends CommonView implements HasUrlParameter<Str
 
     private void performSearch(String query) throws InterruptedException {
         if (!query.isEmpty()) {
-            ResponseEntity<List<ProductDto>> response = searchProductClient.search(query);
+            ResponseEntity<List<ProductDto>> response = productSearchClient.search(query);
             HttpStatus statusCode = response.getStatusCode();
 
             if (statusCode.is2xxSuccessful()) {
