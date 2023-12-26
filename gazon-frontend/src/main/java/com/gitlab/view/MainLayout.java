@@ -51,6 +51,7 @@ public class MainLayout extends AppLayout {
         tabs.add(createTab(VaadinIcon.GROUP, "Roles", RoleView.class));
         tabs.add(createTab(VaadinIcon.HEART, "Users", UserView.class));
         tabs.add(createTab(VaadinIcon.USER_CARD, "Passport", PassportView.class));
+        tabs.add(createTab(VaadinIcon.CREDIT_CARD, "Bank Card", BankCardView.class));
         tabs.add(createTab(VaadinIcon.GLOBE, "Pickup Point", PickupPointView.class));
         tabs.add(createTab(VaadinIcon.SPOON, "Product", ProductView.class));
         tabs.add(createTab(VaadinIcon.CLOCK, "Working Schedule", WorkingScheduleView.class));
