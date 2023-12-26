@@ -12,7 +12,7 @@ import java.util.List;
 @Api(tags = "PickupPoint REST")
 @Tag(name = "PickupPoint REST", description = "API pickup point description" )
 public interface PickupPointRestApi {
-    @GetMapping("/api/pickup_point")
+    @GetMapping("/api/pickup-point")
     @ApiOperation(value = "Get all Pickup Point")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Pickup Point found"),
@@ -20,7 +20,7 @@ public interface PickupPointRestApi {
     )
     ResponseEntity<List<PickupPointDto>> getAll();
 
-    @GetMapping("/api/pickup_point/{id}")
+    @GetMapping("/api/pickup-point/{id}")
     @ApiOperation(value = "Get Pickup Point by id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Pickup Point found"),
@@ -28,7 +28,7 @@ public interface PickupPointRestApi {
     )
     ResponseEntity<PickupPointDto> get(@ApiParam(name = "id", value = "PickupPoint.id") @PathVariable(value = "id") Long id);
 
-    @PatchMapping("/api/pickup_point/{id}")
+    @PatchMapping("/api/pickup-point/{id}")
     @ApiOperation(value = "Update Pickup Point")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Pickup Point updated"),
@@ -37,7 +37,7 @@ public interface PickupPointRestApi {
     ResponseEntity<PickupPointDto> update(@ApiParam(name = "id", value = "PickupPoint.id") @PathVariable(value = "id") Long id,
                                        @ApiParam(name = "pickupPoint", value = "PickupPointDto") @Valid @RequestBody PickupPointDto pickupPointDto);
 
-    @PostMapping("/api/pickup_point")
+    @PostMapping("/api/pickup-point")
     @ApiOperation(value = "Create Pickup Point")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Pickup Point created"),
@@ -45,7 +45,7 @@ public interface PickupPointRestApi {
     )
     ResponseEntity<PickupPointDto> create(@ApiParam(name = "pickupPoint", value = "PickupPointDto") @Valid @RequestBody PickupPointDto pickupPointDto);
 
-    @DeleteMapping("/api/pickup_point/{id}")
+    @DeleteMapping("/api/pickup-point/{id}")
     @ApiOperation(value = "Delete Pickup Point by id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Pickup Point deleted"),

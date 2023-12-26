@@ -21,7 +21,7 @@ import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 
 class PersonalAddressRestControllerIT extends AbstractIntegrationTest {
 
-    private static final String URN = "/api/personal_address";
+    private static final String URN = "/api/personal-address";
     private static final String URI = URL + URN;
     @Autowired
     private PersonalAddressService personalAddressService;

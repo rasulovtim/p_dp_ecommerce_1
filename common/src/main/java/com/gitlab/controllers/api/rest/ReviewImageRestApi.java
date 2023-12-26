@@ -21,7 +21,7 @@ import java.io.IOException;
 @Tag(name = "ReviewImage REST", description = "ReviewImage API description")
 public interface ReviewImageRestApi {
 
-    @GetMapping("/api/review_images")
+    @GetMapping("/api/review-images")
     @ApiOperation(value = "Get all ReviewImages IDs")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "ReviewImages found"),
@@ -29,7 +29,7 @@ public interface ReviewImageRestApi {
     )
     ResponseEntity<long[]> getAll();
 
-    @GetMapping("/api/review_images/{id}")
+    @GetMapping("/api/review-images/{id}")
     @ApiOperation(value = "Get ReviewImage by id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "ReviewImage found"),
@@ -38,7 +38,7 @@ public interface ReviewImageRestApi {
     )
     ResponseEntity<?> get(@PathVariable(value = "id") Long id);
 
-    @PatchMapping(value = "/api/review_images/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PatchMapping(value = "/api/review-images/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @ApiOperation(value = "Update ReviewImage")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "ReviewImage updated"),
@@ -47,7 +47,7 @@ public interface ReviewImageRestApi {
     ResponseEntity<ReviewImageDto> update(@RequestParam("file") MultipartFile files,
                                           @PathVariable(value = "id") Long id) throws IOException;
 
-    @DeleteMapping("/api/review_images/{id}")
+    @DeleteMapping("/api/review-images/{id}")
     @ApiOperation(value = "Delete ReviewImage by id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "ReviewImage deleted"),

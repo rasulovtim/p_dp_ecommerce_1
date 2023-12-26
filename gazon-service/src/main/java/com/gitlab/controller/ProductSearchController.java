@@ -1,6 +1,6 @@
 package com.gitlab.controller;
 
-import com.gitlab.controllers.api.rest.SearchProductRestApi;
+import com.gitlab.controllers.api.rest.ProductSearchRestApi;
 import com.gitlab.dto.ProductDto;
 import com.gitlab.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-public class SearchProductController implements SearchProductRestApi {
+public class ProductSearchController implements ProductSearchRestApi {
 
 
     private final ProductService productService;

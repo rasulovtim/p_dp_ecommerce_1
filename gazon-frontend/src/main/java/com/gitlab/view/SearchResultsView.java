@@ -1,6 +1,6 @@
 package com.gitlab.view;
 
-import com.gitlab.clients.SearchProductClient;
+import com.gitlab.clients.ProductSearchClient;
 import com.gitlab.dto.ProductDto;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Label;
@@ -16,10 +16,10 @@ import java.util.List;
 
 @Route("search")
 public class SearchResultsView extends CommonView implements HasUrlParameter<String> {
-    private final SearchProductClient searchProductClient;
+    private final ProductSearchClient searchProductClient;
     private final VerticalLayout contentContainer;
 
-    public SearchResultsView(SearchProductClient searchProductClient) {
+    public SearchResultsView(ProductSearchClient searchProductClient) {
         this.searchProductClient = searchProductClient;
         contentContainer = new VerticalLayout();
         add(contentContainer);
