@@ -216,8 +216,11 @@ public class WorkingScheduleView extends VerticalLayout {
     private Tab createCreateTab(FormLayout formLayout) {
         var createTab = new Tab("Create working schedule");
         var dayOfWeekField = new TextField("Day of week");
+        dayOfWeekField.setPlaceholder("Please provide a valid day of week (e.g., MONDAY, TUESDAY, etc.).");
         var fromField = new TimePicker("From");
+        fromField.setPlaceholder("HH:MM");
         var toField = new TimePicker("To");
+        toField.setPlaceholder("HH:MM");
         var createButton = new Button("Create");
         formLayout.add(dayOfWeekField, createButton);
         formLayout.add(fromField, createButton);

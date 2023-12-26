@@ -2,7 +2,9 @@
 
 ## [Unreleased]
 - #task_number - short task description
-- #13 - [After Order and BankCard] Make Payment entity
+
+## [1.2.0] - 24.12.2023
+- #13 - Make Payment entity
 - #73 - added User field to SelectedProduct
 - #88 - Front CRUD for Role
 - #90 - added front for improvement
