@@ -23,7 +23,7 @@ import java.util.List;
 public interface SelectedProductRestAPI {
 
 
-    @GetMapping("/api/selected_product")
+    @GetMapping("/api/selected-product")
     @ApiOperation(value = "Get all SelectedProduct")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "SelectedProduct found"),
@@ -31,7 +31,7 @@ public interface SelectedProductRestAPI {
     )
     ResponseEntity<List<SelectedProductDto>> getAll();
 
-    @GetMapping("/api/selected_product/{id}")
+    @GetMapping("/api/selected-product/{id}")
     @ApiOperation(value = "Get SelectedProduct by id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "SelectedProduct found"),
@@ -39,7 +39,7 @@ public interface SelectedProductRestAPI {
     )
     ResponseEntity<SelectedProductDto> get(@ApiParam(name = "id", value = "SelectedProduct.id") @PathVariable(value = "id") Long id);
 
-    @PostMapping("/api/selected_product")
+    @PostMapping("/api/selected-product")
     @ApiOperation(value = "Create SelectedProduct")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "SelectedProduct created"),
@@ -48,7 +48,7 @@ public interface SelectedProductRestAPI {
     ResponseEntity<SelectedProductDto> create(@ApiParam(name = "SelectedProduct", value = "SelectedProductDto")
                                               @Valid @RequestBody SelectedProductDto selectedProductDto);
 
-    @PatchMapping("/api/selected_product/{id}")
+    @PatchMapping("/api/selected-product/{id}")
     @ApiOperation(value = "Update SelectedProduct")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "SelectedProduct updated"),
@@ -59,7 +59,7 @@ public interface SelectedProductRestAPI {
                                               @ApiParam(name = "SelectedProduct", value = "SelectedProductDto")
                                               @Valid @RequestBody SelectedProductDto selectedProductDto);
 
-    @DeleteMapping("/api/selected_product/{id}")
+    @DeleteMapping("/api/selected-product/{id}")
     @ApiOperation(value = "Delete SelectedProduct by id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "SelectedProduct deleted"),

@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@Api(tags = "ProductSearch REST")
-@Tag(name = "ProductSearch REST", description = "ProductSearch API description")
-public interface SearchProductRestApi {
+@Api(tags = "ProductSearch")
+@Tag(name = "ProductSearch", description = "ProductSearch API description")
+public interface ProductSearchRestApi {
 
-    @GetMapping("/api/search/product")
+    @GetMapping("/api/search")
     @ApiOperation(value = "Search products by Product.name")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Products found"),
