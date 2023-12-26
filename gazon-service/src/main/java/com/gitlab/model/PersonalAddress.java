@@ -14,7 +14,7 @@ import javax.persistence.Id;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "personal_address")
-public class  PersonalAddress extends ShippingAddress {
+public class PersonalAddress extends ShippingAddress {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
