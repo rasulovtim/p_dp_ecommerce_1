@@ -21,7 +21,7 @@ import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 
 class SelectedProductRestControllerIT extends AbstractIntegrationTest {
 
-    private static final String SELECTED_PRODUCT_URN = "/api/selected_product";
+    private static final String SELECTED_PRODUCT_URN = "/api/selected-product";
     private static final String SELECTED_PRODUCT__URI = URL + SELECTED_PRODUCT_URN;
     @Autowired
     private SelectedProductService selectedProductService;

@@ -23,7 +23,7 @@ import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 
 class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
 
-    private static final String SHOPPING_CART_URN = "/api/shopping_cart";
+    private static final String SHOPPING_CART_URN = "/api/shopping-cart";
     private static final String SHOPPING_CART_URI = URL + SHOPPING_CART_URN;
 
     @Autowired
