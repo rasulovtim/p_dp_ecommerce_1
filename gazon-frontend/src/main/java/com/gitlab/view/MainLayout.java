@@ -48,12 +48,15 @@ public class MainLayout extends AppLayout {
         tabs.add(createTab(VaadinIcon.HANDS_UP, "Hello", AdminView.class));
         tabs.add(createTab(VaadinIcon.CLOSE_CIRCLE_O, "Examples", ExampleView.class));
         tabs.add(createTab(VaadinIcon.CART, "Postomat", PostomatView.class));
+        tabs.add(createTab(VaadinIcon.HOME, "Personal Address",PersonalAddressView.class));
         tabs.add(createTab(VaadinIcon.GROUP, "Roles", RoleView.class));
         tabs.add(createTab(VaadinIcon.HEART, "Users", UserView.class));
         tabs.add(createTab(VaadinIcon.USER_CARD, "Passport", PassportView.class));
+        tabs.add(createTab(VaadinIcon.CREDIT_CARD, "Bank Card", BankCardView.class));
         tabs.add(createTab(VaadinIcon.GLOBE, "Pickup Point", PickupPointView.class));
         tabs.add(createTab(VaadinIcon.SPOON, "Product", ProductView.class));
         tabs.add(createTab(VaadinIcon.CLOCK, "Working Schedule", WorkingScheduleView.class));
+        tabs.add(createTab(VaadinIcon.CAMERA, "Review Image", ReviewImageView.class));
         tabs.add(createTab(VaadinIcon.CAMERA, "Product Image", ProductImageView.class));
         tabs.setOrientation(Tabs.Orientation.VERTICAL);
         return tabs;

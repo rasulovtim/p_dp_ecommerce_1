@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,10 +23,9 @@ import java.util.List;
 
 @Api(tags = "Review REST")
 @Tag(name = "Review REST", description = "Review API description")
-@RequestMapping("/api/review")
 public interface ReviewRestApi {
 
-    @GetMapping
+    @GetMapping("/api/review")
     @ApiOperation(value = "Get all Reviews")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Reviews found"),
@@ -35,15 +33,15 @@ public interface ReviewRestApi {
     )
     ResponseEntity<List<ReviewDto>> getAll();
 
-    @GetMapping("/{id}")
+    @GetMapping("/api/review/{id}")
     @ApiOperation(value = "Get Review by id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Review found"),
             @ApiResponse(code = 404, message = "Review not found")}
     )
-    ResponseEntity<ReviewDto> get(@ApiParam(name = "id", value = "Review.id") @PathVariable Long id);
+    ResponseEntity<ReviewDto> get(@ApiParam(name = "id", value = "Review.id") @PathVariable("id") Long id);
 
-    @PostMapping
+    @PostMapping("/api/review")
     @ApiOperation(value = "Create Review")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Review created"),
@@ -51,26 +49,26 @@ public interface ReviewRestApi {
     )
     ResponseEntity<ReviewDto> create(@ApiParam(name = "Review", value = "ReviewDto") @Valid @RequestBody ReviewDto reviewDto);
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/api/review/{id}")
     @ApiOperation(value = "Update Review")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Review updated"),
             @ApiResponse(code = 404, message = "Previous Review not found"),
             @ApiResponse(code = 400, message = "Review not updated")}
     )
-    ResponseEntity<ReviewDto> update(@ApiParam(name = "id", value = "Review.id") @PathVariable Long id,
+    ResponseEntity<ReviewDto> update(@ApiParam(name = "id", value = "Review.id") @PathVariable("id") Long id,
                                       @ApiParam(name = "Review", value = "ReviewDto")
                                       @Valid @RequestBody ReviewDto reviewDto);
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/api/review/{id}")
     @ApiOperation(value = "Delete Review by id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Review deleted"),
             @ApiResponse(code = 404, message = "Review not found")}
     )
-    ResponseEntity<Void> delete(@ApiParam(name = "id", value = "Review.id") @PathVariable Long id);
+    ResponseEntity<Void> delete(@ApiParam(name = "id", value = "Review.id") @PathVariable("id") Long id);
 
-    @GetMapping("/{id}/images")
+    @GetMapping("/api/review/{id}/images")
     @ApiOperation(value = "Get all ReviewImages IDs")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "ReviewImages found"),
@@ -78,9 +76,9 @@ public interface ReviewRestApi {
             @ApiResponse(code = 404, message = "Review's ReviewImages not found")}
     )
     ResponseEntity<long[]> getImagesIDsByReviewId(@ApiParam(name = "id", value = "Review.id")
-                                                   @PathVariable Long id);
+                                                   @PathVariable("id") Long id);
 
-    @PostMapping("/{id}/images")
+    @PostMapping("/api/review/{id}/images")
     @ApiOperation(value = "Upload ReviewImages")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "ReviewImages uploaded"),
@@ -88,14 +86,14 @@ public interface ReviewRestApi {
             @ApiResponse(code = 404, message = "Review not found, unable to upload images without Review")}
     )
     ResponseEntity<String> uploadImagesByReviewId(@RequestParam("files") MultipartFile[] files,
-                                                   @PathVariable Long id) throws IOException;
+                                                   @PathVariable("id") Long id) throws IOException;
 
-    @DeleteMapping("/{id}/images")
+    @DeleteMapping("/api/review/{id}/images")
     @ApiOperation(value = "Delete ReviewImages by Review.id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "ReviewImages deleted"),
             @ApiResponse(code = 204, message = "Review with such id has no images"),
             @ApiResponse(code = 404, message = "Review not found")}
     )
-    ResponseEntity<String> deleteAllImagesByReviewId(@PathVariable Long id);
+    ResponseEntity<String> deleteAllImagesByReviewId(@PathVariable("id") Long id);
 }
