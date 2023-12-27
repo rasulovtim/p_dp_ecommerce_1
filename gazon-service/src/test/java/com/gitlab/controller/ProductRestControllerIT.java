@@ -1,9 +1,11 @@
 package com.gitlab.controller;
 
 import com.gitlab.dto.ProductDto;
+import com.gitlab.dto.ProductImageDto;
 import com.gitlab.mapper.ProductMapper;
 import com.gitlab.model.Product;
 import com.gitlab.model.ProductImage;
+import com.gitlab.service.ProductImageService;
 import com.gitlab.service.ProductService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -32,6 +34,8 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
     private static final String PRODUCT_URI = URL + PRODUCT_URN;
     @Autowired
     private ProductService productService;
+    @Autowired
+    private ProductImageService productImageService;
     @Autowired
     private ProductMapper productMapper;
 
@@ -185,7 +189,9 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_delete_all_productImages_by_product_id() throws Exception {
-        long id = 1L;
+        long id = 10L;
+        productImageService.saveDto(generateProductImageDto(id));
+
         mockMvc.perform(delete(PRODUCT_URI + "/{id}" + "/images", id))
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -205,5 +211,14 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
         productDto.setWeight(1L);
         productDto.setPrice(BigDecimal.ONE);
         return productDto;
+    }
+
+    private ProductImageDto generateProductImageDto(Long productId) {
+        ProductImageDto productImageDto = new ProductImageDto();
+        productImageDto.setProductId(productId);
+        productImageDto.setName("file.txt");
+        productImageDto.setData(new byte[]{1, 2, 3});
+
+        return productImageDto;
     }
 }

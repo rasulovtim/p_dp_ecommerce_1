@@ -102,7 +102,7 @@ class ProductImageRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_return_not_found_when_get_productImage_by_non_existent_id() throws Exception {
-        long id = 10L;
+        long id = 100L;
         mockMvc.perform(get(PRODUCT_IMAGE_URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isNotFound());
