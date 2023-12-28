@@ -1,7 +1,10 @@
 package com.gitlab.service;
 
 import com.gitlab.enums.Citizenship;
+import com.gitlab.enums.EntityStatus;
 import com.gitlab.model.Passport;
+import com.gitlab.model.Store;
+import com.gitlab.model.User;
 import com.gitlab.repository.PassportRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,7 +33,7 @@ class PassportServiceTest {
         List<Passport> expectedResult = generatePassports();
         when(passportRepository.findAll()).thenReturn(generatePassports());
 
-        List<Passport> actualResult = passportService.findAll();
+        List<Passport> actualResult = passportService.findAllActive();
 
         assertEquals(expectedResult, actualResult);
     }
@@ -71,6 +74,7 @@ class PassportServiceTest {
         passportToUpdate.setPassportNumber("1234 567890");
         passportToUpdate.setIssuer("Test Otedel police №1");
         passportToUpdate.setIssuerNumber("111-111");
+        passportToUpdate.setEntityStatus(EntityStatus.ACTIVE);
 
         Passport passportBeforeUpdate = new Passport();
 
@@ -84,6 +88,7 @@ class PassportServiceTest {
         passportBeforeUpdate.setPassportNumber("1234 567890");
         passportBeforeUpdate.setIssuer("Test Otedel police №1");
         passportBeforeUpdate.setIssuerNumber("111-111");
+        passportBeforeUpdate.setEntityStatus(EntityStatus.ACTIVE);
 
         Passport updatedPassport = new Passport();
 
@@ -97,6 +102,7 @@ class PassportServiceTest {
         updatedPassport.setPassportNumber("1234 567890");
         updatedPassport.setIssuer("Test Otedel police №1");
         updatedPassport.setIssuerNumber("111-111");
+        updatedPassport.setEntityStatus(EntityStatus.ACTIVE);
 
         when(passportRepository.findById(id)).thenReturn(Optional.of(passportBeforeUpdate));
         when(passportRepository.save(updatedPassport)).thenReturn(updatedPassport);
@@ -292,11 +298,12 @@ class PassportServiceTest {
     @Test
     void should_delete_passport() {
         long id = 1L;
-        when(passportRepository.findById(id)).thenReturn(Optional.of(generatePassport()));
+        Passport deletedPassport = generatePassport(id);
+        when(passportRepository.findById(id)).thenReturn(Optional.of(deletedPassport));
 
         passportService.delete(id);
 
-        verify(passportRepository).deleteById(id);
+        verify(passportRepository).save(deletedPassport);
     }
 
     @Test
@@ -329,7 +336,7 @@ class PassportServiceTest {
     private Passport generatePassport() {
         return new Passport(1L, Citizenship.RUSSIA, "firstName", "lastName", "patronym",
                 LocalDate.of(2000, 1, 1), LocalDate.of(2015,1,1),
-                "1111 111111", "Otdel police #1", "111-111");
+                "1111 111111", "Otdel police #1", "111-111", EntityStatus.ACTIVE);
     }
 
 
