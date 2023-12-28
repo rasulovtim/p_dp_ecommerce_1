@@ -3,8 +3,6 @@ package com.gitlab.service;
 import com.gitlab.enums.Citizenship;
 import com.gitlab.enums.EntityStatus;
 import com.gitlab.model.Passport;
-import com.gitlab.model.Store;
-import com.gitlab.model.User;
 import com.gitlab.repository.PassportRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +14,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
