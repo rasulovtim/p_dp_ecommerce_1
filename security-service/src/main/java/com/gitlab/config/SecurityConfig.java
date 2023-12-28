@@ -2,7 +2,7 @@ package com.gitlab.config;
 
 
 import com.gitlab.service.MyOidcUserService;
-import com.gitlab.service.UserService;
+import com.gitlab.service.UserDetailsService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,17 +14,16 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
+@EnableMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 @AllArgsConstructor
 public class SecurityConfig {
 
-    private final UserService userService;
+    private final UserDetailsService userService;
     private final MyOidcUserService myOidcUserService;
 
     @Bean
@@ -77,12 +76,24 @@ public class SecurityConfig {
         return http.build();
     }
 
+/*FIXME: Ввод паролей происходит через liquibase в GazonMain, они не шифруются, соответственно, с ними нельзя
+  работать через модуль секьюрности, потому шифрование отключено. Необходимо поправить это после добавления регистрации*/
+    public class FakePasswordEncoder implements PasswordEncoder {
+        @Override
+        public String encode(CharSequence charSequence) {
+            return charSequence.toString();
+        }
 
-
-    @Bean
-    public PasswordEncoder getPasswordEncoder() {
-        return new BCryptPasswordEncoder();
+        @Override
+        public boolean matches(CharSequence charSequence, String s) {
+            return charSequence.toString().equals(s);
+        }
     }
+    @Bean
+    public PasswordEncoder getPasswordEncoder(){
+        return new FakePasswordEncoder();
+    }
+
 }
 
 

@@ -32,6 +32,10 @@ public class RoleService {
     public Optional<Role> findByName(String name) {
         return Optional.ofNullable(roleRepository.findByName(name));
     }
+    @Cacheable("roles")
+    public Role findRoleByName(String name) {
+        return roleRepository.findByName(name);
+    }
 
     @Cacheable("roles")
     public Optional<RoleDto> findByNameDto(String name) {

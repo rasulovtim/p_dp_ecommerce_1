@@ -124,4 +124,8 @@
         <tagDatabase tag="v-1.22"/>
     </changeSet>
 
+    <include file="v-1.23-recreate_users_table/db.changelog-v-1.23.xml" relativeToChangelogFile="true"/>
+    <changeSet id="1.23" author="dmitry_kron">
+        <tagDatabase tag="v-1.23"/>
+    </changeSet>
 </databaseChangeLog>
