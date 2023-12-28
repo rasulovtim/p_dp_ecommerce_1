@@ -23,7 +23,7 @@ import java.util.List;
 @Tag(name = "ShoppingCart REST", description = "ShoppingCart API description")
 public interface ShoppingCartRestApi {
 
-    @GetMapping("/api/shopping_cart")
+    @GetMapping("/api/shopping-cart")
     @ApiOperation(value = "Get all ShoppingCarts")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "ShoppingCarts found"),
@@ -31,7 +31,7 @@ public interface ShoppingCartRestApi {
     )
     ResponseEntity<List<ShoppingCartDto>> getAll();
 
-    @GetMapping("/api/shopping_cart/{id}")
+    @GetMapping("/api/shopping-cart/{id}")
     @ApiOperation(value = "Get ShoppingCart by id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "ShoppingCart found"),
@@ -39,7 +39,7 @@ public interface ShoppingCartRestApi {
     )
     ResponseEntity<ShoppingCartDto> get(@ApiParam(name = "id", value = "ShoppingCart.id") @PathVariable(value = "id") Long id);
 
-    @PostMapping("/api/shopping_cart")
+    @PostMapping("/api/shopping-cart")
     @ApiOperation(value = "Create ShoppingCart")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "ShoppingCart created"),
@@ -48,7 +48,7 @@ public interface ShoppingCartRestApi {
     ResponseEntity<ShoppingCartDto> create(@ApiParam(name = "ShoppingCart", value = "ShoppingCartDto")
                                            @Valid @RequestBody ShoppingCartDto shoppingCartDto);
 
-    @PatchMapping("/api/shopping_cart/{id}")
+    @PatchMapping("/api/shopping-cart/{id}")
     @ApiOperation(value = "Update ShoppingCart")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "ShoppingCart updated"),
@@ -59,7 +59,7 @@ public interface ShoppingCartRestApi {
                                            @ApiParam(name = "ShoppingCart", value = "ShoppingCartDto")
                                            @Valid @RequestBody ShoppingCartDto shoppingCartDto);
 
-    @DeleteMapping("/api/shopping_cart/{id}")
+    @DeleteMapping("/api/shopping-cart/{id}")
     @ApiOperation(value = "Delete ShoppingCart by id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "ShoppingCart deleted"),

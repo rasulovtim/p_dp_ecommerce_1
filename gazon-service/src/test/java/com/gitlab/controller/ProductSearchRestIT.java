@@ -13,9 +13,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class SearchProductRestIT extends AbstractIntegrationTest {
+class ProductSearchRestIT extends AbstractIntegrationTest {
 
-    private static final String PRODUCT_URN = "/api/search/product";
+    private static final String PRODUCT_URN = "/api/search";
     private static final String PRODUCT_URI = URL + PRODUCT_URN;
     @Autowired
     private ProductService productService;

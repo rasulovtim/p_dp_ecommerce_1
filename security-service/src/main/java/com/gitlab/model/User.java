@@ -55,16 +55,15 @@ public class User implements UserDetails, OidcUser {
     private LocalDate birthDate;
 
     @Column(name = "gender")
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
+    private String gender;
 
     @Column(name = "phone_number")
     private String phoneNumber;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "security_users_roles",
-            joinColumns = @JoinColumn(name = "security_user_id"),
-            inverseJoinColumns = @JoinColumn(name = "security_role_id"))
+    @JoinTable(name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> rolesSet;
 
     @Override
@@ -78,7 +77,7 @@ public class User implements UserDetails, OidcUser {
     }
     @Override
     public String getGender() {
-        return gender.getValue();
+        return gender;
     }
 
     @Override
@@ -134,6 +133,5 @@ public class User implements UserDetails, OidcUser {
     public String getName() {
         return null;
     }
-
 
 }

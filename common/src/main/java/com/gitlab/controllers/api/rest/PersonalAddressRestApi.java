@@ -21,7 +21,7 @@ import java.util.List;
 @Api(tags = "Personal Address REST")
 @Tag(name = "Personal Address REST", description = "API for personal address")
 public interface PersonalAddressRestApi {
-    @GetMapping("/api/personal_address")
+    @GetMapping("/api/personal-address")
     @ApiOperation(value = "Get all Personal Addresses")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Personal Addresses found"),
@@ -29,7 +29,7 @@ public interface PersonalAddressRestApi {
     )
     ResponseEntity<List<PersonalAddressDto>> getAll();
 
-    @GetMapping("/api/personal_address/{id}")
+    @GetMapping("/api/personal-address/{id}")
     @ApiOperation(value = "Get Personal Address by id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Personal Address found"),
@@ -38,7 +38,7 @@ public interface PersonalAddressRestApi {
     ResponseEntity<PersonalAddressDto> get(@ApiParam(name = "id", value = "PersonalAddress.id")
                                            @PathVariable (value = "id") Long id);
 
-    @PostMapping("/api/personal_address")
+    @PostMapping("/api/personal-address")
     @ApiOperation(value = "Create Personal Address")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Personal Address created"),
@@ -47,7 +47,7 @@ public interface PersonalAddressRestApi {
     ResponseEntity<PersonalAddressDto> create(@ApiParam(name = "personalAddress", value = "PersonalAddressDto")
                                               @Valid @RequestBody PersonalAddressDto personalAddressDto);
 
-    @PatchMapping("/api/personal_address/{id}")
+    @PatchMapping("/api/personal-address/{id}")
     @ApiOperation(value = "Update Personal Address")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Personal Address updated"),
@@ -58,7 +58,7 @@ public interface PersonalAddressRestApi {
                                               @ApiParam(name = "personalAddress", value = "PersonalAddressDto")
                                               @Valid @RequestBody PersonalAddressDto personalAddressDto);
 
-    @DeleteMapping("/api/personal_address/{id}")
+    @DeleteMapping("/api/personal-address/{id}")
     @ApiOperation(value = "Delete Personal Address by id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Personal Address deleted"),

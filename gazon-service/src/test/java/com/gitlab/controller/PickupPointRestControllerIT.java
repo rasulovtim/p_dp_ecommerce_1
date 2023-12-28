@@ -23,7 +23,7 @@ import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 
 class PickupPointRestControllerIT extends AbstractIntegrationTest {
 
-    private static final String URN = "/api/pickup_point";
+    private static final String URN = "/api/pickup-point";
     private static final String URI = URL + URN;
     @Autowired
     private PickupPointService pickupPointService;

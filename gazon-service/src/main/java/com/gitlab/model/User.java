@@ -4,8 +4,8 @@ import com.gitlab.enums.EntityStatus;
 import com.gitlab.enums.Gender;
 import lombok.*;
 
-import java.time.LocalDate;
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Set;
 
 
@@ -27,7 +27,7 @@ public class User {
     @Id
     private Long id;
 
-    @Column(name = "email")
+    @Column(unique = true, name = "email")
     private String email;
 
     @Column(name = "password")

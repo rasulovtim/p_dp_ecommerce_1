@@ -21,12 +21,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @EntityGraph(value = "userWithSets", type = EntityGraph.EntityGraphType.LOAD)
     Optional<User> findById(@NonNull Long id);
 
+
     @NonNull
     @EntityGraph(value = "userWithSets", type = EntityGraph.EntityGraphType.LOAD)
-    User findByEmail(String email);
+    User findByEmail(@NonNull String email);
 
 
-    User findByFirstName(String name);
 
 
 

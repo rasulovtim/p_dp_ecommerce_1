@@ -5,6 +5,8 @@ import com.gitlab.mapper.ProductImageMapper;
 import com.gitlab.model.ProductImage;
 import com.gitlab.repository.ProductImageRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +42,29 @@ public class ProductImageService {
         return productImageRepository.findById(id)
                 .map(productImageMapper::toDto);
     }
+
+    public List<ProductImage> findAllByProductId(Long id) {
+        return productImageRepository.findAllBySomeProductId(id);
+    }
+
+    public List<ProductImageDto> findAllByProductIdDto(Long id) {
+        return findAllByProductId(id)
+                .stream()
+                .map(productImageMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public Page<ProductImage> getPage(int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return productImageRepository.findAll(pageRequest);
+    }
+
+    public Page<ProductImageDto> getPageDto(int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<ProductImage> productImagePage = productImageRepository.findAll(pageRequest);
+        return productImagePage.map(productImageMapper::toDto);
+    }
+
 
     @Transactional
     public ProductImage save(ProductImage productImage) {

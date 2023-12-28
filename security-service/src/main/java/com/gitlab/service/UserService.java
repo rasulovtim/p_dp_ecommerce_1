@@ -3,18 +3,16 @@ package com.gitlab.service;
 import com.gitlab.dto.UserDto;
 import com.gitlab.mapper.UserMapper;
 import com.gitlab.model.Role;
-
 import com.gitlab.model.User;
 import com.gitlab.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -26,7 +24,7 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-
+    private final PasswordEncoder passwordEncoder;
     public List<User> findAll() {
         return userRepository.findAll();
     }
@@ -40,22 +38,25 @@ public class UserService implements UserDetailsService {
         return userRepository.findById(id);
     }
 
+
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
     public UserDto findByIdDto(Long id) {
         Optional<User> optionalUser = userRepository.findById(id);
         return optionalUser.map(userMapper::toDto).orElse(null);
     }
 
-//    @Transactional
-//    public User save(User user) {
-//        user.setPassword(passwordEncoder.encode(user.getPassword()));
-//        user.setCreateDate(LocalDate.from(LocalDateTime.now()));
-//        return userRepository.save(user);
-//    }
+    @Transactional
+    public User save(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
+    }
 
     @Transactional
     public UserDto saveDto(UserDto userDto) {
         User user = userMapper.toEntity(userDto);
-        user.setCreateDate(LocalDate.from(LocalDateTime.now()));
         User savedUser = userRepository.save(user);
         return userMapper.toDto(savedUser);
     }
@@ -74,18 +75,6 @@ public class UserService implements UserDetailsService {
         }
         if (user.getPassword() != null) {
             savedUser.setPassword(user.getPassword());
-        }
-        if (user.getSecurityQuestion() != null) {
-            savedUser.setSecurityQuestion(user.getSecurityQuestion());
-        }
-        if (user.getAnswerQuestion() != null) {
-            savedUser.setAnswerQuestion(user.getAnswerQuestion());
-        }
-        if (user.getFirstName() != null) {
-            savedUser.setFirstName(user.getFirstName());
-        }
-        if (user.getLastName() != null) {
-            savedUser.setLastName(user.getLastName());
         }
 
         if (user.getRolesSet() != null) {
@@ -131,11 +120,6 @@ public class UserService implements UserDetailsService {
     private User updateUserFields(User user, UserDto userDto) {
         user.setEmail(userDto.getEmail());
         user.setPassword(userDto.getPassword());
-        user.setSecurityQuestion(userDto.getSecurityQuestion());
-        user.setAnswerQuestion(userDto.getAnswerQuestion());
-        user.setFirstName(userDto.getFirstName());
-        user.setLastName(userDto.getLastName());
-
         Set<Role> roles = userMapper.mapRoleSetToStringSet(userDto.getRoles());
         user.setRolesSet(roles);
 
