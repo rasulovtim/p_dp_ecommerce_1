@@ -2,6 +2,7 @@ package com.gitlab.mapper;
 
 
 import com.gitlab.dto.RoleDto;
+import com.gitlab.enums.EntityStatus;
 import com.gitlab.model.Role;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -18,6 +19,7 @@ public interface RoleMapper {
 
     @Mapping(target = "id", source = "id")
     @Mapping(target = "name", source = "roleName")
+    @Mapping(target = "entityStatus", constant = "ACTIVE")
     Role toEntity(RoleDto roleDto);
 
     default List<RoleDto> toDtoList(List<Role> roles) {
