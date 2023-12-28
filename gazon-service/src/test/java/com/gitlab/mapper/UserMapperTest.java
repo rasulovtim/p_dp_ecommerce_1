@@ -1,16 +1,27 @@
 package com.gitlab.mapper;
 
 import com.gitlab.controller.AbstractIntegrationTest;
-import com.gitlab.dto.*;
+import com.gitlab.dto.BankCardDto;
+import com.gitlab.dto.PassportDto;
+import com.gitlab.dto.PersonalAddressDto;
+import com.gitlab.dto.ShippingAddressDto;
+import com.gitlab.dto.UserDto;
 import com.gitlab.enums.Citizenship;
 import com.gitlab.enums.EntityStatus;
 import com.gitlab.enums.Gender;
-import com.gitlab.model.*;
+import com.gitlab.model.BankCard;
+import com.gitlab.model.Passport;
+import com.gitlab.model.PersonalAddress;
+import com.gitlab.model.Role;
+import com.gitlab.model.ShippingAddress;
+import com.gitlab.model.User;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -24,15 +35,65 @@ class UserMapperTest extends AbstractIntegrationTest {
 
     @Test
     void should_map_user_to_Dto() {
+        User user = getUser(1L);
+
+        UserDto actualResult = mapper.toDto(user);
+
+        assertNotNull(actualResult);
+        assertUsers(user, actualResult);
+    }
+
+    @Test
+    void should_map_userDto_to_Entity() {
+        UserDto userDto = getUserDto(1L);
+
+        User actualResult = mapper.toEntity(userDto);
+
+        assertNotNull(actualResult);
+        assertUsers(actualResult, userDto);
+    }
+
+    @Test
+    void should_map_userList_to_DtoList() {
+        List<User> userList = List.of(getUser(1L), getUser(1L), getUser(1L));
+
+        List<UserDto> userDtoList = mapper.toDtoList(userList);
+
+        assertNotNull(userDtoList);
+        assertEquals(userList.size(), userList.size());
+        for (int i = 0; i < userDtoList.size(); i++) {
+            UserDto dto = userDtoList.get(i);
+            User entity = userList.get(i);
+            assertUsers(entity, dto);
+        }
+    }
+
+    @Test
+    void should_map_userDtoList_to_EntityList() {
+        List<UserDto> userDtoList = List.of(getUserDto(1L), getUserDto(1L), getUserDto(1L));
+
+        List<User> userList = mapper.toEntityList(userDtoList);
+
+        assertNotNull(userList);
+        assertEquals(userList.size(), userList.size());
+        for (int i = 0; i < userList.size(); i++) {
+            UserDto dto = userDtoList.get(i);
+            User entity = userList.get(i);
+            assertUsers(entity, dto);
+        }
+    }
+
+    @NotNull
+    private User getUser(Long id) {
         Set<Role> roleSet = new HashSet<>();
-        roleSet.add(new Role(1L, "ROLE_ADMIN"));
+        roleSet.add(new Role(id, "ROLE_ADMIN"));
 
         Set<BankCard> bankCardSet = new HashSet<>();
-        bankCardSet.add(new BankCard(1L, "0000000000000000", LocalDate.now(), 777));
+        bankCardSet.add(new BankCard(id, "0000000000000000", LocalDate.now(), 777));
 
         Set<ShippingAddress> personalAddresses = new HashSet<>();
         personalAddresses.add(new PersonalAddress(
-                1L,
+                id,
                 "apartment",
                 "floor",
                 "entrance",
@@ -40,7 +101,7 @@ class UserMapperTest extends AbstractIntegrationTest {
                 "postCode"));
 
         Passport passport = new Passport(
-                1L,
+                id,
                 Citizenship.RUSSIA,
                 "user",
                 "user",
@@ -51,7 +112,7 @@ class UserMapperTest extends AbstractIntegrationTest {
                 "issuer",
                 "issuerN");
 
-        User user = new User(1L,
+        return new User(id,
                 "user",
                 "user",
                 "answer",
@@ -67,10 +128,62 @@ class UserMapperTest extends AbstractIntegrationTest {
                 personalAddresses,
                 roleSet,
                 EntityStatus.ACTIVE);
+    }
 
-        UserDto actualResult = mapper.toDto(user);
+    @NotNull
+    private UserDto getUserDto(Long id) {
+        Set<String> roleSet = new HashSet<>();
+        roleSet.add("ROLE_ADMIN");
 
-        assertNotNull(actualResult);
+        Set<BankCardDto> bankCard = new HashSet<>();
+        bankCard.add(new BankCardDto(
+                id,
+                "1111222233334444",
+                LocalDate.now(),
+                423
+        ));
+
+        Set<ShippingAddressDto> personalAddress = new HashSet<>();
+        personalAddress.add(new PersonalAddressDto(
+                id,
+                "address",
+                "directions",
+                "apartment",
+                "floor",
+                "entrance",
+                "doorCode",
+                "postCode"));
+
+        PassportDto passport = new PassportDto(
+                id,
+                Citizenship.RUSSIA,
+                "user",
+                "user",
+                "patronym",
+                LocalDate.now(),
+                LocalDate.now(),
+                "098765",
+                "issuer",
+                "issuerN");
+
+        return new UserDto(
+                id,
+                "mail@mail.ru",
+                "user",
+                "answer",
+                "question",
+                "user",
+                "user",
+                LocalDate.now(),
+                Gender.MALE,
+                "89007777777",
+                passport,
+                personalAddress,
+                bankCard,
+                roleSet);
+    }
+
+    private void assertUsers(User user, UserDto actualResult) {
         assertEquals(user.getId(), actualResult.getId());
         assertEquals(user.getEmail(), actualResult.getEmail());
         assertEquals(user.getPassword(), actualResult.getPassword());
@@ -107,96 +220,6 @@ class UserMapperTest extends AbstractIntegrationTest {
         assertEquals(user.getPassport().getIssuer(), actualResult.getPassportDto().getIssuer());
         assertEquals(user.getPassport().getIssuerNumber(), actualResult.getPassportDto().getIssuerNumber());
 
-    }
-
-    @Test
-    void should_map_userDto_to_Entity() {
-        Set<String> roleSet = new HashSet<>();
-        roleSet.add("ROLE_ADMIN");
-
-        Set<BankCardDto> bankCard = new HashSet<>();
-        bankCard.add(new BankCardDto(
-                1L,
-                "1111222233334444",
-                LocalDate.now(),
-                423
-        ));
-
-        Set<ShippingAddressDto> personalAddress = new HashSet<>();
-        personalAddress.add(new PersonalAddressDto(
-                1L,
-                "address",
-                "directions",
-                "apartment",
-                "floor",
-                "entrance",
-                "doorCode",
-                "postCode"));
-
-        PassportDto passport = new PassportDto(
-                1L,
-                Citizenship.RUSSIA,
-                "user",
-                "user",
-                "patronym",
-                LocalDate.now(),
-                LocalDate.now(),
-                "098765",
-                "issuer",
-                "issuerN");
-
-        UserDto userDto = new UserDto(
-                1L,
-                "mail@mail.ru",
-                "user",
-                "answer",
-                "question",
-                "user",
-                "user",
-                LocalDate.now(),
-                Gender.MALE,
-                "89007777777",
-                passport,
-                personalAddress,
-                bankCard,
-                roleSet);
-
-        User actualResult = mapper.toEntity(userDto);
-
-        assertNotNull(actualResult);
-        assertEquals(userDto.getId(), actualResult.getId());
-        assertEquals(userDto.getEmail(), actualResult.getEmail());
-        assertEquals(userDto.getPassword(), actualResult.getPassword());
-        assertEquals(userDto.getSecurityQuestion(), actualResult.getSecurityQuestion());
-        assertEquals(userDto.getAnswerQuestion(), actualResult.getAnswerQuestion());
-        assertEquals(userDto.getFirstName(), actualResult.getFirstName());
-        assertEquals(userDto.getLastName(), actualResult.getLastName());
-        assertEquals(userDto.getBirthDate(), actualResult.getBirthDate());
-        assertEquals(userDto.getGender(), actualResult.getGender());
-        assertEquals(userDto.getPhoneNumber(), actualResult.getPhoneNumber());
-
-        //test all field custom object Passport & PassportDto
-        assertEquals(userDto.getPassportDto().getCitizenship(), actualResult.getPassport().getCitizenship());
-        assertEquals(userDto.getPassportDto().getId(), actualResult.getPassport().getId());
-        assertEquals(userDto.getPassportDto().getFirstName(), actualResult.getPassport().getFirstName());
-        assertEquals(userDto.getPassportDto().getLastName(), actualResult.getPassport().getLastName());
-        assertEquals(userDto.getPassportDto().getPatronym(), actualResult.getPassport().getPatronym());
-        assertEquals(userDto.getPassportDto().getBirthDate(), actualResult.getPassport().getBirthDate());
-        assertEquals(userDto.getPassportDto().getIssueDate(), actualResult.getPassport().getIssueDate());
-        assertEquals(userDto.getPassportDto().getPassportNumber(), actualResult.getPassport().getPassportNumber());
-        assertEquals(userDto.getPassportDto().getIssuer(), actualResult.getPassport().getIssuer());
-        assertEquals(userDto.getPassportDto().getIssuerNumber(), actualResult.getPassport().getIssuerNumber());
-
-        //Test all collections of fields ShippingAddress & ShippingAddressDto
-        assertEquals(userDto.getShippingAddressDtos().stream().map(ShippingAddressDto::getAddress).collect(Collectors.toSet()), actualResult.getShippingAddressSet().stream().map(ShippingAddress::getAddress).collect(Collectors.toSet()));
-        assertEquals(userDto.getShippingAddressDtos().stream().map(ShippingAddressDto::getDirections).collect(Collectors.toSet()), actualResult.getShippingAddressSet().stream().map(ShippingAddress::getDirections).collect(Collectors.toSet()));
-
-        //Test all collections of fields BankCard & BankCardDto
-        assertEquals(userDto.getBankCardDtos().stream().map(BankCardDto::getCardNumber).collect(Collectors.toSet()), actualResult.getBankCardsSet().stream().map(BankCard::getCardNumber).collect(Collectors.toSet()));
-        assertEquals(userDto.getBankCardDtos().stream().map(BankCardDto::getDueDate).collect(Collectors.toSet()), actualResult.getBankCardsSet().stream().map(BankCard::getDueDate).collect(Collectors.toSet()));
-        assertEquals(userDto.getBankCardDtos().stream().map(BankCardDto::getSecurityCode).collect(Collectors.toSet()), actualResult.getBankCardsSet().stream().map(BankCard::getSecurityCode).collect(Collectors.toSet()));
-        //Test all collections of fields Role & String
-        assertEquals(userDto.getRoles().stream().flatMap(String::lines).collect(Collectors.toSet()), actualResult.getRolesSet().stream().map(Role::getName).collect(Collectors.toSet()));
 
     }
 }
