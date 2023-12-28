@@ -76,12 +76,6 @@ public class UserService implements UserDetailsService {
         if (user.getPassword() != null) {
             savedUser.setPassword(user.getPassword());
         }
-        if (user.getSecurityQuestion() != null) {
-            savedUser.setSecurityQuestion(user.getSecurityQuestion());
-        }
-        if (user.getAnswerQuestion() != null) {
-            savedUser.setAnswerQuestion(user.getAnswerQuestion());
-        }
 
         if (user.getRolesSet() != null) {
             savedUser.setRolesSet(user.getRolesSet());
@@ -126,8 +120,6 @@ public class UserService implements UserDetailsService {
     private User updateUserFields(User user, UserDto userDto) {
         user.setEmail(userDto.getEmail());
         user.setPassword(userDto.getPassword());
-        user.setSecurityQuestion(userDto.getSecurityQuestion());
-        user.setAnswerQuestion(userDto.getAnswerQuestion());
         Set<Role> roles = userMapper.mapRoleSetToStringSet(userDto.getRoles());
         user.setRolesSet(roles);
 
