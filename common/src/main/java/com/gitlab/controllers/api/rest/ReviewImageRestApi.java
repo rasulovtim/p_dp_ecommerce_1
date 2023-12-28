@@ -7,7 +7,6 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,18 +17,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Api(tags = "Review Image REST")
 @Tag(name = "Review Image REST", description = "Review Image API description")
 public interface ReviewImageRestApi {
 
     @GetMapping("/api/review-images")
-    @ApiOperation(value = "Get all ReviewImages IDs")
+    @ApiOperation(value = "Get Review image page")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Review image Page found"),
             @ApiResponse(code = 204, message = "Review image Page not present")}
     )
-    ResponseEntity<Page<ReviewImageDto>> getPage(@ApiParam(name = "page") @RequestParam(required = false, value = "page") Integer page,
+    ResponseEntity<List<ReviewImageDto>> getPage(@ApiParam(name = "page") @RequestParam(required = false, value = "page") Integer page,
                                                  @ApiParam(name = "size") @RequestParam(required = false, value = "size") Integer size);
 
 

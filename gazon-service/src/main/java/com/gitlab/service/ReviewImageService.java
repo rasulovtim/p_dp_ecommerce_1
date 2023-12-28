@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -29,9 +28,7 @@ public class ReviewImageService {
 
     public List<ReviewImageDto> findAllDto() {
         List<ReviewImage> reviewImages = reviewImageRepository.findAll();
-        return reviewImages.stream()
-                .map(reviewImageMapper::toDto)
-                .collect(Collectors.toList());
+        return reviewImageMapper.toDtoList(reviewImages);
     }
 
 
@@ -132,9 +129,7 @@ public class ReviewImageService {
 
     @Transactional
     public List<ReviewImage> saveAllDto(List<ReviewImageDto> imageDtoList) {
-        List<ReviewImage> imageList = imageDtoList.stream()
-                .map(reviewImageMapper::toEntity)
-                .collect(Collectors.toList());
+        List<ReviewImage> imageList = reviewImageMapper.toEntityList(imageDtoList);
         return reviewImageRepository.saveAll(imageList);
     }
 }

@@ -7,12 +7,12 @@ import com.gitlab.service.ReviewImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Optional;
 @Slf4j
 @Validated
@@ -22,7 +22,7 @@ public class ReviewImageController implements ReviewImageRestApi {
 
     private final ReviewImageService reviewImageService;
 
-    public ResponseEntity<Page<ReviewImageDto>> getPage(Integer page, Integer size) {
+    public ResponseEntity<List<ReviewImageDto>> getPage(Integer page, Integer size) {
         if (page == null || size == null) {
             return createUnPagedResponse();
         }
@@ -36,18 +36,19 @@ public class ReviewImageController implements ReviewImageRestApi {
             return createPagedResponse(reviewImagePage);
         }
     }
-    private ResponseEntity<Page<ReviewImageDto>> createPagedResponse(Page<ReviewImage> reviewImagePage) {
+
+    private ResponseEntity<List<ReviewImageDto>> createPagedResponse(Page<ReviewImage> reviewImagePage) {
         var reviewImageDtoPage = reviewImageService.getPageDto(reviewImagePage.getPageable().getPageNumber(),
-                reviewImagePage.getPageable().getPageSize());
+                reviewImagePage.getPageable().getPageSize()).getContent();
         return ResponseEntity.ok(reviewImageDtoPage);
     }
 
-    private ResponseEntity<Page<ReviewImageDto>> createUnPagedResponse() {
+    private ResponseEntity<List<ReviewImageDto>> createUnPagedResponse() {
         var reviewImageDtos = reviewImageService.findAllDto();
         if (reviewImageDtos.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(new PageImpl<>(reviewImageDtos));
+        return ResponseEntity.ok(reviewImageDtos);
     }
     @Override
     public ResponseEntity<ReviewImageDto> get(Long id) {
