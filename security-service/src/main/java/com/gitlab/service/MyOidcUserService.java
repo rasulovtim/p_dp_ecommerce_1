@@ -36,8 +36,6 @@ public class MyOidcUserService extends OidcUserService {
 
         User existedUser = userRepository.findByEmail(oidcUser.getEmail());
 
-        System.out.println(existedUser);
-
         //TODO: Сделать более "пользовательский" ввод данных.
         if (Objects.isNull(existedUser)) {
             User user = new User();
@@ -55,7 +53,7 @@ public class MyOidcUserService extends OidcUserService {
             user.setBirthDate(LocalDate.now());
             user.setGender(Gender.MALE.getValue());
             user.setPhoneNumber("132131321");
-            user.setBirthDate(LocalDate.now());
+            user.setCreateDate(LocalDate.now());
             userRepository.save(user);
 
         }
