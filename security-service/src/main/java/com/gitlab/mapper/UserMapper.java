@@ -23,19 +23,8 @@ public abstract class UserMapper {
     private RoleService roleService;
 
     @Mapping(source = "rolesSet", target = "roles")
-    @Mapping(source = "gender", target = "gender", qualifiedByName = "mapGender")
     public abstract UserDto toDto(User user);
 
-    @Named("mapGender")
-    static Gender mapGender(String value) {
-        if (Gender.MALE.getValue().equals(value)) {
-            return Gender.MALE;
-        } else if (Gender.FEMALE.getValue().equals(value)) {
-            return Gender.FEMALE;
-        } else {
-            throw new RuntimeException("mapGender: Gender mapping exception");
-        }
-    }
 
     public Set<String> mapStringSetToRoleSet(Set<Role> roleSet) {
         Set<String> stringSet = new HashSet<>();
