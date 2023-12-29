@@ -6,6 +6,7 @@ import com.gitlab.model.WorkingSchedule;
 import com.gitlab.repository.WorkingScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +40,38 @@ public class WorkingScheduleService {
     public Optional<WorkingScheduleDto> findByIdDto(Long id) {
         Optional<WorkingSchedule> optionalWorkingSchedule = workingScheduleRepository.findById(id);
         return optionalWorkingSchedule.map(workingScheduleMapper::toDto);
+    }
+
+    public Page<WorkingSchedule> getPage(Integer page, Integer size) {
+        if (page == null || size == null) {
+            var workingSchedules = findAll();
+            if (workingSchedules.isEmpty()) {
+                return Page.empty();
+            }
+            return new PageImpl<>(workingSchedules);
+        }
+        if (page < 0 || size < 1) {
+            return Page.empty();
+        }
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return workingScheduleRepository.findAll(pageRequest);
+    }
+
+    public Page<WorkingScheduleDto> getPageDto(Integer page, Integer size) {
+
+        if (page == null || size == null) {
+            var workingSchedules = findAllDto();
+            if (workingSchedules.isEmpty()) {
+                return Page.empty();
+            }
+            return new PageImpl<>(workingSchedules);
+        }
+        if (page < 0 || size < 1) {
+            return Page.empty();
+        }
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<WorkingSchedule> workingSchedulePage = workingScheduleRepository.findAll(pageRequest);
+        return workingSchedulePage.map(workingScheduleMapper::toDto);
     }
 
     public WorkingSchedule save(WorkingSchedule workingSchedule) {
@@ -131,16 +164,5 @@ public class WorkingScheduleService {
             workingScheduleRepository.deleteById(id);
             return Optional.of(workingScheduleDto);
         }
-    }
-
-    public Page<WorkingSchedule> getPage(int page, int size) {
-        PageRequest pageRequest = PageRequest.of(page, size);
-        return workingScheduleRepository.findAll(pageRequest);
-    }
-
-    public Page<WorkingScheduleDto> getPageDto(int page, int size) {
-        PageRequest pageRequest = PageRequest.of(page, size);
-        Page<WorkingSchedule> examplePage = workingScheduleRepository.findAll(pageRequest);
-        return examplePage.map(workingScheduleMapper::toDto);
     }
 }

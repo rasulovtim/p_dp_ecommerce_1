@@ -5,9 +5,16 @@ import com.gitlab.enums.EntityStatus;
 import com.gitlab.mapper.BankCardMapper;
 import com.gitlab.mapper.PassportMapper;
 import com.gitlab.mapper.UserMapper;
-import com.gitlab.model.*;
+import com.gitlab.model.BankCard;
+import com.gitlab.model.Passport;
+import com.gitlab.model.Role;
+import com.gitlab.model.ShippingAddress;
+import com.gitlab.model.User;
 import com.gitlab.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,6 +59,38 @@ public class UserService {
         return optionalUser.map(userMapper::toDto);
     }
 
+    public Page<User> getPage(Integer page, Integer size) {
+        if (page == null || size == null) {
+            var users = findAll();
+            if (users.isEmpty()) {
+                return Page.empty();
+            }
+            return new PageImpl<>(users);
+        }
+        if (page < 0 || size < 1) {
+            return Page.empty();
+        }
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return userRepository.findAll(pageRequest);
+    }
+
+    public Page<UserDto> getPageDto(Integer page, Integer size) {
+
+        if (page == null || size == null) {
+            var users = findAllDto();
+            if (users.isEmpty()) {
+                return Page.empty();
+            }
+            return new PageImpl<>(users);
+        }
+        if (page < 0 || size < 1) {
+            return Page.empty();
+        }
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<User> userPage = userRepository.findAll(pageRequest);
+        return userPage.map(userMapper::toDto);
+    }
+
     @Transactional
     public User save(User user) {
         user.setCreateDate(LocalDate.from(LocalDateTime.now()));
@@ -63,6 +102,7 @@ public class UserService {
     public UserDto saveDto(UserDto userDto) {
         User user = userMapper.toEntity(userDto);
         user.setCreateDate(LocalDate.from(LocalDateTime.now()));
+        user.setEntityStatus(EntityStatus.ACTIVE);
         User savedUser = userRepository.save(user);
         return userMapper.toDto(savedUser);
     }
@@ -168,16 +208,16 @@ public class UserService {
     }
 
     @Transactional
-    public UserDto updateDto(Long id, UserDto userDto) {
+    public Optional<UserDto> updateDto(Long id, UserDto userDto) {
         Optional<User> optionalSavedUser = userRepository.findById(id);
         if (optionalSavedUser.isEmpty() || optionalSavedUser.get().getEntityStatus().equals(EntityStatus.DELETED)) {
-            return null;
+            return Optional.empty();
         }
         User savedUser = optionalSavedUser.get();
 
         updateUserFields(savedUser, userDto, bankCardMapper);
         User updatedUser = userRepository.save(savedUser);
-        return userMapper.toDto(updatedUser);
+        return Optional.of(userMapper.toDto(updatedUser));
     }
 
     @Transactional

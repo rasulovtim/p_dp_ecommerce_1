@@ -6,6 +6,7 @@ import com.gitlab.model.ReviewImage;
 import com.gitlab.repository.ReviewImageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +32,6 @@ public class ReviewImageService {
         return reviewImageMapper.toDtoList(reviewImages);
     }
 
-
     public Optional<ReviewImage> findById(Long id) {
         return reviewImageRepository.findById(id);
     }
@@ -41,12 +41,34 @@ public class ReviewImageService {
         return reviewImageOptional.map(reviewImageMapper::toDto);
     }
 
-    public Page<ReviewImage> getPage(int page, int size) {
+
+    public Page<ReviewImage> getPage(Integer page, Integer size) {
+        if (page == null || size == null) {
+            var reviewImages = findAll();
+            if (reviewImages.isEmpty()) {
+                return Page.empty();
+            }
+            return new PageImpl<>(reviewImages);
+        }
+        if (page < 0 || size < 1) {
+            return Page.empty();
+        }
         PageRequest pageRequest = PageRequest.of(page, size);
         return reviewImageRepository.findAll(pageRequest);
     }
 
-    public Page<ReviewImageDto> getPageDto(int page, int size) {
+    public Page<ReviewImageDto> getPageDto(Integer page, Integer size) {
+
+        if (page == null || size == null) {
+            var reviewImages = findAllDto();
+            if (reviewImages.isEmpty()) {
+                return Page.empty();
+            }
+            return new PageImpl<>(reviewImages);
+        }
+        if (page < 0 || size < 1) {
+            return Page.empty();
+        }
         PageRequest pageRequest = PageRequest.of(page, size);
         Page<ReviewImage> reviewImagePage = reviewImageRepository.findAll(pageRequest);
         return reviewImagePage.map(reviewImageMapper::toDto);

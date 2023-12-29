@@ -1,11 +1,13 @@
 package com.gitlab.service;
 
 import com.gitlab.dto.PassportDto;
-import com.gitlab.mapper.BankCardMapper;
 import com.gitlab.mapper.PassportMapper;
 import com.gitlab.model.Passport;
 import com.gitlab.repository.PassportRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,6 +40,38 @@ public class PassportService {
     public Optional<PassportDto> findByIdDto(Long id) {
         return passportRepository.findById(id)
                 .map(passportMapper::toDto);
+    }
+
+    public Page<Passport> getPage(Integer page, Integer size) {
+        if (page == null || size == null) {
+            var passports = findAll();
+            if (passports.isEmpty()) {
+                return Page.empty();
+            }
+            return new PageImpl<>(passports);
+        }
+        if (page < 0 || size < 1) {
+            return Page.empty();
+        }
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return passportRepository.findAll(pageRequest);
+    }
+
+    public Page<PassportDto> getPageDto(Integer page, Integer size) {
+
+        if (page == null || size == null) {
+            var passports = findAllDto();
+            if (passports.isEmpty()) {
+                return Page.empty();
+            }
+            return new PageImpl<>(passports);
+        }
+        if (page < 0 || size < 1) {
+            return Page.empty();
+        }
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<Passport> passportPage = passportRepository.findAll(pageRequest);
+        return passportPage.map(passportMapper::toDto);
     }
 
     public Passport save(Passport passport) {
