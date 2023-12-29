@@ -9,6 +9,9 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public abstract class ProductImageMapper {
 
@@ -34,5 +37,13 @@ public abstract class ProductImageMapper {
         }
 
         return productRepository.findById(productId).orElse(null);
+    }
+
+    public List<ProductImageDto> toDtoList(List<ProductImage> productImageList) {
+        return productImageList.stream().map(this::toDto).collect(Collectors.toList());
+    }
+
+    public List<ProductImage> toEntityList(List<ProductImageDto> productImageDtoList) {
+        return productImageDtoList.stream().map(this::toEntity).collect(Collectors.toList());
     }
 }

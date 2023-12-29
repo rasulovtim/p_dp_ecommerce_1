@@ -40,7 +40,7 @@ class UserMapperTest extends AbstractIntegrationTest {
         UserDto actualResult = mapper.toDto(user);
 
         assertNotNull(actualResult);
-        assertUsers(user, actualResult);
+        assertUser(user, actualResult);
     }
 
     @Test
@@ -50,7 +50,7 @@ class UserMapperTest extends AbstractIntegrationTest {
         User actualResult = mapper.toEntity(userDto);
 
         assertNotNull(actualResult);
-        assertUsers(actualResult, userDto);
+        assertUserDto(userDto, actualResult);
     }
 
     @Test
@@ -64,7 +64,7 @@ class UserMapperTest extends AbstractIntegrationTest {
         for (int i = 0; i < userDtoList.size(); i++) {
             UserDto dto = userDtoList.get(i);
             User entity = userList.get(i);
-            assertUsers(entity, dto);
+            assertUser(entity, dto);
         }
     }
 
@@ -79,7 +79,7 @@ class UserMapperTest extends AbstractIntegrationTest {
         for (int i = 0; i < userList.size(); i++) {
             UserDto dto = userDtoList.get(i);
             User entity = userList.get(i);
-            assertUsers(entity, dto);
+            assertUserDto(dto, entity);
         }
     }
 
@@ -183,7 +183,7 @@ class UserMapperTest extends AbstractIntegrationTest {
                 roleSet);
     }
 
-    private void assertUsers(User user, UserDto actualResult) {
+    private void assertUser(User user, UserDto actualResult) {
         assertEquals(user.getId(), actualResult.getId());
         assertEquals(user.getEmail(), actualResult.getEmail());
         assertEquals(user.getPassword(), actualResult.getPassword());
@@ -220,6 +220,42 @@ class UserMapperTest extends AbstractIntegrationTest {
         assertEquals(user.getPassport().getIssuer(), actualResult.getPassportDto().getIssuer());
         assertEquals(user.getPassport().getIssuerNumber(), actualResult.getPassportDto().getIssuerNumber());
 
+    }
+
+    private void assertUserDto(UserDto userDto, User actualResult) {
+        assertEquals(userDto.getId(), actualResult.getId());
+        assertEquals(userDto.getEmail(), actualResult.getEmail());
+        assertEquals(userDto.getPassword(), actualResult.getPassword());
+        assertEquals(userDto.getSecurityQuestion(), actualResult.getSecurityQuestion());
+        assertEquals(userDto.getAnswerQuestion(), actualResult.getAnswerQuestion());
+        assertEquals(userDto.getFirstName(), actualResult.getFirstName());
+        assertEquals(userDto.getLastName(), actualResult.getLastName());
+        assertEquals(userDto.getBirthDate(), actualResult.getBirthDate());
+        assertEquals(userDto.getGender(), actualResult.getGender());
+        assertEquals(userDto.getPhoneNumber(), actualResult.getPhoneNumber());
+
+        //test all field custom object Passport & PassportDto
+        assertEquals(userDto.getPassportDto().getCitizenship(), actualResult.getPassport().getCitizenship());
+        assertEquals(userDto.getPassportDto().getId(), actualResult.getPassport().getId());
+        assertEquals(userDto.getPassportDto().getFirstName(), actualResult.getPassport().getFirstName());
+        assertEquals(userDto.getPassportDto().getLastName(), actualResult.getPassport().getLastName());
+        assertEquals(userDto.getPassportDto().getPatronym(), actualResult.getPassport().getPatronym());
+        assertEquals(userDto.getPassportDto().getBirthDate(), actualResult.getPassport().getBirthDate());
+        assertEquals(userDto.getPassportDto().getIssueDate(), actualResult.getPassport().getIssueDate());
+        assertEquals(userDto.getPassportDto().getPassportNumber(), actualResult.getPassport().getPassportNumber());
+        assertEquals(userDto.getPassportDto().getIssuer(), actualResult.getPassport().getIssuer());
+        assertEquals(userDto.getPassportDto().getIssuerNumber(), actualResult.getPassport().getIssuerNumber());
+
+        //Test all collections of fields ShippingAddress & ShippingAddressDto
+        assertEquals(userDto.getShippingAddressDtos().stream().map(ShippingAddressDto::getAddress).collect(Collectors.toSet()), actualResult.getShippingAddressSet().stream().map(ShippingAddress::getAddress).collect(Collectors.toSet()));
+        assertEquals(userDto.getShippingAddressDtos().stream().map(ShippingAddressDto::getDirections).collect(Collectors.toSet()), actualResult.getShippingAddressSet().stream().map(ShippingAddress::getDirections).collect(Collectors.toSet()));
+
+        //Test all collections of fields BankCard & BankCardDto
+        assertEquals(userDto.getBankCardDtos().stream().map(BankCardDto::getCardNumber).collect(Collectors.toSet()), actualResult.getBankCardsSet().stream().map(BankCard::getCardNumber).collect(Collectors.toSet()));
+        assertEquals(userDto.getBankCardDtos().stream().map(BankCardDto::getDueDate).collect(Collectors.toSet()), actualResult.getBankCardsSet().stream().map(BankCard::getDueDate).collect(Collectors.toSet()));
+        assertEquals(userDto.getBankCardDtos().stream().map(BankCardDto::getSecurityCode).collect(Collectors.toSet()), actualResult.getBankCardsSet().stream().map(BankCard::getSecurityCode).collect(Collectors.toSet()));
+        //Test all collections of fields Role & String
+        assertEquals(userDto.getRoles().stream().flatMap(String::lines).collect(Collectors.toSet()), actualResult.getRolesSet().stream().map(Role::getName).collect(Collectors.toSet()));
 
     }
 }

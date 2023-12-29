@@ -7,7 +7,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public abstract class StoreMapper {
@@ -35,4 +37,12 @@ public abstract class StoreMapper {
     }
 
     public abstract Set<User> map(Set<Long> managersId);
+
+    public List<StoreDto> toDtoList(List<Store> storeList) {
+        return storeList.stream().map(this::toDto).collect(Collectors.toList());
+    }
+
+    public List<Store> toEntityList(List<StoreDto> storeDtoList) {
+        return storeDtoList.stream().map(this::toEntity).collect(Collectors.toList());
+    }
 }

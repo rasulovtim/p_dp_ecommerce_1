@@ -20,9 +20,11 @@ public interface RoleMapper {
     @Mapping(target = "name", source = "roleName")
     Role toEntity(RoleDto roleDto);
 
-    default List<RoleDto> toDtoList(List<Role> roles) {
-        return roles.stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
+    default List<RoleDto> toDtoList(List<Role> roleList) {
+        return roleList.stream().map(this::toDto).collect(Collectors.toList());
+    }
+
+    default List<Role> toEntityList(List<RoleDto> roleDtoList) {
+        return roleDtoList.stream().map(this::toEntity).collect(Collectors.toList());
     }
 }

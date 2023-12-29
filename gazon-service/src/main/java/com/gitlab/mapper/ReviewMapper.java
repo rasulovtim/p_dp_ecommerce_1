@@ -12,6 +12,7 @@ import org.mapstruct.MappingConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -62,5 +63,13 @@ public abstract class ReviewMapper {
         }
         return productService.findById(productId).
                 orElseThrow(() -> new RuntimeException("Product wasn't found"));
+    }
+
+    public List<ReviewDto> toDtoList(List<Review> reviewList) {
+        return reviewList.stream().map(this::toDto).collect(Collectors.toList());
+    }
+
+    public List<Review> toEntityList(List<ReviewDto> reviewDtoList) {
+        return reviewDtoList.stream().map(this::toEntity).collect(Collectors.toList());
     }
 }

@@ -4,8 +4,11 @@ import com.gitlab.controller.AbstractIntegrationTest;
 import com.gitlab.dto.ReviewDto;
 import com.gitlab.model.Product;
 import com.gitlab.model.Review;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -17,11 +20,7 @@ public class ReviewMapperTest extends AbstractIntegrationTest {
 
     @Test
     void should_map_review_to_Dto() {
-        Review review = new Review();
-        review.setProduct(getProduct(1L));
-        review.setPros("pros1");
-        review.setCons("cons1");
-        review.setRating((byte) 4);
+        Review review = getReview(1L);
 
         ReviewDto dtoTwin = mapper.toDto(review);
 
@@ -35,12 +34,7 @@ public class ReviewMapperTest extends AbstractIntegrationTest {
 
     @Test
     void should_map_reviewDto_to_Entity() {
-        getProduct(2L);
-        ReviewDto reviewDto = new ReviewDto();
-        reviewDto.setProductId(2L);
-        reviewDto.setPros("pros2");
-        reviewDto.setCons("cons2");
-        reviewDto.setRating((byte) 6);
+        ReviewDto reviewDto = getReviewDto(1L);
 
         Review entityTwin = mapper.toEntity(reviewDto);
 
@@ -50,6 +44,64 @@ public class ReviewMapperTest extends AbstractIntegrationTest {
         assertEquals(reviewDto.getPros(), entityTwin.getPros());
         assertEquals(reviewDto.getCons(), entityTwin.getCons());
         assertEquals(reviewDto.getRating(), entityTwin.getRating());
+    }
+
+    @Test
+    void should_map_reviewList_to_DtoList() {
+        List<Review> reviewList = List.of(getReview(1L), getReview(2L), getReview(3L));
+
+        List<ReviewDto> reviewDtoList = mapper.toDtoList(reviewList);
+
+        assertNotNull(reviewDtoList);
+        assertEquals(reviewList.size(), reviewList.size());
+        for (int i = 0; i < reviewDtoList.size(); i++) {
+            ReviewDto dto = reviewDtoList.get(i);
+            Review entity = reviewList.get(i);
+            assertEquals(dto.getId(), entity.getId());
+            assertEquals(dto.getProductId(), entity.getProduct().getId());
+            assertEquals(dto.getPros(), entity.getPros());
+            assertEquals(dto.getCons(), entity.getCons());
+            assertEquals(dto.getRating(), entity.getRating());
+        }
+    }
+
+    @Test
+    void should_map_reviewDtoList_to_EntityList() {
+        List<ReviewDto> reviewDtoList = List.of(getReviewDto(1L), getReviewDto(2L), getReviewDto(3L));
+
+        List<Review> reviewList = mapper.toEntityList(reviewDtoList);
+
+        assertNotNull(reviewList);
+        assertEquals(reviewList.size(), reviewList.size());
+        for (int i = 0; i < reviewList.size(); i++) {
+            ReviewDto dto = reviewDtoList.get(i);
+            Review entity = reviewList.get(i);
+            assertEquals(dto.getId(), entity.getId());
+            assertEquals(dto.getProductId(), entity.getProduct().getId());
+            assertEquals(dto.getPros(), entity.getPros());
+            assertEquals(dto.getCons(), entity.getCons());
+            assertEquals(dto.getRating(), entity.getRating());
+        }
+    }
+
+    @NotNull
+    private Review getReview(Long id) {
+        Review review = new Review();
+        review.setProduct(getProduct(id));
+        review.setPros("pros" + id);
+        review.setCons("cons" + id);
+        review.setRating((byte) (id - 1));
+        return review;
+    }
+
+    @NotNull
+    private ReviewDto getReviewDto(Long id) {
+        ReviewDto reviewDto = new ReviewDto();
+        reviewDto.setProductId(id);
+        reviewDto.setPros("pros" + id);
+        reviewDto.setCons("cons" + id);
+        reviewDto.setRating((byte) (id - 1));
+        return reviewDto;
     }
 
     private Product getProduct(Long id) {

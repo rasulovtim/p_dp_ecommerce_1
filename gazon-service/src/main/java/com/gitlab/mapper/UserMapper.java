@@ -1,16 +1,26 @@
 package com.gitlab.mapper;
 
-import com.gitlab.dto.*;
-import com.gitlab.model.*;
+import com.gitlab.dto.PersonalAddressDto;
+import com.gitlab.dto.PickupPointDto;
+import com.gitlab.dto.PostomatDto;
+import com.gitlab.dto.ShippingAddressDto;
+import com.gitlab.dto.UserDto;
+import com.gitlab.model.PersonalAddress;
+import com.gitlab.model.PickupPoint;
+import com.gitlab.model.Postomat;
+import com.gitlab.model.Role;
+import com.gitlab.model.ShippingAddress;
+import com.gitlab.model.User;
+import com.gitlab.service.RoleService;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.Named;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collections;
-
-import com.gitlab.service.RoleService;
-import org.mapstruct.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -113,6 +123,13 @@ public abstract class UserMapper {
                 .collect(Collectors.toSet());
     }
 
+    public List<UserDto> toDtoList(List<User> userList) {
+        return userList.stream().map(this::toDto).collect(Collectors.toList());
+    }
+
+    public List<User> toEntityList(List<UserDto> userDtoList) {
+        return userDtoList.stream().map(this::toEntity).collect(Collectors.toList());
+    }
 }
 
 
