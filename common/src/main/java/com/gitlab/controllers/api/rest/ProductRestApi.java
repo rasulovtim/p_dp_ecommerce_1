@@ -21,7 +21,8 @@ public interface ProductRestApi {
             @ApiResponse(code = 200, message = "Products found"),
             @ApiResponse(code = 204, message = "Products not present")}
     )
-    ResponseEntity<List<ProductDto>> getAll();
+    ResponseEntity<List<ProductDto>> getPage(@ApiParam(name = "page") @RequestParam(required = false, value = "page") Integer page,
+                                             @ApiParam(name = "size") @RequestParam(required = false, value = "size") Integer size);
 
     @GetMapping("/api/product/{id}")
     @ApiOperation(value = "Get Product by id")

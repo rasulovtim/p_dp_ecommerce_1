@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -28,7 +29,8 @@ public interface BankCardRestApi {
             @ApiResponse(code = 200, message = "BankCards found"),
             @ApiResponse(code = 204, message = "BankCards not present")}
     )
-    ResponseEntity<List<BankCardDto>> getAll();
+    ResponseEntity<List<BankCardDto>> getPage(@ApiParam(name = "page") @RequestParam(required = false, value = "page") Integer page,
+                                              @ApiParam(name = "size") @RequestParam(required = false, value = "size") Integer size);
 
     @GetMapping("/api/bank-card/{id}")
     @ApiOperation(value = "Get BankCard by id")

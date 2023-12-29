@@ -20,7 +20,8 @@ public interface PassportRestApi {
             @ApiResponse(code = 200, message = "Passport found"),
             @ApiResponse(code = 204, message = "Passport not present")}
     )
-    ResponseEntity<List<PassportDto>> getAll();
+    ResponseEntity<List<PassportDto>> getPage(@ApiParam(name = "page") @RequestParam(required = false, value = "page") Integer page,
+                                              @ApiParam(name = "size") @RequestParam(required = false, value = "size") Integer size);
 
     @GetMapping("/api/passport/{id}")
     @ApiOperation(value = "Get Passport by id")
