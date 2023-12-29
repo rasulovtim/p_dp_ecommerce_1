@@ -7,7 +7,6 @@ import com.gitlab.service.WorkingScheduleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -23,31 +22,13 @@ import java.util.Optional;
 public class WorkingScheduleRestController implements WorkingScheduleRestApi {
 
     private final WorkingScheduleService workingScheduleService;
-    @Override
-    public ResponseEntity<Page<WorkingScheduleDto>> getPage(Integer page, Integer size) {
-        if (page == null || size == null) {
-            return createUnPagedResponse();
-        }
-        if (page < 0 || size < 1) {
+    public ResponseEntity<List<WorkingScheduleDto>> getPage(Integer page, Integer size) {
+        var workingSchedulePage = workingScheduleService.getPageDto(page, size);
+        if (workingSchedulePage == null || workingSchedulePage.getContent().isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-
-        var workingSchedulePage = workingScheduleService.getPage(page, size);
-        if (workingSchedulePage.getContent().isEmpty()) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return createPagedResponse(workingSchedulePage);
-        }
+        return ResponseEntity.ok(workingSchedulePage.getContent());
     }
-
-    private ResponseEntity<Page<WorkingScheduleDto>> createUnPagedResponse() {
-        var workingScheduleDtos = workingScheduleService.findAllDto();
-        if (workingScheduleDtos.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(new PageImpl<>(workingScheduleDtos));
-    }
-
 
     @Override
     public ResponseEntity<WorkingScheduleDto> get(Long id) {

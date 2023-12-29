@@ -18,13 +18,12 @@ public class SelectedProductRestController implements SelectedProductRestAPI {
 
     private final SelectedProductService selectedProductService;
 
-    @Override
-    public ResponseEntity<List<SelectedProductDto>> getAll() {
-        List<SelectedProductDto> selectedProductDtos = selectedProductService.findAllDto();
-
-        return selectedProductDtos.isEmpty() ?
-                ResponseEntity.noContent().build() :
-                ResponseEntity.ok(selectedProductDtos);
+    public ResponseEntity<List<SelectedProductDto>> getPage(Integer page, Integer size) {
+        var selectedProductPage = selectedProductService.getPageDto(page, size);
+        if (selectedProductPage == null || selectedProductPage.getContent().isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(selectedProductPage.getContent());
     }
 
     @Override

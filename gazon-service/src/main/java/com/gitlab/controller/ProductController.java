@@ -26,13 +26,12 @@ public class ProductController implements ProductRestApi {
 
     private final ProductImageService productImageService;
 
-    @Override
-    public ResponseEntity<List<ProductDto>> getAll() {
-        var productDtos = productService.findAllDto();
-
-        return productDtos.isEmpty() ?
-                ResponseEntity.noContent().build() :
-                ResponseEntity.ok(productDtos);
+    public ResponseEntity<List<ProductDto>> getPage(Integer page, Integer size) {
+        var productPage = productService.getPageDto(page, size);
+        if (productPage == null || productPage.getContent().isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(productPage.getContent());
     }
 
     @Override

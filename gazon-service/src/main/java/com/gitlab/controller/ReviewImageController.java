@@ -6,7 +6,6 @@ import com.gitlab.model.ReviewImage;
 import com.gitlab.service.ReviewImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -23,33 +22,13 @@ public class ReviewImageController implements ReviewImageRestApi {
     private final ReviewImageService reviewImageService;
 
     public ResponseEntity<List<ReviewImageDto>> getPage(Integer page, Integer size) {
-        if (page == null || size == null) {
-            return createUnPagedResponse();
-        }
-        if (page < 0 || size < 1) {
+        var reviewImagePage = reviewImageService.getPageDto(page, size);
+        if (reviewImagePage == null || reviewImagePage.getContent().isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        var reviewImagePage = reviewImageService.getPage(page, size);
-        if (reviewImagePage.getContent().isEmpty()) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return createPagedResponse(reviewImagePage);
-        }
+        return ResponseEntity.ok(reviewImagePage.getContent());
     }
 
-    private ResponseEntity<List<ReviewImageDto>> createPagedResponse(Page<ReviewImage> reviewImagePage) {
-        var reviewImageDtoPage = reviewImageService.getPageDto(reviewImagePage.getPageable().getPageNumber(),
-                reviewImagePage.getPageable().getPageSize()).getContent();
-        return ResponseEntity.ok(reviewImageDtoPage);
-    }
-
-    private ResponseEntity<List<ReviewImageDto>> createUnPagedResponse() {
-        var reviewImageDtos = reviewImageService.findAllDto();
-        if (reviewImageDtos.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(reviewImageDtos);
-    }
     @Override
     public ResponseEntity<ReviewImageDto> get(Long id) {
         return reviewImageService.findByIdDto(id)
