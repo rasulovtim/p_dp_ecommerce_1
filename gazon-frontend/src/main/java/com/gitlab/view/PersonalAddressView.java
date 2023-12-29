@@ -32,7 +32,7 @@ public class PersonalAddressView extends VerticalLayout {
 
     public PersonalAddressView(PersonalAddressClient personalAddressClient) {
         this.personalAddressClient = personalAddressClient;
-        this.dataSource = new ArrayList<>(Objects.requireNonNull(personalAddressClient.getAll().getBody()));
+        this.dataSource = new ArrayList<>(Objects.requireNonNull(personalAddressClient.getPage(null, null).getBody()));
 
         ValidationMessage idValidationMessage = new ValidationMessage();
         ValidationMessage personalAddressTextValidationMessage = new ValidationMessage();

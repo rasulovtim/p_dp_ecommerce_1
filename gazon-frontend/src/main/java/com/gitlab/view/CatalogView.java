@@ -30,7 +30,7 @@ public class CatalogView extends VerticalLayout {
     }
 
     private void loadData() {
-        List<ProductDto> products = productClient.getAll().getBody();
+        List<ProductDto> products = productClient.getPage(null, null).getBody();
         if (products != null) {
             productGrid.setItems(products);
         }

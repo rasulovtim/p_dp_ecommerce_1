@@ -37,7 +37,7 @@ public class ProductView extends VerticalLayout {
 
     public ProductView(ProductClient productClient) {
         this.productClient = productClient;
-        this.dataSource = productClient.getAll().getBody();
+        this.dataSource = productClient.getPage(null, null).getBody();
 
         ValidationMessage idValidationMessage = new ValidationMessage();
         ValidationMessage productNameValidationMessage = new ValidationMessage();

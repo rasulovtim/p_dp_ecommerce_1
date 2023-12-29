@@ -36,7 +36,7 @@ public class PassportView extends VerticalLayout {
 
     public PassportView(PassportClient passportClient) {
         this.passportClient = passportClient;
-        this.dataSource = passportClient.getAll().getBody();
+        this.dataSource = passportClient.getPage(null, null).getBody();
 
         ValidationMessage idValidationMessage = new ValidationMessage();
         ValidationMessage passportFirstNameValidationMessage = new ValidationMessage();
