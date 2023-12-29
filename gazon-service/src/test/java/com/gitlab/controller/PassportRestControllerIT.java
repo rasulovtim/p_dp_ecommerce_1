@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.testcontainers.shaded.org.hamcrest.CoreMatchers.equalTo;
 import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 
-class PassportRestControllerTestIT extends AbstractIntegrationTest {
+class PassportRestControllerIT extends AbstractIntegrationTest {
 
     private static final String PASSPORT_URN = "/api/passport";
     private static final String PASSPORT_URI = URL + PASSPORT_URN;
@@ -88,17 +88,19 @@ class PassportRestControllerTestIT extends AbstractIntegrationTest {
 
     @Test
     void should_update_passport_by_id() throws Exception {
-        should_create_passport();
+        PassportDto passportDto = generatePassportDto();
+        PassportDto saved = passportService.saveDto(passportDto);
+
         int numberOfEntitiesExpected = passportService.findAll().size();
 
-        PassportDto passportDto = generatePassportDto();
-        passportDto.setId(passportDto.getId() + 1L);
+        PassportDto updated = generatePassportDto();
+        updated.setId(saved.getId());
 
-        String jsonPassportDto = objectMapper.writeValueAsString(passportDto);
+        String jsonPassportDto = objectMapper.writeValueAsString(updated);
 
-        String expected = objectMapper.writeValueAsString(passportDto);
+        String expected = objectMapper.writeValueAsString(updated);
 
-        mockMvc.perform(patch(PASSPORT_URI + "/{id}", passportDto.getId())
+        mockMvc.perform(patch(PASSPORT_URI + "/{id}", saved.getId())
                         .content(jsonPassportDto)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -128,17 +130,20 @@ class PassportRestControllerTestIT extends AbstractIntegrationTest {
     @Test
     void should_delete_passport_by_id() throws Exception {
         PassportDto passportDto = generatePassportDto();
-        mockMvc.perform(delete(PASSPORT_URI + "/{id}", passportDto.getId()))
+
+        PassportDto saved = passportService.saveDto(passportDto);
+
+        mockMvc.perform(delete(PASSPORT_URI + "/{id}", saved.getId()))
                 .andDo(print())
                 .andExpect(status().isOk());
-        mockMvc.perform(get(PASSPORT_URI + "/{id}", passportDto.getId()))
+        mockMvc.perform(get(PASSPORT_URI + "/{id}", saved.getId()))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
 
     private PassportDto generatePassportDto() {
         PassportDto passportDto = new PassportDto();
-        passportDto.setId(5L);
+        passportDto.setId(10L);
         passportDto.setCitizenship(Citizenship.RUSSIA);
         passportDto.setFirstName("Ivan");
         passportDto.setLastName("Petrov");

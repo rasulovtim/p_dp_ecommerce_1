@@ -56,23 +56,29 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
     @Transactional
     @Test
     void should_update_shoppingCart_by_id() throws Exception {
-        long id = 1L;
-        int numberOfEntitiesExpected = shoppingCartService.findAll().size();
-        ShoppingCartDto shoppingCartDto = generateShoppingCartDto(2L);
-        String jsonShoppingCartDto = objectMapper.writeValueAsString(shoppingCartDto);
-
+        long id = 10L;
+        ShoppingCartDto shoppingCartDto = new ShoppingCartDto();
         shoppingCartDto.setId(id);
-        String expected = objectMapper.writeValueAsString(shoppingCartDto);
+        shoppingCartDto.setUserId(1L);
 
-        mockMvc.perform(patch(SHOPPING_CART_URI + "/{id}", id)
+        ShoppingCartDto saved = shoppingCartService.saveDto(shoppingCartDto);
+        int numberOfEntitiesExpected = shoppingCartService.findAll().size();
+
+        ShoppingCartDto updated = new ShoppingCartDto();
+        updated.setId(saved.getId());
+        updated.setUserId(1L);
+        String jsonShoppingCartDto = objectMapper.writeValueAsString(updated);
+
+        String expected = objectMapper.writeValueAsString(updated);
+
+        mockMvc.perform(patch(SHOPPING_CART_URI + "/{id}", saved.getId())
                         .content(jsonShoppingCartDto)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected))
-                .andExpect(result -> assertThat(shoppingCartService.findAll().size(),
-                        equalTo(numberOfEntitiesExpected)));
+                .andExpect(result -> assertThat(shoppingCartService.findAll().size(), equalTo(numberOfEntitiesExpected)));
     }
 
     @Transactional
@@ -118,7 +124,7 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
     @Transactional
     @Test
     void should_delete_shoppingCart_by_id() throws Exception {
-        long id = 2L;
+        long id = 3L;
 
         mockMvc.perform(delete(SHOPPING_CART_URI + "/{id}", id))
                 .andDo(print())
@@ -128,16 +134,9 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(status().isNotFound());
     }
 
-    private ShoppingCartDto generateShoppingCartDto(Long id){
-        ShoppingCartDto shoppingCartDto = new ShoppingCartDto();
-        shoppingCartDto.setUserId(id);
-
-        return shoppingCartDto;
-    }
-
     private ShoppingCartDto generateShoppingCartDto(){
         ShoppingCartDto shoppingCartDto = new ShoppingCartDto();
-        shoppingCartDto.setUserId(1L);
+        shoppingCartDto.setUserId(3L);
         shoppingCartDto.setSum(BigDecimal.valueOf(100));
         shoppingCartDto.setTotalWeight(500L);
 

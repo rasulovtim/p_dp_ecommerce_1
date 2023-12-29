@@ -32,7 +32,8 @@ class ReviewImageRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_get_all_reviewImages() throws Exception {
 
-        String expected = objectMapper.writeValueAsString(reviewImageMapper.toDtoList(reviewImageService.findAll()));
+        var response = reviewImageService.getPage(null, null);
+        var expected = objectMapper.writeValueAsString(reviewImageMapper.toDtoList(response.getContent()));
 
         mockMvc.perform(get(REVIEW_IMAGE_URI))
                 .andDo(print())

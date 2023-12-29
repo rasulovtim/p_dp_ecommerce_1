@@ -35,7 +35,7 @@ public interface PassportRestApi {
     @ApiOperation(value = "Update Passport")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Passport updated"),
-            @ApiResponse(code = 400, message = "Passport not updated")}
+            @ApiResponse(code = 404, message = "Passport not updated")}
     )
     ResponseEntity<PassportDto> update(@ApiParam(name = "id", value = "Passport.id") @PathVariable(value = "id") Long id,
                                    @ApiParam(name = "passport", value = "PassportDto") @Valid @RequestBody PassportDto passportDto);

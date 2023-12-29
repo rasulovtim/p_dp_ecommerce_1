@@ -6,14 +6,15 @@ import com.gitlab.model.ProductImage;
 import com.gitlab.service.ProductImageService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -30,15 +31,9 @@ class ProductImageRestControllerIT extends AbstractIntegrationTest {
     private ProductImageMapper productImageMapper;
 
     @Test
-    void should_get_all_productImages_ids() throws Exception {
-
-        String expected = objectMapper.writeValueAsString(
-                new PageImpl<>(productImageService
-                        .findAll()
-                        .stream()
-                        .map(productImageMapper::toDto)
-                        .collect(Collectors.toList()))
-        );
+    void should_get_all_productImages() throws Exception {
+        var response = productImageService.getPage(null, null);
+        var expected = objectMapper.writeValueAsString(productImageMapper.toDtoList(response.getContent()));
 
         mockMvc.perform(get(PRODUCT_IMAGE_URI))
                 .andDo(print())
@@ -55,11 +50,7 @@ class ProductImageRestControllerIT extends AbstractIntegrationTest {
         var response = productImageService.getPage(page, size);
         assertFalse(response.getContent().isEmpty());
 
-        var expected = objectMapper.writeValueAsString(new PageImpl<>(
-                response.getContent().stream().map(productImageMapper::toDto).toList(),
-                response.getPageable(),
-                response.getTotalElements()
-        ));
+        var expected = objectMapper.writeValueAsString(productImageMapper.toDtoList(response.getContent()));
 
         mockMvc.perform(get(PRODUCT_IMAGE_URI + parameters))
                 .andDo(print())
