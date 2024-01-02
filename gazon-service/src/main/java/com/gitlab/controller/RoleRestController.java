@@ -25,11 +25,11 @@ public class RoleRestController implements RoleRestApi {
 
     @Override
     public ResponseEntity<List<RoleDto>> getAll() {
-        var users = roleService.findAllDto();
+        var users = roleService.findAllActiveDto();
         if (users.isEmpty()) {
             return ResponseEntity.noContent().build();
         } else {
-            return ResponseEntity.ok(roleService.findAllDto().stream().toList());
+            return ResponseEntity.ok(roleService.findAllActiveDto().stream().toList());
         }
     }
 

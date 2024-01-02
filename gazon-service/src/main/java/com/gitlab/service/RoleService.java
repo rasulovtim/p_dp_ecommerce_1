@@ -25,7 +25,7 @@ public class RoleService {
     }
 
     @Cacheable("roles")
-    public List<RoleDto> findAllDto() {
+    public List<RoleDto> findAllActiveDto() {
         return roleMapper.toDtoList(roleRepository.findAllByEntityStatus(EntityStatus.ACTIVE));
     }
 
