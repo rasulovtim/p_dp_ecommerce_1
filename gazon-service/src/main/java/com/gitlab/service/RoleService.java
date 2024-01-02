@@ -21,7 +21,7 @@ public class RoleService {
 
     @Cacheable("roles")
     public List<Role> findAll() {
-        return roleRepository.findAll();
+        return roleRepository.findAllByEntityStatus(EntityStatus.ACTIVE);
     }
 
     @Cacheable("roles")
@@ -42,12 +42,12 @@ public class RoleService {
 
     @Cacheable("roles")
     public Optional<Role> findById(Long id) {
-        return roleRepository.findByIdAndAndEntityStatus(id, EntityStatus.ACTIVE);
+        return roleRepository.findByIdAndEntityStatus(id, EntityStatus.ACTIVE);
     }
 
     @Cacheable("roles")
     public Optional<RoleDto> findByIdDto(Long id) {
-        return roleRepository.findByIdAndAndEntityStatus(id, EntityStatus.ACTIVE)
+        return roleRepository.findByIdAndEntityStatus(id, EntityStatus.ACTIVE)
                 .map(roleMapper::toDto);
     }
 

@@ -13,6 +13,6 @@ import java.util.Optional;
 public interface RoleRepository extends JpaRepository<Role, Long> {
 
     Role findByName (String name);
-    Optional<Role> findByIdAndAndEntityStatus(Long id, EntityStatus status);
+    Optional<Role> findByIdAndEntityStatus(Long id, EntityStatus status);
     List<Role> findAllByEntityStatus(EntityStatus status);
 }

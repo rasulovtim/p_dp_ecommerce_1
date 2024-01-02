@@ -35,22 +35,14 @@ public class RoleRestController implements RoleRestApi {
 
     @Override
     public ResponseEntity<RoleDto> get(Long id) {
-        var users = roleService.findByIdDto(id);
-        if (users.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok().build();
-        }
+        var role = roleService.findByIdDto(id);
+        return role.map(roleDto -> ResponseEntity.ok().body(roleDto)).orElseGet(() -> ResponseEntity.noContent().build());
     }
 
     @Override
     public ResponseEntity<RoleDto> update(Long id, RoleDto roleDto) {
         Optional<RoleDto> updatedRoleDto = roleService.updateDto(id, roleDto);
-        if (updatedRoleDto.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok().build();
-        }
+        return updatedRoleDto.map(dto -> ResponseEntity.ok().body(dto)).orElseGet(() -> ResponseEntity.noContent().build());
     }
 
     @Override

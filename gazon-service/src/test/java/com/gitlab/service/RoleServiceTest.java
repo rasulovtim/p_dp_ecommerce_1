@@ -1,5 +1,6 @@
 package com.gitlab.service;
 
+import com.gitlab.enums.EntityStatus;
 import com.gitlab.model.Role;
 import com.gitlab.model.User;
 import com.gitlab.repository.RoleRepository;
@@ -30,7 +31,7 @@ class RoleServiceTest {
     @Test
     void should_find_all_users() {
         List<Role> expectedResult = generateRoles();
-        when(roleRepository.findAll()).thenReturn(generateRoles());
+        when(roleRepository.findAllByEntityStatus(EntityStatus.ACTIVE)).thenReturn(generateRoles());
 
         List<Role> actualResult = roleService.findAll();
 
@@ -52,7 +53,7 @@ class RoleServiceTest {
 
     private Role generateRole() {
 
-        return new Role(1L, "ROLE_ADMIN");
+        return new Role(1L, "ROLE_ADMIN", EntityStatus.ACTIVE);
     }
 
     private List<Role> generateRoles() {
@@ -68,6 +69,7 @@ class RoleServiceTest {
     private Role generateRole(Long id) {
         Role role = generateRole();
         role.setId(id);
+        role.setEntityStatus(EntityStatus.ACTIVE);
         return role;
     }
 }
