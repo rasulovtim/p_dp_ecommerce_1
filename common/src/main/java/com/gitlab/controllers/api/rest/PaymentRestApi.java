@@ -33,5 +33,5 @@ public interface PaymentRestApi {
 
     @ApiOperation(value = "Delete payment by ID")
     @DeleteMapping("/{id}")
-    ResponseEntity<PaymentDto> delete(@ApiParam(name = "Payment Dto", value = "Payment Id") @PathVariable Long id);
+    ResponseEntity<PaymentDto> delete(@ApiParam(name = "id", value = "Payment Id") @PathVariable Long id);
 }

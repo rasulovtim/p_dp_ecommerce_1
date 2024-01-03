@@ -1,9 +1,11 @@
 package com.gitlab.service;
 
 import com.gitlab.dto.PaymentDto;
-import com.gitlab.mapper.BankCardMapper;
 import com.gitlab.mapper.PaymentMapper;
+import com.gitlab.model.BankCard;
+import com.gitlab.model.Order;
 import com.gitlab.model.Payment;
+import com.gitlab.model.User;
 import com.gitlab.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,15 +21,10 @@ import java.util.stream.Collectors;
 @Slf4j
 @Transactional
 public class PaymentService {
-
     private final PaymentRepository paymentRepository;
-
+    private final BankCardService bankCardService;
     private final PaymentMapper paymentMapper;
-
-    private final BankCardMapper bankCardMapper;
-
     private final OrderService orderService;
-
     private final UserService userService;
 
     public List<Payment> findAll() {
@@ -93,43 +90,55 @@ public class PaymentService {
 
     public Optional<PaymentDto> updateDto(Long id, PaymentDto paymentDto) {
         Optional<Payment> optionalSavedPayment = findById(id);
-        Payment savedPayment;
 
         if (optionalSavedPayment.isEmpty()) {
             return Optional.empty();
-        } else {
-            savedPayment = optionalSavedPayment.get();
-        }
-        if (paymentDto.getBankCardDto() != null) {
-            savedPayment.setBankCard(bankCardMapper.toEntity(paymentDto.getBankCardDto()));
-        }
-        if (paymentDto.getPaymentStatus() != null) {
-            savedPayment.setPaymentStatus(paymentDto.getPaymentStatus());
-        }
-        if (paymentDto.getCreateDateTime() != null) {
-            savedPayment.setCreateDateTime(paymentDto.getCreateDateTime());
-        }
-        if (paymentDto.getOrderId() != null) {
-            savedPayment.setOrder(orderService.findById(paymentDto.getOrderId()).get());
-        }
-        if (paymentDto.getSum() != null) {
-            savedPayment.setSum(paymentDto.getSum());
-        }
-        if (paymentDto.getUserId() != null) {
-            savedPayment.setUser(userService.findUserById(paymentDto.getUserId()).get());
         }
 
+        BankCard updatedBankCard = optionalSavedPayment.get().getBankCard();
+        Order updatedPaymentOrder = optionalSavedPayment.get().getOrder();
+        User updatedPaymentUser = optionalSavedPayment.get().getUser();
+
+        //проверяем, отличаются ли id внутренних сущностей от прешедших в dto, если да - то достаем новые из БД
+        if (!updatedBankCard.getId().equals(paymentDto.getBankCardDto().getId())) {
+            Optional<BankCard> newPaymentBankCard = bankCardService.findById(paymentDto.getBankCardDto().getId());
+
+            if (newPaymentBankCard.isPresent()) {
+                updatedBankCard = newPaymentBankCard.get();
+            }
+        }
+
+        if (!updatedPaymentOrder.getId().equals(paymentDto.getOrderId())) {
+            Optional<Order> newPaymentOrder = orderService.findById(paymentDto.getOrderId());
+
+            if (newPaymentOrder.isPresent()) {
+                updatedPaymentOrder = newPaymentOrder.get();
+            }
+        }
+
+        if (!updatedPaymentUser.getId().equals(paymentDto.getUserId())) {
+            Optional<User> newPaymentUser = userService.findUserById(paymentDto.getUserId());
+
+            if (newPaymentUser.isPresent()) {
+                updatedPaymentUser = newPaymentUser.get();
+            }
+        }
+
+        Payment savedPayment = paymentMapper.toUpdateEntity(optionalSavedPayment.get(), paymentDto, updatedBankCard,
+                updatedPaymentOrder, updatedPaymentUser);
+
         savedPayment = paymentRepository.save(savedPayment);
+
         return Optional.of(paymentMapper.toDto(savedPayment));
     }
 
     public Optional<Payment> delete(Long id) {
         Optional<Payment> optionalSavedPayment = findById(id);
-        if (optionalSavedPayment.isEmpty()) {
-            return optionalSavedPayment;
-        } else {
+
+        if (optionalSavedPayment.isPresent()) {
             paymentRepository.deleteById(id);
-            return optionalSavedPayment;
         }
+
+        return optionalSavedPayment;
     }
 }
