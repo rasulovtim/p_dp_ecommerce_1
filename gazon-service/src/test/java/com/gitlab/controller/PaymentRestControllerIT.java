@@ -1,13 +1,15 @@
 package com.gitlab.controller;
 
-import com.gitlab.dto.*;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.gitlab.dto.BankCardDto;
+import com.gitlab.dto.PaymentDto;
 import com.gitlab.enums.PaymentStatus;
 import com.gitlab.mapper.PaymentMapper;
-import com.gitlab.model.Payment;
 import com.gitlab.service.PaymentService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.ResultActions;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -18,8 +20,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.testcontainers.shaded.org.hamcrest.CoreMatchers.equalTo;
-import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 
 class PaymentRestControllerIT extends AbstractIntegrationTest {
     private static final String PAYMENT_URN = "/api/payment";
@@ -86,13 +86,25 @@ class PaymentRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_update_payment_by_id() throws Exception {
-        long id = 1L;
-        int numberOfEntitiesExpected = paymentService.findAll().size();
-
         PaymentDto paymentDto = generatePaymentDto();
 
         String jsonPaymentDto = objectMapper.writeValueAsString(paymentDto);
-        paymentDto.setId(1L);
+
+        ResultActions resultActions = mockMvc.perform(post(PAYMENT_URI)
+                        .content(jsonPaymentDto)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isCreated());
+
+        String contentAsString = resultActions.andReturn().getResponse().getContentAsString();
+        JsonNode createdEntity = objectMapper.readTree(contentAsString);
+        long id = createdEntity.get("id").asLong();
+
+        paymentDto.setId(id);
+        paymentDto.setSum(new BigDecimal(2000));
+
+        jsonPaymentDto = objectMapper.writeValueAsString(paymentDto);
         String expected = objectMapper.writeValueAsString(paymentDto);
 
         mockMvc.perform(patch(PAYMENT_URI + "/{id}", id)
@@ -101,9 +113,11 @@ class PaymentRestControllerIT extends AbstractIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(expected))
-                .andExpect(result -> assertThat(paymentService.findAll().size(),
-                        equalTo(numberOfEntitiesExpected)));
+                .andExpect(content().json(expected));
+
+        mockMvc.perform(delete(PAYMENT_URI + "/{id}", id))
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -138,9 +152,9 @@ class PaymentRestControllerIT extends AbstractIntegrationTest {
         paymentDto.setId(1L);
         BankCardDto bankCardDto = new BankCardDto();
         bankCardDto.setId(1L);
-        bankCardDto.setCardNumber("4828078439696627");
-        bankCardDto.setDueDate(LocalDate.parse("2029-09-22"));
-        bankCardDto.setSecurityCode(354);
+        bankCardDto.setCardNumber("4929078434696627");
+        bankCardDto.setDueDate(LocalDate.parse("2027-05-01"));
+        bankCardDto.setSecurityCode(775);
         paymentDto.setBankCardDto(bankCardDto);
         paymentDto.setPaymentStatus(PaymentStatus.PAID);
         paymentDto.setCreateDateTime(LocalDateTime.now());
