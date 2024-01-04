@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 - #task_number - short task description
+- #129 Проверка работоспособности Payment REST
 
 ## [1.2.0] - 24.12.2023
 - #13 - Make Payment entity

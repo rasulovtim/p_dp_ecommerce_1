@@ -90,6 +90,8 @@ class PaymentRestControllerIT extends AbstractIntegrationTest {
 
         String jsonPaymentDto = objectMapper.writeValueAsString(paymentDto);
 
+        //создаем переменную хранящую response, получаем id сохраненной сущности и используем его для
+        //дальнейшей очистки БД от созданной сущности, чтобы избавиться от сайд-эффектов и хардкода
         ResultActions resultActions = mockMvc.perform(post(PAYMENT_URI)
                         .content(jsonPaymentDto)
                         .contentType(MediaType.APPLICATION_JSON)
