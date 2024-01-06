@@ -27,7 +27,7 @@ public class RoleRestController implements RoleRestApi {
     public ResponseEntity<List<RoleDto>> getAll() {
         var users = roleService.findAllActiveDto();
         if (users.isEmpty()) {
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.notFound().build();
         } else {
             return ResponseEntity.ok(roleService.findAllActiveDto().stream().toList());
         }
@@ -36,13 +36,13 @@ public class RoleRestController implements RoleRestApi {
     @Override
     public ResponseEntity<RoleDto> get(Long id) {
         var role = roleService.findByIdDto(id);
-        return role.map(roleDto -> ResponseEntity.ok().body(roleDto)).orElseGet(() -> ResponseEntity.noContent().build());
+        return role.map(roleDto -> ResponseEntity.ok().body(roleDto)).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @Override
     public ResponseEntity<RoleDto> update(Long id, RoleDto roleDto) {
         Optional<RoleDto> updatedRoleDto = roleService.updateDto(id, roleDto);
-        return updatedRoleDto.map(dto -> ResponseEntity.ok().body(dto)).orElseGet(() -> ResponseEntity.noContent().build());
+        return updatedRoleDto.map(dto -> ResponseEntity.ok().body(dto)).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @Override

@@ -2,7 +2,6 @@ package com.gitlab.mapper;
 
 
 import com.gitlab.dto.RoleDto;
-import com.gitlab.enums.EntityStatus;
 import com.gitlab.model.Role;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

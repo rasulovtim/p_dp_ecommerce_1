@@ -45,7 +45,6 @@ public class RoleService {
         return roleRepository.findByIdAndEntityStatus(id, EntityStatus.ACTIVE);
     }
 
-    @Cacheable("roles")
     public Optional<RoleDto> findByIdDto(Long id) {
         return roleRepository.findByIdAndEntityStatus(id, EntityStatus.ACTIVE)
                 .map(roleMapper::toDto);
