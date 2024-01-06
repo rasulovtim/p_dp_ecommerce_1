@@ -7,10 +7,11 @@ import com.gitlab.service.PickupPointService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
-import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -31,20 +32,58 @@ class PickupPointRestControllerIT extends AbstractIntegrationTest {
     private PickupPointMapper pickupPointMapper;
 
     @Test
+    @Transactional(readOnly = true)
     void should_get_all_pickupPoints() throws Exception {
-        String expected = objectMapper.writeValueAsString(
-                pickupPointService
-                        .findAll()
-                        .stream()
-                        .map(pickupPointMapper::toDto)
-                        .collect(Collectors.toList())
-        );
+
+        var response = pickupPointService.getPage(null, null);
+        var expected = objectMapper.writeValueAsString(pickupPointMapper.toDtoList(response.getContent()));
 
         mockMvc.perform(get(URI))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
     }
+
+    @Test
+    @Transactional(readOnly = true)
+    void should_get_page() throws Exception {
+        int page = 0;
+        int size = 2;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        var response = pickupPointService.getPage(page, size);
+        assertFalse(response.getContent().isEmpty());
+
+        var expected = objectMapper.writeValueAsString(pickupPointMapper.toDtoList(response.getContent()));
+
+        mockMvc.perform(get(URI + parameters))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(expected));
+    }
+
+    @Test
+    void should_get_page_with_incorrect_parameters() throws Exception {
+        int page = 0;
+        int size = -2;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        mockMvc.perform(get(URI + parameters))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void should_get_page_without_content() throws Exception {
+        int page = 10;
+        int size = 100;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        mockMvc.perform(get(URI + parameters))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
 
     @Test
     void should_get_pickupPoint_by_id() throws Exception {

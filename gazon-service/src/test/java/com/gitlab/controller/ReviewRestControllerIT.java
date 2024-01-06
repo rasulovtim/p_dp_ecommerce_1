@@ -9,11 +9,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -35,20 +36,58 @@ class ReviewRestControllerIT extends AbstractIntegrationTest {
     private ReviewMapper reviewMapper;
 
     @Test
+    @Transactional(readOnly = true)
     void should_get_all_reviews() throws Exception {
-        String expected = objectMapper.writeValueAsString(
-                reviewService
-                        .findAll()
-                        .stream()
-                        .map(reviewMapper::toDto)
-                        .collect(Collectors.toList())
-        );
+
+        var response = reviewService.getPage(null, null);
+        var expected = objectMapper.writeValueAsString(reviewMapper.toDtoList(response.getContent()));
 
         mockMvc.perform(get(REVIEW_URI))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
     }
+
+    @Test
+    @Transactional(readOnly = true)
+    void should_get_page() throws Exception {
+        int page = 0;
+        int size = 2;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        var response = reviewService.getPage(page, size);
+        assertFalse(response.getContent().isEmpty());
+
+        var expected = objectMapper.writeValueAsString(reviewMapper.toDtoList(response.getContent()));
+
+        mockMvc.perform(get(REVIEW_URI + parameters))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(expected));
+    }
+
+    @Test
+    void should_get_page_with_incorrect_parameters() throws Exception {
+        int page = 0;
+        int size = -2;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        mockMvc.perform(get(REVIEW_URI + parameters))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void should_get_page_without_content() throws Exception {
+        int page = 10;
+        int size = 100;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        mockMvc.perform(get(REVIEW_URI + parameters))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
 
     @Test
     void should_get_review_by_id() throws Exception {
@@ -152,7 +191,7 @@ class ReviewRestControllerIT extends AbstractIntegrationTest {
     }
 
     @Test
-    void should_create_multiple_reviewImages_by_review_id() throws Exception {
+    void should_create_multiple_reviews_by_review_id() throws Exception {
         long id = 1L;
 
         mockMvc.perform(multipart(REVIEW_URI + "/{id}" + "/images", id)
@@ -166,7 +205,7 @@ class ReviewRestControllerIT extends AbstractIntegrationTest {
     }
 
     @Test
-    void should_delete_all_reviewImages_by_review_id() throws Exception {
+    void should_delete_all_reviews_by_review_id() throws Exception {
         Review review = reviewService.save(reviewMapper.toEntity(generateReviewDto()));
         long id = reviewService.findById(review.getId()).get().getId();
         mockMvc.perform(delete(REVIEW_URI + "/{id}" + "/images", id))

@@ -9,8 +9,8 @@ import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -30,6 +30,59 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
     private ShoppingCartService shoppingCartService;
     @Autowired
     private ShoppingCartMapper shoppingCartMapper;
+
+    @Test
+    @Transactional(readOnly = true)
+    void should_get_all_shoppingCarts() throws Exception {
+
+        var response = shoppingCartService.getPage(null, null);
+        var expected = objectMapper.writeValueAsString(shoppingCartMapper.toDtoList(response.getContent()));
+
+        mockMvc.perform(get(SHOPPING_CART_URI))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(expected));
+    }
+
+    @Test
+    @Transactional(readOnly = true)
+    void should_get_page() throws Exception {
+        int page = 0;
+        int size = 2;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        var response = shoppingCartService.getPage(page, size);
+        assertFalse(response.getContent().isEmpty());
+
+        var expected = objectMapper.writeValueAsString(shoppingCartMapper.toDtoList(response.getContent()));
+
+        mockMvc.perform(get(SHOPPING_CART_URI + parameters))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(expected));
+    }
+
+    @Test
+    void should_get_page_with_incorrect_parameters() throws Exception {
+        int page = 0;
+        int size = -2;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        mockMvc.perform(get(SHOPPING_CART_URI + parameters))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void should_get_page_without_content() throws Exception {
+        int page = 10;
+        int size = 100;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        mockMvc.perform(get(SHOPPING_CART_URI + parameters))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
 
     @Transactional
     @Test
@@ -94,18 +147,6 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound());
-    }
-
-
-    @Test
-    void should_get_all_shoppingCarts() throws Exception {
-        List<ShoppingCartDto> shoppingCarts = shoppingCartService.findAll().stream().map(shoppingCartMapper::toDto).toList();
-        String expected = objectMapper.writeValueAsString(shoppingCarts);
-
-        mockMvc.perform(get(SHOPPING_CART_URI))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().json(expected));
     }
 
     @Test

@@ -7,6 +7,7 @@ import com.gitlab.service.ReviewImageService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -30,6 +31,7 @@ class ReviewImageRestControllerIT extends AbstractIntegrationTest {
     private ReviewImageMapper reviewImageMapper;
 
     @Test
+    @Transactional(readOnly = true)
     void should_get_all_reviewImages() throws Exception {
 
         var response = reviewImageService.getPage(null, null);
@@ -42,6 +44,7 @@ class ReviewImageRestControllerIT extends AbstractIntegrationTest {
     }
 
     @Test
+    @Transactional(readOnly = true)
     void should_get_page() throws Exception {
         int page = 0;
         int size = 2;
@@ -62,6 +65,17 @@ class ReviewImageRestControllerIT extends AbstractIntegrationTest {
     void should_get_page_with_incorrect_parameters() throws Exception {
         int page = 0;
         int size = -2;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        mockMvc.perform(get(REVIEW_IMAGE_URI + parameters))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void should_get_page_without_content() throws Exception {
+        int page = 10;
+        int size = 100;
         String parameters = "?page=" + page + "&size=" + size;
 
         mockMvc.perform(get(REVIEW_IMAGE_URI + parameters))

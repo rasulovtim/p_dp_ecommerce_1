@@ -13,12 +13,13 @@ import com.gitlab.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -36,19 +37,15 @@ class UserRestControllerIT extends AbstractIntegrationTest {
 
     @Autowired
     private UserService userService;
-
     @Autowired
     private UserMapper userMapper;
 
     @Test
+    @Transactional(readOnly = true)
     void should_get_all_users() throws Exception {
-        String expected = objectMapper.writeValueAsString(
-                userService
-                        .findAll()
-                        .stream()
-                        .map((User user) -> userMapper.toDto(user))
-                        .collect(Collectors.toList())
-        );
+
+        var response = userService.getPage(null, null);
+        var expected = objectMapper.writeValueAsString(userMapper.toDtoList(response.getContent()));
 
         mockMvc.perform(get(USER_URI))
                 .andDo(print())
@@ -56,7 +53,45 @@ class UserRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(content().json(expected));
     }
 
+    @Test
+    @Transactional(readOnly = true)
+    void should_get_page() throws Exception {
+        int page = 0;
+        int size = 2;
+        String parameters = "?page=" + page + "&size=" + size;
 
+        var response = userService.getPage(page, size);
+        assertFalse(response.getContent().isEmpty());
+
+        var expected = objectMapper.writeValueAsString(userMapper.toDtoList(response.getContent()));
+
+        mockMvc.perform(get(USER_URI + parameters))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(expected));
+    }
+
+    @Test
+    void should_get_page_with_incorrect_parameters() throws Exception {
+        int page = 0;
+        int size = -2;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        mockMvc.perform(get(USER_URI + parameters))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void should_get_page_without_content() throws Exception {
+        int page = 10;
+        int size = 100;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        mockMvc.perform(get(USER_URI + parameters))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
 
     @Test
     void should_get_user_by_id() throws Exception {

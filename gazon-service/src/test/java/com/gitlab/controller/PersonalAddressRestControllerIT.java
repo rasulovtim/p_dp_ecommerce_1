@@ -6,9 +6,9 @@ import com.gitlab.service.PersonalAddressService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.stream.Collectors;
-
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -29,19 +29,56 @@ class PersonalAddressRestControllerIT extends AbstractIntegrationTest {
     private PersonalAddressMapper personalAddressMapper;
 
     @Test
+    @Transactional(readOnly = true)
     void should_get_all_personalAddresses() throws Exception {
-        String expected = objectMapper.writeValueAsString(
-                personalAddressService
-                        .findAll()
-                        .stream()
-                        .map(personalAddressMapper::toDto)
-                        .collect(Collectors.toList())
-        );
+
+        var response = personalAddressService.getPage(null, null);
+        var expected = objectMapper.writeValueAsString(personalAddressMapper.toDtoList(response.getContent()));
 
         mockMvc.perform(get(URI))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
+    }
+
+    @Test
+    @Transactional(readOnly = true)
+    void should_get_page() throws Exception {
+        int page = 0;
+        int size = 2;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        var response = personalAddressService.getPage(page, size);
+        assertFalse(response.getContent().isEmpty());
+
+        var expected = objectMapper.writeValueAsString(personalAddressMapper.toDtoList(response.getContent()));
+
+        mockMvc.perform(get(URI + parameters))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(expected));
+    }
+
+    @Test
+    void should_get_page_with_incorrect_parameters() throws Exception {
+        int page = 0;
+        int size = -2;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        mockMvc.perform(get(URI + parameters))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void should_get_page_without_content() throws Exception {
+        int page = 10;
+        int size = 100;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        mockMvc.perform(get(URI + parameters))
+                .andDo(print())
+                .andExpect(status().isNoContent());
     }
 
     @Test
