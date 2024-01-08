@@ -18,6 +18,7 @@ public interface RoleMapper {
 
     @Mapping(target = "id", source = "id")
     @Mapping(target = "name", source = "roleName")
+    @Mapping(target = "entityStatus", constant = "ACTIVE")
     Role toEntity(RoleDto roleDto);
 
     default List<RoleDto> toDtoList(List<Role> roles) {

@@ -25,7 +25,7 @@ class UserMapperTest extends AbstractIntegrationTest {
     @Test
     void should_map_user_to_Dto() {
         Set<Role> roleSet = new HashSet<>();
-        roleSet.add(new Role(1L, "ROLE_ADMIN"));
+        roleSet.add(new Role(1L, "ROLE_ADMIN", EntityStatus.ACTIVE));
 
         Set<BankCard> bankCardSet = new HashSet<>();
         bankCardSet.add(new BankCard(1L, "0000000000000000", LocalDate.now(), 777));

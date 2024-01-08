@@ -53,7 +53,8 @@ public class WorkingScheduleService {
             throw new IllegalArgumentException("WorkingScheduleDto cannot be null or have all fields null");
         }
 
-        WorkingSchedule workingSchedule = workingScheduleMapper.toEntity(workingScheduleDto); // Преобразование DTO в сущность
+        WorkingSchedule workingSchedule = workingScheduleMapper.toEntity(workingScheduleDto);
+        // Преобразование DTO в сущность
         WorkingSchedule savedWorkingSchedule = workingScheduleRepository.save(workingSchedule);
         return workingScheduleMapper.toDto(savedWorkingSchedule); // Преобразование сохраненной сущности в DTO
     }
