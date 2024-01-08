@@ -95,37 +95,16 @@ public class PaymentService {
             return Optional.empty();
         }
 
-        BankCard updatedBankCard = optionalSavedPayment.get().getBankCard();
-        Order updatedPaymentOrder = optionalSavedPayment.get().getOrder();
-        User updatedPaymentUser = optionalSavedPayment.get().getUser();
+        Optional<BankCard> paymentBankCard = bankCardService.findById(paymentDto.getBankCardDto().getId());
+        Optional<User> paymentUser = userService.findUserById(paymentDto.getUserId());
+        Optional<Order> paymentOrder = orderService.findById(paymentDto.getOrderId());
 
-        //проверяем, отличаются ли id внутренних сущностей от прешедших в dto, если да - то достаем новые из БД
-        if (!updatedBankCard.getId().equals(paymentDto.getBankCardDto().getId())) {
-            Optional<BankCard> newPaymentBankCard = bankCardService.findById(paymentDto.getBankCardDto().getId());
-
-            if (newPaymentBankCard.isPresent()) {
-                updatedBankCard = newPaymentBankCard.get();
-            }
+        if (paymentBankCard.isEmpty() || paymentUser.isEmpty() || paymentOrder.isEmpty()) {
+            return Optional.empty();
         }
 
-        if (!updatedPaymentOrder.getId().equals(paymentDto.getOrderId())) {
-            Optional<Order> newPaymentOrder = orderService.findById(paymentDto.getOrderId());
-
-            if (newPaymentOrder.isPresent()) {
-                updatedPaymentOrder = newPaymentOrder.get();
-            }
-        }
-
-        if (!updatedPaymentUser.getId().equals(paymentDto.getUserId())) {
-            Optional<User> newPaymentUser = userService.findUserById(paymentDto.getUserId());
-
-            if (newPaymentUser.isPresent()) {
-                updatedPaymentUser = newPaymentUser.get();
-            }
-        }
-
-        Payment savedPayment = paymentMapper.toUpdateEntity(optionalSavedPayment.get(), paymentDto, updatedBankCard,
-                updatedPaymentOrder, updatedPaymentUser);
+        Payment savedPayment = paymentMapper.toUpdateEntity(optionalSavedPayment.get(), paymentDto, paymentBankCard.get(),
+                paymentOrder.get(), paymentUser.get());
 
         savedPayment = paymentRepository.save(savedPayment);
 
