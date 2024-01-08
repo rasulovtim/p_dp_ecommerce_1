@@ -36,7 +36,7 @@ class PassportRestControllerTestIT extends AbstractIntegrationTest {
     void should_get_all_passports() throws Exception {
         String expected = objectMapper.writeValueAsString(
                 passportService
-                        .findAll()
+                        .findAllActive()
                         .stream()
                         .map(passportMapper::toDto)
                         .collect(Collectors.toList())
@@ -89,23 +89,23 @@ class PassportRestControllerTestIT extends AbstractIntegrationTest {
     @Test
     void should_update_passport_by_id() throws Exception {
         should_create_passport();
-        int numberOfEntitiesExpected = passportService.findAll().size();
+        int numberOfEntitiesExpected = passportService.findAllActive().size();
 
-        PassportDto passportDto = generatePassportDto();
-        passportDto.setId(passportDto.getId() + 1L);
+        PassportDto passportDto = passportService.saveDto(generatePassportDto());
+        long id = passportDto.getId();
 
         String jsonPassportDto = objectMapper.writeValueAsString(passportDto);
 
         String expected = objectMapper.writeValueAsString(passportDto);
 
-        mockMvc.perform(patch(PASSPORT_URI + "/{id}", passportDto.getId())
+        mockMvc.perform(patch(PASSPORT_URI + "/{id}", id)
                         .content(jsonPassportDto)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected))
-                .andExpect(result -> assertThat(passportService.findAll().size(),
+                .andExpect(result -> assertThat(passportService.findAllActive().size(),
                         equalTo(numberOfEntitiesExpected)));
     }
 
@@ -127,11 +127,16 @@ class PassportRestControllerTestIT extends AbstractIntegrationTest {
 
     @Test
     void should_delete_passport_by_id() throws Exception {
-        PassportDto passportDto = generatePassportDto();
-        mockMvc.perform(delete(PASSPORT_URI + "/{id}", passportDto.getId()))
+        PassportDto passportDto = passportService.saveDto(generatePassportDto());
+        long id = passportDto.getId();
+
+        mockMvc.perform(get(PASSPORT_URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk());
-        mockMvc.perform(get(PASSPORT_URI + "/{id}", passportDto.getId()))
+        mockMvc.perform(delete(PASSPORT_URI + "/{id}", id))
+                .andDo(print())
+                .andExpect(status().isOk());
+        mockMvc.perform(get(PASSPORT_URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
