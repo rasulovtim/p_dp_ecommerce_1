@@ -23,7 +23,7 @@ public class PassportRestController implements PassportRestApi {
 
     @Override
     public ResponseEntity<List<PassportDto>> getAll() {
-        List<PassportDto> passportDtos = passportService.findAllDto();
+        List<PassportDto> passportDtos = passportService.findAllActiveDto();
 
         if (passportDtos.isEmpty()) {
             return ResponseEntity.noContent().build();

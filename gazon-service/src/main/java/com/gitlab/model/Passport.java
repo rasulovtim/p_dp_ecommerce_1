@@ -1,6 +1,7 @@
 package com.gitlab.model;
 
 import com.gitlab.enums.Citizenship;
+import com.gitlab.enums.EntityStatus;
 import lombok.*;
 
 import javax.persistence.*;
@@ -44,5 +45,9 @@ public class Passport {
 
     @Column(name = "issuer_number")
     private String issuerNumber;
+
+    @Column(name = "entity_status")
+    @Enumerated(EnumType.STRING)
+    private EntityStatus entityStatus;
 
 }

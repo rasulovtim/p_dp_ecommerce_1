@@ -394,7 +394,8 @@ class UserServiceTest {
                 LocalDate.of(2000, 5, 15),
                 "09865",
                 "isuer",
-                "issurN");
+                "issurN",
+                EntityStatus.ACTIVE);
 
         return new User(1L,
                 "user",
@@ -451,7 +452,8 @@ class UserServiceTest {
                 LocalDate.of(2015, 8, 25),
                 "09466",
                 "issrS",
-                "issrP");
+                "issrP",
+                EntityStatus.ACTIVE);
 
         return new User(1L,
                 "userBef",
