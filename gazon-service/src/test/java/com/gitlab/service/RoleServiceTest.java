@@ -2,20 +2,15 @@ package com.gitlab.service;
 
 import com.gitlab.enums.EntityStatus;
 import com.gitlab.model.Role;
-import com.gitlab.model.User;
 import com.gitlab.repository.RoleRepository;
-import com.gitlab.repository.UserRepository;
-import com.sun.xml.bind.v2.TODO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -31,7 +26,7 @@ class RoleServiceTest {
     @Test
     void should_find_all_users() {
         List<Role> expectedResult = generateRoles();
-        when(roleRepository.findAllByEntityStatus(EntityStatus.ACTIVE)).thenReturn(generateRoles());
+        when(roleRepository.findAll()).thenReturn(generateRoles());
 
         List<Role> actualResult = roleService.findAll();
 

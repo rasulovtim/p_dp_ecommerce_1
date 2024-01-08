@@ -21,12 +21,12 @@ public class RoleService {
 
     @Cacheable("roles")
     public List<Role> findAll() {
-        return roleRepository.findAllByEntityStatus(EntityStatus.ACTIVE);
+        return roleRepository.findAll();
     }
 
     @Cacheable("roles")
     public List<RoleDto> findAllActiveDto() {
-        return roleMapper.toDtoList(roleRepository.findAllByEntityStatus(EntityStatus.ACTIVE));
+        return roleMapper.toDtoList(roleRepository.findAll());
     }
 
     @Cacheable("roles")

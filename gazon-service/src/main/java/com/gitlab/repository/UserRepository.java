@@ -12,6 +12,7 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+
     @Override
     @NonNull
     @EntityGraph(value = "userWithSets", type = EntityGraph.EntityGraphType.LOAD)
@@ -22,5 +23,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @NonNull
     @EntityGraph(value = "userWithSets", type = EntityGraph.EntityGraphType.LOAD)
     Optional<User> findById(@NonNull Long id);
-
 }
