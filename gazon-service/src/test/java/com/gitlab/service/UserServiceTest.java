@@ -369,7 +369,7 @@ class UserServiceTest {
 
     private User generateUser() {
         Set<Role> roleSet = new HashSet<>();
-        roleSet.add(new Role(1L, "ROLE_ADMIN"));
+        roleSet.add(new Role(1L, "ROLE_ADMIN", EntityStatus.ACTIVE));
 
         Set<BankCard> bankCardSet = new HashSet<>();
         bankCardSet.add(new BankCard(1L, "0000000000000", LocalDate.of(1900, 1, 1), 777));
@@ -394,7 +394,8 @@ class UserServiceTest {
                 LocalDate.of(2000, 5, 15),
                 "09865",
                 "isuer",
-                "issurN");
+                "issurN",
+                EntityStatus.ACTIVE);
 
         return new User(1L,
                 "user",
@@ -417,7 +418,7 @@ class UserServiceTest {
     private User generateUserBefore() {
         User user = new User();
         Set<Role> roleSet = new HashSet<>();
-        roleSet.add(new Role(1L, "ROLE_USER"));
+        roleSet.add(new Role(1L, "ROLE_USER", EntityStatus.ACTIVE));
 
         Set<BankCard> bankCardSet = new HashSet<>();
         bankCardSet.add(new BankCard(1L, "1111222233444", LocalDate.of(1905, 6, 7), 888));
@@ -451,7 +452,8 @@ class UserServiceTest {
                 LocalDate.of(2015, 8, 25),
                 "09466",
                 "issrS",
-                "issrP");
+                "issrP",
+                EntityStatus.ACTIVE);
 
         return new User(1L,
                 "userBef",
@@ -473,7 +475,7 @@ class UserServiceTest {
 
     private UserDto generateUserDto() {
         Set<Role> roleSet = new HashSet<>();
-        roleSet.add(new Role(1L, "ROLE_ADMIN"));
+        roleSet.add(new Role(1L, "ROLE_ADMIN", EntityStatus.ACTIVE));
 
         Set<BankCardDto> bankCardSet = new HashSet<>();
         bankCardSet.add(new BankCardDto(1L, "0000000000000", LocalDate.of(1900, 1, 1), 777));
