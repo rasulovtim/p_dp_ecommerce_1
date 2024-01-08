@@ -49,7 +49,8 @@ class UserMapperTest extends AbstractIntegrationTest {
                 LocalDate.now(),
                 "098765",
                 "issuer",
-                "issuerN");
+                "issuerN",
+                EntityStatus.ACTIVE);
 
         User user = new User(1L,
                 "user",

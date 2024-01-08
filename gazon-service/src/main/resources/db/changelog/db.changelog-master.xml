@@ -128,4 +128,10 @@
     <changeSet id="1.23" author="dmitry_kron">
         <tagDatabase tag="v-1.23"/>
     </changeSet>
+
+    <include file="v-1.24-add_entity_status_to_passport_table/db.changelog-v-1.24.xml" relativeToChangelogFile="true"/>
+    <changeSet id="1.24" author="elena_sergina">
+        <tagDatabase tag="v-1.24"/>
+    </changeSet>
+
 </databaseChangeLog>
