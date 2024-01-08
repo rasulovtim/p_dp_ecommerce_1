@@ -1,5 +1,6 @@
 package com.gitlab.model;
 
+import com.gitlab.enums.EntityStatus;
 import lombok.*;
 
 import javax.persistence.*;
@@ -18,4 +19,7 @@ public class Role {
     @Column(name="name")
     private String name;
 
+    @Column(name = "entity_status")
+    @Enumerated(EnumType.STRING)
+    private EntityStatus entityStatus;
 }

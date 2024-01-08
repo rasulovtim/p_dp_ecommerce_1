@@ -1,6 +1,7 @@
 package com.gitlab.service;
 
 import com.gitlab.dto.RoleDto;
+import com.gitlab.enums.EntityStatus;
 import com.gitlab.mapper.RoleMapper;
 import com.gitlab.model.Role;
 import com.gitlab.repository.RoleRepository;
@@ -27,7 +28,7 @@ public class RoleService {
     }
 
     @Cacheable("roles")
-    public List<RoleDto> findAllDto() {
+    public List<RoleDto> findAllActiveDto() {
         return roleMapper.toDtoList(roleRepository.findAll());
     }
 
@@ -44,12 +45,11 @@ public class RoleService {
 
     @Cacheable("roles")
     public Optional<Role> findById(Long id) {
-        return roleRepository.findById(id);
+        return roleRepository.findByIdAndEntityStatus(id, EntityStatus.ACTIVE);
     }
 
-    @Cacheable("roles")
     public Optional<RoleDto> findByIdDto(Long id) {
-        return roleRepository.findById(id)
+        return roleRepository.findByIdAndEntityStatus(id, EntityStatus.ACTIVE)
                 .map(roleMapper::toDto);
     }
 
@@ -71,7 +71,7 @@ public class RoleService {
     public Page<RoleDto> getPageDto(Integer page, Integer size) {
 
         if (page == null || size == null) {
-            var roles = findAllDto();
+            var roles = findAllActiveDto();
             if (roles.isEmpty()) {
                 return Page.empty();
             }
@@ -118,6 +118,7 @@ public class RoleService {
         if (existingRoleOptional.isPresent()) {
             Role existingRole = existingRoleOptional.get();
             existingRole.setName(updatedRoleDto.getRoleName());
+            existingRole.setEntityStatus(EntityStatus.ACTIVE);
             roleRepository.save(existingRole);
             return findByIdDto(existingRole.getId());
         } else {
@@ -128,11 +129,13 @@ public class RoleService {
     @CacheEvict(value = "roles", allEntries = true)
     public Optional<Role> delete(Long id) {
         Optional<Role> optionalSavedRole = findById(id);
-        if (optionalSavedRole.isEmpty()) {
-            return optionalSavedRole;
-        } else {
-            roleRepository.deleteById(id);
+
+        if (optionalSavedRole.isPresent()) {
+            optionalSavedRole.get().setEntityStatus(EntityStatus.DELETED);
+            roleRepository.save(optionalSavedRole.get());
             return optionalSavedRole;
         }
+
+        return Optional.empty();
     }
 }

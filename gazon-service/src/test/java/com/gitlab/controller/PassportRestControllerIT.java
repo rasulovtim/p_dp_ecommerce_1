@@ -130,7 +130,7 @@ class PassportRestControllerIT extends AbstractIntegrationTest {
         PassportDto passportDto = generatePassportDto();
         PassportDto saved = passportService.saveDto(passportDto);
 
-        int numberOfEntitiesExpected = passportService.findAll().size();
+        int numberOfEntitiesExpected = passportService.findAllActive().size();
 
         PassportDto updated = generatePassportDto();
         updated.setId(saved.getId());
@@ -146,7 +146,7 @@ class PassportRestControllerIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected))
-                .andExpect(result -> assertThat(passportService.findAll().size(),
+                .andExpect(result -> assertThat(passportService.findAllActive().size(),
                         equalTo(numberOfEntitiesExpected)));
     }
 

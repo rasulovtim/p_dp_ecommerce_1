@@ -102,6 +102,9 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
 
+        mockMvc.perform(delete(WORKING_SCHEDULE_URI + "/{id}", id))
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 
     @Test

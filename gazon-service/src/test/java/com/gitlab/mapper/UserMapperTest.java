@@ -86,7 +86,7 @@ class UserMapperTest extends AbstractIntegrationTest {
     @NotNull
     private User getUser(Long id) {
         Set<Role> roleSet = new HashSet<>();
-        roleSet.add(new Role(id, "ROLE_ADMIN"));
+        roleSet.add(new Role(1L, "ROLE_ADMIN", EntityStatus.ACTIVE));
 
         Set<BankCard> bankCardSet = new HashSet<>();
         bankCardSet.add(new BankCard(id, "0000000000000000", LocalDate.now(), 777));
@@ -110,7 +110,8 @@ class UserMapperTest extends AbstractIntegrationTest {
                 LocalDate.now(),
                 "098765",
                 "issuer",
-                "issuerN");
+                "issuerN",
+                EntityStatus.ACTIVE);
 
         return new User(id,
                 "user",

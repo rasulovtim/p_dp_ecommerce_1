@@ -27,7 +27,7 @@ public interface RoleRestApi {
     @ApiOperation(value = "Get all Role")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Roles found"),
-            @ApiResponse(code = 204, message = "Roles not present")}
+            @ApiResponse(code = 404, message = "Roles not present")}
     )
     ResponseEntity<List<RoleDto>> getPage(@ApiParam(name = "page") @RequestParam(required = false, value = "page") Integer page,
                                           @ApiParam(name = "size") @RequestParam(required = false, value = "size") Integer size);

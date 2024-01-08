@@ -95,6 +95,7 @@ public class UserService {
     public User save(User user) {
         user.setCreateDate(LocalDate.from(LocalDateTime.now()));
         user.setEntityStatus(EntityStatus.ACTIVE);
+        user.getPassport().setEntityStatus(EntityStatus.ACTIVE);
         return userRepository.save(user);
     }
 
@@ -103,8 +104,8 @@ public class UserService {
         User user = userMapper.toEntity(userDto);
         user.setCreateDate(LocalDate.from(LocalDateTime.now()));
         user.setEntityStatus(EntityStatus.ACTIVE);
-        User savedUser = userRepository.save(user);
-        return userMapper.toDto(savedUser);
+        user.getPassport().setEntityStatus(EntityStatus.ACTIVE);
+        return userMapper.toDto(userRepository.save(user));
     }
 
     @Transactional
@@ -189,6 +190,7 @@ public class UserService {
         }
 
         savedUser.setEntityStatus(EntityStatus.ACTIVE);
+        savedUser.getPassport().setEntityStatus(EntityStatus.ACTIVE);
 
         return Optional.of(userRepository.save(savedUser));
     }
@@ -260,6 +262,8 @@ public class UserService {
 
         Set<Role> roles = userMapper.mapRoleSetToStringSet(userDto.getRoles());
         user.setRolesSet(roles);
+
+        user.getPassport().setEntityStatus(EntityStatus.ACTIVE);
 
         return user;
     }
