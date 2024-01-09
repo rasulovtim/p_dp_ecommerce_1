@@ -19,7 +19,8 @@ public interface UserRestApi {
             @ApiResponse(code = 200, message = "Users found"),
             @ApiResponse(code = 204, message = "Users not present")}
     )
-    ResponseEntity<List<UserDto>> getAll();
+    ResponseEntity<List<UserDto>> getPage(@ApiParam(name = "page") @RequestParam(required = false, value = "page") Integer page,
+                                          @ApiParam(name = "size") @RequestParam(required = false, value = "size") Integer size);
 
     @GetMapping("/api/user/{id}")
     @ApiOperation(value = "Get User by id")

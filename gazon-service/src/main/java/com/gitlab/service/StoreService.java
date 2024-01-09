@@ -7,6 +7,9 @@ import com.gitlab.model.Store;
 import com.gitlab.repository.StoreRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +43,38 @@ public class StoreService {
         return optionalStore.map(storeMapper::toDto);
     }
 
+    public Page<Store> getPage(Integer page, Integer size) {
+        if (page == null || size == null) {
+            var stores = findAll();
+            if (stores.isEmpty()) {
+                return Page.empty();
+            }
+            return new PageImpl<>(stores);
+        }
+        if (page < 0 || size < 1) {
+            return Page.empty();
+        }
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return storeRepository.findAll(pageRequest);
+    }
+
+    public Page<StoreDto> getPageDto(Integer page, Integer size) {
+
+        if (page == null || size == null) {
+            var stores = findAllDto();
+            if (stores.isEmpty()) {
+                return Page.empty();
+            }
+            return new PageImpl<>(stores);
+        }
+        if (page < 0 || size < 1) {
+            return Page.empty();
+        }
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<Store> storePage = storeRepository.findAll(pageRequest);
+        return storePage.map(storeMapper::toDto);
+    }
+    
     @Transactional
     public StoreDto save(StoreDto storeDto) {
         Store store = storeMapper.toEntity(storeDto);

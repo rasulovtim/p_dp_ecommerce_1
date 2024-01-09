@@ -9,8 +9,8 @@ import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -30,6 +30,59 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
     private ShoppingCartService shoppingCartService;
     @Autowired
     private ShoppingCartMapper shoppingCartMapper;
+
+    @Test
+    @Transactional(readOnly = true)
+    void should_get_all_shoppingCarts() throws Exception {
+
+        var response = shoppingCartService.getPage(null, null);
+        var expected = objectMapper.writeValueAsString(shoppingCartMapper.toDtoList(response.getContent()));
+
+        mockMvc.perform(get(SHOPPING_CART_URI))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(expected));
+    }
+
+    @Test
+    @Transactional(readOnly = true)
+    void should_get_page() throws Exception {
+        int page = 0;
+        int size = 2;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        var response = shoppingCartService.getPage(page, size);
+        assertFalse(response.getContent().isEmpty());
+
+        var expected = objectMapper.writeValueAsString(shoppingCartMapper.toDtoList(response.getContent()));
+
+        mockMvc.perform(get(SHOPPING_CART_URI + parameters))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(expected));
+    }
+
+    @Test
+    void should_get_page_with_incorrect_parameters() throws Exception {
+        int page = 0;
+        int size = -2;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        mockMvc.perform(get(SHOPPING_CART_URI + parameters))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void should_get_page_without_content() throws Exception {
+        int page = 10;
+        int size = 100;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        mockMvc.perform(get(SHOPPING_CART_URI + parameters))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
 
     @Transactional
     @Test
@@ -56,23 +109,29 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
     @Transactional
     @Test
     void should_update_shoppingCart_by_id() throws Exception {
-        long id = 1L;
-        int numberOfEntitiesExpected = shoppingCartService.findAll().size();
-        ShoppingCartDto shoppingCartDto = generateShoppingCartDto(2L);
-        String jsonShoppingCartDto = objectMapper.writeValueAsString(shoppingCartDto);
-
+        long id = 10L;
+        ShoppingCartDto shoppingCartDto = new ShoppingCartDto();
         shoppingCartDto.setId(id);
-        String expected = objectMapper.writeValueAsString(shoppingCartDto);
+        shoppingCartDto.setUserId(1L);
 
-        mockMvc.perform(patch(SHOPPING_CART_URI + "/{id}", id)
+        ShoppingCartDto saved = shoppingCartService.saveDto(shoppingCartDto);
+        int numberOfEntitiesExpected = shoppingCartService.findAll().size();
+
+        ShoppingCartDto updated = new ShoppingCartDto();
+        updated.setId(saved.getId());
+        updated.setUserId(1L);
+        String jsonShoppingCartDto = objectMapper.writeValueAsString(updated);
+
+        String expected = objectMapper.writeValueAsString(updated);
+
+        mockMvc.perform(patch(SHOPPING_CART_URI + "/{id}", saved.getId())
                         .content(jsonShoppingCartDto)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected))
-                .andExpect(result -> assertThat(shoppingCartService.findAll().size(),
-                        equalTo(numberOfEntitiesExpected)));
+                .andExpect(result -> assertThat(shoppingCartService.findAll().size(), equalTo(numberOfEntitiesExpected)));
     }
 
     @Transactional
@@ -88,18 +147,6 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound());
-    }
-
-
-    @Test
-    void should_get_all_shoppingCarts() throws Exception {
-        List<ShoppingCartDto> shoppingCarts = shoppingCartService.findAll().stream().map(shoppingCartMapper::toDto).toList();
-        String expected = objectMapper.writeValueAsString(shoppingCarts);
-
-        mockMvc.perform(get(SHOPPING_CART_URI))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().json(expected));
     }
 
     @Test
@@ -118,7 +165,7 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
     @Transactional
     @Test
     void should_delete_shoppingCart_by_id() throws Exception {
-        long id = 2L;
+        long id = 3L;
 
         mockMvc.perform(delete(SHOPPING_CART_URI + "/{id}", id))
                 .andDo(print())
@@ -128,16 +175,9 @@ class ShoppingCartRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(status().isNotFound());
     }
 
-    private ShoppingCartDto generateShoppingCartDto(Long id){
-        ShoppingCartDto shoppingCartDto = new ShoppingCartDto();
-        shoppingCartDto.setUserId(id);
-
-        return shoppingCartDto;
-    }
-
     private ShoppingCartDto generateShoppingCartDto(){
         ShoppingCartDto shoppingCartDto = new ShoppingCartDto();
-        shoppingCartDto.setUserId(1L);
+        shoppingCartDto.setUserId(3L);
         shoppingCartDto.setSum(BigDecimal.valueOf(100));
         shoppingCartDto.setTotalWeight(500L);
 

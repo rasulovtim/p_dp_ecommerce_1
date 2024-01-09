@@ -32,7 +32,7 @@ public class PostomatView extends VerticalLayout {
 
     public PostomatView(PostomatClient postomatClient) {
         this.postomatClient = postomatClient;
-        this.dataSource = new ArrayList<>(Objects.requireNonNull(postomatClient.getAll().getBody()));
+        this.dataSource = new ArrayList<>(Objects.requireNonNull(postomatClient.getPage(null, null).getBody()));
 
         ValidationMessage idValidationMessage = new ValidationMessage();
         ValidationMessage postomatTextValidationMessage = new ValidationMessage();

@@ -7,10 +7,11 @@ import com.gitlab.service.PassportService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -21,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.testcontainers.shaded.org.hamcrest.CoreMatchers.equalTo;
 import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 
-class PassportRestControllerTestIT extends AbstractIntegrationTest {
+class PassportRestControllerIT extends AbstractIntegrationTest {
 
     private static final String PASSPORT_URN = "/api/passport";
     private static final String PASSPORT_URI = URL + PASSPORT_URN;
@@ -33,20 +34,58 @@ class PassportRestControllerTestIT extends AbstractIntegrationTest {
     private PassportMapper passportMapper;
 
     @Test
+    @Transactional(readOnly = true)
     void should_get_all_passports() throws Exception {
-        String expected = objectMapper.writeValueAsString(
-                passportService
-                        .findAllActive()
-                        .stream()
-                        .map(passportMapper::toDto)
-                        .collect(Collectors.toList())
-        );
+
+        var response = passportService.getPage(null, null);
+        var expected = objectMapper.writeValueAsString(passportMapper.toDtoList(response.getContent()));
 
         mockMvc.perform(get(PASSPORT_URI))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
     }
+
+    @Test
+    @Transactional(readOnly = true)
+    void should_get_page() throws Exception {
+        int page = 0;
+        int size = 2;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        var response = passportService.getPage(page, size);
+        assertFalse(response.getContent().isEmpty());
+
+        var expected = objectMapper.writeValueAsString(passportMapper.toDtoList(response.getContent()));
+
+        mockMvc.perform(get(PASSPORT_URI + parameters))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(expected));
+    }
+
+    @Test
+    void should_get_page_with_incorrect_parameters() throws Exception {
+        int page = 0;
+        int size = -2;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        mockMvc.perform(get(PASSPORT_URI + parameters))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void should_get_page_without_content() throws Exception {
+        int page = 10;
+        int size = 100;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        mockMvc.perform(get(PASSPORT_URI + parameters))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
 
     @Test
     void should_get_passport_by_id() throws Exception {
@@ -88,17 +127,19 @@ class PassportRestControllerTestIT extends AbstractIntegrationTest {
 
     @Test
     void should_update_passport_by_id() throws Exception {
-        should_create_passport();
+        PassportDto passportDto = generatePassportDto();
+        PassportDto saved = passportService.saveDto(passportDto);
+
         int numberOfEntitiesExpected = passportService.findAllActive().size();
 
-        PassportDto passportDto = passportService.saveDto(generatePassportDto());
-        long id = passportDto.getId();
+        PassportDto updated = generatePassportDto();
+        updated.setId(saved.getId());
 
-        String jsonPassportDto = objectMapper.writeValueAsString(passportDto);
+        String jsonPassportDto = objectMapper.writeValueAsString(updated);
 
-        String expected = objectMapper.writeValueAsString(passportDto);
+        String expected = objectMapper.writeValueAsString(updated);
 
-        mockMvc.perform(patch(PASSPORT_URI + "/{id}", id)
+        mockMvc.perform(patch(PASSPORT_URI + "/{id}", saved.getId())
                         .content(jsonPassportDto)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -127,23 +168,21 @@ class PassportRestControllerTestIT extends AbstractIntegrationTest {
 
     @Test
     void should_delete_passport_by_id() throws Exception {
-        PassportDto passportDto = passportService.saveDto(generatePassportDto());
-        long id = passportDto.getId();
+        PassportDto passportDto = generatePassportDto();
 
-        mockMvc.perform(get(PASSPORT_URI + "/{id}", id))
+        PassportDto saved = passportService.saveDto(passportDto);
+
+        mockMvc.perform(delete(PASSPORT_URI + "/{id}", saved.getId()))
                 .andDo(print())
                 .andExpect(status().isOk());
-        mockMvc.perform(delete(PASSPORT_URI + "/{id}", id))
-                .andDo(print())
-                .andExpect(status().isOk());
-        mockMvc.perform(get(PASSPORT_URI + "/{id}", id))
+        mockMvc.perform(get(PASSPORT_URI + "/{id}", saved.getId()))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
 
     private PassportDto generatePassportDto() {
         PassportDto passportDto = new PassportDto();
-        passportDto.setId(5L);
+        passportDto.setId(10L);
         passportDto.setCitizenship(Citizenship.RUSSIA);
         passportDto.setFirstName("Ivan");
         passportDto.setLastName("Petrov");

@@ -21,15 +21,12 @@ public class PassportRestController implements PassportRestApi {
 
     private final PassportService passportService;
 
-    @Override
-    public ResponseEntity<List<PassportDto>> getAll() {
-        List<PassportDto> passportDtos = passportService.findAllActiveDto();
-
-        if (passportDtos.isEmpty()) {
+       public ResponseEntity<List<PassportDto>> getPage(Integer page, Integer size) {
+        var passportPage = passportService.getPageDto(page, size);
+        if (passportPage == null || passportPage.getContent().isEmpty()) {
             return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok(passportDtos);
         }
+        return ResponseEntity.ok(passportPage.getContent());
     }
 
     @Override

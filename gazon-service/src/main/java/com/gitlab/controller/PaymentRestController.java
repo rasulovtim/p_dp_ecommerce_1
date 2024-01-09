@@ -1,6 +1,6 @@
 package com.gitlab.controller;
 
-import com.gitlab.controller.api.PaymentRestApi;
+import com.gitlab.controllers.api.rest.PaymentRestApi;
 import com.gitlab.dto.PaymentDto;
 import com.gitlab.model.Payment;
 import com.gitlab.service.PaymentService;
@@ -22,14 +22,12 @@ public class PaymentRestController implements PaymentRestApi {
 
     private final PaymentService paymentService;
 
-    @Override
-    public ResponseEntity<List<PaymentDto>> getAll() {
-        List<PaymentDto> payment = paymentService.findAllDto();
-        if (payment.isEmpty()) {
+    public ResponseEntity<List<PaymentDto>> getPage(Integer page, Integer size) {
+        var paymentPage = paymentService.getPageDto(page, size);
+        if (paymentPage == null || paymentPage.getContent().isEmpty()) {
             return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok(payment);
         }
+        return ResponseEntity.ok(paymentPage.getContent());
     }
 
     @Override

@@ -26,20 +26,19 @@ public class ReviewController implements ReviewRestApi {
 
     private final ReviewImageService reviewImageService;
 
-    @Override
-    public ResponseEntity<List<ReviewDto>> getAll() {
-        List<ReviewDto> reviewDtos = reviewService.findAllDto();
-        return reviewDtos.isEmpty() ?
-                ResponseEntity.noContent().build() :
-                ResponseEntity.ok(reviewDtos);
+    public ResponseEntity<List<ReviewDto>> getPage(Integer page, Integer size) {
+        var reviewPage = reviewService.getPageDto(page, size);
+        if (reviewPage == null || reviewPage.getContent().isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(reviewPage.getContent());
     }
 
     @Override
     public ResponseEntity<ReviewDto> get(Long id) {
         Optional<ReviewDto> reviewDtoOptional = reviewService.findByIdDto(id);
 
-        return reviewDtoOptional.map(reviewDto ->
-                ResponseEntity.ok(reviewDto)).orElse(ResponseEntity.notFound().build());
+        return reviewDtoOptional.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
 
@@ -54,8 +53,7 @@ public class ReviewController implements ReviewRestApi {
     public ResponseEntity<ReviewDto> update(Long id, ReviewDto reviewDto) {
         Optional<ReviewDto> updatedReviewDtoOptional = reviewService.updateDto(id, reviewDto);
 
-        return updatedReviewDtoOptional.map(updatedReviewDto ->
-                ResponseEntity.ok(updatedReviewDto)).orElse(ResponseEntity.notFound().build());
+        return updatedReviewDtoOptional.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @Override

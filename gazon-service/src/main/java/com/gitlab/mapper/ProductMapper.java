@@ -10,6 +10,7 @@ import org.mapstruct.MappingConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -42,4 +43,8 @@ public abstract class ProductMapper {
         return Arrays.stream(imagesId)
                 .map(productImageService::findById).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toSet());
     }
+
+    public abstract List<ProductDto> toDtoList(List<Product> productList);
+
+    public abstract List<Product> toEntityList(List<ProductDto> productDtoList);
 }

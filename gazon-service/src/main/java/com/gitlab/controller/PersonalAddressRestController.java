@@ -21,12 +21,12 @@ public class PersonalAddressRestController implements PersonalAddressRestApi {
 
     private final PersonalAddressService personalAddressService;
 
-    @Override
-    public ResponseEntity<List<PersonalAddressDto>> getAll() {
-        List<PersonalAddressDto> personalAddressDtos = personalAddressService.findAllDto();
-        return personalAddressDtos.isEmpty() ?
-                ResponseEntity.noContent().build() :
-                ResponseEntity.ok(personalAddressDtos);
+    public ResponseEntity<List<PersonalAddressDto>> getPage(Integer page, Integer size) {
+        var personalAddressPage = personalAddressService.getPageDto(page, size);
+        if (personalAddressPage == null || personalAddressPage.getContent().isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(personalAddressPage.getContent());
     }
 
     @Override

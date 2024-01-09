@@ -1,6 +1,5 @@
 package com.gitlab.mapper;
 
-
 import com.gitlab.dto.PassportDto;
 import com.gitlab.model.Passport;
 import org.mapstruct.Mapper;
@@ -15,7 +14,7 @@ public interface PassportMapper {
 
     Passport toEntity(PassportDto passportDto);
 
-    List<PassportDto> toDto(List<Passport> passports);
+    List<PassportDto> toDtoList(List<Passport> passportList);
 
-    List<Passport> toEntity(List<PassportDto> passportDtos);
+    List<Passport> toEntityList(List<PassportDto> passportDtoList);
 }

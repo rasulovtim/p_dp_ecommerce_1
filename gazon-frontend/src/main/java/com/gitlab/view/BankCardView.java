@@ -31,7 +31,7 @@ public class BankCardView extends VerticalLayout {
 
     public BankCardView(BankCardClient bankCardClient) {
         this.bankCardClient = bankCardClient;
-        this.dataSource = bankCardClient.getAll().getBody();
+        this.dataSource = bankCardClient.getPage(null, null).getBody();
 
         ValidationMessage idValidationMessage = new ValidationMessage();
         ValidationMessage cardNumberValidationMessage = new ValidationMessage();

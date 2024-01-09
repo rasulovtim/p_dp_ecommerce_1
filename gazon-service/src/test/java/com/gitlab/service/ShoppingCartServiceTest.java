@@ -5,19 +5,24 @@ import com.gitlab.model.SelectedProduct;
 import com.gitlab.model.ShoppingCart;
 import com.gitlab.model.User;
 import com.gitlab.repository.ShoppingCartRepository;
-import com.gitlab.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ShoppingCartServiceTest {
@@ -27,9 +32,6 @@ class ShoppingCartServiceTest {
 
     @Mock
     private ShoppingCartRepository shoppingCartRepository;
-
-    @Mock
-    private UserRepository userRepository;
 
     @Test
     void should_find_all_shoppingCarts() {
@@ -52,14 +54,9 @@ class ShoppingCartServiceTest {
         assertEquals(expectedResult, actualResult.orElse(null));
     }
 
-
     @Test
     void should_save_shoppingCart() {
         ShoppingCart expectedResult = generateShoppingCart();
-
-        when(userRepository.findById(expectedResult.getUser().getId())).thenReturn(Optional.of(expectedResult.getUser()));
-
-
         when(shoppingCartRepository.save(expectedResult)).thenReturn(expectedResult);
 
         ShoppingCart actualResult = shoppingCartService.save(expectedResult);
@@ -75,7 +72,7 @@ class ShoppingCartServiceTest {
         ShoppingCart shoppingCartBeforeUpdate = new ShoppingCart();
         shoppingCartBeforeUpdate.setId(id);
         shoppingCartBeforeUpdate.setUser(new User());
-        shoppingCartBeforeUpdate.setSelectedProducts(generateSelectedProducts());
+        shoppingCartBeforeUpdate.setSelectedProducts(new HashSet<>());
 
         ShoppingCart updatedShoppingCart = generateShoppingCart();
         updatedShoppingCart.setId(id);
@@ -116,12 +113,10 @@ class ShoppingCartServiceTest {
         long id = 1L;
         when(shoppingCartRepository.findById(id)).thenReturn(Optional.empty());
 
-        boolean deleted = shoppingCartService.delete(id);
+        shoppingCartService.delete(id);
 
-        assertFalse(deleted);
         verify(shoppingCartRepository, never()).deleteById(anyLong());
     }
-
 
     private List<ShoppingCart> generateShoppingCarts() {
         return List.of(
