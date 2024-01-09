@@ -13,13 +13,15 @@ import java.util.List;
 @RequestMapping("/api/payment")
 public interface PaymentRestApi {
 
-    @ApiOperation(value = "Get all payments")
-    @GetMapping
+    @GetMapping("")
+    @ApiOperation(value = "Get payment page")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Payments found"),
-            @ApiResponse(code = 404, message = "Payments not present")}
+            @ApiResponse(code = 200, message = "payment page found"),
+            @ApiResponse(code = 204, message = "payment page not present")}
     )
-    ResponseEntity<List<PaymentDto>> getAll();
+    ResponseEntity<List<PaymentDto>> getPage(@ApiParam(name = "page") @RequestParam(required = false, value = "page") Integer page,
+                                             @ApiParam(name = "size") @RequestParam(required = false, value = "size") Integer size);
+
 
     @ApiOperation(value = "Get payment by Id")
     @GetMapping("/{id}")

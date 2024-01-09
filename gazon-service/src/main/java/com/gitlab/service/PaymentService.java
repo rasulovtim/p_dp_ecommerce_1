@@ -9,12 +9,16 @@ import com.gitlab.model.User;
 import com.gitlab.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +49,38 @@ public class PaymentService {
     public Optional<PaymentDto> findByIdDto(Long id) {
         return paymentRepository.findById(id)
                 .map(paymentMapper::toDto);
+    }
+
+    public Page<Payment> getPage(Integer page, Integer size) {
+        if (page == null || size == null) {
+            var payments = findAll();
+            if (payments.isEmpty()) {
+                return Page.empty();
+            }
+            return new PageImpl<>(payments);
+        }
+        if (page < 0 || size < 1) {
+            return Page.empty();
+        }
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return paymentRepository.findAll(pageRequest);
+    }
+
+    public Page<PaymentDto> getPageDto(Integer page, Integer size) {
+
+        if (page == null || size == null) {
+            var payments = findAllDto();
+            if (payments.isEmpty()) {
+                return Page.empty();
+            }
+            return new PageImpl<>(payments);
+        }
+        if (page < 0 || size < 1) {
+            return Page.empty();
+        }
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<Payment> paymentPage = paymentRepository.findAll(pageRequest);
+        return paymentPage.map(paymentMapper::toDto);
     }
 
     public Payment save(Payment payment) {

@@ -7,6 +7,8 @@ import com.gitlab.model.Payment;
 import com.gitlab.model.User;
 import org.mapstruct.*;
 
+import java.util.List;
+
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public abstract class PaymentMapper {
@@ -29,6 +31,12 @@ public abstract class PaymentMapper {
     @Mapping(source = "user", target = "user")
     public abstract Payment toUpdateEntity(@MappingTarget Payment payment, PaymentDto dto, BankCard bankCard,
                                            Order order, User user);
+
+
+    public abstract List<PaymentDto> toDtoList(List<Payment> paymentList);
+
+    public abstract List<Payment> toEntityList(List<PaymentDto> paymentDtoList);
+
 }
 
 

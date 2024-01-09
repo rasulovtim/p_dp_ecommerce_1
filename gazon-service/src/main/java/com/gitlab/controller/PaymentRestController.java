@@ -23,14 +23,14 @@ public class PaymentRestController implements PaymentRestApi {
     private final PaymentService paymentService;
 
     @Override
-    public ResponseEntity<List<PaymentDto>> getAll() {
-        List<PaymentDto> payment = paymentService.findAllDto();
-        if (payment.isEmpty()) {
+    public ResponseEntity<List<PaymentDto>> getPage(Integer page, Integer size) {
+        var paymentPage = paymentService.getPageDto(page, size);
+        if (paymentPage == null || paymentPage.getContent().isEmpty()) {
             return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok(payment);
         }
+        return ResponseEntity.ok(paymentPage.getContent());
     }
+
 
     @Override
     public ResponseEntity<PaymentDto> get(Long id) {
