@@ -5,6 +5,9 @@ import com.gitlab.mapper.PostomatMapper;
 import com.gitlab.model.Postomat;
 import com.gitlab.repository.PostomatRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,6 +40,38 @@ public class PostomatService {
     public Optional<PostomatDto> findByIdDto(Long id) {
         return postomatRepository.findById(id)
                 .map(postomatMapper::toDto);
+    }
+
+    public Page<Postomat> getPage(Integer page, Integer size) {
+        if (page == null || size == null) {
+            var postomats = findAll();
+            if (postomats.isEmpty()) {
+                return Page.empty();
+            }
+            return new PageImpl<>(postomats);
+        }
+        if (page < 0 || size < 1) {
+            return Page.empty();
+        }
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return postomatRepository.findAll(pageRequest);
+    }
+
+    public Page<PostomatDto> getPageDto(Integer page, Integer size) {
+
+        if (page == null || size == null) {
+            var postomats = findAllDto();
+            if (postomats.isEmpty()) {
+                return Page.empty();
+            }
+            return new PageImpl<>(postomats);
+        }
+        if (page < 0 || size < 1) {
+            return Page.empty();
+        }
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<Postomat> postomatPage = postomatRepository.findAll(pageRequest);
+        return postomatPage.map(postomatMapper::toDto);
     }
 
     public Postomat save(Postomat postomat) {

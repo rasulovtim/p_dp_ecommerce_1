@@ -5,6 +5,9 @@ import com.gitlab.mapper.PersonalAddressMapper;
 import com.gitlab.model.PersonalAddress;
 import com.gitlab.repository.PersonalAddressRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,6 +41,38 @@ public class PersonalAddressService {
     public Optional<PersonalAddressDto> findByIdDto(Long id) {
         return personalAddressRepository.findById(id)
                 .map(personalAddressMapper::toDto);
+    }
+
+    public Page<PersonalAddress> getPage(Integer page, Integer size) {
+        if (page == null || size == null) {
+            var personalAddress = findAll();
+            if (personalAddress.isEmpty()) {
+                return Page.empty();
+            }
+            return new PageImpl<>(personalAddress);
+        }
+        if (page < 0 || size < 1) {
+            return Page.empty();
+        }
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return personalAddressRepository.findAll(pageRequest);
+    }
+
+    public Page<PersonalAddressDto> getPageDto(Integer page, Integer size) {
+
+        if (page == null || size == null) {
+            var personalAddress = findAllDto();
+            if (personalAddress.isEmpty()) {
+                return Page.empty();
+            }
+            return new PageImpl<>(personalAddress);
+        }
+        if (page < 0 || size < 1) {
+            return Page.empty();
+        }
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<PersonalAddress> personalAddressPage = personalAddressRepository.findAll(pageRequest);
+        return personalAddressPage.map(personalAddressMapper::toDto);
     }
 
     public PersonalAddress save(PersonalAddress personalAddress) {

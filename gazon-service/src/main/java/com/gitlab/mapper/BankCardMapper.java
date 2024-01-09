@@ -7,7 +7,6 @@ import org.mapstruct.MappingConstants;
 
 import java.util.List;
 
-
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface BankCardMapper {
 
@@ -15,4 +14,7 @@ public interface BankCardMapper {
 
     BankCard toEntity(BankCardDto bankCardDto);
 
+    List<BankCardDto> toDtoList(List<BankCard> bankCardList);
+
+    List<BankCard> toEntityList(List<BankCardDto> bankCardDtoList);
 }

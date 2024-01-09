@@ -1,13 +1,14 @@
 package com.gitlab.service;
 
-import com.gitlab.dto.ProductDto;
 import com.gitlab.dto.ReviewDto;
 import com.gitlab.enums.EntityStatus;
 import com.gitlab.mapper.ReviewMapper;
-import com.gitlab.model.Product;
 import com.gitlab.model.Review;
 import com.gitlab.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,6 +50,38 @@ public class ReviewService {
             return reviewOptional.map(reviewMapper::toDto);
         }
         return Optional.empty();
+    }
+
+    public Page<Review> getPage(Integer page, Integer size) {
+        if (page == null || size == null) {
+            var reviews = findAll();
+            if (reviews.isEmpty()) {
+                return Page.empty();
+            }
+            return new PageImpl<>(reviews);
+        }
+        if (page < 0 || size < 1) {
+            return Page.empty();
+        }
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return reviewRepository.findAll(pageRequest);
+    }
+
+    public Page<ReviewDto> getPageDto(Integer page, Integer size) {
+
+        if (page == null || size == null) {
+            var reviews = findAllDto();
+            if (reviews.isEmpty()) {
+                return Page.empty();
+            }
+            return new PageImpl<>(reviews);
+        }
+        if (page < 0 || size < 1) {
+            return Page.empty();
+        }
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<Review> reviewPage = reviewRepository.findAll(pageRequest);
+        return reviewPage.map(reviewMapper::toDto);
     }
 
     @Transactional

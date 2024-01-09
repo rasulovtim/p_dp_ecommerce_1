@@ -18,7 +18,8 @@ public interface PickupPointRestApi {
             @ApiResponse(code = 200, message = "Pickup Point found"),
             @ApiResponse(code = 204, message = "Pickup Point not present")}
     )
-    ResponseEntity<List<PickupPointDto>> getAll();
+    ResponseEntity<List<PickupPointDto>> getPage(@ApiParam(name = "page") @RequestParam(required = false, value = "page") Integer page,
+                                                 @ApiParam(name = "size") @RequestParam(required = false, value = "size") Integer size);
 
     @GetMapping("/api/pickup-point/{id}")
     @ApiOperation(value = "Get Pickup Point by id")

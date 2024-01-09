@@ -6,9 +6,14 @@ import com.gitlab.model.Role;
 import com.gitlab.service.RoleService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.http.MediaType;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -46,17 +51,58 @@ class RoleRestControllerIT extends AbstractIntegrationTest {
     }
 
     @Test
+    @Transactional(readOnly = true)
     void should_get_all_roles() throws Exception {
-        String expected = objectMapper.writeValueAsString(
-                roleService
-                        .findAll().stream().toList()
-        );
+
+        var response = roleService.getPage(null, null);
+        var expected = objectMapper.writeValueAsString(roleMapper.toDtoList(response.getContent()));
 
         mockMvc.perform(get(ROLE_URI))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
     }
+
+    @Test
+    @Transactional(readOnly = true)
+    void should_get_page() throws Exception {
+        int page = 0;
+        int size = 2;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        var response = roleService.getPage(page, size);
+        assertFalse(response.getContent().isEmpty());
+
+        var expected = objectMapper.writeValueAsString(roleMapper.toDtoList(response.getContent()));
+
+        mockMvc.perform(get(ROLE_URI + parameters))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(expected));
+    }
+
+    @Test
+    void should_get_page_with_incorrect_parameters() throws Exception {
+        int page = 0;
+        int size = -2;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        mockMvc.perform(get(ROLE_URI + parameters))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void should_get_page_without_content() throws Exception {
+        int page = 10;
+        int size = 100;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        mockMvc.perform(get(ROLE_URI + parameters))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
 
     @Test
     void should_create_role() throws Exception {

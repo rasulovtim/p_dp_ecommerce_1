@@ -1,18 +1,16 @@
 package com.gitlab.mapper;
 
 import com.gitlab.controller.AbstractIntegrationTest;
-import com.gitlab.dto.*;
-import com.gitlab.enums.Citizenship;
-import com.gitlab.enums.Gender;
-import com.gitlab.model.*;
+import com.gitlab.dto.SelectedProductDto;
+import com.gitlab.dto.ShoppingCartDto;
+import com.gitlab.model.SelectedProduct;
+import com.gitlab.model.ShoppingCart;
+import com.gitlab.model.User;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,139 +19,88 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class ShoppingCartMapperTest extends AbstractIntegrationTest {
 
     @Autowired
-    private ShoppingCartMapper shoppingCartMapper;
-
-    private static final Logger log = LoggerFactory.getLogger(ShoppingCartMapperTest.class);
-
+    private ShoppingCartMapper mapper;
 
     @Test
-    void should_map_ShoppingCart_to_Dto() {
-        log.info("Running should_map_ShoppingCart_to_Dto test");
+    void should_map_productImage_to_Dto() {
+        ShoppingCart shoppingCart = getShoppingCart(1L);
 
-        // Создаем тестовые объекты
-        ShoppingCart shoppingCart = new ShoppingCart();
-        shoppingCart.setId(1L);
+        ShoppingCartDto dtoTwin = mapper.toDto(shoppingCart);
 
-        // Создаем тестового пользователя с помощью метода generateUser()
-        UserDto userDto = generateUser();
-
-        // Преобразуем UserDto в User
-        User user = new User();
-        user.setId(userDto.getId());
-        user.setEmail(userDto.getEmail());
-
-        shoppingCart.setUser(user);
-
-        // Создаем тестовый объект SelectedProduct
-        SelectedProduct selectedProduct = new SelectedProduct();
-        selectedProduct.setProduct(new Product()); // Создайте объект Product или установите его данные
-
-        Set<SelectedProduct> selectedProducts = new HashSet<>();
-        selectedProducts.add(selectedProduct);
-
-        shoppingCart.setSelectedProducts(selectedProducts);
-
-        // Маппинг
-        log.debug("Mapping ShoppingCart to ShoppingCartDto...");
-        ShoppingCartDto dtoTwin = shoppingCartMapper.toDto(shoppingCart);
-        log.debug("Mapping completed");
-
-        // Проверки
         assertNotNull(dtoTwin);
-        log.debug("Comparing ids...");
         assertEquals(shoppingCart.getId(), dtoTwin.getId());
-        log.debug("Comparing selected products sizes...");
+        assertEquals(shoppingCart.getUser().getId(), dtoTwin.getUserId());
         assertEquals(shoppingCart.getSelectedProducts().size(), dtoTwin.getSelectedProducts().size());
-
-        log.info("should_map_ShoppingCart_to_Dto test completed");
     }
 
     @Test
-    void should_map_ShoppingCartDto_to_Entity() {
-        log.info("Running should_map_ShoppingCartDto_to_Entity test");
+    void should_map_productImageDto_to_Entity() {
+        ShoppingCartDto shoppingCartDto = getShoppingCartDto(1L);
 
-        // Создаем тестовые объекты
-        ShoppingCartDto shoppingCartDto = new ShoppingCartDto();
-        shoppingCartDto.setUserId(1L);
-        shoppingCartDto.setSum(BigDecimal.valueOf(100));
-        shoppingCartDto.setTotalWeight(500L);
+        ShoppingCart entityTwin = mapper.toEntity(shoppingCartDto);
 
-        SelectedProductDto selectedProductDto = new SelectedProductDto();
-        selectedProductDto.setProductId(1L);
-        selectedProductDto.setCount(1);
-
-        Set<SelectedProductDto> selectedProductDtos = new HashSet<>();
-        selectedProductDtos.add(selectedProductDto);
-
-        shoppingCartDto.setSelectedProducts(selectedProductDtos);
-
-        // Маппинг
-        log.debug("Mapping ShoppingCartDto to ShoppingCart...");
-        ShoppingCart entityTwin = shoppingCartMapper.toEntity(shoppingCartDto);
-        log.debug("Mapping completed");
-
-        // Проверки
         assertNotNull(entityTwin);
-        log.debug("Comparing selected products sizes...");
+        assertEquals(shoppingCartDto.getId(), entityTwin.getId());
+        assertEquals(shoppingCartDto.getUserId(), entityTwin.getUser().getId());
         assertEquals(shoppingCartDto.getSelectedProducts().size(), entityTwin.getSelectedProducts().size());
-
-        log.info("should_map_ShoppingCartDto_to_Entity test completed");
     }
 
 
+    @Test
+    void should_map_shoppingCartList_to_DtoList() {
+        List<ShoppingCart> shoppingCartList = List.of(getShoppingCart(1L), getShoppingCart(2L), getShoppingCart(3L));
 
-    private UserDto generateUser() {
-        Set<String> roleSet = new HashSet<>();
-        roleSet.add("ROLE_ADMIN");
+        List<ShoppingCartDto> shoppingCartDtoList = mapper.toDtoList(shoppingCartList);
 
-        Set<BankCardDto> bankCardSet = new HashSet<>();
-        bankCardSet.add(new BankCardDto(
-                1L,
-                "1111222233334444",
-                LocalDate.now(),
-                423
-        ));
-
-        Set<ShippingAddressDto> personalAddress = new HashSet<>();
-        personalAddress.add(new PersonalAddressDto(
-                1L,
-                "address",
-                "directions",
-                "apartment",
-                "floor",
-                "entrance",
-                "doorCode",
-                "postCode"));
-
-        PassportDto passportDto = new PassportDto(
-                1L,
-                Citizenship.RUSSIA,
-                "user",
-                "user",
-                "patronym",
-                LocalDate.now(),
-                LocalDate.now(),
-                "098765",
-                "issuer",
-                "issuerN");
-
-
-        return new UserDto(
-                1L,
-                "mail@mail.ru",
-                "user",
-                "answer",
-                "question",
-                "user",
-                "user",
-                LocalDate.now(),
-                Gender.MALE,
-                "89007777777",
-                passportDto,
-                personalAddress,
-                bankCardSet,
-                roleSet
-        );
+        assertNotNull(shoppingCartDtoList);
+        assertEquals(shoppingCartList.size(), shoppingCartList.size());
+        for (int i = 0; i < shoppingCartDtoList.size(); i++) {
+            ShoppingCartDto dto = shoppingCartDtoList.get(i);
+            ShoppingCart entity = shoppingCartList.get(i);
+            assertEquals(dto.getId(), entity.getId());
+            assertEquals(dto.getUserId(), entity.getUser().getId());
+            assertEquals(dto.getSelectedProducts().size(), entity.getSelectedProducts().size());
+        }
     }
 
+    @Test
+    void should_map_shoppingCartDtoList_to_EntityList() {
+        List<ShoppingCartDto> shoppingCartDtoList = List.of(getShoppingCartDto(1L), getShoppingCartDto(2L), getShoppingCartDto(3L));
+
+        List<ShoppingCart> shoppingCartList = mapper.toEntityList(shoppingCartDtoList);
+
+        assertNotNull(shoppingCartList);
+        assertEquals(shoppingCartList.size(), shoppingCartList.size());
+        for (int i = 0; i < shoppingCartList.size(); i++) {
+            ShoppingCartDto dto = shoppingCartDtoList.get(i);
+            ShoppingCart entity = shoppingCartList.get(i);
+            assertEquals(dto.getId(), entity.getId());
+            assertEquals(dto.getUserId(), entity.getUser().getId());
+            assertEquals(dto.getSelectedProducts().size(), entity.getSelectedProducts().size());
+        }
+    }
+
+    @NotNull
+    private ShoppingCart getShoppingCart(Long id) {
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setId(id);
+        SelectedProduct selectedProduct = new SelectedProduct();
+        selectedProduct.setId(id);
+        shoppingCart.setSelectedProducts(Set.of(selectedProduct));
+        User user = new User();
+        user.setId(id);
+        shoppingCart.setUser(user);
+        return shoppingCart;
+    }
+
+    @NotNull
+    private ShoppingCartDto getShoppingCartDto(Long id) {
+        ShoppingCartDto shoppingCartDto = new ShoppingCartDto();
+        shoppingCartDto.setId(id);
+        shoppingCartDto.setUserId(id);
+        SelectedProductDto selectedProductDto = new SelectedProductDto();
+        selectedProductDto.setId(id);
+        shoppingCartDto.setSelectedProducts(Set.of(selectedProductDto));
+        return shoppingCartDto;
+    }
 }

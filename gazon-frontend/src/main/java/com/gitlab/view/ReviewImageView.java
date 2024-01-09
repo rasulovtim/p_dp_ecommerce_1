@@ -220,7 +220,7 @@ public class ReviewImageView extends VerticalLayout {
         TextField nameField = new TextField("Review image name");
         Select<Long> reviewField = new Select<>();
         reviewField.setLabel("Review id");
-        reviewField.setItems(Objects.requireNonNull(reviewClient.getAll().getBody())
+        reviewField.setItems(Objects.requireNonNull(reviewClient.getPage(null, null).getBody())
                 .stream()
                 .map(ReviewDto::getId)
                 .collect(Collectors.toList()));

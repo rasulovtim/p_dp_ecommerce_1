@@ -14,9 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -39,16 +39,58 @@ public class OrderRestControllerIT extends AbstractIntegrationTest {
     private OrderMapper orderMapper;
 
     @Test
+    @Transactional(readOnly = true)
     void should_get_all_orders() throws Exception {
-        List<OrderDto> orders = orderService.findAllDto();
-        String expected = objectMapper.writeValueAsString(orders);
+
+        var response = orderService.getPage(null, null);
+        var expected = objectMapper.writeValueAsString(orderMapper.toDtoList(response.getContent()));
 
         mockMvc.perform(get(ORDER_URI))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
-
     }
+
+    @Test
+    @Transactional(readOnly = true)
+    void should_get_page() throws Exception {
+        int page = 0;
+        int size = 2;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        var response = orderService.getPage(page, size);
+        assertFalse(response.getContent().isEmpty());
+
+        var expected = objectMapper.writeValueAsString(orderMapper.toDtoList(response.getContent()));
+
+        mockMvc.perform(get(ORDER_URI + parameters))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(expected));
+    }
+
+    @Test
+    void should_get_page_with_incorrect_parameters() throws Exception {
+        int page = 0;
+        int size = -2;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        mockMvc.perform(get(ORDER_URI + parameters))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void should_get_page_without_content() throws Exception {
+        int page = 10;
+        int size = 100;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        mockMvc.perform(get(ORDER_URI + parameters))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
 
     @Test
     void should_get_order_by_id() throws Exception{

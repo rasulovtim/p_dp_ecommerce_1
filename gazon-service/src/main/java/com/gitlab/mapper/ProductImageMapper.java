@@ -9,6 +9,8 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public abstract class ProductImageMapper {
 
@@ -32,7 +34,10 @@ public abstract class ProductImageMapper {
         if (productId == null) {
             return null;
         }
-
         return productRepository.findById(productId).orElse(null);
     }
+
+    public abstract List<ProductImageDto> toDtoList(List<ProductImage> productImageList);
+
+    public abstract List<ProductImage> toEntityList(List<ProductImageDto> productImageDtoList);
 }

@@ -20,15 +20,12 @@ public class PickupPointRestController implements PickupPointRestApi {
 
     private final PickupPointService pickupPointService;
 
-    @Override
-    public ResponseEntity<List<PickupPointDto>> getAll() {
-        List<PickupPointDto> pickupPointDtos = pickupPointService.findAllDto();
-
-        if (pickupPointDtos.isEmpty()) {
+    public ResponseEntity<List<PickupPointDto>> getPage(Integer page, Integer size) {
+        var pickupPointPage = pickupPointService.getPageDto(page, size);
+        if (pickupPointPage == null || pickupPointPage.getContent().isEmpty()) {
             return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok(pickupPointDtos);
         }
+        return ResponseEntity.ok(pickupPointPage.getContent());
     }
 
     @Override

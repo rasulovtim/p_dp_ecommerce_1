@@ -31,7 +31,7 @@ public interface ProductImageRestApi {
             @ApiResponse(code = 200, message = "Product image Page found"),
             @ApiResponse(code = 204, message = "Product image Page not present")}
     )
-    ResponseEntity<Page<ProductImageDto>> getPage(@ApiParam(name = "page") @RequestParam(required = false, value = "page") Integer page,
+    ResponseEntity<List<ProductImageDto>> getPage(@ApiParam(name = "page") @RequestParam(required = false, value = "page") Integer page,
                                                  @ApiParam(name = "size") @RequestParam(required = false, value = "size") Integer size);
 
     @GetMapping("/api/images/{id}")

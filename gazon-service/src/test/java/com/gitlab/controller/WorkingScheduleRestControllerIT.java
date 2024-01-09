@@ -5,12 +5,11 @@ import com.gitlab.mapper.WorkingScheduleMapper;
 import com.gitlab.service.WorkingScheduleService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -28,27 +27,24 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
 
     @Autowired
     private WorkingScheduleService workingScheduleService;
-
     @Autowired
     private WorkingScheduleMapper workingScheduleMapper;
 
     @Test
-    void should_get_all_working_schedules() throws Exception {
-        String expected = objectMapper.writeValueAsString(
-                new PageImpl<>(workingScheduleService
-                        .findAll()
-                        .stream()
-                        .map(workingScheduleMapper::toDto)
-                        .collect(Collectors.toList())
-        ));
+    @Transactional(readOnly = true)
+    void should_get_all_workingSchedules() throws Exception {
+
+        var response = workingScheduleService.getPage(null, null);
+        var expected = objectMapper.writeValueAsString(workingScheduleMapper.toDtoList(response.getContent()));
 
         mockMvc.perform(get(WORKING_SCHEDULE_URI))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
-
     }
+
     @Test
+    @Transactional(readOnly = true)
     void should_get_page() throws Exception {
         int page = 0;
         int size = 2;
@@ -57,16 +53,34 @@ class WorkingScheduleRestControllerIT extends AbstractIntegrationTest {
         var response = workingScheduleService.getPage(page, size);
         assertFalse(response.getContent().isEmpty());
 
-        var expected = objectMapper.writeValueAsString(new PageImpl<>(
-                response.getContent().stream().map(workingScheduleMapper::toDto).toList(),
-                response.getPageable(),
-                response.getTotalElements()
-        ));
+        var expected = objectMapper.writeValueAsString(workingScheduleMapper.toDtoList(response.getContent()));
 
         mockMvc.perform(get(WORKING_SCHEDULE_URI + parameters))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
+    }
+
+    @Test
+    void should_get_page_with_incorrect_parameters() throws Exception {
+        int page = 0;
+        int size = -2;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        mockMvc.perform(get(WORKING_SCHEDULE_URI + parameters))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void should_get_page_without_content() throws Exception {
+        int page = 10;
+        int size = 100;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        mockMvc.perform(get(WORKING_SCHEDULE_URI + parameters))
+                .andDo(print())
+                .andExpect(status().isNoContent());
     }
 
     @Test

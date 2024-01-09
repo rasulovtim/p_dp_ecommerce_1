@@ -6,14 +6,16 @@ import com.gitlab.model.ProductImage;
 import com.gitlab.service.ProductImageService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -30,15 +32,11 @@ class ProductImageRestControllerIT extends AbstractIntegrationTest {
     private ProductImageMapper productImageMapper;
 
     @Test
-    void should_get_all_productImages_ids() throws Exception {
+    @Transactional(readOnly = true)
+    void should_get_all_productImages() throws Exception {
 
-        String expected = objectMapper.writeValueAsString(
-                new PageImpl<>(productImageService
-                        .findAll()
-                        .stream()
-                        .map(productImageMapper::toDto)
-                        .collect(Collectors.toList()))
-        );
+        var response = productImageService.getPage(null, null);
+        var expected = objectMapper.writeValueAsString(productImageMapper.toDtoList(response.getContent()));
 
         mockMvc.perform(get(PRODUCT_IMAGE_URI))
                 .andDo(print())
@@ -47,6 +45,7 @@ class ProductImageRestControllerIT extends AbstractIntegrationTest {
     }
 
     @Test
+    @Transactional(readOnly = true)
     void should_get_page() throws Exception {
         int page = 0;
         int size = 2;
@@ -55,16 +54,34 @@ class ProductImageRestControllerIT extends AbstractIntegrationTest {
         var response = productImageService.getPage(page, size);
         assertFalse(response.getContent().isEmpty());
 
-        var expected = objectMapper.writeValueAsString(new PageImpl<>(
-                response.getContent().stream().map(productImageMapper::toDto).toList(),
-                response.getPageable(),
-                response.getTotalElements()
-        ));
+        var expected = objectMapper.writeValueAsString(productImageMapper.toDtoList(response.getContent()));
 
         mockMvc.perform(get(PRODUCT_IMAGE_URI + parameters))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
+    }
+
+    @Test
+    void should_get_page_with_incorrect_parameters() throws Exception {
+        int page = 0;
+        int size = -2;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        mockMvc.perform(get(PRODUCT_IMAGE_URI + parameters))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void should_get_page_without_content() throws Exception {
+        int page = 10;
+        int size = 100;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        mockMvc.perform(get(PRODUCT_IMAGE_URI + parameters))
+                .andDo(print())
+                .andExpect(status().isNoContent());
     }
 
     @Test

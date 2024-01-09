@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Api(tags = "WorkingSchedule REST")
 @Tag(name = "WorkingSchedule REST", description = "API WorkingSchedule description")
@@ -23,7 +24,7 @@ public interface WorkingScheduleRestApi {
             @ApiResponse(code = 200, message = "Working Schedules Page found"),
             @ApiResponse(code = 204, message = "Working Schedules not present")}
     )
-    ResponseEntity<Page<WorkingScheduleDto>> getPage(@ApiParam(name = "page") @RequestParam(required = false, value = "page") Integer page,
+    ResponseEntity<List<WorkingScheduleDto>> getPage(@ApiParam(name = "page") @RequestParam(required = false, value = "page") Integer page,
                                                      @ApiParam(name = "size") @RequestParam(required = false, value = "size") Integer size);
 
     @GetMapping("/api/working-schedule/{id}")

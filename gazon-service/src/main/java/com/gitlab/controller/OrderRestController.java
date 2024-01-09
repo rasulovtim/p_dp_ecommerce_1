@@ -22,20 +22,18 @@ public class OrderRestController implements OrderRestApi {
 
     private final OrderService orderService;
 
-    @Override
-    public ResponseEntity<List<OrderDto>> getAll() {
-        List<OrderDto> orders = orderService.findAllDto();
-        if (orders.isEmpty()) {
+    public ResponseEntity<List<OrderDto>> getPage(Integer page, Integer size) {
+        var orderPage = orderService.getPageDto(page, size);
+        if (orderPage == null || orderPage.getContent().isEmpty()) {
             return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok(orders);
         }
+        return ResponseEntity.ok(orderPage.getContent());
     }
 
     @Override
     public ResponseEntity<OrderDto> get(Long id) {
         return orderService.findByIdDto(id)
-                .map(value -> ResponseEntity.ok(value))
+                .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
@@ -50,7 +48,7 @@ public class OrderRestController implements OrderRestApi {
     public ResponseEntity<OrderDto> update(Long id, OrderDto orderDto) {
         Optional<OrderDto> updateOrderDto = orderService.updateDto(id, orderDto);
         return updateOrderDto
-                .map(dto -> ResponseEntity.ok(dto))
+                .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 

@@ -4,8 +4,12 @@ import com.gitlab.dto.OrderDto;
 import com.gitlab.model.Order;
 import com.gitlab.model.User;
 import com.gitlab.service.UserService;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = {SelectedProductMapper.class, ShippingAddressMapper.class})
 public abstract class OrderMapper {
@@ -35,4 +39,8 @@ public abstract class OrderMapper {
     @Mapping(source = "userId", target = "user.id")
     @Mapping(source = "shippingAddressDto", target = "shippingAddress")
     public abstract Order toEntity(OrderDto orderDto);
+
+    public abstract List<OrderDto> toDtoList(List<Order> orderList);
+
+    public abstract List<Order> toEntityList(List<OrderDto> orderDtoList);
 }

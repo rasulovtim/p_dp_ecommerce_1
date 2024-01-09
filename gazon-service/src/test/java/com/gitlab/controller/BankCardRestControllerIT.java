@@ -2,16 +2,15 @@ package com.gitlab.controller;
 
 import com.gitlab.dto.BankCardDto;
 import com.gitlab.mapper.BankCardMapper;
-import com.gitlab.model.BankCard;
 import com.gitlab.service.BankCardService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -32,19 +31,56 @@ class BankCardRestControllerIT extends AbstractIntegrationTest {
     private BankCardMapper bankCardMapper;
 
     @Test
+    @Transactional(readOnly = true)
     void should_get_all_bankCards() throws Exception {
-        String expected = objectMapper.writeValueAsString(
-                bankCardService
-                        .findAll()
-                        .stream()
-                        .map(bankCardMapper::toDto)
-                        .collect(Collectors.toList())
-        );
+
+        var response = bankCardService.getPage(null, null);
+        var expected = objectMapper.writeValueAsString(bankCardMapper.toDtoList(response.getContent()));
 
         mockMvc.perform(get(BANK_CARD_URI))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
+    }
+
+    @Test
+    @Transactional(readOnly = true)
+    void should_get_page() throws Exception {
+        int page = 0;
+        int size = 2;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        var response = bankCardService.getPage(page, size);
+        assertFalse(response.getContent().isEmpty());
+
+        var expected = objectMapper.writeValueAsString(bankCardMapper.toDtoList(response.getContent()));
+
+        mockMvc.perform(get(BANK_CARD_URI + parameters))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(expected));
+    }
+
+    @Test
+    void should_get_page_with_incorrect_parameters() throws Exception {
+        int page = 0;
+        int size = -2;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        mockMvc.perform(get(BANK_CARD_URI + parameters))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void should_get_page_without_content() throws Exception {
+        int page = 10;
+        int size = 100;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        mockMvc.perform(get(BANK_CARD_URI + parameters))
+                .andDo(print())
+                .andExpect(status().isNoContent());
     }
 
     @Test

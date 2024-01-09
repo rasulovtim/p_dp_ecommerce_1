@@ -13,13 +13,13 @@ import com.gitlab.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -37,19 +37,15 @@ class UserRestControllerIT extends AbstractIntegrationTest {
 
     @Autowired
     private UserService userService;
-
     @Autowired
     private UserMapper userMapper;
 
     @Test
+    @Transactional(readOnly = true)
     void should_get_all_users() throws Exception {
-        String expected = objectMapper.writeValueAsString(
-                userService
-                        .findAll()
-                        .stream()
-                        .map((User user) -> userMapper.toDto(user))
-                        .collect(Collectors.toList())
-        );
+
+        var response = userService.getPage(null, null);
+        var expected = objectMapper.writeValueAsString(userMapper.toDtoList(response.getContent()));
 
         mockMvc.perform(get(USER_URI))
                 .andDo(print())
@@ -57,7 +53,45 @@ class UserRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(content().json(expected));
     }
 
+    @Test
+    @Transactional(readOnly = true)
+    void should_get_page() throws Exception {
+        int page = 0;
+        int size = 2;
+        String parameters = "?page=" + page + "&size=" + size;
 
+        var response = userService.getPage(page, size);
+        assertFalse(response.getContent().isEmpty());
+
+        var expected = objectMapper.writeValueAsString(userMapper.toDtoList(response.getContent()));
+
+        mockMvc.perform(get(USER_URI + parameters))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(expected));
+    }
+
+    @Test
+    void should_get_page_with_incorrect_parameters() throws Exception {
+        int page = 0;
+        int size = -2;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        mockMvc.perform(get(USER_URI + parameters))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void should_get_page_without_content() throws Exception {
+        int page = 10;
+        int size = 100;
+        String parameters = "?page=" + page + "&size=" + size;
+
+        mockMvc.perform(get(USER_URI + parameters))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
 
     @Test
     void should_get_user_by_id() throws Exception {
@@ -78,7 +112,7 @@ class UserRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_return_not_found_when_get_user_by_non_existent_id() throws Exception {
-        long id = 10L;
+        long id = 100L;
         mockMvc.perform(get(USER_URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isNotFound());
@@ -86,9 +120,8 @@ class UserRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_create_user() throws Exception {
-        UserDto userDto = generateUser();
 
-        String jsonExampleDto = objectMapper.writeValueAsString(userDto);
+        String jsonExampleDto = objectMapper.writeValueAsString(generateUser(6L));
 
         mockMvc.perform(post(USER_URI)
                         .content(jsonExampleDto)
@@ -128,8 +161,8 @@ class UserRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_return_not_found_when_update_user_by_non_existent_id() throws Exception {
-        long id = 10L;
-        UserDto userDto = generateUser();
+        long id = 100L;
+        UserDto userDto = generateUser(5L);
 
         String jsonUserDto = objectMapper.writeValueAsString(userDto);
 
@@ -143,22 +176,24 @@ class UserRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_delete_user_by_id() throws Exception {
-        UserDto userDto = generateUser();
-        mockMvc.perform(delete(USER_URI + "/{id}", userDto.getId()))
+        User user = userService.save(userMapper.toEntity(generateUser(5L)));
+        long id = userService.findById(user.getId()).get().getId();
+
+        mockMvc.perform(delete(USER_URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk());
-        mockMvc.perform(get(USER_URI + "/{id}", userDto.getId()))
+        mockMvc.perform(get(USER_URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
 
-    private UserDto generateUser() {
+    private UserDto generateUser(Long id) {
         Set<String> roleSet = new HashSet<>();
         roleSet.add("ROLE_ADMIN");
 
         Set<BankCardDto> bankCardSet = new HashSet<>();
         bankCardSet.add(new BankCardDto(
-                1L,
+                10L,
                 "1111222233334444",
                 LocalDate.now(),
                 423
@@ -166,7 +201,7 @@ class UserRestControllerIT extends AbstractIntegrationTest {
 
         Set<ShippingAddressDto> personalAddress = new HashSet<>();
         personalAddress.add(new PersonalAddressDto(
-                1L,
+                10L,
                 "address",
                 "directions",
                 "apartment",
@@ -176,7 +211,7 @@ class UserRestControllerIT extends AbstractIntegrationTest {
                 "postCode"));
 
         PassportDto passportDto = new PassportDto(
-                1L,
+                10L,
                 Citizenship.RUSSIA,
                 "user",
                 "user",
@@ -189,8 +224,8 @@ class UserRestControllerIT extends AbstractIntegrationTest {
 
 
         return new UserDto(
-                1L,
-                "mail@mail.ru",
+                10L,
+                "mail" + id + "@mail.ru",
                 "user",
                 "answer",
                 "question",

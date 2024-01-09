@@ -1,13 +1,16 @@
 package com.gitlab.service;
 
+import com.gitlab.dto.ProductDto;
 import com.gitlab.enums.EntityStatus;
 import com.gitlab.mapper.ProductMapper;
 import com.gitlab.model.Product;
-import com.gitlab.dto.ProductDto;
 import com.gitlab.model.Review;
 import com.gitlab.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.search.jpa.FullTextQuery;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,6 +70,38 @@ public class ProductService {
             }
         }
         return currentOptionalProductDto;
+    }
+
+    public Page<Product> getPage(Integer page, Integer size) {
+        if (page == null || size == null) {
+            var products = findAll();
+            if (products.isEmpty()) {
+                return Page.empty();
+            }
+            return new PageImpl<>(products);
+        }
+        if (page < 0 || size < 1) {
+            return Page.empty();
+        }
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return productRepository.findAll(pageRequest);
+    }
+
+    public Page<ProductDto> getPageDto(Integer page, Integer size) {
+
+        if (page == null || size == null) {
+            var products = findAllDto();
+            if (products.isEmpty()) {
+                return Page.empty();
+            }
+            return new PageImpl<>(products);
+        }
+        if (page < 0 || size < 1) {
+            return Page.empty();
+        }
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<Product> productPage = productRepository.findAll(pageRequest);
+        return productPage.map(productMapper::toDto);
     }
 
     public Product save(Product product) {

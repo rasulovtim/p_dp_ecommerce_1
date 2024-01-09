@@ -2,8 +2,13 @@ package com.gitlab.controller;
 
 import com.gitlab.controllers.api.rest.BankCardRestApi;
 import com.gitlab.dto.BankCardDto;
+import com.gitlab.dto.BankCardDto;
+import com.gitlab.model.BankCard;
 import com.gitlab.service.BankCardService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -19,14 +24,12 @@ public class BankCardRestController implements BankCardRestApi {
 
     private final BankCardService bankCardService;
 
-    public ResponseEntity<List<BankCardDto>> getAll() {
-        List<BankCardDto> bankCardDtos = bankCardService.findAllDto();
-
-        if (bankCardDtos.isEmpty()) {
+    public ResponseEntity<List<BankCardDto>> getPage(Integer page, Integer size) {
+        var bankCardPage = bankCardService.getPageDto(page, size);
+        if (bankCardPage == null || bankCardPage.getContent().isEmpty()) {
             return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok(bankCardDtos);
         }
+        return ResponseEntity.ok(bankCardPage.getContent());
     }
 
     @Override

@@ -9,6 +9,9 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public abstract class ReviewImageMapper {
 
@@ -32,7 +35,10 @@ public abstract class ReviewImageMapper {
         if (reviewId == null) {
             return null;
         }
-
         return reviewRepository.findById(reviewId).orElse(null);
     }
+
+    public abstract List<ReviewImageDto> toDtoList(List<ReviewImage> reviewImageList);
+
+    public abstract List<ReviewImage> toEntityList(List<ReviewImageDto> reviewImageDtoList);
 }
