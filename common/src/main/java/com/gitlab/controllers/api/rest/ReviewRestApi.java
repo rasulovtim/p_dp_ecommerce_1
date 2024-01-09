@@ -31,7 +31,8 @@ public interface ReviewRestApi {
             @ApiResponse(code = 200, message = "Reviews found"),
             @ApiResponse(code = 204, message = "Reviews not present")}
     )
-    ResponseEntity<List<ReviewDto>> getAll();
+    ResponseEntity<List<ReviewDto>> getPage(@ApiParam(name = "page") @RequestParam(required = false, value = "page") Integer page,
+                                            @ApiParam(name = "size") @RequestParam(required = false, value = "size") Integer size);
 
     @GetMapping("/api/review/{id}")
     @ApiOperation(value = "Get Review by id")

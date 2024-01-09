@@ -1,4 +1,4 @@
-package com.gitlab.controller.api;
+package com.gitlab.controllers.api.rest;
 
 import com.gitlab.dto.PaymentDto;
 import io.swagger.annotations.*;
@@ -10,7 +10,6 @@ import java.util.List;
 
 @Api(tags = "Payment REST")
 @Tag(name = "Payment REST", description = "Payment API description")
-@RequestMapping("/api/payment")
 public interface PaymentRestApi {
 
     @GetMapping("")

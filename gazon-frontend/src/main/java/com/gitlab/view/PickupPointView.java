@@ -36,7 +36,7 @@ public class PickupPointView extends VerticalLayout {
 
     public PickupPointView(PickupPointClient pickupPointClient) {
         this.pickupPointClient = pickupPointClient;
-        this.dataSource = pickupPointClient.getAll().getBody();
+        this.dataSource = pickupPointClient.getPage(null, null).getBody();
 
         ValidationMessage idValidationMessage = new ValidationMessage();
         ValidationMessage pickupPointAddressValidationMessage = new ValidationMessage();

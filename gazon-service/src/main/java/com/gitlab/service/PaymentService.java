@@ -50,6 +50,21 @@ public class PaymentService {
         return paymentRepository.findById(id)
                 .map(paymentMapper::toDto);
     }
+    
+    public Page<Payment> getPage(Integer page, Integer size) {
+        if (page == null || size == null) {
+            var payments = findAll();
+            if (payments.isEmpty()) {
+                return Page.empty();
+            }
+            return new PageImpl<>(payments);
+        }
+        if (page < 0 || size < 1) {
+            return Page.empty();
+        }
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return paymentRepository.findAll(pageRequest);
+    }
 
     public Page<Payment> getPage(Integer page, Integer size) {
         if (page == null || size == null) {

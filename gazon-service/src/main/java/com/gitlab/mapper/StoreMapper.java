@@ -7,6 +7,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 
+import java.util.List;
 import java.util.Set;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
@@ -28,11 +29,14 @@ public abstract class StoreMapper {
         if (ownerId == null) {
             return null;
         }
-
         User user = new User();
         user.setId(ownerId);
         return user;
     }
 
     public abstract Set<User> map(Set<Long> managersId);
+
+    public abstract List<StoreDto> toDtoList(List<Store> storeList);
+
+    public abstract List<Store> toEntityList(List<StoreDto> storeDtoList);
 }

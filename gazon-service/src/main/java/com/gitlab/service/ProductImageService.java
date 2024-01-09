@@ -6,6 +6,7 @@ import com.gitlab.model.ProductImage;
 import com.gitlab.repository.ProductImageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,17 +55,38 @@ public class ProductImageService {
                 .collect(Collectors.toList());
     }
 
-    public Page<ProductImage> getPage(int page, int size) {
+
+    public Page<ProductImage> getPage(Integer page, Integer size) {
+        if (page == null || size == null) {
+            var productImages = findAll();
+            if (productImages.isEmpty()) {
+                return Page.empty();
+            }
+            return new PageImpl<>(productImages);
+        }
+        if (page < 0 || size < 1) {
+            return Page.empty();
+        }
         PageRequest pageRequest = PageRequest.of(page, size);
         return productImageRepository.findAll(pageRequest);
     }
 
-    public Page<ProductImageDto> getPageDto(int page, int size) {
+    public Page<ProductImageDto> getPageDto(Integer page, Integer size) {
+
+        if (page == null || size == null) {
+            var productImages = findAllDto();
+            if (productImages.isEmpty()) {
+                return Page.empty();
+            }
+            return new PageImpl<>(productImages);
+        }
+        if (page < 0 || size < 1) {
+            return Page.empty();
+        }
         PageRequest pageRequest = PageRequest.of(page, size);
         Page<ProductImage> productImagePage = productImageRepository.findAll(pageRequest);
         return productImagePage.map(productImageMapper::toDto);
     }
-
 
     @Transactional
     public ProductImage save(ProductImage productImage) {

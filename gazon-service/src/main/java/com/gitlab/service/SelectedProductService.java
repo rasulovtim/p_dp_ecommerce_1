@@ -5,6 +5,9 @@ import com.gitlab.mapper.SelectedProductMapper;
 import com.gitlab.model.SelectedProduct;
 import com.gitlab.repository.SelectedProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +42,38 @@ public class SelectedProductService {
     public Optional<SelectedProductDto> findByIdDto(Long id) {
         Optional<SelectedProduct> selectedProductOptional = selectedProductRepository.findById(id);
         return selectedProductOptional.map(selectedProductMapper::toDto);
+    }
+
+    public Page<SelectedProduct> getPage(Integer page, Integer size) {
+        if (page == null || size == null) {
+            var selectedProducts = findAll();
+            if (selectedProducts.isEmpty()) {
+                return Page.empty();
+            }
+            return new PageImpl<>(selectedProducts);
+        }
+        if (page < 0 || size < 1) {
+            return Page.empty();
+        }
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return selectedProductRepository.findAll(pageRequest);
+    }
+
+    public Page<SelectedProductDto> getPageDto(Integer page, Integer size) {
+
+        if (page == null || size == null) {
+            var selectedProducts = findAllDto();
+            if (selectedProducts.isEmpty()) {
+                return Page.empty();
+            }
+            return new PageImpl<>(selectedProducts);
+        }
+        if (page < 0 || size < 1) {
+            return Page.empty();
+        }
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<SelectedProduct> selectedProductPage = selectedProductRepository.findAll(pageRequest);
+        return selectedProductPage.map(selectedProductMapper::toDto);
     }
 
     @Transactional

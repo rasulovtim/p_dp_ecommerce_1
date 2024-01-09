@@ -12,6 +12,7 @@ import org.mapstruct.MappingConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public abstract class SelectedProductMapper {
@@ -55,4 +56,8 @@ public abstract class SelectedProductMapper {
                 .map(userMapper::toEntity)
                 .orElseThrow(() -> new RuntimeException("User wasn't found"));
     }
+
+    public abstract List<SelectedProductDto> toDtoList(List<SelectedProduct> selectedProductList);
+
+    public abstract List<SelectedProduct> toEntityList(List<SelectedProductDto> selectedProductDtoList);
 }

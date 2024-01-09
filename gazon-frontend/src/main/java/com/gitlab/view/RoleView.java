@@ -31,7 +31,7 @@ public class RoleView extends VerticalLayout {
 
     public RoleView(RoleClient roleClient) {
         this.roleClient = roleClient;
-        this.dataSource = roleClient.getAll().getBody();
+        this.dataSource = roleClient.getPage(null, null).getBody();
         ValidationMessage idValidationMessage = new ValidationMessage();
         ValidationMessage roleTextValidationMessage = new ValidationMessage();
 

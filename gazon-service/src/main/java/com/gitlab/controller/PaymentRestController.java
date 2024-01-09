@@ -1,6 +1,6 @@
 package com.gitlab.controller;
 
-import com.gitlab.controller.api.PaymentRestApi;
+import com.gitlab.controllers.api.rest.PaymentRestApi;
 import com.gitlab.dto.PaymentDto;
 import com.gitlab.model.Payment;
 import com.gitlab.service.PaymentService;

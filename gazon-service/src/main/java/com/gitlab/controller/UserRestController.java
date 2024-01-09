@@ -21,18 +21,14 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserRestController implements UserRestApi {
 
-    private final UserMapper userMapper;
-
     private final UserService userService;
 
-    @Override
-    public ResponseEntity<List<UserDto>> getAll() {
-        var users = userService.findAll();
-        if(users.isEmpty()){
+    public ResponseEntity<List<UserDto>> getPage(Integer page, Integer size) {
+        var userPage = userService.getPageDto(page, size);
+        if (userPage == null || userPage.getContent().isEmpty()) {
             return ResponseEntity.noContent().build();
-        }else {
-            return ResponseEntity.ok(users.stream().map(userMapper::toDto).toList());
         }
+        return ResponseEntity.ok(userPage.getContent());
     }
 
     @Override
@@ -47,18 +43,15 @@ public class UserRestController implements UserRestApi {
     @Override
     public ResponseEntity<UserDto> create(UserDto userDto) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(userMapper
-                        .toDto(userService
-                                .save(userMapper
-                                        .toEntity(userDto))));
+                .body(userService.saveDto(userDto));
     }
 
     @Override
     public ResponseEntity<UserDto> update(Long id, UserDto userDto) {
-        Optional<User> updatedUser = userService.update(id, userMapper.toEntity(userDto));
+        Optional<UserDto> updatedUser = userService.updateDto(id, userDto);
 
         return updatedUser
-                .map(user -> ResponseEntity.ok(userMapper.toDto(user)))
+                .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 

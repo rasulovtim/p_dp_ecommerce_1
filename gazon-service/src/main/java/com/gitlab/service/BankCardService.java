@@ -5,6 +5,10 @@ import com.gitlab.mapper.BankCardMapper;
 import com.gitlab.model.BankCard;
 import com.gitlab.repository.BankCardRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,6 +40,39 @@ public class BankCardService {
     public Optional<BankCardDto> findByIdDto(Long id) {
         return bankCardRepository.findById(id)
                 .map(bankCardMapper::toDto);
+    }
+
+    public Page<BankCard> getPage(Integer page, Integer size) {
+
+        if (page == null || size == null) {
+            var bankCards = findAll();
+            if (bankCards.isEmpty()) {
+                return Page.empty();
+            }
+            return new PageImpl<>(bankCards);
+        }
+        if (page < 0 || size < 1) {
+            return Page.empty();
+        }
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return bankCardRepository.findAll(pageRequest);
+    }
+
+    public Page<BankCardDto> getPageDto(Integer page, Integer size) {
+
+        if (page == null || size == null) {
+            var bankCards = findAllDto();
+            if (bankCards.isEmpty()) {
+                return Page.empty();
+            }
+            return new PageImpl<>(bankCards);
+        }
+        if (page < 0 || size < 1) {
+            return Page.empty();
+        }
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<BankCard> bankCardPage = bankCardRepository.findAll(pageRequest);
+        return bankCardPage.map(bankCardMapper::toDto);
     }
 
     public BankCard save(BankCard bankCard) {

@@ -10,6 +10,7 @@ import com.gitlab.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,23 +42,44 @@ public class OrderService {
         return orders.stream().map(orderMapper::toDto).collect(Collectors.toList());
     }
 
-    public Page<Order> getOrder(int page, int size) {
-        PageRequest pageRequest = PageRequest.of(page, size);
-        return orderRepository.findAll(pageRequest);
-    }
-
-    public Page<OrderDto> getPageDto(int page, int size) {
-        PageRequest pageRequest = PageRequest.of(page, size);
-        Page<Order> examplePage = orderRepository.findAll(pageRequest);
-        return examplePage.map(orderMapper::toDto);
-    }
-
     public Optional<Order> findById(Long id) {
         return orderRepository.findById(id);
     }
 
     public Optional<OrderDto> findByIdDto(Long id) {
         return orderRepository.findById(id).map(orderMapper::toDto);
+    }
+
+    public Page<Order> getPage(Integer page, Integer size) {
+        if (page == null || size == null) {
+            var orders = findAll();
+            if (orders.isEmpty()) {
+                return Page.empty();
+            }
+            return new PageImpl<>(orders);
+        }
+        if (page < 0 || size < 1) {
+            return Page.empty();
+        }
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return orderRepository.findAll(pageRequest);
+    }
+
+    public Page<OrderDto> getPageDto(Integer page, Integer size) {
+
+        if (page == null || size == null) {
+            var orders = findAllDto();
+            if (orders.isEmpty()) {
+                return Page.empty();
+            }
+            return new PageImpl<>(orders);
+        }
+        if (page < 0 || size < 1) {
+            return Page.empty();
+        }
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<Order> orderPage = orderRepository.findAll(pageRequest);
+        return orderPage.map(orderMapper::toDto);
     }
 
     public Order save(Order order) {

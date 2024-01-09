@@ -9,6 +9,8 @@ import org.mapstruct.*;
 
 import java.util.List;
 
+import java.util.List;
+
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public abstract class PaymentMapper {
@@ -39,4 +41,7 @@ public abstract class PaymentMapper {
 
 }
 
+    public abstract List<PaymentDto> toDtoList(List<Payment> paymentList);
 
+    public abstract List<Payment> toEntityList(List<PaymentDto> paymentDtoList);
+}

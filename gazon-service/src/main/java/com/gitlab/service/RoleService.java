@@ -8,6 +8,9 @@ import com.gitlab.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -50,6 +53,38 @@ public class RoleService {
                 .map(roleMapper::toDto);
     }
 
+    public Page<Role> getPage(Integer page, Integer size) {
+        if (page == null || size == null) {
+            var roles = findAll();
+            if (roles.isEmpty()) {
+                return Page.empty();
+            }
+            return new PageImpl<>(roles);
+        }
+        if (page < 0 || size < 1) {
+            return Page.empty();
+        }
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return roleRepository.findAll(pageRequest);
+    }
+
+    public Page<RoleDto> getPageDto(Integer page, Integer size) {
+
+        if (page == null || size == null) {
+            var roles = findAllActiveDto();
+            if (roles.isEmpty()) {
+                return Page.empty();
+            }
+            return new PageImpl<>(roles);
+        }
+        if (page < 0 || size < 1) {
+            return Page.empty();
+        }
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<Role> rolePage = roleRepository.findAll(pageRequest);
+        return rolePage.map(roleMapper::toDto);
+    }
+    
     @CacheEvict(value = "roles", allEntries = true)
     public Role save(Role role) {
         return roleRepository.save(role);

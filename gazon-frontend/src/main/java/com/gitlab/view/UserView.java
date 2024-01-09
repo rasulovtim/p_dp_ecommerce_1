@@ -38,7 +38,7 @@ public class UserView extends VerticalLayout {
 
     public UserView(UserClient userClient) {
         this.userClient = userClient;
-        this.dataSource = userClient.getAll().getBody();
+        this.dataSource = userClient.getPage(null, null).getBody();
 
         ValidationMessage idValidationMessage = new ValidationMessage();
         ValidationMessage userEmailValidationMessage = new ValidationMessage();

@@ -20,17 +20,14 @@ public class PostomatRestController implements PostomatRestApi {
 
     private final PostomatService postomatService;
 
-    @Override
-    public ResponseEntity<List<PostomatDto>> getAll() {
-        List<PostomatDto> postomatDtos = postomatService.findAllDto();
-
-        if (postomatDtos.isEmpty()) {
+    public ResponseEntity<List<PostomatDto>> getPage(Integer page, Integer size) {
+        var postomatPage = postomatService.getPageDto(page, size);
+        if (postomatPage == null || postomatPage.getContent().isEmpty()) {
             return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok(postomatDtos);
         }
+        return ResponseEntity.ok(postomatPage.getContent());
     }
-
+    
     @Override
     public ResponseEntity<PostomatDto> get(Long id) {
         return postomatService.findByIdDto(id)
@@ -49,7 +46,7 @@ public class PostomatRestController implements PostomatRestApi {
     @Override
     public ResponseEntity<PostomatDto> update(Long id, PostomatDto postomatDto) {
         return postomatService.updateDto(id, postomatDto)
-                .map(value -> ResponseEntity.ok(value))
+                .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 

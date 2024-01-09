@@ -13,4 +13,7 @@ public interface BankCardMapper {
 
     BankCard toEntity(BankCardDto bankCardDto);
 
+    List<BankCardDto> toDtoList(List<BankCard> bankCardList);
+
+    List<BankCard> toEntityList(List<BankCardDto> bankCardDtoList);
 }

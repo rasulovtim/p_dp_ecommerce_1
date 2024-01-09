@@ -6,6 +6,9 @@ import com.gitlab.mapper.PickupPointMapper;
 import com.gitlab.model.PickupPoint;
 import com.gitlab.repository.PickupPointRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,7 +43,38 @@ public class PickupPointService {
         return pickupPointRepository.findById(id)
                 .map(pickupPointMapper::toDto);
     }
+    public Page<PickupPoint> getPage(Integer page, Integer size) {
+        if (page == null || size == null) {
+            var pickupPoints = findAll();
+            if (pickupPoints.isEmpty()) {
+                return Page.empty();
+            }
+            return new PageImpl<>(pickupPoints);
+        }
+        if (page < 0 || size < 1) {
+            return Page.empty();
+        }
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return pickupPointRepository.findAll(pageRequest);
+    }
 
+    public Page<PickupPointDto> getPageDto(Integer page, Integer size) {
+
+        if (page == null || size == null) {
+            var pickupPoints = findAllDto();
+            if (pickupPoints.isEmpty()) {
+                return Page.empty();
+            }
+            return new PageImpl<>(pickupPoints);
+        }
+        if (page < 0 || size < 1) {
+            return Page.empty();
+        }
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<PickupPoint> pickupPointPage = pickupPointRepository.findAll(pageRequest);
+        return pickupPointPage.map(pickupPointMapper::toDto);
+    }
+    
     public PickupPoint save(PickupPoint pickupPoint) {
         return pickupPointRepository.save(pickupPoint);
     }
