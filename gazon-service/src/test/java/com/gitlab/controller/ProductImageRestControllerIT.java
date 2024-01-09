@@ -4,16 +4,24 @@ import com.gitlab.dto.ProductImageDto;
 import com.gitlab.mapper.ProductImageMapper;
 import com.gitlab.model.ProductImage;
 import com.gitlab.service.ProductImageService;
+import com.gitlab.util.ImageUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -69,29 +77,27 @@ class ProductImageRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_get_productImage_by_id() throws Exception {
-        long id = 1L;
-        String expected = objectMapper.writeValueAsString(
-                productImageMapper.toDto(
-                        productImageService
-                                .findById(id)
-                                .orElse(null))
-        );
+        ProductImageDto saveDto = productImageService.saveDto(generateProductDto());
 
-        mockMvc.perform(get(PRODUCT_IMAGE_URI + "/{id}", id))
+        byte[] expected = ImageUtils.decompressImage(saveDto.getData());
+
+        mockMvc.perform(get(PRODUCT_IMAGE_URI + "/{id}", saveDto.getId()))
                 .andDo(print())
-                .andExpect(status().isPartialContent())
-                .andExpect(content().json(expected));
+                .andExpect(status().isOk())
+                .andExpect(content().bytes(expected));
+
+        productImageService.delete(saveDto.getId());
     }
 
     @Test
     void should_get_productImages_by_productId() throws Exception {
         long id = 1L;
         String expected = objectMapper.writeValueAsString(
-                        productImageService
-                                .findAllByProductId(id)
-                                .stream()
-                                .map(productImageMapper::toDto)
-                                .collect(Collectors.toList())
+                productImageService
+                        .findAllByProductId(id)
+                        .stream()
+                        .map(productImageMapper::toDto)
+                        .collect(Collectors.toList())
         );
 
         mockMvc.perform(get(PRODUCT_IMAGE_URI + "/product_id/{id}", id))
@@ -124,16 +130,15 @@ class ProductImageRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_update_productImage_by_id() throws Exception {
-        long id = 1L;
+        ProductImageDto productImageDto = generateProductDto();
+        ProductImageDto saveDto = productImageService.saveDto(productImageDto);
         int numberOfEntitiesExpected = productImageService.findAll().size();
 
-        ProductImageDto productImageDto = generateProductDto();
-        productImageDto.setId(id);
-        productImageDto.setName("updatedName");
-        String jsonProductImageDto = objectMapper.writeValueAsString(productImageDto);
-        String expected = objectMapper.writeValueAsString(productImageDto);
+        saveDto.setName("updatedName");
+        String jsonProductImageDto = objectMapper.writeValueAsString(saveDto);
+        String expected = objectMapper.writeValueAsString(saveDto);
 
-        mockMvc.perform(patch(PRODUCT_IMAGE_URI + "/{id}", id)
+        mockMvc.perform(patch(PRODUCT_IMAGE_URI + "/{id}", saveDto.getId())
                         .content(jsonProductImageDto)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -142,14 +147,15 @@ class ProductImageRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(content().json(expected))
                 .andExpect(result -> assertThat(productImageService.findAll().size(),
                         equalTo(numberOfEntitiesExpected)));
+
+        productImageService.delete(saveDto.getId());
     }
 
     @Test
     void should_return_not_found_when_update_productImage_by_non_existent_id() throws Exception {
-        long id = 10L;
+        long id = 100L;
 
         ProductImageDto productImageDto = generateProductDto();
-        productImageDto.setId(id);
         productImageDto.setName("updatedName");
         String jsonProductImageDto = objectMapper.writeValueAsString(productImageDto);
 
@@ -173,11 +179,23 @@ class ProductImageRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(status().isNotFound());
     }
 
-    private ProductImageDto generateProductDto() {
+    @Test
+    void should_delete_productImage_by_not_exist_id() throws Exception {
+        long id = 100L;
+        mockMvc.perform(delete(PRODUCT_IMAGE_URI + "/{id}", id))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    private ProductImageDto generateProductDto() throws IOException {
         ProductImageDto productImageDto = new ProductImageDto();
         productImageDto.setProductId(1L);
         productImageDto.setName("file.txt");
-        productImageDto.setData(new byte[]{1, 2, 3});
+        BufferedImage image = ImageIO.read(new File("src/test/resources/image/product.png"));
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(image, "png", baos);
+        byte[] imageData = baos.toByteArray();
+        productImageDto.setData(imageData);
 
         return productImageDto;
     }

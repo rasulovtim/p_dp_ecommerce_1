@@ -56,7 +56,7 @@ public interface ProductImageRestApi {
 
     @ApiOperation(value = "Create a new ProductImage")
     @PostMapping("/api/images")
-    ResponseEntity<ProductImageDto> create(@ApiParam(name = "productImageDto", value = "Product images details") @RequestBody ProductImageDto productImageDto);
+    ResponseEntity<ProductImageDto> create(@ApiParam(name = "productImageDto", value = "Product images details") @Valid @RequestBody ProductImageDto productImageDto);
 
 
     @PatchMapping(value = "/api/images/{id}")
