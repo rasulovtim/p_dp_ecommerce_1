@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -128,7 +128,7 @@ public class OrderRestControllerIT extends AbstractIntegrationTest {
         orderDto.setId(id);
         String expected = objectMapper.writeValueAsString(orderDto);
 
-        mockMvc.perform(put(ORDER_URI + "/{id}", id)
+        mockMvc.perform(patch(ORDER_URI + "/{id}", id)
                         .content(jsonOrderDto)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -165,7 +165,7 @@ public class OrderRestControllerIT extends AbstractIntegrationTest {
         OrderDto orderDto = generateOrderDto();
         String jsonOrderDto = objectMapper.writeValueAsString(orderDto);
 
-        mockMvc.perform(put(ORDER_URI + "/{id}", id)  // Заменяем patch на put
+        mockMvc.perform(patch(ORDER_URI + "/{id}", id)  // Заменяем patch на put
                         .content(jsonOrderDto)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
