@@ -6,7 +6,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface PersonalAddressMapper {
@@ -15,11 +14,7 @@ public interface PersonalAddressMapper {
 
     PersonalAddress toEntity(PersonalAddressDto personalAddressDto);
 
-    default List<PersonalAddressDto> toDtoList(List<PersonalAddress> personalAddressList) {
-        return personalAddressList.stream().map(this::toDto).collect(Collectors.toList());
-    }
+    List<PersonalAddressDto> toDtoList(List<PersonalAddress> personalAddressList);
 
-    default List<PersonalAddress> toEntityList(List<PersonalAddressDto> personalAddressDtoList) {
-        return personalAddressDtoList.stream().map(this::toEntity).collect(Collectors.toList());
-    }
+    List<PersonalAddress> toEntityList(List<PersonalAddressDto> personalAddressDtoList);
 }

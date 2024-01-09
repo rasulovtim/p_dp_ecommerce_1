@@ -35,15 +35,10 @@ public abstract class ReviewImageMapper {
         if (reviewId == null) {
             return null;
         }
-
         return reviewRepository.findById(reviewId).orElse(null);
     }
 
-    public List<ReviewImageDto> toDtoList(List<ReviewImage> reviewImageList) {
-        return reviewImageList.stream().map(this::toDto).collect(Collectors.toList());
-    }
+    public abstract List<ReviewImageDto> toDtoList(List<ReviewImage> reviewImageList);
 
-    public List<ReviewImage> toEntityList(List<ReviewImageDto> reviewImageDtoList) {
-        return reviewImageDtoList.stream().map(this::toEntity).collect(Collectors.toList());
-    }
+    public abstract List<ReviewImage> toEntityList(List<ReviewImageDto> reviewImageDtoList);
 }

@@ -44,11 +44,7 @@ public abstract class ProductMapper {
                 .map(productImageService::findById).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toSet());
     }
 
-    public List<ProductDto> toDtoList(List<Product> productList) {
-        return productList.stream().map(this::toDto).collect(Collectors.toList());
-    }
+    public abstract List<ProductDto> toDtoList(List<Product> productList);
 
-    public List<Product> toEntityList(List<ProductDto> productDtoList) {
-        return productDtoList.stream().map(this::toEntity).collect(Collectors.toList());
-    }
+    public abstract List<Product> toEntityList(List<ProductDto> productDtoList);
 }

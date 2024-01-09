@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public abstract class SelectedProductMapper {
@@ -58,11 +57,7 @@ public abstract class SelectedProductMapper {
                 .orElseThrow(() -> new RuntimeException("User wasn't found"));
     }
 
-    public List<SelectedProductDto> toDtoList(List<SelectedProduct> selectedProductList) {
-        return selectedProductList.stream().map(this::toDto).collect(Collectors.toList());
-    }
+    public abstract List<SelectedProductDto> toDtoList(List<SelectedProduct> selectedProductList);
 
-    public List<SelectedProduct> toEntityList(List<SelectedProductDto> selectedProductDtoList) {
-        return selectedProductDtoList.stream().map(this::toEntity).collect(Collectors.toList());
-    }
+    public abstract List<SelectedProduct> toEntityList(List<SelectedProductDto> selectedProductDtoList);
 }

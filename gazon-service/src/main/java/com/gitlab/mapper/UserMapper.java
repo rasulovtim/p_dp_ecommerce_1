@@ -70,7 +70,6 @@ public abstract class UserMapper {
         return roleSet;
     }
 
-
     @Named("createShippingAddress")
     public ShippingAddress createShippingAddress(ShippingAddressDto dto) {
         if (dto.getClass() == PersonalAddressDto.class) {
@@ -110,7 +109,6 @@ public abstract class UserMapper {
 
     public abstract  PickupPoint createPickupPointEntity(PickupPointDto pickupPointDto);
 
-
     public Set<ShippingAddressDto> mapShippingAddressEntityToShippingAddressDto(Set<ShippingAddress> shippingAddress) {
         return shippingAddress.stream()
                 .map(this::createShippingAddressDto)
@@ -123,13 +121,7 @@ public abstract class UserMapper {
                 .collect(Collectors.toSet());
     }
 
-    public List<UserDto> toDtoList(List<User> userList) {
-        return userList.stream().map(this::toDto).collect(Collectors.toList());
-    }
+    public abstract List<UserDto> toDtoList(List<User> userList);
 
-    public List<User> toEntityList(List<UserDto> userDtoList) {
-        return userDtoList.stream().map(this::toEntity).collect(Collectors.toList());
-    }
+    public abstract List<User> toEntityList(List<UserDto> userDtoList);
 }
-
-

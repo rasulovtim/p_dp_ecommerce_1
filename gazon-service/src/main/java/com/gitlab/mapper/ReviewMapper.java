@@ -65,11 +65,7 @@ public abstract class ReviewMapper {
                 orElseThrow(() -> new RuntimeException("Product wasn't found"));
     }
 
-    public List<ReviewDto> toDtoList(List<Review> reviewList) {
-        return reviewList.stream().map(this::toDto).collect(Collectors.toList());
-    }
+    public abstract List<ReviewDto> toDtoList(List<Review> reviewList);
 
-    public List<Review> toEntityList(List<ReviewDto> reviewDtoList) {
-        return reviewDtoList.stream().map(this::toEntity).collect(Collectors.toList());
-    }
+    public abstract List<Review> toEntityList(List<ReviewDto> reviewDtoList);
 }

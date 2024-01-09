@@ -10,7 +10,6 @@ import org.mapstruct.MappingConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = {SelectedProductMapper.class, ShippingAddressMapper.class})
 public abstract class OrderMapper {
@@ -41,11 +40,7 @@ public abstract class OrderMapper {
     @Mapping(source = "shippingAddressDto", target = "shippingAddress")
     public abstract Order toEntity(OrderDto orderDto);
 
-    public List<OrderDto> toDtoList(List<Order> orderList) {
-        return orderList.stream().map(this::toDto).collect(Collectors.toList());
-    }
+    public abstract List<OrderDto> toDtoList(List<Order> orderList);
 
-    public List<Order> toEntityList(List<OrderDto> orderDtoList) {
-        return orderDtoList.stream().map(this::toEntity).collect(Collectors.toList());
-    }
+    public abstract List<Order> toEntityList(List<OrderDto> orderDtoList);
 }

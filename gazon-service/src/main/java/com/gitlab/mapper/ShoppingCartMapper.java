@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = {SelectedProductMapper.class, ProductService.class})
 public abstract class ShoppingCartMapper {
@@ -43,11 +42,7 @@ public abstract class ShoppingCartMapper {
 
     protected abstract Set<SelectedProduct> toSelectedProductSet(Set<SelectedProductDto> selectedProducts);
 
-    public List<ShoppingCartDto> toDtoList(List<ShoppingCart> shoppingCartList) {
-        return shoppingCartList.stream().map(this::toDto).collect(Collectors.toList());
-    }
+    public abstract List<ShoppingCartDto> toDtoList(List<ShoppingCart> shoppingCartList);
 
-    public List<ShoppingCart> toEntityList(List<ShoppingCartDto> shoppingCartDtoList) {
-        return shoppingCartDtoList.stream().map(this::toEntity).collect(Collectors.toList());
-    }
+    public abstract List<ShoppingCart> toEntityList(List<ShoppingCartDto> shoppingCartDtoList);
 }
