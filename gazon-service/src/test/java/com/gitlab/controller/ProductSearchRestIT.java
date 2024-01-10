@@ -20,16 +20,12 @@ class ProductSearchRestIT extends AbstractIntegrationTest {
     @Autowired
     private ProductService productService;
 
-    @Autowired
-    private ProductMapper productMapper;
-
     @Test
     void should_get_product_by_name() throws Exception {
 
         ProductDto productDto = new ProductDto();
         productDto.setName("name1");
         productDto.setStockCount(1);
-        productDto.setImagesId(productMapper.toDto(productService.findById(1L).get()).getImagesId());
         productDto.setDescription("name");
         productDto.setIsAdult(true);
         productDto.setCode("name");
