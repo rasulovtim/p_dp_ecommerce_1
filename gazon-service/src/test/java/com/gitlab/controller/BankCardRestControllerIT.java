@@ -4,13 +4,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.gitlab.dto.BankCardDto;
 import com.gitlab.mapper.BankCardMapper;
 import com.gitlab.service.BankCardService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.stream.Collectors;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -45,9 +46,8 @@ class BankCardRestControllerIT extends AbstractIntegrationTest {
         int page = 0;
         int size = 2;
         String parameters = "?page=" + page + "&size=" + size;
-
         var response = bankCardService.getPage(page, size);
-        assertFalse(response.getContent().isEmpty());
+        Assertions.assertFalse(response.getContent().isEmpty());
 
         var expected = objectMapper.writeValueAsString(bankCardMapper.toDtoList(response.getContent()));
 

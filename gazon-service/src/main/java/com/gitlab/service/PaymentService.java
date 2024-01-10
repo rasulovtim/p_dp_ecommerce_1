@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -49,21 +50,6 @@ public class PaymentService {
     public Optional<PaymentDto> findByIdDto(Long id) {
         return paymentRepository.findById(id)
                 .map(paymentMapper::toDto);
-    }
-    
-    public Page<Payment> getPage(Integer page, Integer size) {
-        if (page == null || size == null) {
-            var payments = findAll();
-            if (payments.isEmpty()) {
-                return Page.empty();
-            }
-            return new PageImpl<>(payments);
-        }
-        if (page < 0 || size < 1) {
-            return Page.empty();
-        }
-        PageRequest pageRequest = PageRequest.of(page, size);
-        return paymentRepository.findAll(pageRequest);
     }
 
     public Page<Payment> getPage(Integer page, Integer size) {
@@ -147,11 +133,18 @@ public class PaymentService {
         }
 
         Optional<BankCard> paymentBankCard = bankCardService.findById(paymentDto.getBankCardDto().getId());
-        Optional<User> paymentUser = userService.findUserById(paymentDto.getUserId());
-        Optional<Order> paymentOrder = orderService.findById(paymentDto.getOrderId());
+        if (paymentBankCard.isEmpty()) {
+            throw new EntityNotFoundException("Банковская карта не найдена");
+        }
 
-        if (paymentBankCard.isEmpty() || paymentUser.isEmpty() || paymentOrder.isEmpty()) {
-            return Optional.empty();
+        Optional<User> paymentUser = userService.findUserById(paymentDto.getUserId());
+        if (paymentUser.isEmpty()) {
+            throw new EntityNotFoundException("Пользователь не найден");
+        }
+
+        Optional<Order> paymentOrder = orderService.findById(paymentDto.getOrderId());
+        if (paymentOrder.isEmpty()) {
+            throw new EntityNotFoundException("Заказ не найден");
         }
 
         Payment savedPayment = paymentMapper.toUpdateEntity(optionalSavedPayment.get(), paymentDto, paymentBankCard.get(),

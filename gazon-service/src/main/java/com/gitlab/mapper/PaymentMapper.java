@@ -40,8 +40,3 @@ public abstract class PaymentMapper {
     public abstract List<Payment> toEntityList(List<PaymentDto> paymentDtoList);
 
 }
-
-    public abstract List<PaymentDto> toDtoList(List<Payment> paymentList);
-
-    public abstract List<Payment> toEntityList(List<PaymentDto> paymentDtoList);
-}

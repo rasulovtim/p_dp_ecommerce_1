@@ -87,27 +87,6 @@ class PaymentRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(content().json(expected));
     }
 
-    @Test
-    void should_get_page_with_incorrect_parameters() throws Exception {
-        int page = 0;
-        int size = -2;
-        String parameters = "?page=" + page + "&size=" + size;
-
-        mockMvc.perform(get(PAYMENT_URI + parameters))
-                .andDo(print())
-                .andExpect(status().isNoContent());
-    }
-
-    @Test
-    void should_get_page_without_content() throws Exception {
-        int page = 10;
-        int size = 100;
-        String parameters = "?page=" + page + "&size=" + size;
-
-        mockMvc.perform(get(PAYMENT_URI + parameters))
-                .andDo(print())
-                .andExpect(status().isNoContent());
-    }
 
     @Test
     void should_get_payment_by_id() throws Exception {

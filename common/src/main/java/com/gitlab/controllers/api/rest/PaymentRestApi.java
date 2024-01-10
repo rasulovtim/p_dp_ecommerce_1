@@ -10,6 +10,7 @@ import java.util.List;
 
 @Api(tags = "Payment REST")
 @Tag(name = "Payment REST", description = "Payment API description")
+@RequestMapping("/api/payment")
 public interface PaymentRestApi {
 
     @GetMapping("")
