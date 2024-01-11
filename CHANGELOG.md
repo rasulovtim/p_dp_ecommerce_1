@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 - #task_number - short task description
+- #119 - Status model for Role and Integration test fix
+- #128 Проверка работоспособности Passport REST
 - #129 Проверка работоспособности Payment REST
 
 ## [1.2.0] - 24.12.2023
