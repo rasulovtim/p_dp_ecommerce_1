@@ -20,22 +20,18 @@ class ProductSearchRestIT extends AbstractIntegrationTest {
     @Autowired
     private ProductService productService;
 
-    @Autowired
-    private ProductMapper productMapper;
-
     @Test
-    void should_get_product_by_id() throws Exception {
+    void should_get_product_by_name() throws Exception {
 
-            ProductDto productDto = new ProductDto();
-            productDto.setName("name1");
-            productDto.setStockCount(1);
-            productDto.setImagesId(productMapper.toDto(productService.findById(1L).get()).getImagesId());
-            productDto.setDescription("name");
-            productDto.setIsAdult(true);
-            productDto.setCode("name");
-            productDto.setWeight(1L);
-            productDto.setPrice(BigDecimal.ONE);
-            productService.saveDto(productDto);
+        ProductDto productDto = new ProductDto();
+        productDto.setName("name1");
+        productDto.setStockCount(1);
+        productDto.setDescription("name");
+        productDto.setIsAdult(true);
+        productDto.setCode("name");
+        productDto.setWeight(1L);
+        productDto.setPrice(BigDecimal.ONE);
+        productService.saveDto(productDto);
 
         String expected = objectMapper.writeValueAsString(
                 productService.findByNameIgnoreCaseContaining(productDto.getName()));
@@ -45,5 +41,14 @@ class ProductSearchRestIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
+    }
+
+    @Test
+    void should_no_content_when_search() throws Exception {
+        String notFound = "UwUwU";
+
+        mockMvc.perform(get(PRODUCT_URI + "?name=" + notFound))
+                .andDo(print())
+                .andExpect(status().isNoContent());
     }
 }

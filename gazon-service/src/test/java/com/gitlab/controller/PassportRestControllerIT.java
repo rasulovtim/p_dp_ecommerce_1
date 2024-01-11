@@ -3,19 +3,22 @@ package com.gitlab.controller;
 import com.gitlab.dto.PassportDto;
 import com.gitlab.enums.Citizenship;
 import com.gitlab.mapper.PassportMapper;
+import com.gitlab.model.Passport;
 import com.gitlab.service.PassportService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.time.LocalDate;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -114,7 +117,6 @@ class PassportRestControllerIT extends AbstractIntegrationTest {
     @Test
     void should_create_passport() throws Exception {
         PassportDto passportDto = generatePassportDto();
-
         String jsonPassportDto = objectMapper.writeValueAsString(passportDto);
 
         mockMvc.perform(post(PASSPORT_URI)
@@ -151,6 +153,33 @@ class PassportRestControllerIT extends AbstractIntegrationTest {
     }
 
     @Test
+    void should_not_update_passport_when_not_valid() throws Exception {
+        ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+        Validator validator = validatorFactory.getValidator();
+
+        PassportDto passportDto = generatePassportDto();
+
+        Passport entity = passportService.save(passportMapper.toEntity(passportDto));
+        PassportDto savedPassport = passportMapper.toDto(entity);
+        savedPassport.setPassportNumber(null);
+
+        String jsonPassportDto = objectMapper.writeValueAsString(savedPassport);
+
+        Set<ConstraintViolation<PassportDto>> violations = validator.validate(savedPassport);
+
+        assertFalse(violations.isEmpty());
+
+        mockMvc.perform(patch(PASSPORT_URI + "/{id}", savedPassport.getId())
+                        .content(jsonPassportDto)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+
+        validatorFactory.close();
+    }
+
+    @Test
     void should_return_not_found_when_update_passport_by_non_existent_id() throws Exception {
         long id = 1000000L;
 
@@ -182,7 +211,6 @@ class PassportRestControllerIT extends AbstractIntegrationTest {
 
     private PassportDto generatePassportDto() {
         PassportDto passportDto = new PassportDto();
-        passportDto.setId(10L);
         passportDto.setCitizenship(Citizenship.RUSSIA);
         passportDto.setFirstName("Ivan");
         passportDto.setLastName("Petrov");
