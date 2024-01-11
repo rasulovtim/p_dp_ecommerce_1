@@ -20,12 +20,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
 public class PaymentService {
+
     private final PaymentRepository paymentRepository;
     private final BankCardService bankCardService;
     private final PaymentMapper paymentMapper;
@@ -92,37 +92,6 @@ public class PaymentService {
         Payment payment = paymentMapper.toEntity(paymentDto);
         Payment savedPayment = paymentRepository.save(payment);
         return paymentMapper.toDto(savedPayment);
-    }
-
-    public Optional<Payment> update(Long id, Payment payment) {
-        Optional<Payment> optionalSavedPayment = findById(id);
-        Payment savedPayment;
-
-        if (optionalSavedPayment.isEmpty()) {
-            return optionalSavedPayment;
-        } else {
-            savedPayment = optionalSavedPayment.get();
-        }
-        if (payment.getBankCard() != null) {
-            savedPayment.setBankCard(payment.getBankCard());
-        }
-        if (payment.getPaymentStatus() != null) {
-            savedPayment.setPaymentStatus(payment.getPaymentStatus());
-        }
-        if (payment.getCreateDateTime() != null) {
-            savedPayment.setCreateDateTime(payment.getCreateDateTime());
-        }
-        if (payment.getOrder() != null) {
-            savedPayment.setOrder(payment.getOrder());
-        }
-        if (payment.getSum() != null) {
-            savedPayment.setSum(payment.getSum());
-        }
-        if (payment.getUser() != null) {
-            savedPayment.setUser(payment.getUser());
-        }
-
-        return Optional.of(paymentRepository.save(savedPayment));
     }
 
     public Optional<PaymentDto> updateDto(Long id, PaymentDto paymentDto) {
