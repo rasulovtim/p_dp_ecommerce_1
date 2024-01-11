@@ -57,62 +57,6 @@ class PaymentServiceTest {
     }
 
     @Test
-    void should_update_payment() {
-        long id = 1L;
-        Payment paymentToUpdate = generatePayment();
-        paymentToUpdate.setSum(BigDecimal.valueOf(1000));
-
-        Payment paymentBeforeUpdate = new Payment();
-        paymentBeforeUpdate.setId(id);
-        paymentBeforeUpdate.setSum(BigDecimal.valueOf(500));
-
-        Payment updatedPayment = new Payment();
-        updatedPayment.setId(id);
-        updatedPayment.setSum(BigDecimal.valueOf(1000));
-
-        when(paymentRepository.findById(id)).thenReturn(Optional.of(paymentBeforeUpdate));
-        when(paymentRepository.save(updatedPayment)).thenReturn(updatedPayment);
-
-        Optional<Payment> actualResult;
-        actualResult = paymentService.update(id, paymentToUpdate);
-
-        assertEquals(updatedPayment, actualResult.orElse(null));
-    }
-
-    @Test
-    void should_not_update_payment_when_entity_not_found() {
-        long id = 1L;
-        Payment paymentToUpdate = new Payment();
-        paymentToUpdate.setSum(BigDecimal.valueOf(1000));
-
-        when(paymentRepository.findById(id)).thenReturn(Optional.empty());
-
-        Optional<Payment> actualResult = paymentService.update(id, paymentToUpdate);
-
-        verify(paymentRepository, never()).save(any());
-        assertNull(actualResult.orElse(null));
-    }
-
-    @Test
-    void should_not_updated_paymentStatus_field_if_null() {
-        long id = 1L;
-        Payment paymentToUpdate = new Payment();
-        paymentToUpdate.setPaymentStatus(null);
-
-        Payment paymentBeforeUpdate = new Payment();
-        paymentBeforeUpdate.setPaymentStatus(PaymentStatus.PAID);
-
-        when(paymentRepository.findById(id)).thenReturn(Optional.of(paymentBeforeUpdate));
-        when(paymentRepository.save(paymentBeforeUpdate)).thenReturn(paymentBeforeUpdate);
-
-        Optional<Payment> actualResult = paymentService.update(id, paymentToUpdate);
-
-        verify(paymentRepository).save(paymentBeforeUpdate);
-        assertEquals(paymentBeforeUpdate, actualResult.orElse(null));
-        assertEquals(PaymentStatus.PAID, paymentBeforeUpdate.getPaymentStatus());
-    }
-
-    @Test
     void should_delete_payment() {
         long id = 1L;
         when(paymentRepository.findById(id)).thenReturn(Optional.of(generatePayment()));

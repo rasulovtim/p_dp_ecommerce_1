@@ -22,6 +22,7 @@ public class PaymentRestController implements PaymentRestApi {
 
     private final PaymentService paymentService;
 
+    @Override
     public ResponseEntity<List<PaymentDto>> getPage(Integer page, Integer size) {
         var paymentPage = paymentService.getPageDto(page, size);
         if (paymentPage == null || paymentPage.getContent().isEmpty()) {
@@ -29,6 +30,7 @@ public class PaymentRestController implements PaymentRestApi {
         }
         return ResponseEntity.ok(paymentPage.getContent());
     }
+
 
     @Override
     public ResponseEntity<PaymentDto> get(Long id) {
