@@ -2,6 +2,7 @@ package com.gitlab.view;
 
 import com.gitlab.clients.ProductImageClient;
 import com.gitlab.clients.ProductSearchClient;
+import com.gitlab.clients.ReviewClient;
 import com.gitlab.dto.ProductDto;
 import com.gitlab.dto.ProductImageDto;
 import com.vaadin.flow.component.Composite;
@@ -26,12 +27,14 @@ import java.util.List;
 public class SearchResultsView extends CommonView implements HasUrlParameter<String> {
     private final ProductSearchClient productSearchClient;
     private final ProductImageClient productImageClient;
+    private final ReviewClient reviewClient;
     private final FlexLayout contentContainer;
 
-    public SearchResultsView(ProductSearchClient productSearchClient, ProductImageClient productImageClient) {
+    public SearchResultsView(ProductSearchClient productSearchClient, ProductImageClient productImageClient, ReviewClient reviewClient) {
         this.productSearchClient = productSearchClient;
         this.productImageClient = productImageClient;
-
+        this.reviewClient = reviewClient;
+        //поменять раскладку на список вместо плитки
         contentContainer = new FlexLayout();
         contentContainer.setWidth("1100px");
         contentContainer.setFlexDirection(FlexDirection.ROW);
@@ -83,7 +86,8 @@ public class SearchResultsView extends CommonView implements HasUrlParameter<Str
     }
 
     private ProductComponent getProductView(ProductDto productDto) {
-        return new ProductComponent(productDto.getName(), productDto.getPrice().toString(), getImages(productDto));
+        return new ProductComponent(productDto.getName(), productDto.getPrice().toString(), getImages(productDto),
+                productDto.getDescription(), productDto.getRating(), getReviewAmount(productDto));
     }
 
     private Image getImages(ProductDto productDto) {
@@ -102,6 +106,11 @@ public class SearchResultsView extends CommonView implements HasUrlParameter<Str
         return resImage;
     }
 
+    private Long getReviewAmount(ProductDto productDto) {
+        ResponseEntity<Long> reviewAmount = reviewClient.getReviewAmount(productDto.getId());
+        return reviewAmount.getBody();
+    }
+
     private void displayNoResults() {
         contentContainer.removeAll();
         contentContainer.add(new H2("Ничего не найдено"));
@@ -116,11 +125,18 @@ public class SearchResultsView extends CommonView implements HasUrlParameter<Str
         private final Image productImage;
         private final Label productName;
         private final Label productPrice;
+        private final Label productDescription;
+        private final Label productRating;
+        private final Label productReviews;
 
-        public ProductComponent(String name, String price, Image image) {
+        public ProductComponent(String name, String price, Image image, String description, String rating, Long reviewAmount) {
             productImage = image;
             productName = new Label(name);
             productPrice = new Label(price + " руб.");
+            //нет структуры описания продуктов, поэтому пока просто берем первые 100 символов
+            productDescription = new Label(description.substring(0, Math.min(description.length(), 100)) + "...");
+            productRating = new Label(rating);
+            productReviews = new Label(reviewAmount + " отзывов");
             productName.setMaxWidth("250px");
 
             productName.getElement().getStyle().set("overflow", "hidden");
@@ -134,7 +150,7 @@ public class SearchResultsView extends CommonView implements HasUrlParameter<Str
                 tooltip.setText(name);
             });
 
-            getContent().add(productImage, productPrice, productName);
+            getContent().add(productImage, productPrice, productName, productDescription, productRating, productReviews);
             getContent().setHeight("400px");
             getContent().setWidth("267px");
 

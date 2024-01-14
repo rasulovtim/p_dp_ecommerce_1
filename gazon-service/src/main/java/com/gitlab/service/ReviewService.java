@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
-
+    private final ProductService productService;
     private final ReviewMapper reviewMapper;
 
     public List<Review> findAll() {
@@ -102,7 +103,7 @@ public class ReviewService {
     public Optional<Review> update(Long id, Review review) {
         Optional<Review> reviewOptional = reviewRepository.findById(id);
         Review currentReview;
-        if (reviewOptional.isEmpty() ) {
+        if (reviewOptional.isEmpty()) {
             return reviewOptional;
         } else {
             currentReview = reviewOptional.get();
@@ -170,5 +171,13 @@ public class ReviewService {
         deletedReview.setEntityStatus(EntityStatus.DELETED);
         reviewRepository.save(deletedReview);
         return optionalDeletedReview;
+    }
+
+    public Long findByProductId(Long id) {
+        if (productService.findById(id).isEmpty()) {
+            throw new EntityNotFoundException("Товар не найден");
+        }
+
+        return reviewRepository.countReviewByProduct_IdAndEntityStatus(id, EntityStatus.ACTIVE);
     }
 }

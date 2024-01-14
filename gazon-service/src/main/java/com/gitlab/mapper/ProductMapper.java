@@ -3,10 +3,12 @@ package com.gitlab.mapper;
 import com.gitlab.dto.ProductDto;
 import com.gitlab.model.Product;
 import com.gitlab.model.ProductImage;
+import com.gitlab.model.Review;
 import com.gitlab.service.ProductImageService;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
@@ -15,13 +17,14 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public abstract class ProductMapper {
 
     @Autowired
     private ProductImageService productImageService;
 
-    @Mapping(source = "productImages", target = "imagesId")/*product.*/
+    @Mapping(source = "productImages", target = "imagesId")
+    @Mapping(source = "review", target = "rating")/*product.*/
     public abstract ProductDto toDto(Product product);
 
     public Long[] mapProductImagesToImagesId(Set<ProductImage> productImages) {
@@ -33,7 +36,17 @@ public abstract class ProductMapper {
                 .toArray(Long[]::new);
     }
 
+    public String mapProductReviewsToRating(Set<Review> productReviews) {
+        if (productReviews == null || productReviews.isEmpty()) {
+            return "Нет оценки";
+        }
+
+        return String.format("%.2f", productReviews.stream()
+                .map(Review::getRating).mapToInt(a -> a).average().orElse(0));
+    }
+
     @Mapping(source = "imagesId", target = "productImages")/*productDto.*/
+
     public abstract Product toEntity(ProductDto exampleDto);
 
     public Set<ProductImage> mapImagesIdToProductImages(Long[] imagesId) {

@@ -138,6 +138,7 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
     }
 
     @Test
+    @Transactional
     void should_create_product() throws Exception {
         ProductDto productDto = generateProductDTO();
         String jsonProductDto = objectMapper.writeValueAsString(productDto);
@@ -151,6 +152,7 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
     }
 
     @Test
+    @Transactional
     void should_update_product_by_id() throws Exception {
         long id = 1L;
         int numberOfEntitiesExpected = productService.findAll().size();
@@ -173,6 +175,7 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
     }
 
     @Test
+    @Transactional
     void should_return_not_found_when_update_product_by_non_existent_id() throws Exception {
         long id = -10L;
         ProductDto productDto = generateProductDTO();
@@ -187,6 +190,7 @@ class ProductRestControllerIT extends AbstractIntegrationTest {
     }
 
     @Test
+    @Transactional
     void should_delete_product_by_id() throws Exception {
         ProductDto productDto = productService.saveDto(generateProductDTO());
         long id = productDto.getId();
