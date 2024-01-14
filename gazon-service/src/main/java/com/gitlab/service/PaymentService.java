@@ -1,9 +1,11 @@
 package com.gitlab.service;
 
 import com.gitlab.dto.PaymentDto;
-import com.gitlab.mapper.BankCardMapper;
 import com.gitlab.mapper.PaymentMapper;
+import com.gitlab.model.BankCard;
+import com.gitlab.model.Order;
 import com.gitlab.model.Payment;
+import com.gitlab.model.User;
 import com.gitlab.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,13 +27,9 @@ import java.util.stream.Collectors;
 public class PaymentService {
 
     private final PaymentRepository paymentRepository;
-
+    private final BankCardService bankCardService;
     private final PaymentMapper paymentMapper;
-
-    private final BankCardMapper bankCardMapper;
-
     private final OrderService orderService;
-
     private final UserService userService;
 
     public List<Payment> findAll() {
@@ -52,7 +51,7 @@ public class PaymentService {
         return paymentRepository.findById(id)
                 .map(paymentMapper::toDto);
     }
-    
+
     public Page<Payment> getPage(Integer page, Integer size) {
         if (page == null || size == null) {
             var payments = findAll();
@@ -84,7 +83,7 @@ public class PaymentService {
         Page<Payment> paymentPage = paymentRepository.findAll(pageRequest);
         return paymentPage.map(paymentMapper::toDto);
     }
-    
+
     public Payment save(Payment payment) {
         return paymentRepository.save(payment);
     }
@@ -95,76 +94,43 @@ public class PaymentService {
         return paymentMapper.toDto(savedPayment);
     }
 
-    public Optional<Payment> update(Long id, Payment payment) {
-        Optional<Payment> optionalSavedPayment = findById(id);
-        Payment savedPayment;
-
-        if (optionalSavedPayment.isEmpty()) {
-            return optionalSavedPayment;
-        } else {
-            savedPayment = optionalSavedPayment.get();
-        }
-        if (payment.getBankCard() != null) {
-            savedPayment.setBankCard(payment.getBankCard());
-        }
-        if (payment.getPaymentStatus() != null) {
-            savedPayment.setPaymentStatus(payment.getPaymentStatus());
-        }
-        if (payment.getCreateDateTime() != null) {
-            savedPayment.setCreateDateTime(payment.getCreateDateTime());
-        }
-        if (payment.getOrder() != null) {
-            savedPayment.setOrder(payment.getOrder());
-        }
-        if (payment.getSum() != null) {
-            savedPayment.setSum(payment.getSum());
-        }
-        if (payment.getUser() != null) {
-            savedPayment.setUser(payment.getUser());
-        }
-
-        return Optional.of(paymentRepository.save(savedPayment));
-    }
-
     public Optional<PaymentDto> updateDto(Long id, PaymentDto paymentDto) {
         Optional<Payment> optionalSavedPayment = findById(id);
-        Payment savedPayment;
 
         if (optionalSavedPayment.isEmpty()) {
             return Optional.empty();
-        } else {
-            savedPayment = optionalSavedPayment.get();
-        }
-        if (paymentDto.getBankCardDto() != null) {
-            savedPayment.setBankCard(bankCardMapper.toEntity(paymentDto.getBankCardDto()));
-        }
-        if (paymentDto.getPaymentStatus() != null) {
-            savedPayment.setPaymentStatus(paymentDto.getPaymentStatus());
-        }
-        if (paymentDto.getCreateDateTime() != null) {
-            savedPayment.setCreateDateTime(paymentDto.getCreateDateTime());
-        }
-        if (paymentDto.getOrderId() != null) {
-            savedPayment.setOrder(orderService.findById(paymentDto.getOrderId()).get());
-        }
-        if (paymentDto.getSum() != null) {
-            savedPayment.setSum(paymentDto.getSum());
-        }
-        if (paymentDto.getUserId() != null) {
-            savedPayment.setUser(userService.findUserById(paymentDto.getUserId()).get());
         }
 
+        Optional<BankCard> paymentBankCard = bankCardService.findById(paymentDto.getBankCardDto().getId());
+        if (paymentBankCard.isEmpty()) {
+            throw new EntityNotFoundException("Банковская карта не найдена");
+        }
+
+        Optional<User> paymentUser = userService.findUserById(paymentDto.getUserId());
+        if (paymentUser.isEmpty()) {
+            throw new EntityNotFoundException("Пользователь не найден");
+        }
+
+        Optional<Order> paymentOrder = orderService.findById(paymentDto.getOrderId());
+        if (paymentOrder.isEmpty()) {
+            throw new EntityNotFoundException("Заказ не найден");
+        }
+
+        Payment savedPayment = paymentMapper.toUpdateEntity(optionalSavedPayment.get(), paymentDto, paymentBankCard.get(),
+                paymentOrder.get(), paymentUser.get());
+
         savedPayment = paymentRepository.save(savedPayment);
+
         return Optional.of(paymentMapper.toDto(savedPayment));
     }
 
     public Optional<Payment> delete(Long id) {
         Optional<Payment> optionalSavedPayment = findById(id);
-        if (optionalSavedPayment.isEmpty()) {
-            return optionalSavedPayment;
-        } else {
+
+        if (optionalSavedPayment.isPresent()) {
             paymentRepository.deleteById(id);
-            return optionalSavedPayment;
         }
+
+        return optionalSavedPayment;
     }
 }
