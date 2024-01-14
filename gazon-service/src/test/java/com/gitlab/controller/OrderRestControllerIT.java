@@ -41,7 +41,6 @@ public class OrderRestControllerIT extends AbstractIntegrationTest {
     @Test
     @Transactional(readOnly = true)
     void should_get_all_orders() throws Exception {
-
         var response = orderService.getPage(null, null);
         var expected = objectMapper.writeValueAsString(orderMapper.toDtoList(response.getContent()));
 
@@ -93,7 +92,7 @@ public class OrderRestControllerIT extends AbstractIntegrationTest {
 
 
     @Test
-    void should_get_order_by_id() throws Exception{
+    void should_get_order_by_id() throws Exception {
         long id = 1;
         var orderDto = orderService.findByIdDto(id).orElse(null);
         String expected = objectMapper.writeValueAsString(orderDto);
@@ -105,7 +104,7 @@ public class OrderRestControllerIT extends AbstractIntegrationTest {
     }
 
     @Test
-    void should_create_order() throws Exception{
+    void should_create_order() throws Exception {
         OrderDto orderDto = generateOrderDto();
 
         String jsonOrderDto = objectMapper.writeValueAsString(orderDto);
@@ -116,6 +115,37 @@ public class OrderRestControllerIT extends AbstractIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isCreated());
+    }
+
+    @Transactional
+    @Test
+    void check_null_update() throws Exception {
+        OrderDto testOrderDto = orderService.saveDto(generateOrderDto());
+        int numberOfEntitiesExpected = orderService.findAll().size();
+        System.out.println("Здесь мы узнаем количество объектов в DB = " + numberOfEntitiesExpected);
+
+        String checkJsonOrderDto = objectMapper.writeValueAsString(orderService.findByIdDto(testOrderDto.getId()).orElse(null));
+
+        testOrderDto.setUserId(null);
+        testOrderDto.setOrderCode(null);
+        testOrderDto.setShippingDate(null);
+        testOrderDto.setCreateDateTime(null);
+        testOrderDto.setSum(null);
+        testOrderDto.setDiscount(null);
+        testOrderDto.setBagCounter(null);
+        testOrderDto.setOrderStatus(null);
+
+        String jsonOrderDto = objectMapper.writeValueAsString(testOrderDto);
+        mockMvc.perform(patch(ORDER_URI + "/{id}", testOrderDto.getId())
+                        .content(jsonOrderDto)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(content().json(checkJsonOrderDto))
+                .andExpect(result -> assertThat(orderService.findAll().size(),
+                        equalTo(numberOfEntitiesExpected)));
+
+
     }
 
     @Transactional
@@ -165,14 +195,13 @@ public class OrderRestControllerIT extends AbstractIntegrationTest {
         OrderDto orderDto = generateOrderDto();
         String jsonOrderDto = objectMapper.writeValueAsString(orderDto);
 
-        mockMvc.perform(patch(ORDER_URI + "/{id}", id)  // Заменяем patch на put
+        mockMvc.perform(patch(ORDER_URI + "/{id}", id)
                         .content(jsonOrderDto)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isNotFound());  // Ожидаем статус 404 Not Found
+                .andExpect(status().isNotFound());
     }
-
 
 
     private OrderDto generateOrderDto() {
@@ -189,7 +218,7 @@ public class OrderRestControllerIT extends AbstractIntegrationTest {
         orderDto.setCreateDateTime(LocalDateTime.now());
         orderDto.setSum(new BigDecimal(5));
         orderDto.setDiscount(new BigDecimal(6));
-        orderDto.setBagCounter((byte)5);
+        orderDto.setBagCounter((byte) 5);
         orderDto.setOrderStatus(OrderStatus.DONE);
         return orderDto;
     }
