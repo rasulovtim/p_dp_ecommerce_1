@@ -6,6 +6,7 @@ import com.gitlab.clients.ReviewClient;
 import com.gitlab.dto.ProductDto;
 import com.gitlab.dto.ProductImageDto;
 import com.vaadin.flow.component.Composite;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
@@ -15,10 +16,7 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.BeforeEvent;
-import com.vaadin.flow.router.HasUrlParameter;
-import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.WildcardParameter;
+import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.StreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -125,6 +123,8 @@ public class SearchResultsView extends CommonView implements HasUrlParameter<Str
     public static class ProductComponent extends Composite<HorizontalLayout> {
 
         public ProductComponent(ProductDto productDto, Image image, Long reviewAmount) {
+            RouterLink productPageLink = new RouterLink("Страница товара", ProductPageView.class);
+//            RouteParameters paramsForProductPage = new RouteParameters(Map.of("id", productDto.getId().toString()));
             Label productName = new Label(productDto.getName());
             Label productPrice = new Label(productDto.getPrice().toString() + " руб.");
             //нет структуры описания продуктов, поэтому пока просто берем первые 100 символов
@@ -138,10 +138,14 @@ public class SearchResultsView extends CommonView implements HasUrlParameter<Str
             getContent().setPadding(true);
             getContent().setAlignItems(FlexComponent.Alignment.STRETCH);
             image.getElement().getStyle().set("cursor", "pointer");
-//            image.addClickListener(e ->
-//                    image.getUI().ifPresent(ui ->
-//                            ui.navigate("product/" + productDto.getId()))
-//            );
+
+            image.addClickListener(event -> {
+                UI ui = UI.getCurrent();
+                if (ui != null) {
+                    ui.navigate(productPageLink.getHref() + "/" + productDto.getId());
+                }
+            });
+
             getContent().add(image);
             getContent().setAlignSelf(FlexComponent.Alignment.START, image);
 
@@ -163,10 +167,6 @@ public class SearchResultsView extends CommonView implements HasUrlParameter<Str
             getContent().add(verticalLayout);
             productPrice.getElement().getStyle().set("font-weight", "bold");
             getContent().add(productPrice);
-
-//            link.add(productName);
-//            link.add(image);
-//            link.add();
         }
     }
 }
