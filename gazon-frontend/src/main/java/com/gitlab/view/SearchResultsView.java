@@ -9,9 +9,12 @@ import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.shared.Tooltip;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.Route;
@@ -34,10 +37,9 @@ public class SearchResultsView extends CommonView implements HasUrlParameter<Str
         this.productSearchClient = productSearchClient;
         this.productImageClient = productImageClient;
         this.reviewClient = reviewClient;
-        //поменять раскладку на список вместо плитки
         contentContainer = new FlexLayout();
         contentContainer.setWidth("1100px");
-        contentContainer.setFlexDirection(FlexDirection.ROW);
+        contentContainer.setFlexDirection(FlexDirection.COLUMN);
         contentContainer.setFlexWrap(FlexWrap.WRAP);
         add(contentContainer);
     }
@@ -86,8 +88,7 @@ public class SearchResultsView extends CommonView implements HasUrlParameter<Str
     }
 
     private ProductComponent getProductView(ProductDto productDto) {
-        return new ProductComponent(productDto.getName(), productDto.getPrice().toString(), getImages(productDto),
-                productDto.getDescription(), productDto.getRating(), getReviewAmount(productDto));
+        return new ProductComponent(productDto, getImages(productDto), getReviewAmount(productDto));
     }
 
     private Image getImages(ProductDto productDto) {
@@ -101,8 +102,8 @@ public class SearchResultsView extends CommonView implements HasUrlParameter<Str
         } else {
             resImage = new Image("https://cdn-icons-png.flaticon.com/512/4054/4054617.png", "no image");
         }
-        resImage.setWidth("222px");
-        resImage.setHeight("267px");
+        resImage.setWidth("250px");
+        resImage.setHeight("250px");
         return resImage;
     }
 
@@ -121,39 +122,51 @@ public class SearchResultsView extends CommonView implements HasUrlParameter<Str
         contentContainer.add(new H2("Произошла ошибка при выполнении поиска"));
     }
 
-    public static class ProductComponent extends Composite<VerticalLayout> {
-        private final Image productImage;
-        private final Label productName;
-        private final Label productPrice;
-        private final Label productDescription;
-        private final Label productRating;
-        private final Label productReviews;
+    public static class ProductComponent extends Composite<HorizontalLayout> {
 
-        public ProductComponent(String name, String price, Image image, String description, String rating, Long reviewAmount) {
-            productImage = image;
-            productName = new Label(name);
-            productPrice = new Label(price + " руб.");
+        public ProductComponent(ProductDto productDto, Image image, Long reviewAmount) {
+            Label productName = new Label(productDto.getName());
+            Label productPrice = new Label(productDto.getPrice().toString() + " руб.");
             //нет структуры описания продуктов, поэтому пока просто берем первые 100 символов
-            productDescription = new Label(description.substring(0, Math.min(description.length(), 100)) + "...");
-            productRating = new Label(rating);
-            productReviews = new Label(reviewAmount + " отзывов");
-            productName.setMaxWidth("250px");
+            Label productDescription = new Label(productDto.getDescription()
+                    .substring(0, Math.min(productDto.getDescription().length(), 100)) + "...");
+            Label productRating = new Label(productDto.getRating());
+            Label productReviews = new Label(reviewAmount + " отзывов");
+            Icon ratingIcon = productDto.getRating().equals("Нет оценок") ? VaadinIcon.STAR_O.create() : VaadinIcon.STAR.create();
+            Icon reviewIcon = VaadinIcon.CHAT.create();
 
-            productName.getElement().getStyle().set("overflow", "hidden");
-            productName.getElement().getStyle().set("text-overflow", "ellipsis");
-            productName.getElement().getStyle().set("white-space", "nowrap");
+            getContent().setPadding(true);
+            getContent().setAlignItems(FlexComponent.Alignment.STRETCH);
+            image.getElement().getStyle().set("cursor", "pointer");
+//            image.addClickListener(e ->
+//                    image.getUI().ifPresent(ui ->
+//                            ui.navigate("product/" + productDto.getId()))
+//            );
+            getContent().add(image);
+            getContent().setAlignSelf(FlexComponent.Alignment.START, image);
+
+            VerticalLayout verticalLayout = new VerticalLayout();
+            verticalLayout.setAlignItems(FlexComponent.Alignment.STRETCH);
             productName.getElement().getStyle().set("cursor", "pointer");
+            productName.getElement().getStyle().set("font-weight", "bold");
+            verticalLayout.add(productName);
+            verticalLayout.add(productDescription);
 
-            productName.addAttachListener(e -> {
-                Tooltip tooltip = Tooltip.forComponent(productName);
-                tooltip.setPosition(Tooltip.TooltipPosition.BOTTOM);
-                tooltip.setText(name);
-            });
+            HorizontalLayout horizontalLayout = new HorizontalLayout();
+            horizontalLayout.setPadding(true);
+            horizontalLayout.setAlignItems(FlexComponent.Alignment.STRETCH);
+            horizontalLayout.add(ratingIcon, productRating);
+            horizontalLayout.add(reviewIcon, productReviews);
 
-            getContent().add(productImage, productPrice, productName, productDescription, productRating, productReviews);
-            getContent().setHeight("400px");
-            getContent().setWidth("267px");
+            verticalLayout.add(horizontalLayout);
 
+            getContent().add(verticalLayout);
+            productPrice.getElement().getStyle().set("font-weight", "bold");
+            getContent().add(productPrice);
+
+//            link.add(productName);
+//            link.add(image);
+//            link.add();
         }
     }
 }

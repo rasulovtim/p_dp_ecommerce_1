@@ -38,7 +38,7 @@ public abstract class ProductMapper {
 
     public String mapProductReviewsToRating(Set<Review> productReviews) {
         if (productReviews == null || productReviews.isEmpty()) {
-            return "Нет оценки";
+            return "Нет оценок";
         }
 
         return String.format("%.2f", productReviews.stream()

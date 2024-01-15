@@ -58,6 +58,7 @@ public class MainLayout extends AppLayout {
         tabs.add(createTab(VaadinIcon.CLOCK, "Working Schedule", WorkingScheduleView.class));
         tabs.add(createTab(VaadinIcon.CAMERA, "Review Image", ReviewImageView.class));
         tabs.add(createTab(VaadinIcon.CAMERA, "Product Image", ProductImageView.class));
+        tabs.add(createTab(VaadinIcon.BOOK, "Product Description", ProductDescriptionView.class));
         tabs.setOrientation(Tabs.Orientation.VERTICAL);
         return tabs;
     }
