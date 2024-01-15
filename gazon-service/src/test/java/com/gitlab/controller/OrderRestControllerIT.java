@@ -39,8 +39,9 @@ public class OrderRestControllerIT extends AbstractIntegrationTest {
     private OrderMapper orderMapper;
 
     @Test
-    @Transactional(readOnly = true)
+    @Transactional
     void should_get_all_orders() throws Exception {
+        orderService.saveDto(generateOrderDto());
         var response = orderService.getPage(null, null);
         var expected = objectMapper.writeValueAsString(orderMapper.toDtoList(response.getContent()));
 
@@ -51,8 +52,9 @@ public class OrderRestControllerIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @Transactional(readOnly = true)
+    @Transactional
     void should_get_page() throws Exception {
+        orderService.saveDto(generateOrderDto());
         int page = 0;
         int size = 2;
         String parameters = "?page=" + page + "&size=" + size;
@@ -93,7 +95,7 @@ public class OrderRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_get_order_by_id() throws Exception {
-        long id = 1;
+        long id = orderService.saveDto(generateOrderDto()).getId();
         var orderDto = orderService.findByIdDto(id).orElse(null);
         String expected = objectMapper.writeValueAsString(orderDto);
 
@@ -117,16 +119,15 @@ public class OrderRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(status().isCreated());
     }
 
-    @Transactional
     @Test
+    @Transactional
     void check_null_update() throws Exception {
         OrderDto testOrderDto = orderService.saveDto(generateOrderDto());
         int numberOfEntitiesExpected = orderService.findAll().size();
-        System.out.println("Здесь мы узнаем количество объектов в DB = " + numberOfEntitiesExpected);
 
         String checkJsonOrderDto = objectMapper.writeValueAsString(orderService.findByIdDto(testOrderDto.getId()).orElse(null));
 
-        testOrderDto.setUserId(null);
+        testOrderDto.setShippingAddressDto(null);
         testOrderDto.setOrderCode(null);
         testOrderDto.setShippingDate(null);
         testOrderDto.setCreateDateTime(null);
@@ -148,14 +149,28 @@ public class OrderRestControllerIT extends AbstractIntegrationTest {
 
     }
 
-    @Transactional
     @Test
+    @Transactional
     void should_update_order_by_id() throws Exception {
-        long id = 1L;
+        OrderDto orderDto = orderService.saveDto(generateOrderDto());
+
+        ShippingAddressDto shippingAddressDto = new ShippingAddressDto();
+        shippingAddressDto.setId(1L);
+        shippingAddressDto.setAddress("ffffffffffffff");
+        shippingAddressDto.setDirections("fffffffffff");
+
+        orderDto.setSelectedProducts(Set.of(new SelectedProductDto()));
+        orderDto.setShippingAddressDto(shippingAddressDto);
+        orderDto.setOrderCode("321");
+        orderDto.setShippingDate(LocalDate.parse("2077-07-07"));
+        orderDto.setCreateDateTime(LocalDateTime.of(2023, 1, 15, 22, 2));
+        orderDto.setSum(new BigDecimal(7));
+        orderDto.setDiscount(new BigDecimal(7));
+        orderDto.setBagCounter((byte) 7);
+
+        long id = orderDto.getId();
         int numberOfEntitiesExpected = orderService.findAll().size();
-        OrderDto orderDto = generateOrderDto();
         String jsonOrderDto = objectMapper.writeValueAsString(orderDto);
-        orderDto.setId(id);
         String expected = objectMapper.writeValueAsString(orderDto);
 
         mockMvc.perform(patch(ORDER_URI + "/{id}", id)
