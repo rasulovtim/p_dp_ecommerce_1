@@ -44,13 +44,11 @@ public class PersonalAddressRestController implements PersonalAddressRestApi {
 
     @Override
     public ResponseEntity<PersonalAddressDto> update(Long id, PersonalAddressDto personalAddressDto) {
-        Optional<PersonalAddressDto> updatedPersonalAddressDto = personalAddressService.updateDto(id, personalAddressDto);
+        Optional<PersonalAddressDto> updatedPersonalAddress = Optional.ofNullable(personalAddressService.update(id, personalAddressDto));
 
-        if (updatedPersonalAddressDto.isPresent()) {
-            return ResponseEntity.ok(updatedPersonalAddressDto.orElse(null));
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return updatedPersonalAddress
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @Override
