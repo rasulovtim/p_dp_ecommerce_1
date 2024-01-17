@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -42,6 +41,7 @@ public class BankCardService {
                 .map(bankCardMapper::toDto);
     }
 
+    @SuppressWarnings("Duplicates")
     public Page<BankCard> getPage(Integer page, Integer size) {
 
         if (page == null || size == null) {
@@ -58,6 +58,7 @@ public class BankCardService {
         return bankCardRepository.findAll(pageRequest);
     }
 
+    @SuppressWarnings("Duplicates")
     public Page<BankCardDto> getPageDto(Integer page, Integer size) {
 
         if (page == null || size == null) {
@@ -75,9 +76,6 @@ public class BankCardService {
         return bankCardPage.map(bankCardMapper::toDto);
     }
 
-    public BankCard save(BankCard bankCard) {
-        return bankCardRepository.save(bankCard);
-    }
 
     public BankCardDto saveDto(BankCardDto bankCardDto) {
         BankCard bankCard = bankCardMapper.toEntity(bankCardDto);
@@ -85,25 +83,6 @@ public class BankCardService {
         return bankCardMapper.toDto(savedBankCard);
     }
 
-    public Optional<BankCard> update(Long id, BankCard bankCard) {
-        Optional<BankCard> optionalSavedCard = findById(id);
-        BankCard savedCard;
-        if (optionalSavedCard.isEmpty()) {
-            return optionalSavedCard;
-        } else {
-            savedCard = optionalSavedCard.get();
-        }
-        if (bankCard.getCardNumber() != null) {
-            savedCard.setCardNumber(bankCard.getCardNumber());
-        }
-        if (bankCard.getDueDate() != null) {
-            savedCard.setDueDate(bankCard.getDueDate());
-        }
-        if (bankCard.getSecurityCode() != null) {
-            savedCard.setSecurityCode(bankCard.getSecurityCode());
-        }
-        return Optional.of(bankCardRepository.save(savedCard));
-    }
 
     public Optional<BankCardDto> updateDto(Long id, BankCardDto bankCardDto) {
         Optional<BankCard> optionalSavedCard = findById(id);
