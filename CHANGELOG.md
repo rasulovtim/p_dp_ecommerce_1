@@ -5,6 +5,7 @@
 - #119 - Status model for Role and Integration test fix
 - #128 Проверка работоспособности Passport REST
 - #129 Проверка работоспособности Payment REST
+- #149 Добавлена карточка товара
 
 ## [1.2.0] - 24.12.2023
 - #13 - Make Payment entity

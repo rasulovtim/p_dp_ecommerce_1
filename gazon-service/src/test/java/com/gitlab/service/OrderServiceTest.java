@@ -1,6 +1,7 @@
 package com.gitlab.service;
 
-import com.gitlab.model.Example;
+import com.gitlab.dto.OrderDto;
+import com.gitlab.mapper.*;
 import com.gitlab.model.Order;
 import com.gitlab.repository.OrderRepository;
 import org.junit.jupiter.api.Test;
@@ -25,6 +26,8 @@ public class OrderServiceTest {
 
     @InjectMocks
     private OrderService orderService;
+    @Mock
+    private OrderMapper orderMapper;
 
     @Test
     void should_find_all_orders() {
@@ -46,27 +49,41 @@ public class OrderServiceTest {
 
     @Test
     void should_save_order() {
+        Long id = 1L;
         Order expectedResult = generateOrder();
+        OrderDto orderDto = generateOrderDto();
+        orderDto.setId(id);
+
+        when(orderMapper.toDto(any(Order.class))).thenReturn(orderDto);
+        when(orderMapper.toEntity(orderDto)).thenReturn(expectedResult);
+
         when(orderRepository.save(expectedResult)).thenReturn(expectedResult);
 
-        Order actualResult = orderService.save(expectedResult);
+        Order actualResult = orderMapper.toEntity(orderService.saveDto(orderMapper.toDto(expectedResult)));
 
         assertEquals(expectedResult, actualResult);
     }
 
     @Test
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
     void should_update_order() {
         long id = 1L;
-        Order orderToUpdate = new Order();
-        orderToUpdate.setOrderCode("updatesOrder");
+        OrderDto orderDtoToUpdate = generateOrderDto();
+        orderDtoToUpdate.setOrderCode("updatesOrder");
 
         Order orderBeforeUpdate = new Order(id, "unmodifiedCode");
         Order updatedOrder = new Order(id, "updatesOrder");
 
+
+        when(orderMapper.toDto(any(Order.class))).thenReturn(orderDtoToUpdate);
+        when(orderMapper.toEntity(orderDtoToUpdate)).thenReturn(updatedOrder);
+
+
         when(orderRepository.findById(id)).thenReturn(Optional.of(orderBeforeUpdate));
         when(orderRepository.save(updatedOrder)).thenReturn(updatedOrder);
 
-        Optional<Order> actualResult = orderService.update(id, orderToUpdate);
+        Optional<Order> actualResult = Optional.of(orderMapper
+                .toEntity(orderService.updateDto(id, orderDtoToUpdate).get()));
 
         assertEquals(updatedOrder, actualResult.orElse(null));
     }
@@ -74,30 +91,33 @@ public class OrderServiceTest {
     @Test
     void should_not_update_order_when_entity_not_found() {
         long id = 1L;
-        Order orderToUpdate = new Order();
-        orderToUpdate.setOrderCode("updatesOrder");
+        OrderDto orderDtoToUpdate = new OrderDto();
+        orderDtoToUpdate.setOrderCode("updatesOrder");
 
         when(orderRepository.findById(id)).thenReturn(Optional.empty());
 
-        Optional<Order> actualResult = orderService.update(id, orderToUpdate);
+        Optional<OrderDto> actualDtoResult = orderService.updateDto(id, orderDtoToUpdate);
 
         verify(orderRepository, never()).save(any());
-        assertNull(actualResult.orElse(null));
+        assertNull(actualDtoResult.orElse(null));
     }
 
     @Test
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
     void should_not_updated_orderCode_field_if_null() {
         long id = 1L;
-        Order orderToUpdate = new Order();
-        orderToUpdate.setOrderCode(null);
+        OrderDto orderDtoToUpdate = new OrderDto();
+        orderDtoToUpdate.setOrderCode(null);
 
         Order orderBeforeUpdate = new Order(id, "unmodifiedCode");
 
+        when(orderMapper.toDto(any(Order.class))).thenReturn(orderDtoToUpdate);
+        when(orderMapper.toEntity(orderDtoToUpdate)).thenReturn(orderBeforeUpdate);
 
         when(orderRepository.findById(id)).thenReturn(Optional.of(orderBeforeUpdate));
         when(orderRepository.save(orderBeforeUpdate)).thenReturn(orderBeforeUpdate);
 
-        Optional<Order> actualResult = orderService.update(id, orderToUpdate);
+        Optional<Order> actualResult = Optional.of( orderMapper.toEntity(orderService.updateDto(id, orderDtoToUpdate).get()));
 
         verify(orderRepository).save(orderBeforeUpdate);
         assertEquals(orderBeforeUpdate, actualResult.orElse(null));
@@ -138,6 +158,10 @@ public class OrderServiceTest {
 
     private Order generateOrder() {
         return new Order(1L);
+    }
+
+    private OrderDto generateOrderDto() {
+        return new OrderDto();
     }
 
 }

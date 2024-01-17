@@ -1,5 +1,6 @@
 package com.gitlab.repository;
 
+import com.gitlab.enums.EntityStatus;
 import com.gitlab.model.Review;
 import lombok.NonNull;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -23,4 +24,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     @EntityGraph(value = "Review.reviewImages")
     @Query("SELECT r FROM Review r WHERE r.entityStatus = 'ACTIVE'")
     List<Review> findAll();
+
+    Long countReviewByProduct_IdAndEntityStatus(Long id, EntityStatus entityStatus);
 }
