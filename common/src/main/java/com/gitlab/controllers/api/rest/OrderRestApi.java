@@ -8,13 +8,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -40,7 +34,7 @@ public interface OrderRestApi {
     ResponseEntity<OrderDto> create(@ApiParam(name = "orderDto", value = "Order details") @RequestBody OrderDto orderDto);
 
     @ApiOperation(value = "Update order by ID")
-    @PutMapping("/api/order/{id}")
+    @PatchMapping("/api/order/{id}")
     ResponseEntity<OrderDto> update(@ApiParam(name = "id", value = "Order ID") @PathVariable (value = "id") Long id, @ApiParam(name = "OrderDto", value = "Update Order details") @RequestBody OrderDto orderDto);
 
     @ApiOperation(value = "Delete order by ID")
