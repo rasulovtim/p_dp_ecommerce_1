@@ -9,12 +9,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class PersonalAddressService {
 
@@ -22,11 +25,12 @@ public class PersonalAddressService {
 
     private final PersonalAddressMapper personalAddressMapper;
 
-
+    @Transactional(readOnly = true)
     public List<PersonalAddress> findAll() {
         return personalAddressRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public List<PersonalAddressDto> findAllDto() {
         List<PersonalAddress> personalAddresses = personalAddressRepository.findAll();
         return personalAddresses.stream()
@@ -34,10 +38,12 @@ public class PersonalAddressService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public Optional<PersonalAddress> findById(Long id) {
         return personalAddressRepository.findById(id);
     }
 
+    @Transactional(readOnly = true)
     public Optional<PersonalAddressDto> findByIdDto(Long id) {
         return personalAddressRepository.findById(id)
                 .map(personalAddressMapper::toDto);
@@ -84,49 +90,13 @@ public class PersonalAddressService {
         return personalAddressMapper.toDto(personalAddressRepository.save(personalAddress));
     }
 
-    public Optional<PersonalAddress> update(Long id, PersonalAddress personalAddress) {
-        Optional<PersonalAddress> optionalSavedAddress = findById(id);
-        PersonalAddress savedPersonalAddress;
-        if (optionalSavedAddress.isEmpty()) {
-            return optionalSavedAddress;
-        } else {
-            savedPersonalAddress = optionalSavedAddress.get();
-        }
-
-        if (personalAddress.getDirections() != null) {
-            savedPersonalAddress.setDirections(personalAddress.getDirections());
-        }
-        if (personalAddress.getDoorCode() != null) {
-            savedPersonalAddress.setDoorCode(personalAddress.getDoorCode());
-        }
-        if (personalAddress.getPostCode() != null) {
-            savedPersonalAddress.setPostCode(personalAddress.getPostCode());
-        }
-        if (personalAddress.getAddress() != null) {
-            savedPersonalAddress.setAddress(personalAddress.getAddress());
-        }
-        if (personalAddress.getApartment() != null) {
-            savedPersonalAddress.setApartment(personalAddress.getApartment());
-        }
-        if (personalAddress.getFloor() != null) {
-            savedPersonalAddress.setFloor(personalAddress.getFloor());
-        }
-        if (personalAddress.getEntrance() != null) {
-            savedPersonalAddress.setEntrance(personalAddress.getEntrance());
-        }
-
-        return Optional.of(personalAddressRepository.save(savedPersonalAddress));
-    }
-
-    public Optional<PersonalAddressDto> updateDto(Long id, PersonalAddressDto personalAddressDto) {
+    public PersonalAddressDto update(Long id, PersonalAddressDto personalAddressDto) {
         Optional<PersonalAddress> optionalSavedAddress = personalAddressRepository.findById(id);
-
         if (optionalSavedAddress.isEmpty()) {
-            return Optional.empty();
+            throw new EntityNotFoundException("Адрес не найден");
         }
 
         PersonalAddress savedPersonalAddress = optionalSavedAddress.get();
-
         if (personalAddressDto.getDirections() != null) {
             savedPersonalAddress.setDirections(personalAddressDto.getDirections());
         }
@@ -149,8 +119,7 @@ public class PersonalAddressService {
             savedPersonalAddress.setEntrance(personalAddressDto.getEntrance());
         }
 
-        PersonalAddress updatedPersonalAddress = personalAddressRepository.save(savedPersonalAddress);
-        return Optional.ofNullable(personalAddressMapper.toDto(updatedPersonalAddress));
+        return personalAddressMapper.toDto(personalAddressRepository.save(savedPersonalAddress));
     }
 
 

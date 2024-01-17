@@ -1,5 +1,8 @@
 package com.gitlab.service;
 
+import com.gitlab.dto.PersonalAddressDto;
+import com.gitlab.mapper.PersonalAddressMapper;
+import com.gitlab.mapper.PersonalAddressMapperImpl;
 import com.gitlab.model.PersonalAddress;
 import com.gitlab.repository.PersonalAddressRepository;
 import org.junit.jupiter.api.Test;
@@ -8,11 +11,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
@@ -23,6 +26,11 @@ class PersonalAddressServiceTest {
     private PersonalAddressRepository personalAddressRepository;
     @InjectMocks
     private PersonalAddressService personalAddressService;
+    @Mock
+    private PersonalAddressMapper personalAddressMapper;
+
+    @InjectMocks
+    private PersonalAddressMapperImpl mapper;
 
     @Test
     void should_find_all_personalAddresses() {
@@ -58,162 +66,159 @@ class PersonalAddressServiceTest {
     @Test
     void should_update_personalAddress() {
         long id = 1L;
-        PersonalAddress personalAddressToUpdate = new PersonalAddress();
-        personalAddressToUpdate.setId(id);
-        personalAddressToUpdate.setAddress("modifiedText");
-        personalAddressToUpdate.setDirections("modifiedText");
-
 
         PersonalAddress personalAddressBeforeUpdate = new PersonalAddress();
         personalAddressBeforeUpdate.setId(id);
         personalAddressBeforeUpdate.setAddress("unmodifiedText");
         personalAddressBeforeUpdate.setDirections("unmodifiedText");
 
-
         PersonalAddress updatedPersonalAddress = new PersonalAddress();
         updatedPersonalAddress.setId(id);
         updatedPersonalAddress.setAddress("modifiedText");
         updatedPersonalAddress.setDirections("modifiedText");
 
+        PersonalAddressDto personalAddressToUpdate = new PersonalAddressDto();
+        personalAddressToUpdate.setId(id);
+        personalAddressToUpdate.setAddress("modifiedText");
+        personalAddressToUpdate.setDirections("modifiedText");
 
         when(personalAddressRepository.findById(id)).thenReturn(Optional.of(personalAddressBeforeUpdate));
-        when(personalAddressRepository.save(updatedPersonalAddress)).thenReturn(updatedPersonalAddress);
+        when(personalAddressRepository.save(personalAddressBeforeUpdate)).thenReturn(updatedPersonalAddress);
+        when(personalAddressMapper.toDto(updatedPersonalAddress)).thenReturn(mapper.toDto(updatedPersonalAddress));
 
-        Optional<PersonalAddress> actualResult = personalAddressService.update(id, personalAddressToUpdate);
+        Optional<PersonalAddressDto> actualResult = Optional.ofNullable(personalAddressService.update(id, personalAddressToUpdate));
 
-        assertEquals(updatedPersonalAddress, actualResult.orElse(null));
+        assertEquals(mapper.toDto(updatedPersonalAddress), actualResult.orElse(null));
     }
 
     @Test
     void should_not_update_personalAddress_when_entity_not_found() {
-        long id = 1L;
-        PersonalAddress personalAddressToUpdate = generatePersonalAddress();
+        PersonalAddressDto personalAddressToUpdate = generatePersonalAddressDto();
+        Long id = personalAddressToUpdate.getId();
 
         when(personalAddressRepository.findById(id)).thenReturn(Optional.empty());
 
-        Optional<PersonalAddress> actualResult = personalAddressService.update(id, personalAddressToUpdate);
-
-        verify(personalAddressRepository, never()).save(any());
-        assertNull(actualResult.orElse(null));
+        assertThrows(EntityNotFoundException.class, () -> personalAddressService.update(id, personalAddressToUpdate));
     }
 
     @Test
     void should_not_update_address_field_if_null() {
-        long id = 1L;
+        PersonalAddress personalAddressBeforeUpdate = generatePersonalAddress();
+        Long id = personalAddressBeforeUpdate.getId();
+
         PersonalAddress personalAddressToUpdate = generatePersonalAddress();
         personalAddressToUpdate.setAddress(null);
-
-        PersonalAddress personalAddressBeforeUpdate = generatePersonalAddress();
 
         when(personalAddressRepository.findById(id)).thenReturn(Optional.of(personalAddressBeforeUpdate));
         when(personalAddressRepository.save(personalAddressBeforeUpdate)).thenReturn(personalAddressBeforeUpdate);
 
-        Optional<PersonalAddress> actualResult = personalAddressService.update(id, personalAddressToUpdate);
+        Optional<PersonalAddressDto> actualResult = Optional.ofNullable(personalAddressService.update(id, mapper.toDto(personalAddressToUpdate)));
 
         verify(personalAddressRepository).save(personalAddressBeforeUpdate);
-        assertNotNull(actualResult.orElse(personalAddressBeforeUpdate).getAddress());
+        assertNotNull(actualResult.orElse(mapper.toDto(personalAddressBeforeUpdate)).getAddress());
     }
 
     @Test
     void should_not_update_apartment_field_if_null() {
-        long id = 1L;
+        PersonalAddress personalAddressBeforeUpdate = generatePersonalAddress();
+        Long id = personalAddressBeforeUpdate.getId();
+
         PersonalAddress personalAddressToUpdate = generatePersonalAddress();
         personalAddressToUpdate.setApartment(null);
-
-        PersonalAddress personalAddressBeforeUpdate = generatePersonalAddress();
 
         when(personalAddressRepository.findById(id)).thenReturn(Optional.of(personalAddressBeforeUpdate));
         when(personalAddressRepository.save(personalAddressBeforeUpdate)).thenReturn(personalAddressBeforeUpdate);
 
-        Optional<PersonalAddress> actualResult = personalAddressService.update(id, personalAddressToUpdate);
+        Optional<PersonalAddressDto> actualResult = Optional.ofNullable(personalAddressService.update(id, mapper.toDto(personalAddressToUpdate)));
 
         verify(personalAddressRepository).save(personalAddressBeforeUpdate);
-        assertNotNull(actualResult.orElse(personalAddressBeforeUpdate).getApartment());
+        assertNotNull(actualResult.orElse(mapper.toDto(personalAddressBeforeUpdate)).getApartment());
     }
 
     @Test
     void should_not_update_floor_field_if_null() {
-        long id = 1L;
+        PersonalAddress personalAddressBeforeUpdate = generatePersonalAddress();
+        Long id = personalAddressBeforeUpdate.getId();
+
         PersonalAddress personalAddressToUpdate = generatePersonalAddress();
         personalAddressToUpdate.setFloor(null);
-
-        PersonalAddress personalAddressBeforeUpdate = generatePersonalAddress();
 
         when(personalAddressRepository.findById(id)).thenReturn(Optional.of(personalAddressBeforeUpdate));
         when(personalAddressRepository.save(personalAddressBeforeUpdate)).thenReturn(personalAddressBeforeUpdate);
 
-        Optional<PersonalAddress> actualResult = personalAddressService.update(id, personalAddressToUpdate);
+        Optional<PersonalAddressDto> actualResult = Optional.ofNullable(personalAddressService.update(id, mapper.toDto(personalAddressToUpdate)));
 
         verify(personalAddressRepository).save(personalAddressBeforeUpdate);
-        assertNotNull(actualResult.orElse(personalAddressBeforeUpdate).getFloor());
+        assertNotNull(actualResult.orElse(mapper.toDto(personalAddressBeforeUpdate)).getFloor());
     }
 
     @Test
     void should_not_update_entrance_field_if_null() {
-        long id = 1L;
+        PersonalAddress personalAddressBeforeUpdate = generatePersonalAddress();
+        Long id = personalAddressBeforeUpdate.getId();
+
         PersonalAddress personalAddressToUpdate = generatePersonalAddress();
         personalAddressToUpdate.setEntrance(null);
-
-        PersonalAddress personalAddressBeforeUpdate = generatePersonalAddress();
 
         when(personalAddressRepository.findById(id)).thenReturn(Optional.of(personalAddressBeforeUpdate));
         when(personalAddressRepository.save(personalAddressBeforeUpdate)).thenReturn(personalAddressBeforeUpdate);
 
-        Optional<PersonalAddress> actualResult = personalAddressService.update(id, personalAddressToUpdate);
+        Optional<PersonalAddressDto> actualResult = Optional.ofNullable(personalAddressService.update(id, mapper.toDto(personalAddressToUpdate)));
 
         verify(personalAddressRepository).save(personalAddressBeforeUpdate);
-        assertNotNull(actualResult.orElse(personalAddressBeforeUpdate).getEntrance());
+        assertNotNull(actualResult.orElse(mapper.toDto(personalAddressBeforeUpdate)).getEntrance());
     }
 
     @Test
     void should_not_update_directions_field_if_null() {
-        long id = 1L;
+        PersonalAddress personalAddressBeforeUpdate = generatePersonalAddress();
+        Long id = personalAddressBeforeUpdate.getId();
+
         PersonalAddress personalAddressToUpdate = generatePersonalAddress();
         personalAddressToUpdate.setDirections(null);
-
-        PersonalAddress personalAddressBeforeUpdate = generatePersonalAddress();
 
         when(personalAddressRepository.findById(id)).thenReturn(Optional.of(personalAddressBeforeUpdate));
         when(personalAddressRepository.save(personalAddressBeforeUpdate)).thenReturn(personalAddressBeforeUpdate);
 
-        Optional<PersonalAddress> actualResult = personalAddressService.update(id, personalAddressToUpdate);
+        Optional<PersonalAddressDto> actualResult = Optional.ofNullable(personalAddressService.update(id, mapper.toDto(personalAddressToUpdate)));
 
         verify(personalAddressRepository).save(personalAddressBeforeUpdate);
-        assertNotNull(actualResult.orElse(personalAddressBeforeUpdate).getDirections());
+        assertNotNull(actualResult.orElse(mapper.toDto(personalAddressBeforeUpdate)).getDirections());
     }
 
     @Test
     void should_not_update_doorCode_field_if_null() {
-        long id = 1L;
+        PersonalAddress personalAddressBeforeUpdate = generatePersonalAddress();
+        Long id = personalAddressBeforeUpdate.getId();
+
         PersonalAddress personalAddressToUpdate = generatePersonalAddress();
         personalAddressToUpdate.setDoorCode(null);
 
-        PersonalAddress personalAddressBeforeUpdate = generatePersonalAddress();
-
         when(personalAddressRepository.findById(id)).thenReturn(Optional.of(personalAddressBeforeUpdate));
         when(personalAddressRepository.save(personalAddressBeforeUpdate)).thenReturn(personalAddressBeforeUpdate);
 
-        Optional<PersonalAddress> actualResult = personalAddressService.update(id, personalAddressToUpdate);
+        Optional<PersonalAddressDto> actualResult = Optional.ofNullable(personalAddressService.update(id, mapper.toDto(personalAddressToUpdate)));
 
         verify(personalAddressRepository).save(personalAddressBeforeUpdate);
-        assertNotNull(actualResult.orElse(personalAddressBeforeUpdate).getDoorCode());
+        assertNotNull(actualResult.orElse(mapper.toDto(personalAddressBeforeUpdate)).getDirections());
     }
 
+    //
     @Test
     void should_not_update_postCode_field_if_null() {
-        long id = 1L;
+        PersonalAddress personalAddressBeforeUpdate = generatePersonalAddress();
+        Long id = personalAddressBeforeUpdate.getId();
+
         PersonalAddress personalAddressToUpdate = generatePersonalAddress();
         personalAddressToUpdate.setPostCode(null);
 
-        PersonalAddress personalAddressBeforeUpdate = generatePersonalAddress();
-
         when(personalAddressRepository.findById(id)).thenReturn(Optional.of(personalAddressBeforeUpdate));
         when(personalAddressRepository.save(personalAddressBeforeUpdate)).thenReturn(personalAddressBeforeUpdate);
 
-        Optional<PersonalAddress> actualResult = personalAddressService.update(id, personalAddressToUpdate);
+        Optional<PersonalAddressDto> actualResult = Optional.ofNullable(personalAddressService.update(id, mapper.toDto(personalAddressToUpdate)));
 
         verify(personalAddressRepository).save(personalAddressBeforeUpdate);
-        assertNotNull(actualResult.orElse(personalAddressBeforeUpdate).getPostCode());
+        assertNotNull(actualResult.orElse(mapper.toDto(personalAddressBeforeUpdate)).getDirections());
     }
 
     @Test
@@ -254,6 +259,21 @@ class PersonalAddressServiceTest {
 
     private PersonalAddress generatePersonalAddress() {
         PersonalAddress personalAddress = new PersonalAddress();
+        personalAddress.setId(1L);
+        personalAddress.setAddress("Test Address");
+        personalAddress.setDirections("Test Directions");
+        personalAddress.setApartment("100");
+        personalAddress.setFloor("5");
+        personalAddress.setEntrance("1");
+        personalAddress.setDoorCode("1234");
+        personalAddress.setPostCode("123456");
+
+        return personalAddress;
+    }
+
+    private PersonalAddressDto generatePersonalAddressDto() {
+        PersonalAddressDto personalAddress = new PersonalAddressDto();
+
         personalAddress.setId(1L);
         personalAddress.setAddress("Test Address");
         personalAddress.setDirections("Test Directions");

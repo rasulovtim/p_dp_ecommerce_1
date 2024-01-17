@@ -9,10 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -83,15 +80,17 @@ class PersonalAddressRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_get_personalAddress_by_id() throws Exception {
-        long id = 1L;
+        PersonalAddressDto personalAddressDto = generatePersonalAddressDto();
+        PersonalAddressDto savedPersonalAddress = personalAddressService.saveDto(personalAddressDto);
+
         String expected = objectMapper.writeValueAsString(
                 personalAddressMapper.toDto(
                         personalAddressService
-                                .findById(id)
+                                .findById(savedPersonalAddress.getId())
                                 .orElse(null))
         );
 
-        mockMvc.perform(get(URI + "/{id}", id))
+        mockMvc.perform(get(URI + "/{id}", savedPersonalAddress.getId()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
@@ -99,7 +98,7 @@ class PersonalAddressRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_return_not_found_when_get_personalAddress_by_non_existent_id() throws Exception {
-        long id = 11L;
+        long id = 9000L;
         mockMvc.perform(get(URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isNotFound());
@@ -107,15 +106,7 @@ class PersonalAddressRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_create_personalAddress() throws Exception {
-        PersonalAddressDto personalAddressDto = new PersonalAddressDto();
-        personalAddressDto.setAddress("TestAddress");
-        personalAddressDto.setDirections("TestDirections");
-        personalAddressDto.setApartment("100");
-        personalAddressDto.setFloor("13");
-        personalAddressDto.setEntrance("5");
-        personalAddressDto.setDoorCode("1234");
-        personalAddressDto.setPostCode("123456");
-
+        PersonalAddressDto personalAddressDto = generatePersonalAddressDto();
         String jsonPersonalAddressDto = objectMapper.writeValueAsString(personalAddressDto);
 
         mockMvc.perform(post(URI)
@@ -128,24 +119,18 @@ class PersonalAddressRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_update_personalAddress_by_id() throws Exception {
-        long id = 1L;
+        PersonalAddressDto personalAddressDto = generatePersonalAddressDto();
+        PersonalAddressDto savedPersonalAddressDto = personalAddressService.saveDto(personalAddressDto);
         int numberOfEntitiesExpected = personalAddressService.findAll().size();
 
-        PersonalAddressDto personalAddressDto = new PersonalAddressDto();
-        personalAddressDto.setAddress("New Address");
-        personalAddressDto.setDirections("New Directions");
-        personalAddressDto.setApartment("111");
-        personalAddressDto.setFloor("14");
-        personalAddressDto.setEntrance("7");
-        personalAddressDto.setDoorCode("1244");
-        personalAddressDto.setPostCode("123446");
+        PersonalAddressDto uptadedPersonalAddressDto = generatePersonalAddressDto();
+        uptadedPersonalAddressDto.setId(savedPersonalAddressDto.getId());
 
-        String jsonPersonalAddressDto = objectMapper.writeValueAsString(personalAddressDto);
+        String jsonPersonalAddressDto = objectMapper.writeValueAsString(uptadedPersonalAddressDto);
+        String expected = objectMapper.writeValueAsString(uptadedPersonalAddressDto);
 
-        personalAddressDto.setId(id);
-        String expected = objectMapper.writeValueAsString(personalAddressDto);
+        mockMvc.perform(patch(URI + "/{id}", savedPersonalAddressDto.getId())
 
-        mockMvc.perform(patch(URI + "/{id}", id)
                         .content(jsonPersonalAddressDto)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -158,16 +143,8 @@ class PersonalAddressRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_return_not_found_when_update_personalAddress_by_non_existent_id() throws Exception {
-        long id = 10L;
-        PersonalAddressDto personalAddressDto = new PersonalAddressDto();
-        personalAddressDto.setAddress("New Address");
-        personalAddressDto.setDirections("New Directions");
-        personalAddressDto.setApartment("111");
-        personalAddressDto.setFloor("14");
-        personalAddressDto.setEntrance("7");
-        personalAddressDto.setDoorCode("1244");
-        personalAddressDto.setPostCode("123446");
-
+        long id = 9000;
+        PersonalAddressDto personalAddressDto = generatePersonalAddressDto();
         String jsonPersonalAddressDto = objectMapper.writeValueAsString(personalAddressDto);
 
         mockMvc.perform(patch(URI + "/{id}", id)
@@ -180,12 +157,27 @@ class PersonalAddressRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_delete_personalAddress_by_id() throws Exception {
-        long id = 3L;
-        mockMvc.perform(delete(URI + "/{id}", id))
+        PersonalAddressDto personalAddressDto = generatePersonalAddressDto();
+        PersonalAddressDto savedPersonalAddress = personalAddressService.saveDto(personalAddressDto);
+
+        mockMvc.perform(delete(URI + "/{id}", savedPersonalAddress.getId()))
                 .andDo(print())
                 .andExpect(status().isOk());
-        mockMvc.perform(get(URI + "/{id}", id))
+        mockMvc.perform(get(URI + "/{id}", savedPersonalAddress.getId()))
                 .andDo(print())
                 .andExpect(status().isNotFound());
+    }
+
+    private PersonalAddressDto generatePersonalAddressDto() {
+        PersonalAddressDto personalAddressDto = new PersonalAddressDto();
+        personalAddressDto.setAddress("New Address");
+        personalAddressDto.setDirections("New Directions");
+        personalAddressDto.setApartment("111");
+        personalAddressDto.setFloor("14");
+        personalAddressDto.setEntrance("7");
+        personalAddressDto.setDoorCode("1244");
+        personalAddressDto.setPostCode("123446");
+
+        return personalAddressDto;
     }
 }
