@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -97,10 +98,7 @@ class PersonalAddressServiceTest {
 
         when(personalAddressRepository.findById(id)).thenReturn(Optional.empty());
 
-        Optional<PersonalAddressDto> actualResult = Optional.ofNullable(personalAddressService.update(id, personalAddressToUpdate));
-
-        verify(personalAddressRepository, never()).save(any());
-        assertNull(actualResult.orElse(null));
+        assertThrows(EntityNotFoundException.class, () -> personalAddressService.update(id, personalAddressToUpdate));
     }
 
     @Test
