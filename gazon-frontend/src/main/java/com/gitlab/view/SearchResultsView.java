@@ -2,19 +2,20 @@ package com.gitlab.view;
 
 import com.gitlab.clients.ProductImageClient;
 import com.gitlab.clients.ProductSearchClient;
+import com.gitlab.clients.ReviewClient;
 import com.gitlab.dto.ProductDto;
 import com.gitlab.dto.ProductImageDto;
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.shared.Tooltip;
-import com.vaadin.flow.router.BeforeEvent;
-import com.vaadin.flow.router.HasUrlParameter;
-import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.WildcardParameter;
+import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.StreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,15 +27,16 @@ import java.util.List;
 public class SearchResultsView extends CommonView implements HasUrlParameter<String> {
     private final ProductSearchClient productSearchClient;
     private final ProductImageClient productImageClient;
+    private final ReviewClient reviewClient;
     private final FlexLayout contentContainer;
 
-    public SearchResultsView(ProductSearchClient productSearchClient, ProductImageClient productImageClient) {
+    public SearchResultsView(ProductSearchClient productSearchClient, ProductImageClient productImageClient, ReviewClient reviewClient) {
         this.productSearchClient = productSearchClient;
         this.productImageClient = productImageClient;
-
+        this.reviewClient = reviewClient;
         contentContainer = new FlexLayout();
         contentContainer.setWidth("1100px");
-        contentContainer.setFlexDirection(FlexDirection.ROW);
+        contentContainer.setFlexDirection(FlexDirection.COLUMN);
         contentContainer.setFlexWrap(FlexWrap.WRAP);
         add(contentContainer);
     }
@@ -83,7 +85,7 @@ public class SearchResultsView extends CommonView implements HasUrlParameter<Str
     }
 
     private ProductComponent getProductView(ProductDto productDto) {
-        return new ProductComponent(productDto.getName(), productDto.getPrice().toString(), getImages(productDto));
+        return new ProductComponent(productDto, getImages(productDto), getReviewAmount(productDto));
     }
 
     private Image getImages(ProductDto productDto) {
@@ -97,9 +99,14 @@ public class SearchResultsView extends CommonView implements HasUrlParameter<Str
         } else {
             resImage = new Image("https://cdn-icons-png.flaticon.com/512/4054/4054617.png", "no image");
         }
-        resImage.setWidth("222px");
-        resImage.setHeight("267px");
+        resImage.setWidth("250px");
+        resImage.setHeight("250px");
         return resImage;
+    }
+
+    private Long getReviewAmount(ProductDto productDto) {
+        ResponseEntity<Long> reviewAmount = reviewClient.getReviewAmount(productDto.getId());
+        return reviewAmount.getBody();
     }
 
     private void displayNoResults() {
@@ -112,32 +119,49 @@ public class SearchResultsView extends CommonView implements HasUrlParameter<Str
         contentContainer.add(new H2("Произошла ошибка при выполнении поиска"));
     }
 
-    public static class ProductComponent extends Composite<VerticalLayout> {
-        private final Image productImage;
-        private final Label productName;
-        private final Label productPrice;
+    public static class ProductComponent extends Composite<HorizontalLayout> {
+        public ProductComponent(ProductDto productDto, Image image, Long reviewAmount) {
+            RouterLink productPageLink = new RouterLink("Страница товара", ProductPageView.class);
+            Label productName = new Label(productDto.getName());
+            Label productPrice = new Label(productDto.getPrice().toString() + " руб.");
+            //нет структуры описания продуктов, поэтому пока просто берем первые 100 символов
+            Label productDescription = new Label(productDto.getDescription()
+                    .substring(0, Math.min(productDto.getDescription().length(), 100)) + "...");
+            Label productRating = new Label(productDto.getRating());
+            Label productReviews = new Label(reviewAmount + " отзывов");
+            Icon ratingIcon = productDto.getRating().equals("Нет оценок") ? VaadinIcon.STAR_O.create() : VaadinIcon.STAR.create();
+            Icon reviewIcon = VaadinIcon.CHAT.create();
 
-        public ProductComponent(String name, String price, Image image) {
-            productImage = image;
-            productName = new Label(name);
-            productPrice = new Label(price + " руб.");
-            productName.setMaxWidth("250px");
-
-            productName.getElement().getStyle().set("overflow", "hidden");
-            productName.getElement().getStyle().set("text-overflow", "ellipsis");
-            productName.getElement().getStyle().set("white-space", "nowrap");
-            productName.getElement().getStyle().set("cursor", "pointer");
-
-            productName.addAttachListener(e -> {
-                Tooltip tooltip = Tooltip.forComponent(productName);
-                tooltip.setPosition(Tooltip.TooltipPosition.BOTTOM);
-                tooltip.setText(name);
+            getContent().setPadding(true);
+            getContent().setAlignItems(FlexComponent.Alignment.STRETCH);
+            image.getElement().getStyle().set("cursor", "pointer");
+//
+            image.addClickListener(event -> {
+                String searchResultsUrl = productPageLink.getHref() + "/" + productDto.getId();
+                getUI().ifPresent(ui -> ui.navigate(searchResultsUrl));
             });
 
-            getContent().add(productImage, productPrice, productName);
-            getContent().setHeight("400px");
-            getContent().setWidth("267px");
+            getContent().add(image);
+            getContent().setAlignSelf(FlexComponent.Alignment.START, image);
 
+            VerticalLayout verticalLayout = new VerticalLayout();
+            verticalLayout.setAlignItems(FlexComponent.Alignment.STRETCH);
+            productName.getElement().getStyle().set("cursor", "text");
+            productName.getElement().getStyle().set("font-weight", "bold");
+            verticalLayout.add(productName);
+            verticalLayout.add(productDescription);
+
+            HorizontalLayout horizontalLayout = new HorizontalLayout();
+            horizontalLayout.setPadding(true);
+            horizontalLayout.setAlignItems(FlexComponent.Alignment.STRETCH);
+            horizontalLayout.add(ratingIcon, productRating);
+            horizontalLayout.add(reviewIcon, productReviews);
+
+            verticalLayout.add(horizontalLayout);
+
+            getContent().add(verticalLayout);
+            productPrice.getElement().getStyle().set("font-weight", "bold");
+            getContent().add(productPrice);
         }
     }
 }
