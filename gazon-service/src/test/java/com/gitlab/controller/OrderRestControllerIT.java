@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -39,9 +39,9 @@ public class OrderRestControllerIT extends AbstractIntegrationTest {
     private OrderMapper orderMapper;
 
     @Test
-    @Transactional(readOnly = true)
+    @Transactional
     void should_get_all_orders() throws Exception {
-
+        orderService.saveDto(generateOrderDto());
         var response = orderService.getPage(null, null);
         var expected = objectMapper.writeValueAsString(orderMapper.toDtoList(response.getContent()));
 
@@ -52,8 +52,9 @@ public class OrderRestControllerIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @Transactional(readOnly = true)
+    @Transactional
     void should_get_page() throws Exception {
+        orderService.saveDto(generateOrderDto());
         int page = 0;
         int size = 2;
         String parameters = "?page=" + page + "&size=" + size;
@@ -93,8 +94,8 @@ public class OrderRestControllerIT extends AbstractIntegrationTest {
 
 
     @Test
-    void should_get_order_by_id() throws Exception{
-        long id = 1;
+    void should_get_order_by_id() throws Exception {
+        long id = orderService.saveDto(generateOrderDto()).getId();
         var orderDto = orderService.findByIdDto(id).orElse(null);
         String expected = objectMapper.writeValueAsString(orderDto);
 
@@ -105,7 +106,7 @@ public class OrderRestControllerIT extends AbstractIntegrationTest {
     }
 
     @Test
-    void should_create_order() throws Exception{
+    void should_create_order() throws Exception {
         OrderDto orderDto = generateOrderDto();
 
         String jsonOrderDto = objectMapper.writeValueAsString(orderDto);
@@ -118,17 +119,61 @@ public class OrderRestControllerIT extends AbstractIntegrationTest {
                 .andExpect(status().isCreated());
     }
 
-    @Transactional
     @Test
-    void should_update_order_by_id() throws Exception {
-        long id = 1L;
+    @Transactional
+    void check_null_update() throws Exception {
+        OrderDto testOrderDto = orderService.saveDto(generateOrderDto());
         int numberOfEntitiesExpected = orderService.findAll().size();
-        OrderDto orderDto = generateOrderDto();
+
+        String checkJsonOrderDto = objectMapper.writeValueAsString(orderService.findByIdDto(testOrderDto.getId()).orElse(null));
+
+        testOrderDto.setShippingAddressDto(null);
+        testOrderDto.setOrderCode(null);
+        testOrderDto.setShippingDate(null);
+        testOrderDto.setCreateDateTime(null);
+        testOrderDto.setSum(null);
+        testOrderDto.setDiscount(null);
+        testOrderDto.setBagCounter(null);
+        testOrderDto.setOrderStatus(null);
+
+        String jsonOrderDto = objectMapper.writeValueAsString(testOrderDto);
+        mockMvc.perform(patch(ORDER_URI + "/{id}", testOrderDto.getId())
+                        .content(jsonOrderDto)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(content().json(checkJsonOrderDto))
+                .andExpect(result -> assertThat(orderService.findAll().size(),
+                        equalTo(numberOfEntitiesExpected)));
+
+
+    }
+
+    @Test
+    @Transactional
+    void should_update_order_by_id() throws Exception {
+        OrderDto orderDto = orderService.saveDto(generateOrderDto());
+
+        ShippingAddressDto shippingAddressDto = new ShippingAddressDto();
+        shippingAddressDto.setId(1L);
+        shippingAddressDto.setAddress("ffffffffffffff");
+        shippingAddressDto.setDirections("fffffffffff");
+
+        orderDto.setSelectedProducts(Set.of(new SelectedProductDto()));
+        orderDto.setShippingAddressDto(shippingAddressDto);
+        orderDto.setOrderCode("321");
+        orderDto.setShippingDate(LocalDate.parse("2077-07-07"));
+        orderDto.setCreateDateTime(LocalDateTime.of(2023, 1, 15, 22, 2));
+        orderDto.setSum(new BigDecimal(7));
+        orderDto.setDiscount(new BigDecimal(7));
+        orderDto.setBagCounter((byte) 7);
+
+        long id = orderDto.getId();
+        int numberOfEntitiesExpected = orderService.findAll().size();
         String jsonOrderDto = objectMapper.writeValueAsString(orderDto);
-        orderDto.setId(id);
         String expected = objectMapper.writeValueAsString(orderDto);
 
-        mockMvc.perform(put(ORDER_URI + "/{id}", id)
+        mockMvc.perform(patch(ORDER_URI + "/{id}", id)
                         .content(jsonOrderDto)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -165,14 +210,13 @@ public class OrderRestControllerIT extends AbstractIntegrationTest {
         OrderDto orderDto = generateOrderDto();
         String jsonOrderDto = objectMapper.writeValueAsString(orderDto);
 
-        mockMvc.perform(put(ORDER_URI + "/{id}", id)  // Заменяем patch на put
+        mockMvc.perform(patch(ORDER_URI + "/{id}", id)
                         .content(jsonOrderDto)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isNotFound());  // Ожидаем статус 404 Not Found
+                .andExpect(status().isNotFound());
     }
-
 
 
     private OrderDto generateOrderDto() {
@@ -189,7 +233,7 @@ public class OrderRestControllerIT extends AbstractIntegrationTest {
         orderDto.setCreateDateTime(LocalDateTime.now());
         orderDto.setSum(new BigDecimal(5));
         orderDto.setDiscount(new BigDecimal(6));
-        orderDto.setBagCounter((byte)5);
+        orderDto.setBagCounter((byte) 5);
         orderDto.setOrderStatus(OrderStatus.DONE);
         return orderDto;
     }

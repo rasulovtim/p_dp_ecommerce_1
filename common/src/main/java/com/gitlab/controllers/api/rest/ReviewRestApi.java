@@ -41,6 +41,13 @@ public interface ReviewRestApi {
             @ApiResponse(code = 404, message = "Review not found")}
     )
     ResponseEntity<ReviewDto> get(@ApiParam(name = "id", value = "Review.id") @PathVariable("id") Long id);
+    @GetMapping("/api/review-amount/{id}")
+    @ApiOperation(value = "Get Review amount by product id")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Review for product found"),
+            @ApiResponse(code = 400, message = "Product not found")}
+    )
+    ResponseEntity<Long> getReviewAmount(@ApiParam(name = "id", value = "Product.id") @PathVariable("id") Long id);
 
     @PostMapping("/api/review")
     @ApiOperation(value = "Create Review")

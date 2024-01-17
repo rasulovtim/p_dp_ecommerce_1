@@ -42,6 +42,11 @@ public class ReviewController implements ReviewRestApi {
     }
 
 
+    public ResponseEntity<Long> getReviewAmount(Long id) {
+        Long reviewAmount = reviewService.findByProductId(id);
+        return ResponseEntity.ok(reviewAmount);
+    }
+
     @Override
     public ResponseEntity<ReviewDto> create(ReviewDto reviewDto) {
         ReviewDto createdReviewDto = reviewService.saveDto(reviewDto);

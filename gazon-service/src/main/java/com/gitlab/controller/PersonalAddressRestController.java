@@ -44,13 +44,7 @@ public class PersonalAddressRestController implements PersonalAddressRestApi {
 
     @Override
     public ResponseEntity<PersonalAddressDto> update(Long id, PersonalAddressDto personalAddressDto) {
-        Optional<PersonalAddressDto> updatedPersonalAddressDto = personalAddressService.updateDto(id, personalAddressDto);
-
-        if (updatedPersonalAddressDto.isPresent()) {
-            return ResponseEntity.ok(updatedPersonalAddressDto.orElse(null));
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(personalAddressService.update(id, personalAddressDto));
     }
 
     @Override

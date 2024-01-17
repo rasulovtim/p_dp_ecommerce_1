@@ -46,5 +46,5 @@ public class ProductDto {
     @NotNull(message = "Product's price should not be empty")
     private BigDecimal price;
 
-    private Byte rating;
+    private String rating;
 }

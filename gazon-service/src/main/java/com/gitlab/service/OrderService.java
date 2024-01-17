@@ -82,56 +82,11 @@ public class OrderService {
         return orderPage.map(orderMapper::toDto);
     }
 
-    public Order save(Order order) {
-        return orderRepository.save(order);
-    }
 
     public OrderDto saveDto(OrderDto orderDto) {
         Order order = orderMapper.toEntity(orderDto);
         Order savedOrder = orderRepository.save(order);
         return orderMapper.toDto(savedOrder);
-    }
-
-    public Optional<Order> update(Long id, Order order) {
-        Optional<Order> optionalSavedOrder = findById(id);
-        Order savedOrder;
-        if (optionalSavedOrder.isEmpty()) {
-            return optionalSavedOrder;
-        } else {
-            savedOrder = optionalSavedOrder.get();
-        }
-        if (order.getShippingAddress() != null) {
-            savedOrder.setShippingAddress(order.getShippingAddress());
-        }
-        if (order.getShippingDate() != null) {
-            savedOrder.setShippingDate(order.getShippingDate());
-        }
-        if (order.getOrderCode() != null) {
-            savedOrder.setOrderCode(order.getOrderCode());
-        }
-        if (order.getCreateDateTime() != null) {
-            savedOrder.setCreateDateTime(order.getCreateDateTime());
-        }
-        if (order.getSum() != null) {
-            savedOrder.setSum(order.getSum());
-        }
-        if (order.getDiscount() != null) {
-            savedOrder.setDiscount(order.getDiscount());
-        }
-        if (order.getBagCounter() != null) {
-            savedOrder.setBagCounter(order.getBagCounter());
-        }
-        if (order.getUser() != null) {
-            savedOrder.setUser(order.getUser());
-        }
-        if (order.getSelectedProducts() != null) {
-            savedOrder.setSelectedProducts(order.getSelectedProducts());
-        }
-        if (order.getOrderStatus() != null) {
-            savedOrder.setOrderStatus(order.getOrderStatus());
-        }
-
-        return Optional.of(orderRepository.save(savedOrder));
     }
 
     public Optional<OrderDto> updateDto(Long id, OrderDto orderDto) {

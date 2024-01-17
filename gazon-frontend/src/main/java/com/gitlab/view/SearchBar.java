@@ -1,5 +1,6 @@
 package com.gitlab.view;
 
+import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -33,6 +34,7 @@ public class SearchBar extends VerticalLayout {
         searchField.setWidth("600px");
 
         searchButton.addClickListener(event -> performSearch());
+        searchButton.addClickShortcut(Key.ENTER);
 
         HorizontalLayout searchFieldContainer = new HorizontalLayout(searchField, searchButton);
         searchFieldContainer.addClassName("search-field-container");

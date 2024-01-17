@@ -16,6 +16,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Override
     @NonNull
     @EntityGraph(value = "Product.productImages")
+    @Query("SELECT p FROM Product p WHERE p.id = ?1 AND p.entityStatus = 'ACTIVE'")
     Optional<Product> findById(@NonNull Long id);
 
     @Override

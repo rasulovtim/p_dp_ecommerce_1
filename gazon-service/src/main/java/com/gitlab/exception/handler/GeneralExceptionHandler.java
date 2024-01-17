@@ -10,9 +10,9 @@ import javax.persistence.EntityNotFoundException;
 @RestControllerAdvice
 public class GeneralExceptionHandler {
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(value = EntityNotFoundException.class)
-    public ErrorResponseDto handleAclCabinetServiceException(EntityNotFoundException ex) {
-        return new ErrorResponseDto(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+    public ErrorResponseDto handleEntityNotFoundException(EntityNotFoundException ex) {
+        return new ErrorResponseDto(HttpStatus.NOT_FOUND.value(), ex.getMessage());
     }
 }

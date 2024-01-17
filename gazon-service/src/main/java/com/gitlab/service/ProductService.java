@@ -4,7 +4,6 @@ import com.gitlab.dto.ProductDto;
 import com.gitlab.enums.EntityStatus;
 import com.gitlab.mapper.ProductMapper;
 import com.gitlab.model.Product;
-import com.gitlab.model.Review;
 import com.gitlab.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.search.jpa.FullTextQuery;
@@ -34,21 +33,7 @@ public class ProductService {
 
     public List<ProductDto> findAllDto() {
         List<Product> products = findAll();
-        List<ProductDto> allProductDto = new ArrayList<>();
-        for (Product product : products) {
-            ProductDto productDto;
-            if (product.getEntityStatus().equals(EntityStatus.ACTIVE)) {
-                productDto = productMapper.toDto(product);
-                if (!product.getReview().isEmpty()) {
-                    long rating = Math.round(product.getReview().stream()
-                            .map(Review::getRating).mapToInt(a -> a)
-                            .average().getAsDouble());
-                    productDto.setRating((byte) rating);
-                }
-                allProductDto.add(productDto);
-            }
-        }
-        return allProductDto;
+        return productMapper.toDtoList(products);
     }
 
     public Optional<Product> findById(Long id) {
@@ -57,19 +42,7 @@ public class ProductService {
 
     public Optional<ProductDto> findByIdDto(Long id) {
         Optional<Product> currentOptionalProduct = productRepository.findById(id);
-        Optional<ProductDto> currentOptionalProductDto = currentOptionalProduct.map(productMapper::toDto);
-        if (currentOptionalProduct.isPresent()) {
-            Product currentProduct = currentOptionalProduct.get();
-            if (!currentProduct.getReview().isEmpty()) {
-                long rating = Math.round(currentProduct.getReview().stream()
-                        .map(Review::getRating).mapToInt(a -> a).average().getAsDouble());
-                currentOptionalProductDto.get().setRating((byte) rating);
-            }
-            if (currentProduct.getEntityStatus().equals(EntityStatus.DELETED)) {
-                return Optional.empty();
-            }
-        }
-        return currentOptionalProductDto;
+        return currentOptionalProduct.map(productMapper::toDto);
     }
 
     public Page<Product> getPage(Integer page, Integer size) {
@@ -119,7 +92,7 @@ public class ProductService {
     public Optional<Product> update(Long id, Product product) {
         Optional<Product> currentOptionalProduct = findById(id);
         Product currentProduct;
-        if (currentOptionalProduct.isEmpty() || currentOptionalProduct.get().getEntityStatus().equals(EntityStatus.DELETED)) {
+        if (currentOptionalProduct.isEmpty()) {
             return currentOptionalProduct;
         } else {
             currentProduct = currentOptionalProduct.get();
@@ -157,7 +130,7 @@ public class ProductService {
     public Optional<ProductDto> updateDto(Long id, ProductDto productDto) {
         Optional<Product> currentOptionalProduct = findById(id);
 
-        if (currentOptionalProduct.isEmpty() || currentOptionalProduct.get().getEntityStatus().equals(EntityStatus.DELETED)) {
+        if (currentOptionalProduct.isEmpty()) {
             return Optional.empty();
         }
 

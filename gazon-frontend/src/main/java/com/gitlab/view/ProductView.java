@@ -123,6 +123,7 @@ public class ProductView extends VerticalLayout {
     private Grid.Column<ProductDto> createProductImagesIdColumn() {
         return grid.addColumn(productDto -> Arrays.toString(productDto.getImagesId())).setHeader("Product image Id").setWidth("150px");
     }
+
     private Grid.Column<ProductDto> createProductIsAdultColumn() {
         return grid.addColumn(ProductDto::getIsAdult).setHeader("Product adult").setWidth("150px");
     }
@@ -292,21 +293,21 @@ public class ProductView extends VerticalLayout {
     private void createProductPriceField(Binder<ProductDto> binder,
                                          ValidationMessage productPriceValidationMessage,
                                          Grid.Column<ProductDto> productPriceColumn) {
-        BigDecimalField productPriceField = new  BigDecimalField();
+        BigDecimalField productPriceField = new BigDecimalField();
         productPriceField.setWidthFull();
         binder.forField(productPriceField).withValidator(new BigDecimalRangeValidator(
                         "Product's price in Rubles should be between 0.1 and 2147483333",
                         BigDecimal.valueOf(0.1), BigDecimal.valueOf(2147483333)))
                 .asRequired("Product price must not be empty")
                 .withStatusLabel(productPriceValidationMessage)
-                .bind(productDto1 -> productDto1.getPrice(), (productDto, price) -> productDto.setPrice(price));
+                .bind(ProductDto::getPrice, ProductDto::setPrice);
         productPriceColumn.setEditorComponent(productPriceField);
     }
 
     private void createProductRatingField(Binder<ProductDto> binder,
                                           ValidationMessage productRatingValidationMessage,
                                           Grid.Column<ProductDto> productRatingColumn) {
-        TextField productRatingField = new TextField ();
+        TextField productRatingField = new TextField();
         productRatingField.setWidthFull();
         binder.forField(productRatingField).withValidator(new StringLengthValidator(
                         "Numbers of Product's Rating should be between 0 and 127",
@@ -314,7 +315,7 @@ public class ProductView extends VerticalLayout {
                 .asRequired("Product rating must not be empty")
                 .withStatusLabel(productRatingValidationMessage)
                 .bind(productDto -> String.valueOf(productDto.getRating()),
-                        (productDto1, rating) -> productDto1.setRating(Byte.valueOf(rating)));
+                        ProductDto::setRating);
         productRatingColumn.setEditorComponent(productRatingField);
     }
 
