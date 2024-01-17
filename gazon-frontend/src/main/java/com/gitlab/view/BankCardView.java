@@ -219,7 +219,6 @@ public class BankCardView extends VerticalLayout {
     private Grid.Column<BankCardDto> createEditColumn() {
         return grid.addComponentColumn(bankCard -> {
             Button updateButton = new Button("Update");
-            updateButton.setText("ewfwefwef");
             updateButton.addClickListener(e -> {
                 if (editor.isOpen())
                     editor.cancel();
