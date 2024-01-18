@@ -41,7 +41,6 @@ public class BankCardService {
                 .map(bankCardMapper::toDto);
     }
 
-    @SuppressWarnings("Duplicates")
     public Page<BankCard> getPage(Integer page, Integer size) {
 
         if (page == null || size == null) {
@@ -58,7 +57,6 @@ public class BankCardService {
         return bankCardRepository.findAll(pageRequest);
     }
 
-    @SuppressWarnings("Duplicates")
     public Page<BankCardDto> getPageDto(Integer page, Integer size) {
 
         if (page == null || size == null) {
