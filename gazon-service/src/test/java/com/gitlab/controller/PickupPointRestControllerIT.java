@@ -12,10 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -87,15 +84,17 @@ class PickupPointRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_get_pickupPoint_by_id() throws Exception {
-        long id = 7L;
+        PickupPointDto pickupPointDto = generatePickupPointDto();
+        PickupPointDto savedPickupPoint = pickupPointService.saveDto(pickupPointDto);
+
         String expected = objectMapper.writeValueAsString(
                 pickupPointMapper.toDto(
                         pickupPointService
-                                .findById(id)
+                                .findById(savedPickupPoint.getId())
                                 .orElse(null))
         );
 
-        mockMvc.perform(get(URI + "/{id}", id))
+        mockMvc.perform(get(URI + "/{id}", savedPickupPoint.getId()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
@@ -103,7 +102,7 @@ class PickupPointRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_return_not_found_when_get_pickupPoint_by_non_existent_id() throws Exception {
-        long id = 10L;
+        long id = 9000L;
         mockMvc.perform(get(URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isNotFound());
@@ -125,17 +124,18 @@ class PickupPointRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_update_pickupPoint_by_id() throws Exception {
-        long id = 7L;
+        PickupPointDto pickupPointDto = generatePickupPointDto();
+        PickupPointDto savedPickupPoint = pickupPointService.saveDto(pickupPointDto);
+
+        PickupPointDto updatedPickPointDto = generatePickupPointDto();
+        updatedPickPointDto.setId(savedPickupPoint.getId());
+
         int numberOfEntitiesExpected = pickupPointService.findAll().size();
 
-        PickupPointDto pickupPointDto = generatePickupPointDto();
+        String jsonPickupPointDto = objectMapper.writeValueAsString(updatedPickPointDto);
+        String expected = objectMapper.writeValueAsString(updatedPickPointDto);
 
-        String jsonPickupPointDto = objectMapper.writeValueAsString(pickupPointDto);
-
-        pickupPointDto.setId(id);
-        String expected = objectMapper.writeValueAsString(pickupPointDto);
-
-        mockMvc.perform(patch(URI + "/{id}", id)
+        mockMvc.perform(patch(URI + "/{id}", savedPickupPoint.getId())
                         .content(jsonPickupPointDto)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -148,7 +148,7 @@ class PickupPointRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_return_not_found_when_update_pickupPoint_by_non_existent_id() throws Exception {
-        long id = 10L;
+        long id = 9000L;
         PickupPointDto pickupPointDto = generatePickupPointDto();
 
         String jsonPickupPointDto = objectMapper.writeValueAsString(pickupPointDto);
