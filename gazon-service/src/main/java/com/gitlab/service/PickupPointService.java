@@ -10,12 +10,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class PickupPointService {
 
@@ -23,10 +26,12 @@ public class PickupPointService {
 
     private final PickupPointMapper pickupPointMapper;
 
+    @Transactional(readOnly = true)
     public List<PickupPoint> findAll() {
         return pickupPointRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public List<PickupPointDto> findAllDto() {
         List<PickupPoint> pickupPoints = pickupPointRepository.findAll();
         return pickupPoints.stream()
@@ -34,15 +39,17 @@ public class PickupPointService {
                 .collect(Collectors.toList());
     }
 
-
+    @Transactional(readOnly = true)
     public Optional<PickupPoint> findById(Long id) {
         return pickupPointRepository.findById(id);
     }
 
+    @Transactional(readOnly = true)
     public Optional<PickupPointDto> findByIdDto(Long id) {
         return pickupPointRepository.findById(id)
                 .map(pickupPointMapper::toDto);
     }
+
     public Page<PickupPoint> getPage(Integer page, Integer size) {
         if (page == null || size == null) {
             var pickupPoints = findAll();
@@ -74,7 +81,7 @@ public class PickupPointService {
         Page<PickupPoint> pickupPointPage = pickupPointRepository.findAll(pageRequest);
         return pickupPointPage.map(pickupPointMapper::toDto);
     }
-    
+
     public PickupPoint save(PickupPoint pickupPoint) {
         return pickupPointRepository.save(pickupPoint);
     }
@@ -85,55 +92,27 @@ public class PickupPointService {
         return pickupPointMapper.toDto(savedPickupPoint);
     }
 
-    public Optional<PickupPoint> update(Long id, PickupPoint pickupPoint) {
-        Optional<PickupPoint> optionalSavedPickupPoint = findById(id);
-        PickupPoint savedPickupPoint;
+    public PickupPointDto update(Long id, PickupPointDto pickupPointDto) {
+        Optional<PickupPoint> optionalSavedPickupPoint = pickupPointRepository.findById(id);
         if (optionalSavedPickupPoint.isEmpty()) {
-            return optionalSavedPickupPoint;
-        } else {
-            savedPickupPoint = optionalSavedPickupPoint.get();
+            throw new EntityNotFoundException("Пункт выдачи не найден");
         }
 
-        if (pickupPoint.getDirections() != null) {
-            savedPickupPoint.setDirections(pickupPoint.getDirections());
-        }
-        if (pickupPoint.getPickupPointFeatures() != null) {
-            savedPickupPoint.setPickupPointFeatures(pickupPoint.getPickupPointFeatures());
-        }
-        if (pickupPoint.getAddress() != null) {
-            savedPickupPoint.setAddress(pickupPoint.getAddress());
-        }
-        if (pickupPoint.getShelfLifeDays() != null) {
-            savedPickupPoint.setShelfLifeDays(pickupPoint.getShelfLifeDays());
-        }
-
-        return Optional.of(pickupPointRepository.save(savedPickupPoint));
-    }
-
-    public Optional<PickupPointDto> updateDto(Long id, PickupPointDto pickupPointDto) {
-        Optional<PickupPointDto> optionalSavedPickupPointDto = findByIdDto(id);
-
-        if (optionalSavedPickupPointDto.isEmpty()) {
-            return Optional.empty();
-        }
-
-        PickupPointDto savedPickupPointDto = optionalSavedPickupPointDto.get();
-
+        PickupPoint savedPickupPoint = optionalSavedPickupPoint.get();
         if (pickupPointDto.getDirections() != null) {
-            savedPickupPointDto.setDirections(pickupPointDto.getDirections());
+            savedPickupPoint.setDirections(pickupPointDto.getDirections());
         }
         if (pickupPointDto.getPickupPointFeatures() != null) {
-            savedPickupPointDto.setPickupPointFeatures(pickupPointDto.getPickupPointFeatures());
+            savedPickupPoint.setPickupPointFeatures(pickupPointDto.getPickupPointFeatures());
         }
         if (pickupPointDto.getAddress() != null) {
-            savedPickupPointDto.setAddress(pickupPointDto.getAddress());
+            savedPickupPoint.setAddress(pickupPointDto.getAddress());
         }
         if (pickupPointDto.getShelfLifeDays() != null) {
-            savedPickupPointDto.setShelfLifeDays(pickupPointDto.getShelfLifeDays());
+            savedPickupPoint.setShelfLifeDays(pickupPointDto.getShelfLifeDays());
         }
 
-        PickupPointDto updatedPickupPointDto = saveDto(savedPickupPointDto);
-        return Optional.ofNullable(updatedPickupPointDto);
+        return pickupPointMapper.toDto(pickupPointRepository.save(savedPickupPoint));
     }
 
     public Optional<PickupPoint> delete(Long id) {

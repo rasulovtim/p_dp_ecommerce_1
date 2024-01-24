@@ -1,6 +1,9 @@
 package com.gitlab.service;
 
+import com.gitlab.dto.PickupPointDto;
 import com.gitlab.enums.PickupPointFeatures;
+import com.gitlab.mapper.PickupPointMapper;
+import com.gitlab.mapper.PickupPointMapperImpl;
 import com.gitlab.model.PickupPoint;
 import com.gitlab.repository.PickupPointRepository;
 import org.junit.jupiter.api.Test;
@@ -9,12 +12,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
@@ -25,6 +28,10 @@ class PickupPointServiceTest {
     private PickupPointRepository pickupPointRepository;
     @InjectMocks
     private PickupPointService pickupPointService;
+    @Mock
+    private PickupPointMapper pickupPointMapper;
+    @InjectMocks
+    private PickupPointMapperImpl mapper;
 
     @Test
     void should_find_all_pickupPoints() {
@@ -60,11 +67,6 @@ class PickupPointServiceTest {
     @Test
     void should_update_pickupPoint() {
         long id = 1L;
-        PickupPoint pickupPointToUpdate = new PickupPoint();
-        pickupPointToUpdate.setId(id);
-        pickupPointToUpdate.setAddress("modifiedText");
-        pickupPointToUpdate.setDirections("modifiedText");
-        pickupPointToUpdate.setShelfLifeDays((byte) 2);
 
         PickupPoint pickupPointBeforeUpdate = new PickupPoint();
         pickupPointBeforeUpdate.setId(id);
@@ -78,93 +80,96 @@ class PickupPointServiceTest {
         updatedPickupPoint.setDirections("modifiedText");
         updatedPickupPoint.setShelfLifeDays((byte) 2);
 
+        PickupPointDto pickupPointToUpdate = new PickupPointDto();
+        pickupPointToUpdate.setId(id);
+        pickupPointToUpdate.setAddress("modifiedText");
+        pickupPointToUpdate.setDirections("modifiedText");
+        pickupPointToUpdate.setShelfLifeDays((byte) 2);
+
         when(pickupPointRepository.findById(id)).thenReturn(Optional.of(pickupPointBeforeUpdate));
-        when(pickupPointRepository.save(updatedPickupPoint)).thenReturn(updatedPickupPoint);
+        when(pickupPointRepository.save(pickupPointBeforeUpdate)).thenReturn(updatedPickupPoint);
+        when((pickupPointMapper.toDto(updatedPickupPoint))).thenReturn(mapper.toDto(updatedPickupPoint));
 
-        Optional<PickupPoint> actualResult = pickupPointService.update(id, pickupPointToUpdate);
+        Optional<PickupPointDto> actualResult = Optional.ofNullable(pickupPointService.update(id, pickupPointToUpdate));
 
-        assertEquals(updatedPickupPoint, actualResult.orElse(null));
+        assertEquals(mapper.toDto(updatedPickupPoint), actualResult.orElse(null));
     }
 
     @Test
     void should_not_update_pickupPoint_when_entity_not_found() {
-        long id = 1L;
-        PickupPoint pickupPointToUpdate = generatePickupPoint();
+        PickupPointDto pickupPointToUpdate = generatePickupPointDto();
+        Long id = pickupPointToUpdate.getId();
 
         when(pickupPointRepository.findById(id)).thenReturn(Optional.empty());
 
-        Optional<PickupPoint> actualResult = pickupPointService.update(id, pickupPointToUpdate);
-
-        verify(pickupPointRepository, never()).save(any());
-        assertNull(actualResult.orElse(null));
+        assertThrows(EntityNotFoundException.class, () -> pickupPointService.update(id, pickupPointToUpdate));
     }
 
     @Test
     void should_not_update_address_field_if_null() {
-        long id = 1L;
         PickupPoint pickupPointToUpdate = generatePickupPoint();
         pickupPointToUpdate.setAddress(null);
 
         PickupPoint pickupPointBeforeUpdate = generatePickupPoint();
-
+        Long id = pickupPointBeforeUpdate.getId();
         when(pickupPointRepository.findById(id)).thenReturn(Optional.of(pickupPointBeforeUpdate));
         when(pickupPointRepository.save(pickupPointBeforeUpdate)).thenReturn(pickupPointBeforeUpdate);
 
-        Optional<PickupPoint> actualResult = pickupPointService.update(id, pickupPointToUpdate);
+        Optional<PickupPointDto> actualResult = Optional.ofNullable(pickupPointService.update(id, mapper.toDto(pickupPointToUpdate)));
 
         verify(pickupPointRepository).save(pickupPointBeforeUpdate);
-        assertNotNull(actualResult.orElse(pickupPointBeforeUpdate).getAddress());
+        assertNotNull(actualResult.orElse(mapper.toDto(pickupPointBeforeUpdate)).getAddress());
     }
 
     @Test
     void should_not_update_shelfLifeDays_field_if_null() {
-        long id = 1L;
         PickupPoint pickupPointToUpdate = generatePickupPoint();
         pickupPointToUpdate.setShelfLifeDays(null);
 
         PickupPoint pickupPointBeforeUpdate = generatePickupPoint();
+        Long id = pickupPointBeforeUpdate.getId();
 
         when(pickupPointRepository.findById(id)).thenReturn(Optional.of(pickupPointBeforeUpdate));
         when(pickupPointRepository.save(pickupPointBeforeUpdate)).thenReturn(pickupPointBeforeUpdate);
 
-        Optional<PickupPoint> actualResult = pickupPointService.update(id, pickupPointToUpdate);
+        Optional<PickupPointDto> actualResult = Optional.ofNullable(pickupPointService.update(id, mapper.toDto(pickupPointToUpdate)));
 
         verify(pickupPointRepository).save(pickupPointBeforeUpdate);
-        assertNotNull(actualResult.orElse(pickupPointBeforeUpdate).getShelfLifeDays());
+        assertNotNull(actualResult.orElse(mapper.toDto(pickupPointBeforeUpdate)).getShelfLifeDays());
     }
 
     @Test
     void should_not_update_directions_field_if_null() {
-        long id = 1L;
         PickupPoint pickupPointToUpdate = generatePickupPoint();
         pickupPointToUpdate.setDirections(null);
 
         PickupPoint pickupPointBeforeUpdate = generatePickupPoint();
+        Long id = pickupPointBeforeUpdate.getId();
 
         when(pickupPointRepository.findById(id)).thenReturn(Optional.of(pickupPointBeforeUpdate));
         when(pickupPointRepository.save(pickupPointBeforeUpdate)).thenReturn(pickupPointBeforeUpdate);
 
-        Optional<PickupPoint> actualResult = pickupPointService.update(id, pickupPointToUpdate);
+        Optional<PickupPointDto> actualResult = Optional.ofNullable(pickupPointService.update(id, mapper.toDto(pickupPointToUpdate)));
 
         verify(pickupPointRepository).save(pickupPointBeforeUpdate);
-        assertNotNull(actualResult.orElse(pickupPointBeforeUpdate).getDirections());
+        assertNotNull(actualResult.orElse(mapper.toDto(pickupPointBeforeUpdate)).getDirections());
     }
 
     @Test
     void should_not_update_pickupPointFeatures_field_if_null() {
-        long id = 1L;
         PickupPoint pickupPointToUpdate = generatePickupPoint();
         pickupPointToUpdate.setPickupPointFeatures(null);
 
         PickupPoint pickupPointBeforeUpdate = generatePickupPoint();
+        Long id = pickupPointBeforeUpdate.getId();
 
         when(pickupPointRepository.findById(id)).thenReturn(Optional.of(pickupPointBeforeUpdate));
         when(pickupPointRepository.save(pickupPointBeforeUpdate)).thenReturn(pickupPointBeforeUpdate);
 
-        Optional<PickupPoint> actualResult = pickupPointService.update(id, pickupPointToUpdate);
+        Optional<PickupPointDto> actualResult = Optional.ofNullable(pickupPointService.update(id, mapper.toDto(pickupPointToUpdate)));
 
         verify(pickupPointRepository).save(pickupPointBeforeUpdate);
-        assertNotNull(actualResult.orElse(pickupPointBeforeUpdate).getPickupPointFeatures());
+        assertNotNull(actualResult.orElse(mapper.toDto(pickupPointBeforeUpdate)).getPickupPointFeatures());
     }
 
     @Test
@@ -212,4 +217,17 @@ class PickupPointServiceTest {
         pickupPoint.setPickupPointFeatures(Set.of(PickupPointFeatures.values()));
         return pickupPoint;
     }
+
+    private PickupPointDto generatePickupPointDto() {
+        PickupPointDto pickupPoint = new PickupPointDto();
+
+        pickupPoint.setId(1L);
+        pickupPoint.setAddress("Test Address");
+        pickupPoint.setDirections("Test Directions");
+        pickupPoint.setShelfLifeDays((byte) 5);
+        pickupPoint.setPickupPointFeatures(Set.of(PickupPointFeatures.values()));
+        return pickupPoint;
+    }
+
+
 }

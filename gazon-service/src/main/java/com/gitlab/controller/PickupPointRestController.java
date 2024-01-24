@@ -43,9 +43,7 @@ public class PickupPointRestController implements PickupPointRestApi {
 
     @Override
     public ResponseEntity<PickupPointDto> update(Long id, PickupPointDto pickupPointDto) {
-        return pickupPointService.updateDto(id, pickupPointDto)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(pickupPointService.update(id, pickupPointDto));
     }
 
     @Override
