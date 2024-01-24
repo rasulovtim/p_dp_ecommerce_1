@@ -35,9 +35,7 @@ public class ExampleView extends VerticalLayout {
 
     public ExampleView(ExampleClient exampleClient) {
         this.exampleClient = exampleClient;
-        int page = 0;
-        int size = 100;
-        this.dataSource = exampleClient.getPage(page, size).getBody().stream().collect(Collectors.toList());
+        this.dataSource = exampleClient.getPage(null, null).getBody().stream().collect(Collectors.toList());
         ValidationMessage idValidationMessage = new ValidationMessage();
         ValidationMessage exampleTextValidationMessage = new ValidationMessage();
 

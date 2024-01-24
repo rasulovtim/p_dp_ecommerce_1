@@ -28,10 +28,4 @@ public class Example {
     @Enumerated(EnumType.STRING)
     private EntityStatus entityStatus;
 
-    //добавил потому что тесты не проходят
-    public Example(Long id, String exampleText) {
-        this.id = id;
-        this.exampleText = exampleText;
-        entityStatus = EntityStatus.ACTIVE;
-    }
 }

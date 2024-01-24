@@ -1,5 +1,6 @@
 package com.gitlab.service;
 
+import com.gitlab.enums.EntityStatus;
 import com.gitlab.model.Example;
 import com.gitlab.repository.ExampleRepository;
 import org.junit.jupiter.api.Test;
@@ -60,8 +61,8 @@ class ExampleServiceTest {
         Example exampleToUpdate = new Example();
         exampleToUpdate.setExampleText("modifiedText");
 
-        Example exampleBeforeUpdate = new Example(id, "unmodifiedText");
-        Example updatedExample = new Example(id, "modifiedText");
+        Example exampleBeforeUpdate = new Example(id, "unmodifiedText", EntityStatus.ACTIVE);
+        Example updatedExample = new Example(id, "modifiedText", EntityStatus.ACTIVE);
 
         when(exampleRepository.findById(id)).thenReturn(Optional.of(exampleBeforeUpdate));
         when(exampleRepository.save(updatedExample)).thenReturn(updatedExample);
@@ -91,7 +92,7 @@ class ExampleServiceTest {
         Example exampleToUpdate = new Example();
         exampleToUpdate.setExampleText(null);
 
-        Example exampleBeforeUpdate = new Example(id, "unmodifiedText");
+        Example exampleBeforeUpdate = new Example(id, "unmodifiedText", EntityStatus.ACTIVE);
 
         when(exampleRepository.findById(id)).thenReturn(Optional.of(exampleBeforeUpdate));
         when(exampleRepository.save(exampleBeforeUpdate)).thenReturn(exampleBeforeUpdate);
@@ -125,14 +126,14 @@ class ExampleServiceTest {
 
     private List<Example> generateExamples() {
         return List.of(
-                new Example(1L, "text1"),
-                new Example(2L, "text2"),
-                new Example(3L, "text3"),
-                new Example(4L, "text4"),
-                new Example(5L, "text5"));
+                new Example(1L, "text1", EntityStatus.ACTIVE),
+                new Example(2L, "text2", EntityStatus.ACTIVE),
+                new Example(3L, "text3", EntityStatus.ACTIVE),
+                new Example(4L, "text4", EntityStatus.ACTIVE),
+                new Example(5L, "text5", EntityStatus.ACTIVE));
     }
 
     private Example generateExample() {
-        return new Example(1L, "text1");
+        return new Example(1L, "text1", EntityStatus.ACTIVE);
     }
 }

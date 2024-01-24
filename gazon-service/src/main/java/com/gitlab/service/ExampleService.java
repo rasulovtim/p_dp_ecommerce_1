@@ -63,7 +63,6 @@ public class ExampleService {
     }
 
     public Page<ExampleDto> getPageDto(Integer page, Integer size) {
-
         if (page == null || size == null) {
             var examples = findAllDto();
             if (examples.isEmpty()) {
