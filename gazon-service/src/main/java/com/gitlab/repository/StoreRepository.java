@@ -1,7 +1,10 @@
 package com.gitlab.repository;
 
+import com.gitlab.model.Example;
 import com.gitlab.model.Store;
 import lombok.NonNull;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -22,4 +25,9 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     @EntityGraph(value = "store")
     @Query("SELECT s FROM Store s WHERE s.entityStatus = 'ACTIVE'")
     List<Store> findAll();
+
+    @Override
+    @NonNull
+    @Query("SELECT s FROM Store s WHERE s.entityStatus = 'ACTIVE'")
+    Page<Store> findAll(Pageable pageable);
 }

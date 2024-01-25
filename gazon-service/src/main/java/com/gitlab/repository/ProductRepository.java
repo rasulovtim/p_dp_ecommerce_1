@@ -1,7 +1,10 @@
 package com.gitlab.repository;
 
+import com.gitlab.model.Example;
 import com.gitlab.model.Product;
 import lombok.NonNull;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -24,6 +27,11 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @EntityGraph(value = "Product.productImages")
     @Query("SELECT p FROM Product p WHERE p.entityStatus = 'ACTIVE'")
     List<Product> findAll();
+
+    @Override
+    @NonNull
+    @Query("SELECT p FROM Product p WHERE p.entityStatus = 'ACTIVE'")
+    Page<Product> findAll(Pageable pageable);
 
     Iterable<Product> findByNameContainingIgnoreCase(String name);
 }
