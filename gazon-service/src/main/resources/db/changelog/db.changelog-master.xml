@@ -138,4 +138,10 @@
     <changeSet id="1.22" author="timur_saubanov">
         <tagDatabase tag="v-1.26"/>
     </changeSet>
+
+    <include file="v-1.29-add_entity_status_to_orders_table/db.changelog-v-1.29.xml" relativeToChangelogFile="true"/>
+    <changeSet id="1.29" author="vadim_dorogoychenkov">
+        <tagDatabase tag="v-1.29"/>
+    </changeSet>
+
 </databaseChangeLog>

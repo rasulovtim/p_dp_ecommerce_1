@@ -1,8 +1,8 @@
 package com.gitlab.model;
 
+import com.gitlab.enums.EntityStatus;
 import com.gitlab.enums.OrderStatus;
 import lombok.*;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -35,36 +35,40 @@ public class Order {
 
     @OneToOne
     @JoinColumn(name = "shipping_address_id", referencedColumnName = "shipping_address_id")
-    ShippingAddress shippingAddress;
+    private ShippingAddress shippingAddress;
 
     @Column(name = "shipping_date")
-    LocalDate shippingDate;
+    private LocalDate shippingDate;
 
     @Column(name = "order_code")
-    String orderCode;
+    private String orderCode;
 
     @Column(name = "create_date_time")
-    LocalDateTime createDateTime;
+    private LocalDateTime createDateTime;
 
     @Column(name = "sum")
-    BigDecimal sum;
+    private BigDecimal sum;
 
     @Column(name = "discount")
-    BigDecimal discount;
+    private BigDecimal discount;
 
     @Column(name = "bag_counter")
-    Byte bagCounter;
+    private Byte bagCounter;
 
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    User user;
+    private User user;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.REMOVE)
-    Set<SelectedProduct> selectedProducts;
+    private Set<SelectedProduct> selectedProducts;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "order_status")
-    OrderStatus orderStatus;
+    private OrderStatus orderStatus;
+
+    @Column(name = "entity_status")
+    @Enumerated(EnumType.STRING)
+    private EntityStatus entityStatus;
 
     public Order(long id) {
         this.id = id;

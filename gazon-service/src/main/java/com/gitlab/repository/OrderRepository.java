@@ -16,11 +16,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     @Override
     @NonNull
-    Optional<Order> findById(@NonNull Long id);
-
-
-    @Override
-    @NonNull
     @Query("SELECT r FROM Order r WHERE r.entityStatus = 'ACTIVE' order by r.id asc")
     Page<Order> findAll(Pageable pageable);
 
