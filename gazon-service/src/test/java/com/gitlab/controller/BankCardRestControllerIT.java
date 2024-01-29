@@ -1,6 +1,5 @@
 package com.gitlab.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.gitlab.dto.BankCardDto;
 import com.gitlab.mapper.BankCardMapper;
 import com.gitlab.service.BankCardService;
@@ -17,6 +16,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.testcontainers.shaded.org.hamcrest.CoreMatchers.equalTo;
+import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 
 class BankCardRestControllerIT extends AbstractIntegrationTest {
 
@@ -28,9 +29,9 @@ class BankCardRestControllerIT extends AbstractIntegrationTest {
     private BankCardMapper bankCardMapper;
 
     @Test
-    @Transactional(readOnly = true)
+    @Transactional
     void should_get_all_bankCards() throws Exception {
-
+        BankCardDto testBankCardDto = bankCardService.saveDto(generateBankCardDto());
         var response = bankCardService.getPage(null, null);
         var expected = objectMapper.writeValueAsString(bankCardMapper.toDtoList(response.getContent()));
 
@@ -38,14 +39,17 @@ class BankCardRestControllerIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
+        bankCardService.delete(testBankCardDto.getId());
     }
 
     @Test
-    @Transactional(readOnly = true)
+    @Transactional
     void should_get_page() throws Exception {
+        BankCardDto testBankCardDto = bankCardService.saveDto(generateBankCardDto());
         int page = 0;
         int size = 2;
         String parameters = "?page=" + page + "&size=" + size;
+
         var response = bankCardService.getPage(page, size);
         Assertions.assertFalse(response.getContent().isEmpty());
 
@@ -55,10 +59,12 @@ class BankCardRestControllerIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
+        bankCardService.delete(testBankCardDto.getId());
     }
 
     @Test
     void should_get_page_with_incorrect_parameters() throws Exception {
+        BankCardDto testBankCardDto = bankCardService.saveDto(generateBankCardDto());
         int page = 0;
         int size = -2;
         String parameters = "?page=" + page + "&size=" + size;
@@ -66,6 +72,8 @@ class BankCardRestControllerIT extends AbstractIntegrationTest {
         mockMvc.perform(get(BANK_CARD_URI + parameters))
                 .andDo(print())
                 .andExpect(status().isNoContent());
+        bankCardService.delete(testBankCardDto.getId());
+
     }
 
     @Test
@@ -81,7 +89,7 @@ class BankCardRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_get_bankCard_by_id() throws Exception {
-        long id = 1L;
+        long id = bankCardService.saveDto(generateBankCardDto()).getId();
         String expected = objectMapper.writeValueAsString(
                 bankCardMapper.toDto(
                         bankCardService
@@ -93,6 +101,7 @@ class BankCardRestControllerIT extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
+        bankCardService.delete(id);
     }
 
     @Test
@@ -105,8 +114,8 @@ class BankCardRestControllerIT extends AbstractIntegrationTest {
 
     @Test
     void should_create_bankCard() throws Exception {
-        BankCardDto bankCardDto = generateBankCardDto();
-        String jsonBankCardDto = objectMapper.writeValueAsString(bankCardDto);
+        BankCardDto testBankCardDto = generateBankCardDto();
+        String jsonBankCardDto = objectMapper.writeValueAsString(testBankCardDto);
 
         ResultActions resultActions = mockMvc.perform(post(BANK_CARD_URI)
                         .content(jsonBankCardDto)
@@ -114,57 +123,61 @@ class BankCardRestControllerIT extends AbstractIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isCreated());
+        long id = objectMapper.readTree(resultActions.andReturn().getResponse().getContentAsString()).get("id").asLong();
+        bankCardService.delete(id);
+    }
 
-        String contentAsString = resultActions.andReturn().getResponse().getContentAsString();
-        JsonNode createdEntity = objectMapper.readTree(contentAsString);
-        long id = createdEntity.get("id").asLong();
+    @Test
+    void check_null_update() throws Exception {
+        BankCardDto testBankCardDto = bankCardService.saveDto(generateBankCardDto());
+        int numberOfEntitiesExpected = bankCardService.findAll().size();
 
-        mockMvc.perform(delete(BANK_CARD_URI + "/{id}", id))
+        testBankCardDto.setCardNumber(null);
+        testBankCardDto.setSecurityCode(null);
+        testBankCardDto.setDueDate(null);
+
+        String jsonBankCardDto = objectMapper.writeValueAsString(testBankCardDto);
+        mockMvc.perform(patch(BANK_CARD_URI + "/{id}", testBankCardDto.getId())
+                        .content(jsonBankCardDto)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().is4xxClientError())
+                .andExpect(result -> assertThat(bankCardService.findAll().size(),
+                        equalTo(numberOfEntitiesExpected)));
+        bankCardService.delete(testBankCardDto.getId());
     }
 
     @Test
     void should_update_bankCard_by_id() throws Exception {
-        BankCardDto bankCardDto = generateBankCardDto();
-        String jsonBankCardDto = objectMapper.writeValueAsString(bankCardDto);
+        BankCardDto testBankCardDto = bankCardService.saveDto(generateBankCardDto());
+        int numberOfEntitiesExpected = bankCardService.findAll().size();
 
 
-        ResultActions resultActions = mockMvc.perform(post(BANK_CARD_URI)
-                        .content(jsonBankCardDto)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isCreated());
+        testBankCardDto.setCardNumber("1234123412341234");
+        testBankCardDto.setSecurityCode(6969);
+        testBankCardDto.setDueDate(LocalDate.now());
 
-        String contentAsString = resultActions.andReturn().getResponse().getContentAsString();
-        JsonNode createdEntity = objectMapper.readTree(contentAsString);
-        long id = createdEntity.get("id").asLong();
+        String jsonTestBankCardDto = objectMapper.writeValueAsString(testBankCardDto);
 
-        bankCardDto.setId(id);
-        bankCardDto.setCardNumber("1234123412341234");
-        bankCardDto.setSecurityCode(6969);
-        jsonBankCardDto = objectMapper.writeValueAsString(bankCardDto);
-        String expected = objectMapper.writeValueAsString(bankCardDto);
-
-        mockMvc.perform(patch(BANK_CARD_URI + "/{id}", id)
-                        .content(jsonBankCardDto)
+        mockMvc.perform(patch(BANK_CARD_URI + "/{id}", testBankCardDto.getId())
+                        .content(jsonTestBankCardDto)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(expected));
+                .andExpect(content().json(jsonTestBankCardDto))
+                .andExpect(result -> assertThat(bankCardService.findAll().size(),
+                        equalTo(numberOfEntitiesExpected)));
+        bankCardService.delete(testBankCardDto.getId());
 
-        mockMvc.perform(delete(BANK_CARD_URI + "/{id}", id))
-                .andDo(print())
-                .andExpect(status().isOk());
     }
 
     @Test
     void should_return_not_found_when_update_bankCard_by_non_existent_id() throws Exception {
         long id = 10L;
-        BankCardDto bankCardDto = generateBankCardDto();
-        String jsonBankCardDto = objectMapper.writeValueAsString(bankCardDto);
+        BankCardDto testBankCardDto = generateBankCardDto();
+        String jsonBankCardDto = objectMapper.writeValueAsString(testBankCardDto);
 
         mockMvc.perform(patch(BANK_CARD_URI + "/{id}", id)
                         .content(jsonBankCardDto)
@@ -172,12 +185,13 @@ class BankCardRestControllerIT extends AbstractIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound());
+
     }
 
     @Test
     void should_delete_bankCard_by_id() throws Exception {
-        BankCardDto bankCardDto = bankCardService.saveDto(generateBankCardDto());
-        long id = bankCardDto.getId();
+        BankCardDto testBankCardDto = bankCardService.saveDto(generateBankCardDto());
+        long id = testBankCardDto.getId();
         mockMvc.perform(delete(BANK_CARD_URI + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk());

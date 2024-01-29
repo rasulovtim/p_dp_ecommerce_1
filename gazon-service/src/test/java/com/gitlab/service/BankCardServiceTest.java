@@ -1,24 +1,24 @@
 package com.gitlab.service;
 
+import com.gitlab.dto.BankCardDto;
+import com.gitlab.mapper.BankCardMapper;
 import com.gitlab.model.BankCard;
-import com.gitlab.model.User;
 import com.gitlab.repository.BankCardRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.never;
 
 @ExtendWith(MockitoExtension.class)
 class BankCardServiceTest {
@@ -27,6 +27,8 @@ class BankCardServiceTest {
     private BankCardRepository bankCardRepository;
     @InjectMocks
     private BankCardService bankCardService;
+    @Mock
+    private BankCardMapper bankCardMapper;
 
     @Test
     void should_find_all_bankCards() {
@@ -51,29 +53,40 @@ class BankCardServiceTest {
 
     @Test
     void should_save_bankCard() {
+        Long id = 1L;
         BankCard expectedResult = generateBankCard();
-        when(bankCardRepository.save(expectedResult)).thenReturn(expectedResult);
+        BankCardDto bankCardDto = generateBankCardDto();
+        bankCardDto.setId(id);
 
-        BankCard actualResult = bankCardService.save(expectedResult);
+        when(bankCardMapper.toDto(any(BankCard.class))).thenReturn(bankCardDto);
+        when(bankCardMapper.toEntity(bankCardDto)).thenReturn(expectedResult);
+
+        when(bankCardRepository.save(expectedResult)).thenReturn(expectedResult);
+        BankCard actualResult = bankCardMapper.toEntity(bankCardService.saveDto(bankCardMapper.toDto(expectedResult)));
 
         assertEquals(expectedResult, actualResult);
     }
 
     @Test
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
     void should_update_bankCard() {
         long id = 1L;
-        BankCard bankCardToUpdate = new BankCard();
-        bankCardToUpdate.setCardNumber(/*modified*/"12345678"/*modified*/);
-        bankCardToUpdate.setDueDate(LocalDate.MIN);
-        bankCardToUpdate.setSecurityCode(123);
+        BankCardDto bankCardDtoUpdate = generateBankCardDto();
+        bankCardDtoUpdate.setCardNumber(/*modified*/"12345678"/*modified*/);
+        bankCardDtoUpdate.setDueDate(LocalDate.MIN);
+        bankCardDtoUpdate.setSecurityCode(123);
+
 
         BankCard bankCardBeforeUpdate = new BankCard(id, /*unmodified*/"23456789"/*unmodified*/, LocalDate.MIN, 123);
         BankCard updatedBankCard = new BankCard(id, /*modified*/"12345678"/*modified*/, LocalDate.MIN, 123);
 
+        when(bankCardMapper.toDto(any(BankCard.class))).thenReturn(bankCardDtoUpdate);
+        when(bankCardMapper.toEntity(bankCardDtoUpdate)).thenReturn(updatedBankCard);
+
         when(bankCardRepository.findById(id)).thenReturn(Optional.of(bankCardBeforeUpdate));
         when(bankCardRepository.save(updatedBankCard)).thenReturn(updatedBankCard);
 
-        Optional<BankCard> actualResult = bankCardService.update(id, bankCardToUpdate);
+        Optional<BankCard> actualResult = Optional.of(bankCardMapper.toEntity(bankCardService.updateDto(id, bankCardDtoUpdate).get()));
 
         assertEquals(updatedBankCard, actualResult.orElse(null));
     }
@@ -81,12 +94,12 @@ class BankCardServiceTest {
     @Test
     void should_not_update_bankCard_when_entity_not_found() {
         long id = 1L;
-        BankCard bankCardToUpdate = new BankCard();
-        bankCardToUpdate.setCardNumber(/*modified*/"12345678"/*modified*/);
+        BankCardDto bankCardDtoToUpdate = generateBankCardDto();
+        bankCardDtoToUpdate.setCardNumber(/*modified*/"12345678"/*modified*/);
 
         when(bankCardRepository.findById(id)).thenReturn(Optional.empty());
 
-        Optional<BankCard> actualResult = bankCardService.update(id, bankCardToUpdate);
+        Optional<BankCardDto> actualResult = bankCardService.updateDto(id, bankCardDtoToUpdate);
 
         verify(bankCardRepository, never()).save(any());
         assertNull(actualResult.orElse(null));
@@ -113,6 +126,70 @@ class BankCardServiceTest {
     }
 
 
+    @Test
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    void should_not_updated_cardNumber_field_if_null() {
+        long id = 1L;
+        BankCardDto bankCardDtoToUpdate = generateBankCardDto();
+        bankCardDtoToUpdate.setCardNumber(null);
+
+        BankCard bankCardBeforeUpdate = new BankCard(id, /*unmodified*/"12345678"/*unmodified*/, LocalDate.MIN, 123);
+
+        when(bankCardMapper.toDto(any(BankCard.class))).thenReturn(bankCardDtoToUpdate);
+        when(bankCardMapper.toEntity(bankCardDtoToUpdate)).thenReturn(bankCardBeforeUpdate);
+
+        when(bankCardRepository.findById(id)).thenReturn(Optional.of(bankCardBeforeUpdate));
+        when(bankCardRepository.save(bankCardBeforeUpdate)).thenReturn(bankCardBeforeUpdate);
+
+        Optional<BankCard> actualResult = Optional.of(bankCardMapper.toEntity(bankCardService.updateDto(id, bankCardDtoToUpdate).get()));
+
+        verify(bankCardRepository).save(bankCardBeforeUpdate);
+        assertEquals(bankCardBeforeUpdate, actualResult.orElse(null));
+        assertEquals("12345678", bankCardBeforeUpdate.getCardNumber());
+    }
+
+    @Test
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    void should_not_updated_dueDate_field_if_null() {
+        long id = 1L;
+        BankCardDto bankCardDtoToUpdate = generateBankCardDto();
+        bankCardDtoToUpdate.setDueDate(null);
+
+        BankCard bankCardBeforeUpdate = new BankCard(id, "cardNumber", /*Unmodified*/ LocalDate.MIN /*Unmodified*/, 123);
+
+        when(bankCardMapper.toDto(any(BankCard.class))).thenReturn(bankCardDtoToUpdate);
+        when(bankCardMapper.toEntity(bankCardDtoToUpdate)).thenReturn(bankCardBeforeUpdate);
+
+        when(bankCardRepository.findById(id)).thenReturn(Optional.of(bankCardBeforeUpdate));
+        when(bankCardRepository.save(bankCardBeforeUpdate)).thenReturn(bankCardBeforeUpdate);
+
+        Optional<BankCard> actualResult = Optional.of(bankCardMapper.toEntity(bankCardService.updateDto(id, bankCardDtoToUpdate).get()));
+
+        verify(bankCardRepository).save(bankCardBeforeUpdate);
+        assertEquals(bankCardBeforeUpdate, actualResult.orElse(null));
+    }
+
+    @Test
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    void should_not_updated_securityCode_field_if_null() {
+        long id = 1L;
+        BankCardDto bankCardDtoToUpdate = generateBankCardDto();
+        bankCardDtoToUpdate.setSecurityCode(null);
+
+        BankCard bankCardBeforeUpdate = new BankCard(id, "cardNumber", LocalDate.MIN, /*Unmodified*/123/*Unmodified*/);
+
+        when(bankCardMapper.toDto(any(BankCard.class))).thenReturn(bankCardDtoToUpdate);
+        when(bankCardMapper.toEntity(bankCardDtoToUpdate)).thenReturn(bankCardBeforeUpdate);
+
+        when(bankCardRepository.findById(id)).thenReturn(Optional.of(bankCardBeforeUpdate));
+        when(bankCardRepository.save(bankCardBeforeUpdate)).thenReturn(bankCardBeforeUpdate);
+
+        Optional<BankCard> actualResult = Optional.of(bankCardMapper.toEntity(bankCardService.updateDto(id, bankCardDtoToUpdate).get()));
+
+        verify(bankCardRepository).save(bankCardBeforeUpdate);
+        assertEquals(bankCardBeforeUpdate, actualResult.orElse(null));
+    }
+
     private List<BankCard> generateBankCards() {
         return List.of(
                 new BankCard(1L, "cardNumber1", LocalDate.MIN, 123),
@@ -126,56 +203,8 @@ class BankCardServiceTest {
         return new BankCard(1L, "cardNumber1", LocalDate.MIN, 123);
     }
 
-    @Test
-    void should_not_updated_cardNumber_field_if_null() {
-        long id = 1L;
-        BankCard bankCardToUpdate = new BankCard();
-        bankCardToUpdate.setCardNumber(null);
-
-        BankCard bankCardBeforeUpdate = new BankCard(id, /*unmodified*/"12345678"/*unmodified*/, LocalDate.MIN, 123);
-
-        when(bankCardRepository.findById(id)).thenReturn(Optional.of(bankCardBeforeUpdate));
-        when(bankCardRepository.save(bankCardBeforeUpdate)).thenReturn(bankCardBeforeUpdate);
-
-        Optional<BankCard> actualResult = bankCardService.update(id, bankCardToUpdate);
-
-        verify(bankCardRepository).save(bankCardBeforeUpdate);
-        assertEquals(bankCardBeforeUpdate, actualResult.orElse(null));
-        assertEquals("12345678", bankCardBeforeUpdate.getCardNumber());
-    }
-
-    @Test
-    void should_not_updated_dueDate_field_if_null() {
-        long id = 1L;
-        BankCard bankCardToUpdate = new BankCard();
-        bankCardToUpdate.setDueDate(null);
-
-        BankCard bankCardBeforeUpdate = new BankCard(id, "cardNumber", /*Unmodified*/ LocalDate.MIN /*Unmodified*/, 123);
-
-        when(bankCardRepository.findById(id)).thenReturn(Optional.of(bankCardBeforeUpdate));
-        when(bankCardRepository.save(bankCardBeforeUpdate)).thenReturn(bankCardBeforeUpdate);
-
-        Optional<BankCard> actualResult = bankCardService.update(id, bankCardToUpdate);
-
-        verify(bankCardRepository).save(bankCardBeforeUpdate);
-        assertEquals(bankCardBeforeUpdate, actualResult.orElse(null));
-    }
-
-    @Test
-    void should_not_updated_securityCode_field_if_null() {
-        long id = 1L;
-        BankCard bankCardToUpdate = new BankCard();
-        bankCardToUpdate.setSecurityCode(null);
-
-        BankCard bankCardBeforeUpdate = new BankCard(id, "cardNumber", LocalDate.MIN, /*Unmodified*/123/*Unmodified*/);
-
-        when(bankCardRepository.findById(id)).thenReturn(Optional.of(bankCardBeforeUpdate));
-        when(bankCardRepository.save(bankCardBeforeUpdate)).thenReturn(bankCardBeforeUpdate);
-
-        Optional<BankCard> actualResult = bankCardService.update(id, bankCardToUpdate);
-
-        verify(bankCardRepository).save(bankCardBeforeUpdate);
-        assertEquals(bankCardBeforeUpdate, actualResult.orElse(null));
+    private BankCardDto generateBankCardDto() {
+        return new BankCardDto();
     }
 
 }
