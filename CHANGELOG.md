@@ -6,7 +6,8 @@
 - #128 Проверка работоспособности Passport REST
 - #129 Проверка работоспособности Payment REST
 - #149 Добавлена карточка товара
-
+- #114 - Status model for Order
+- 
 ## [1.2.0] - 24.12.2023
 - #13 - Make Payment entity
 - #73 - added User field to SelectedProduct
