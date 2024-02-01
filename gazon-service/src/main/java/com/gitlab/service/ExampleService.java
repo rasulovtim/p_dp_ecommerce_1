@@ -120,7 +120,6 @@ public class ExampleService {
         if (exampleDto.getExampleText() != null) {
             savedExample.setExampleText(exampleDto.getExampleText());
         }
-        updateExampleFields(savedExample, exampleDto);
 
         savedExample.setEntityStatus(EntityStatus.ACTIVE);
 
@@ -142,10 +141,4 @@ public class ExampleService {
         return optionalDeletedExample;
     }
 
-    private Example updateExampleFields(Example example, ExampleDto exampleDto) {
-        example.setExampleText(exampleDto.getExampleText());
-        example.setEntityStatus(EntityStatus.ACTIVE);
-
-        return example;
-    }
 }
