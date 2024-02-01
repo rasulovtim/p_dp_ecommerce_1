@@ -1,6 +1,7 @@
 package com.gitlab.service;
 
 import com.gitlab.dto.OrderDto;
+import com.gitlab.enums.EntityStatus;
 import com.gitlab.mapper.OrderMapper;
 import com.gitlab.mapper.SelectedProductMapper;
 import com.gitlab.mapper.ShippingAddressMapper;
@@ -43,11 +44,19 @@ public class OrderService {
     }
 
     public Optional<Order> findById(Long id) {
-        return orderRepository.findById(id);
+        Optional<Order> orderOptional = orderRepository.findById(id);
+        if (orderOptional.isPresent() && !orderOptional.get().getEntityStatus().equals(EntityStatus.DELETED)) {
+            return orderOptional;
+        }
+        return Optional.empty();
     }
 
     public Optional<OrderDto> findByIdDto(Long id) {
-        return orderRepository.findById(id).map(orderMapper::toDto);
+        Optional<Order> orderOptional = findById(id);
+        if (orderOptional.isPresent()) {
+            return orderOptional.map(orderMapper::toDto);
+        }
+        return Optional.empty();
     }
 
     public Page<Order> getPage(Integer page, Integer size) {
@@ -85,16 +94,18 @@ public class OrderService {
 
     public OrderDto saveDto(OrderDto orderDto) {
         Order order = orderMapper.toEntity(orderDto);
+        order.setEntityStatus(EntityStatus.ACTIVE);
         Order savedOrder = orderRepository.save(order);
         return orderMapper.toDto(savedOrder);
     }
 
     public Optional<OrderDto> updateDto(Long id, OrderDto orderDto) {
-        Optional<Order> optionalSavedOrder = findById(id);
+        Optional<Order> optionalSavedOrder = orderRepository.findById(id);
         if (optionalSavedOrder.isEmpty()) {
             return Optional.empty();
         }
         Order savedOrder = optionalSavedOrder.get();
+        savedOrder.setEntityStatus(EntityStatus.ACTIVE);
         if (orderDto.getShippingAddressDto() != null) {
             savedOrder.setShippingAddress(shippingAddressMapper.toEntity(orderDto.getShippingAddressDto()));
         }
@@ -133,11 +144,12 @@ public class OrderService {
     public Optional<Order> delete(Long id) {
         Optional<Order> optionalSavedOrder = findById(id);
         if (optionalSavedOrder.isEmpty()) {
-            return optionalSavedOrder;
-        } else {
-            orderRepository.deleteById(id);
-            return optionalSavedOrder;
+            return Optional.empty();
         }
+        Order deletedOrder = optionalSavedOrder.get();
+        deletedOrder.setEntityStatus(EntityStatus.DELETED);
+        orderRepository.save(deletedOrder);
+        return optionalSavedOrder;
     }
 
 }

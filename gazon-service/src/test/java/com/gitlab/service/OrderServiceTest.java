@@ -1,6 +1,7 @@
 package com.gitlab.service;
 
 import com.gitlab.dto.OrderDto;
+import com.gitlab.enums.EntityStatus;
 import com.gitlab.mapper.*;
 import com.gitlab.model.Order;
 import com.gitlab.repository.OrderRepository;
@@ -43,8 +44,8 @@ public class OrderServiceTest {
         Order expectedOrder = generateOrder();
         when(orderRepository.findById(id)).thenReturn(Optional.of(generateOrder()));
         Optional<Order> actualOrder = orderService.findById(id);
-
         assertEquals(expectedOrder, actualOrder.orElse(null));
+
     }
 
     @Test
@@ -68,24 +69,24 @@ public class OrderServiceTest {
     @SuppressWarnings("OptionalGetWithoutIsPresent")
     void should_update_order() {
         long id = 1L;
+
         OrderDto orderDtoToUpdate = generateOrderDto();
         orderDtoToUpdate.setOrderCode("updatesOrder");
 
         Order orderBeforeUpdate = new Order(id, "unmodifiedCode");
         Order updatedOrder = new Order(id, "updatesOrder");
 
-
         when(orderMapper.toDto(any(Order.class))).thenReturn(orderDtoToUpdate);
         when(orderMapper.toEntity(orderDtoToUpdate)).thenReturn(updatedOrder);
 
-
         when(orderRepository.findById(id)).thenReturn(Optional.of(orderBeforeUpdate));
-        when(orderRepository.save(updatedOrder)).thenReturn(updatedOrder);
+        when(orderRepository.save(any(Order.class))).thenReturn(updatedOrder);
 
         Optional<Order> actualResult = Optional.of(orderMapper
                 .toEntity(orderService.updateDto(id, orderDtoToUpdate).get()));
 
         assertEquals(updatedOrder, actualResult.orElse(null));
+
     }
 
     @Test
@@ -126,12 +127,11 @@ public class OrderServiceTest {
 
     @Test
     void should_delete_order() {
-        long id = 1L;
-        when(orderRepository.findById(id)).thenReturn(Optional.of(generateOrder()));
 
-        orderService.delete(id);
-
-        verify(orderRepository).deleteById(id);
+        Order order = generateOrder();
+        when(orderRepository.findById(order.getId())).thenReturn(Optional.of(order));
+        Order delete = orderService.delete(order.getId()).orElseGet(null);
+        assertEquals(EntityStatus.DELETED, delete.getEntityStatus());
     }
 
     @Test
@@ -157,11 +157,17 @@ public class OrderServiceTest {
     }
 
     private Order generateOrder() {
-        return new Order(1L);
+        Order order = new Order();
+        order.setEntityStatus(EntityStatus.ACTIVE);
+        order.setId(1L);
+        return order;
     }
 
     private OrderDto generateOrderDto() {
+
         return new OrderDto();
+
     }
+
 
 }

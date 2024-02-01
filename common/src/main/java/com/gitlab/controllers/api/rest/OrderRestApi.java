@@ -39,5 +39,5 @@ public interface OrderRestApi {
 
     @ApiOperation(value = "Delete order by ID")
     @DeleteMapping("/api/order/{id}")
-    ResponseEntity<OrderDto> delete(@ApiParam(name = "Order Dto", value = "Order Id") @PathVariable (value ="id") Long id);
+    ResponseEntity<OrderDto> delete(@ApiParam(name = "id", value = "Order Id") @PathVariable (value ="id") Long id);
 }
