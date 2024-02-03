@@ -1,7 +1,9 @@
 package com.gitlab.model;
 
 import com.gitlab.enums.EntityStatus;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
