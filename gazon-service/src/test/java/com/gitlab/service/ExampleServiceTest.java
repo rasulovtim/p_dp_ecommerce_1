@@ -1,5 +1,6 @@
 package com.gitlab.service;
 
+import com.gitlab.enums.EntityStatus;
 import com.gitlab.model.Example;
 import com.gitlab.repository.ExampleRepository;
 import org.junit.jupiter.api.Test;
@@ -25,8 +26,8 @@ class ExampleServiceTest {
 
     @Test
     void should_find_all_examples() {
-        List<Example> expectedResult = generateExamples();
-        when(exampleRepository.findAll()).thenReturn(generateExamples());
+        List<Example> expectedResult = generateExamplesOnlyActive();
+        when(exampleRepository.findAll()).thenReturn(generateExamplesOnlyActive());
 
         List<Example> actualResult = exampleService.findAll();
 
@@ -34,34 +35,64 @@ class ExampleServiceTest {
     }
 
     @Test
-    void should_find_example_by_id() {
+    void should_find_active_example_by_id() {
         long id = 1L;
-        Example expectedResult = generateExample();
-        when(exampleRepository.findById(id)).thenReturn(Optional.of(expectedResult));
+        Example generateExampleActive = generateExampleActive();
+
+        when(exampleRepository.findById(id)).thenReturn(Optional.of(generateExampleActive));
 
         Optional<Example> actualResult = exampleService.findById(id);
 
-        assertEquals(expectedResult, actualResult.orElse(null));
+        assertEquals(generateExampleActive, actualResult.orElse(null));
+    }
+
+    @Test
+    void should_find_deleted_example_by_id() {
+        long id = 1L;
+        Example generateExampleDeleted = generateExampleDeleted();
+        generateExampleDeleted.setId(id);
+
+        when(exampleRepository.findById(generateExampleDeleted.getId())).thenReturn(Optional.empty());
+
+        Optional<Example> actualResult = exampleService.findById(id);
+
+        assertEquals(Optional.empty(), actualResult);
     }
 
     @Test
     void should_save_example() {
-        Example expectedResult = generateExample();
-        when(exampleRepository.save(expectedResult)).thenReturn(expectedResult);
+        Example generateExampleActive = generateExampleActive();
+        when(exampleRepository.save(generateExampleActive)).thenReturn(generateExampleActive);
 
-        Example actualResult = exampleService.save(expectedResult);
+        Example actualResult = exampleService.save(generateExampleActive);
 
-        assertEquals(expectedResult, actualResult);
+        assertEquals(generateExampleActive, actualResult);
     }
 
     @Test
-    void should_update_example() {
+    void should_update_active_example() {
         long id = 1L;
         Example exampleToUpdate = new Example();
         exampleToUpdate.setExampleText("modifiedText");
 
-        Example exampleBeforeUpdate = new Example(id, "unmodifiedText");
-        Example updatedExample = new Example(id, "modifiedText");
+        Example exampleBeforeUpdate = new Example(id, "unmodifiedText", EntityStatus.ACTIVE);
+        Example updatedExample = new Example(id, "modifiedText", EntityStatus.ACTIVE);
+
+        when(exampleRepository.findById(id)).thenReturn(Optional.of(exampleBeforeUpdate));
+        when(exampleRepository.save(updatedExample)).thenReturn(updatedExample);
+
+        Optional<Example> actualResult = exampleService.update(id, exampleToUpdate);
+
+        assertEquals(updatedExample, actualResult.orElse(null));
+    }
+    @Test
+    void should_update_deleted_example() {
+        long id = 1L;
+        Example exampleToUpdate = new Example();
+        exampleToUpdate.setExampleText("modifiedText");
+
+        Example exampleBeforeUpdate = new Example(id, "unmodifiedText", EntityStatus.DELETED);
+        Example updatedExample = new Example(id, "modifiedText", EntityStatus.ACTIVE);
 
         when(exampleRepository.findById(id)).thenReturn(Optional.of(exampleBeforeUpdate));
         when(exampleRepository.save(updatedExample)).thenReturn(updatedExample);
@@ -91,7 +122,7 @@ class ExampleServiceTest {
         Example exampleToUpdate = new Example();
         exampleToUpdate.setExampleText(null);
 
-        Example exampleBeforeUpdate = new Example(id, "unmodifiedText");
+        Example exampleBeforeUpdate = new Example(id, "unmodifiedText", EntityStatus.ACTIVE);
 
         when(exampleRepository.findById(id)).thenReturn(Optional.of(exampleBeforeUpdate));
         when(exampleRepository.save(exampleBeforeUpdate)).thenReturn(exampleBeforeUpdate);
@@ -105,12 +136,12 @@ class ExampleServiceTest {
 
     @Test
     void should_delete_example() {
-        long id = 1L;
-        when(exampleRepository.findById(id)).thenReturn(Optional.of(generateExample()));
+        Example example = generateExampleActive();
+        when(exampleRepository.findById(example.getId())).thenReturn(Optional.of(example));
+        Example delete = exampleService.delete(example.getId()).orElseGet(null);
 
-        exampleService.delete(id);
+        assertEquals(EntityStatus.DELETED, delete.getEntityStatus());
 
-        verify(exampleRepository).deleteById(id);
     }
 
     @Test
@@ -123,16 +154,22 @@ class ExampleServiceTest {
         verify(exampleRepository, never()).deleteById(anyLong());
     }
 
-    private List<Example> generateExamples() {
+    private List<Example> generateExamplesOnlyActive() {
         return List.of(
-                new Example(1L, "text1"),
-                new Example(2L, "text2"),
-                new Example(3L, "text3"),
-                new Example(4L, "text4"),
-                new Example(5L, "text5"));
+                new Example(1L, "text1", EntityStatus.ACTIVE),
+                new Example(3L, "text3", EntityStatus.ACTIVE),
+                new Example(5L, "text5", EntityStatus.ACTIVE));
+    }
+    private List<Example> generateExamplesOnlyDeleted() {
+        return List.of(
+                new Example(2L, "text2", EntityStatus.DELETED),
+                new Example(4L, "text4", EntityStatus.DELETED));
     }
 
-    private Example generateExample() {
-        return new Example(1L, "text1");
+    private Example generateExampleActive() {
+        return new Example(1L, "text1", EntityStatus.ACTIVE);
+    }
+    private Example generateExampleDeleted() {
+        return new Example(1L, "text1", EntityStatus.DELETED);
     }
 }

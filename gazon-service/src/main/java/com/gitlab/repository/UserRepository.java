@@ -1,7 +1,10 @@
 package com.gitlab.repository;
 
+import com.gitlab.model.Example;
 import com.gitlab.model.User;
 import lombok.NonNull;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,6 +21,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @EntityGraph(value = "userWithSets", type = EntityGraph.EntityGraphType.LOAD)
     @Query("SELECT u FROM User u WHERE u.entityStatus = 'ACTIVE' order by u.id asc")
     List<User> findAll();
+
+    @Override
+    @NonNull
+    @Query("SELECT u FROM User u WHERE u.entityStatus = 'ACTIVE' order by u.id asc")
+    Page<User> findAll(Pageable pageable);
 
     @Override
     @NonNull
